@@ -39,7 +39,9 @@ projects/
    ```
    GitHub Pages redeploys automatically (usually within a minute).
 
-## Editing the bio
+## Editing the bio / contact
 
-The hero in `index.html` has three spots marked `<!-- EDIT -->`: the headline, the blurb,
-and the LinkedIn URL. Swap those for your own wording/links.
+`index.html` is a full portfolio page: hero, about, capability grid, the Tide flagship card,
+and a contact block. To wire up LinkedIn, find the `LINKEDIN_SLOT` comment in the contact
+section, set the real URL on that `<a>`, and remove the `soon` class + the `SOON` pill.
+Email (`vikky.bharadwaj@gmail.com`) and GitHub links are already live.
