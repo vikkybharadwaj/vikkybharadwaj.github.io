@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Backlog &middot; Tide</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', monospace; background: #0a0f1a; color: #e2e8f0; line-height: 1.6; }
+.container { max-width: 1100px; margin: 0 auto; padding: 48px 24px; }
+
+header { margin-bottom: 32px; }
+header .back { display: inline-block; font-size: 11px; color: #64748b; margin-bottom: 16px; text-decoration: none; }
+header .back:hover { color: #94a3b8; }
+header h1 { font-size: 30px; font-weight: 700; margin-bottom: 8px; color: #e2e8f0; }
+header .tagline { font-size: 12px; color: #94a3b8; max-width: 720px; line-height: 1.6; }
+header .meta { margin-top: 14px; font-size: 11px; color: #64748b; }
+header .meta code { background: rgba(0,0,0,0.3); padding: 1px 6px; border-radius: 3px; color: #94a3b8; }
+
+.intro {
+  background: rgba(99,102,241,0.06);
+  border: 1px solid rgba(99,102,241,0.25);
+  border-radius: 10px;
+  padding: 18px 22px;
+  margin-bottom: 28px;
+  font-size: 12px;
+  color: #cbd5e1;
+}
+.intro strong { color: #818cf8; }
+.intro code { background: rgba(0,0,0,0.3); padding: 1px 6px; border-radius: 3px; color: #fbbf24; font-size: 11px; }
+
+/* CATEGORY COUNTS PILL ROW */
+.category-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-bottom: 28px;
+}
+@media (max-width: 760px) { .category-row { grid-template-columns: repeat(2, 1fr); } }
+.cat-pill {
+  padding: 14px 12px;
+  border-radius: 10px;
+  text-align: center;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(17,24,39,0.5);
+}
+.cat-pill .name { font-size: 10px; font-weight: 700; letter-spacing: 1px; }
+.cat-pill .count { font-size: 22px; font-weight: 700; color: #f1f5f9; margin-top: 4px; }
+.cat-pill .effort { font-size: 10px; color: #64748b; margin-top: 2px; }
+
+.cat-cx     { border-color: rgba(34,197,94,0.4); }
+.cat-cx .name     { color: #4ade80; }
+.cat-tech   { border-color: rgba(239,68,68,0.4); }
+.cat-tech .name   { color: #fca5a5; }
+.cat-uiux   { border-color: rgba(20,184,166,0.4); }
+.cat-uiux .name   { color: #5eead4; }
+.cat-aidata { border-color: rgba(168,85,247,0.4); }
+.cat-aidata .name { color: #c4b5fd; }
+.cat-launch { border-color: rgba(245,158,11,0.4); }
+.cat-launch .name { color: #fbbf24; }
+
+/* LEGEND */
+.legend { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 28px; }
+@media (max-width: 760px) { .legend { grid-template-columns: 1fr; } }
+.legend-block { background: rgba(17,24,39,0.6); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 12px 14px; }
+.legend-block h3 { font-size: 11px; color: #818cf8; font-weight: 700; margin-bottom: 6px; letter-spacing: 1px; text-transform: uppercase; }
+.legend-block .row { display: flex; align-items: center; gap: 8px; padding: 2px 0; font-size: 11px; color: #94a3b8; }
+.legend-block .swatch { display: inline-flex; align-items: center; justify-content: center; width: 28px; padding: 2px 0; border-radius: 4px; font-size: 10px; font-weight: 700; }
+
+.effort-S { background: rgba(34,197,94,0.18); color: #4ade80; border: 1px solid rgba(34,197,94,0.35); }
+.effort-M { background: rgba(59,130,246,0.18); color: #60a5fa; border: 1px solid rgba(59,130,246,0.35); }
+.effort-L { background: rgba(245,158,11,0.18); color: #fbbf24; border: 1px solid rgba(245,158,11,0.35); }
+.effort-XL { background: rgba(239,68,68,0.18); color: #fca5a5; border: 1px solid rgba(239,68,68,0.35); }
+.value-low { background: rgba(100,116,139,0.18); color: #94a3b8; border: 1px solid rgba(100,116,139,0.35); }
+.value-med { background: rgba(168,85,247,0.18); color: #c4b5fd; border: 1px solid rgba(168,85,247,0.35); }
+.value-high { background: rgba(20,184,166,0.18); color: #5eead4; border: 1px solid rgba(20,184,166,0.35); }
+.value-critical { background: rgba(236,72,153,0.18); color: #f9a8d4; border: 1px solid rgba(236,72,153,0.35); }
+
+/* EPIC ACCORDION */
+details.epic { border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; background: rgba(17,24,39,0.5); margin-bottom: 16px; overflow: hidden; }
+details.epic[open] { border-color: rgba(129,140,248,0.5); background: rgba(99,102,241,0.04); }
+details.epic summary { list-style: none; cursor: pointer; padding: 18px 22px; display: flex; align-items: center; gap: 14px; user-select: none; }
+details.epic summary::-webkit-details-marker { display: none; }
+details.epic summary::after { content: '▸'; margin-left: auto; color: #64748b; font-size: 16px; transition: transform 0.2s; flex-shrink: 0; }
+details.epic[open] summary::after { transform: rotate(90deg); color: #818cf8; }
+details.epic .num { width: 36px; height: 36px; border-radius: 50%; background: rgba(99,102,241,0.15); border: 1px solid rgba(99,102,241,0.4); color: #c7d2fe; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: 13px; }
+details.epic .meta { display: flex; flex-direction: column; flex: 1; }
+details.epic .name { font-size: 16px; font-weight: 700; color: #e2e8f0; }
+details.epic .desc { font-size: 11px; color: #94a3b8; margin-top: 4px; }
+details.epic .stats { display: flex; gap: 14px; font-size: 10px; color: #94a3b8; letter-spacing: 0.5px; }
+/* .priority class is kept as a semantic marker but no longer changes the visual style — uniform appearance across all epics per Vik. */
+details.epic.removed { opacity: 0.5; border-color: rgba(100,116,139,0.3); }
+details.epic.removed .name { text-decoration: line-through; color: #94a3b8; }
+
+/* FEATURES */
+.features { padding: 0 22px 20px 22px; border-top: 1px solid rgba(255,255,255,0.06); }
+.features .epic-note { font-size: 11px; color: #cbd5e1; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06); margin-bottom: 8px; }
+.features .epic-note strong { color: #fbbf24; }
+.features .epic-note em { color: #94a3b8; }
+.feature { border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 14px 16px; margin-top: 14px; background: rgba(0,0,0,0.15); }
+.feature .feature-title { font-size: 13px; font-weight: 700; color: #e2e8f0; margin-bottom: 6px; }
+.feature .feature-id { font-size: 10px; color: #64748b; margin-right: 8px; font-weight: 600; }
+.feature .problem { font-size: 11px; color: #cbd5e1; margin: 6px 0 8px 0; border-left: 2px solid rgba(129,140,248,0.4); padding-left: 10px; }
+.feature .badges { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.feature .badge { padding: 2px 8px; border-radius: 4px; font-size: 9px; font-weight: 700; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 4px; }
+.feature .badge .label { color: #64748b; font-weight: 500; margin-right: 2px; }
+.feature .notes { font-size: 10px; color: #64748b; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.04); }
+.feature .notes code { background: rgba(0,0,0,0.3); padding: 1px 4px; border-radius: 3px; font-size: 10px; color: #a78bfa; }
+
+/* CATEGORY BADGES (on each feature) */
+.cat-CX     { background: rgba(34,197,94,0.18); color: #4ade80; border: 1px solid rgba(34,197,94,0.4); }
+.cat-TECH   { background: rgba(239,68,68,0.18); color: #fca5a5; border: 1px solid rgba(239,68,68,0.4); }
+.cat-UI     { background: rgba(20,184,166,0.18); color: #5eead4; border: 1px solid rgba(20,184,166,0.4); }
+.cat-AIDATA { background: rgba(168,85,247,0.18); color: #c4b5fd; border: 1px solid rgba(168,85,247,0.4); }
+.cat-LAUNCH { background: rgba(245,158,11,0.18); color: #fbbf24; border: 1px solid rgba(245,158,11,0.4); }
+
+footer { text-align: center; margin-top: 56px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.06); }
+footer p { font-size: 10px; color: #475569; }
+
+/* ===== DRAG-REORDER TOOLBAR (v3) ===== */
+.reorder-toolbar {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  margin-bottom: 18px; padding: 12px 16px;
+  background: rgba(20,184,166,0.06);
+  border: 1px solid rgba(20,184,166,0.25);
+  border-radius: 10px;
+}
+.reorder-toolbar .help { font-size: 11px; color: #5eead4; flex: 1; min-width: 220px; }
+.reorder-toolbar .help kbd { background: rgba(0,0,0,0.4); padding: 1px 6px; border-radius: 3px; font-size: 10px; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.1); }
+.reorder-toolbar button {
+  background: rgba(17,24,39,0.7); color: #cbd5e1;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-family: inherit; font-size: 11px; font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.reorder-toolbar button:hover { background: rgba(20,184,166,0.15); border-color: #5eead4; color: #5eead4; }
+.reorder-toolbar button.btn-reset:hover { background: rgba(239,68,68,0.15); border-color: #fca5a5; color: #fca5a5; }
+.reorder-toolbar .order-status { font-size: 10px; color: #64748b; min-width: 130px; text-align: right; }
+.reorder-toolbar .order-status.dirty { color: #fbbf24; }
+
+/* drag handle on epic summary */
+details.epic .drag-handle {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 18px; height: 28px; flex-shrink: 0;
+  color: #475569; font-size: 14px; cursor: grab;
+  user-select: none;
+  margin-right: -4px;
+}
+details.epic .drag-handle:hover { color: #5eead4; }
+details.epic .drag-handle:active { cursor: grabbing; }
+
+/* drag handle on feature */
+.feature { position: relative; }
+.feature .drag-handle-feat {
+  position: absolute; left: 4px; top: 12px;
+  color: #334155; font-size: 11px; cursor: grab;
+  user-select: none;
+  padding: 2px 4px;
+}
+.feature .drag-handle-feat:hover { color: #5eead4; }
+.feature .drag-handle-feat:active { cursor: grabbing; }
+.feature { padding-left: 28px; }
+
+/* SortableJS visual states */
+.sortable-ghost { opacity: 0.3; }
+.sortable-chosen { box-shadow: 0 0 0 2px rgba(94,234,212,0.4); }
+.sortable-drag { opacity: 0.95; }
+
+/* export modal */
+.export-modal {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.7); z-index: 1000;
+  display: none; align-items: center; justify-content: center;
+}
+.export-modal.open { display: flex; }
+.export-modal .panel {
+  background: #0f172a; border: 1px solid rgba(94,234,212,0.4); border-radius: 12px;
+  width: 90%; max-width: 720px; max-height: 80vh; padding: 20px;
+  display: flex; flex-direction: column;
+}
+.export-modal h3 { color: #5eead4; font-size: 14px; margin-bottom: 6px; }
+.export-modal p { font-size: 11px; color: #94a3b8; margin-bottom: 12px; }
+.export-modal textarea {
+  flex: 1; background: rgba(0,0,0,0.4); color: #e2e8f0;
+  border: 1px solid rgba(255,255,255,0.1); border-radius: 6px;
+  padding: 12px; font-family: inherit; font-size: 11px;
+  resize: vertical; min-height: 240px; line-height: 1.5;
+}
+.export-modal .actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 12px; }
+.export-modal .actions button {
+  background: rgba(20,184,166,0.15); color: #5eead4; border: 1px solid #5eead4;
+  border-radius: 6px; padding: 7px 16px; font-size: 11px; font-weight: 600;
+  cursor: pointer; font-family: inherit;
+}
+.export-modal .actions button.secondary { background: transparent; color: #94a3b8; border-color: rgba(255,255,255,0.15); }
+.export-modal .actions button:hover { opacity: 0.9; }
+.export-modal .copied-toast { color: #4ade80; font-size: 11px; margin-right: auto; align-self: center; opacity: 0; transition: opacity 0.2s; }
+.export-modal .copied-toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <a href="index.html" class="back">&larr; Back to visual docs</a>
+    <h1>Backlog</h1>
+    <p class="tagline">Every idea, enhancement, and feature we've discussed and intentionally deferred. Organized as <strong>Epics</strong> (parent capabilities) → <strong>Features</strong> (child capabilities). Each feature is categorized into one of <strong>five buckets</strong> and scored on five attributes — designed to keep stabilization work visible alongside customer features.</p>
+    <p style="font-size: 11px; color: #64748b; margin-top: 6px;">
+      Markdown companion: <a href="https://github.com/vikkybharadwaj/Tide_Vik-s-Version/blob/main/docs/BACKLOG.md" style="color: #818cf8;"><code style="background:rgba(0,0,0,0.3); padding:1px 6px; border-radius:3px;">docs/BACKLOG.md</code></a>
+    </p>
+  </header>
+
+  <div class="intro">
+    <strong>How to read this:</strong> Each Epic groups related features under a coherent product theme. Click any Epic to expand. The 5 badges per feature are <strong>Category</strong>, <strong>Effort</strong>, <strong>Stabilization Importance</strong>, <strong>Customer Impact</strong>, and <strong>Business Impact</strong>. The <strong>Stabilization</strong> column was added at Vik's request to keep tech debt and AI/data quality visible — without it, customer features always win priority and the foundation rots.
+  </div>
+
+  <!-- DRAG-REORDER TOOLBAR -->
+  <div class="reorder-toolbar">
+    <div class="help">
+      <strong>Reorder mode:</strong> drag <kbd>⋮⋮</kbd> on an epic to move it; drag <kbd>⋮</kbd> on a feature to move it within its epic. Numbers (Epic 14 → 1, F14.1 → F1.1, etc.) and cross-references update automatically. Saved to your browser.
+    </div>
+    <span id="order-status" class="order-status">original order</span>
+    <button class="btn-export" onclick="exportReorder()">Export reordered ↓</button>
+    <button class="btn-reset" onclick="resetOrder()">Reset</button>
+  </div>
+
+  <!-- 5 CATEGORY COUNTS -->
+  <div class="category-row">
+    <div class="cat-pill cat-cx">
+      <div class="name">CX</div><div class="count">43</div>
+      <div class="effort">~40–50 weeks</div>
+    </div>
+    <div class="cat-pill cat-tech">
+      <div class="name">TECH</div><div class="count">18</div>
+      <div class="effort">~14–20 weeks</div>
+    </div>
+    <div class="cat-pill cat-uiux">
+      <div class="name">UI/UX</div><div class="count">19</div>
+      <div class="effort">~16–22 weeks</div>
+    </div>
+    <div class="cat-pill cat-aidata">
+      <div class="name">AI &amp; DATA</div><div class="count">32</div>
+      <div class="effort">~28–36 weeks</div>
+    </div>
+    <div class="cat-pill cat-launch">
+      <div class="name">LAUNCH</div><div class="count">8</div>
+      <div class="effort">~9–12 weeks</div>
+    </div>
+  </div>
+  <p style="font-size: 11px; color: #64748b; text-align: right; margin-top: -18px; margin-bottom: 22px;">120 features across 22 epics &middot; ~107–140 weeks total effort</p>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="legend-block">
+      <h3>Effort</h3>
+      <div class="row"><span class="swatch effort-S">S</span> 1–2 days</div>
+      <div class="row"><span class="swatch effort-M">M</span> 3–7 days</div>
+      <div class="row"><span class="swatch effort-L">L</span> 1–2 weeks</div>
+      <div class="row"><span class="swatch effort-XL">XL</span> &gt;2 weeks</div>
+    </div>
+    <div class="legend-block">
+      <h3>Stabilization importance</h3>
+      <div class="row"><span class="swatch value-critical">CRIT</span> blocks correctness or scaling</div>
+      <div class="row"><span class="swatch value-high">HIGH</span> directly fixes known issue</div>
+      <div class="row"><span class="swatch value-med">MED</span> moderate stabilization</div>
+      <div class="row"><span class="swatch value-low">LOW</span> not stabilization</div>
+    </div>
+    <div class="legend-block">
+      <h3>Customer / Business Impact</h3>
+      <div class="row"><span class="swatch value-critical">CRIT</span> launch blocker / major win</div>
+      <div class="row"><span class="swatch value-high">HIGH</span> noticeable improvement</div>
+      <div class="row"><span class="swatch value-med">MED</span> incremental</div>
+      <div class="row"><span class="swatch value-low">LOW</span> nice-to-have</div>
+    </div>
+  </div>
+
+  <!-- DRAGGABLE EPICS CONTAINER -->
+  <div id="epics-container">
+  <!-- EPIC 0: PARITY -->
+  <details class="epic priority" data-epic-id="epic-0" open>
+    <summary>
+      <div class="num"><span class="display-num">0</span></div>
+      <div class="meta">
+        <div class="name">Home ↔ Coach ↔ Pulse Parity</div>
+        <div class="desc">Vik's principle: don't keep building when surfaces don't have 1:1 mapping. Two different answers across two screens kills trust. <strong>Non-negotiable before anything new ships on Home / Coach / Pulse.</strong></div>
+      </div>
+      <div class="stats">4 features &middot; ~3–4 weeks</div>
+    </summary>
+    <div class="features">
+      <div class="epic-note"><strong>Audit found 8 parity gaps</strong> between Home (<code>SafeToSpend.tsx</code>) and Coach (<code>calculate_safe_to_spend</code>): per-account balances, per-bill list, per-card list, setAsideAccounts, loansExcluded, full resolved envelope, typicalDiscretionary.perDayOfWeek, per-bill confidence labels. Plus a known divergence in Smart Pulse (uses simplified safe-to-spend instead of the shared service).</div>
+
+      <div class="feature" data-feature-id="feat-0-1">
+        <div class="feature-title"><span class="feature-id">F<span class="display-id">0.1</span></span>Extend calculate_safe_to_spend tool output to full parity</div>
+        <div class="problem">Coach is missing <code>accountsIncluded</code>, <code>creditCards</code>, <code>setAsideAccounts</code>, <code>loansExcluded</code>, full <code>resolved</code> envelope, full <code>untilPayday.bills/income[]</code> arrays, <code>typicalDiscretionary.perDayOfWeek</code>. User asks "which checking has most?" → Coach has to call <code>query_bank_accounts</code> separately. Closes 8 gaps in one shot.</div>
+        <div class="badges"><span class="badge cat-TECH">TECH</span><span class="badge effort-M"><span class="label">Effort:</span>M</span><span class="badge value-critical"><span class="label">Stab:</span>CRIT</span><span class="badge value-low"><span class="label">Cust:</span>LOW</span><span class="badge value-high"><span class="label">Bus:</span>HIGH</span></div>
+      </div>
+
+      <div class="feature" data-feature-id="feat-0-2">
+        <div class="feature-title"><span class="feature-id">F<span class="display-id">0.2</span></span>Coach system prompt parity principle</div>
+        <div class="problem">Add explicit principle to <code>system_prompt.ts</code>: Coach answers must derive from same fields Home shows; never re-compute or estimate. Cheap reinforcement of <span class="ref" data-ref="feat-0-1">F0.1</span>.</div>
+        <div class="badges"><span class="badge cat-AIDATA">AI &amp; DATA</span><span class="badge effort-S"><span class="label">Effort:</span>S</span><span class="badge value-high"><span class="label">Stab:</span>HIGH</span><span class="badge value-med"><span class="label">Cust:</span>MED</span><span class="badge value-high"><span class="label">Bus:</span>HIGH</span></div>
+      </div>
+
+      <div class="feature" data-feature-id="feat-0-3">
+        <div class="feature-title"><span class="feature-id">F<span class="display-id">0.3</span></span>Smart Pulse → shared service</div>
+        <div class="problem"><code>morning_brief_service.ts</code> computes its OWN simplified safe-to-spend instead of calling shared service. LEARNINGS note acknowledges this as deliberate but it's now stale — Pulse narrates slightly different numbers than Home. Migrate off.</div>
+        <div class="badges"><span class="badge cat-TECH">TECH</span><span class="badge effort-M"><span class="label">Effort:</span>M</span><span class="badge value-high"><span class="label">Stab:</span>HIGH</span><span class="badge value-low"><span class="label">Cust:</span>LOW</span><span class="badge value-med"><span class="label">Bus:</span>MED</span></div>
+      </div>
+
+      <div class="feature" data-feature-id="feat-0-4">
+        <div class="feature-title"><span class="feature-id">F<span class="display-id">0.4</span></span>Pre-launch parity test suite</div>
+        <div class="problem">Automated test in CI: every field shown on Home is reachable from Coach output without external tool calls. Prevents future regressions.</div>
+        <div class="badges"><span class="badge cat-TECH">TECH</span><span class="badge effort-M"><span class="label">Effort:</span>M</span><span class="badge value-high"><span class="label">Stab:</span>HIGH</span><span class="badge value-low"><span class="label">Cust:</span>LOW</span><span class="badge value-high"><span class="label">Bus:</span>HIGH</span></div>
+      </div>
+    </div>
+  </details>
+
+  <!-- EPIC 2: RECURRING DETECTION COVERAGE (placed near top because of CRIT BILT fix) -->
+  <details class="epic priority" data-epic-id="epic-2">
+    <summary>
+      <div class="num"><span class="display-num">2</span></div>
+      <div class="meta">
+        <div class="name">Recurring Detection Coverage</div>
+        <div class="desc">Make Safe to Spend accurate for users with thin Plaid history or irregular bills. The detector misses real recurring stuff (BILT rent is the canonical example).</div>
+      </div>
+      <div class="stats">8 features &middot; ~4–5 weeks</div>
+    </summary>
+    <div class="features">
+      <div class="epic-note"><strong><span class="ref" data-ref="feat-2-1">F2.1</span> is the most impactful unfixed item in Safe to Spend today.</strong> Vik's BILT rent ($4,200/mo) misclassified as discretionary inflates Thursday typical-spend from ~$15 to $666.</div>
+
+      <div class="feature" data-feature-id="feat-2-1">
+        <div class="feature-title"><span class="feature-id">F<span class="display-id">2.1</span></span>Confirm a Recurring Bill UX</div>
+        <div class="problem">Mirror of "Confirm Your Paycheck"; user taps a transaction → flagged with <code>user_confirmed=true</code> on a <code>recurring_streams</code> row → bypasses occurrence-count threshold. Solves BILT misclassification.</div>
+        <div class="badges"><span class="badge cat-AIDATA">AI &amp; DATA</span><span class="badge effort-M"><span class="label">Effort:</span>M</span><span class="badge value-critical"><span class="label">Stab:</span>CRIT</span><span class="badge value-critical"><span class="label">Cust:</span>CRIT</span><span class="badge value-critical"><span class="label">Bus:</span>CRIT</span></div>
+      </div>
+
+      <div class="feature" data-feature-id="feat-2-2">
+        <div class="feature-title"><span class="feature-id">F<span class="display-id">2.2</span></span>Lookback bump 365 → 730 days</div>
+        <div class="problem">Plaid gives 2y; we cap at 365. One-line change once users approach 1y of history.</div>
+        <div class="badges"><span class="badge cat-AIDATA">AI &amp; DATA</span><span class="badge effort-S"><span class="label">Effort:</span>S</span><span class="badge value-low"><span class="label">Stab:</span>LOW</span><span class="badge value-low"><span class="label">Cust:</span>LOW</span><span class="badge value-low"><span class="label">Bus:</span>LOW</span></div>
+      </div>
+
+      <div class="feature" data-feature-id="feat-2-3">
+        <div class="feature-title"><span class="feature-id">F<span class="display-id">2.3</span></span>Anchor-day-snap for biweekly users</div>
+        <div class="problem">Snap stream-derived anchor to <code>recurring_streams.anchor_day</code> (modal weekday) so a holiday-shifted paycheck doesn't drift all future predictions.</div>
+        <div class="badges"><span class="badge cat-AIDATA">AI &amp; DATA</span><span class="badge effort-S"><span class="label">Effort:</span>S</span><span class="badge value-med"><span class="label">Stab:</span>MED</span><span class="badge value-low"><span class="label">Cust:</span>LOW</span><span class="badge value-low"><span class="label">Bus:</span>LOW</span></div>
+      </div>
+
+      <div class="feature" data-feature-id="feat-2-4">
+        <div class="feature-title"><span class="feature-id">F<span class="display-id">2.4</span></span>Better detection for irregular cadence</div>
+        <div class="problem">Quarterly insurance, semiannual property tax, variable-amount utilities. Tune detector tolerance per frequency.</div>
+        <div class="badges"><span class="badge cat-AIDATA">AI &amp; DATA</span><span class="badge effort-M"><span class="label">Effort:</span>M</span><span class="badge value-med"><span class="label">Stab:</span>MED</span><span class="badge value-med"><span class="label">Cust:</span>MED</span><span class="badge value-med"><span class="label">Bus:</span>MED</span></div>
+      </div>
+
+      <div class="feature" data-feature-id="feat-2-5">
+        <div class="feature-title"><span class="feature-id">F<span class="display-id">2.5</span></span>First-occurrence bill detection lowering</div>
+        <div class="problem">Seed via merchant-name match against curated "common recurring billers" list (Netflix, Spotify, Bilt, etc.).</div>
+        <div class="badges"><span class="badge cat-AIDATA">AI &amp; DATA</span><span class="badge effort-M"><span class="label">Effort:</span>M</span><span class="badge value-med"><span class="label">Stab:</span>MED</span><span class="badge value-med"><span class="label">Cust:</span>MED</span><span class="badge value-med"><span class="label">Bus:</span>MED</span></div>
+      </div>
+
+      <div class="feature" data-feature-id="feat-2-6">
+        <div class="feature-title"><span class="feature-id">F<span class="display-id">2.6</span></span>Multi-paycheck support</div>
+        <div class="problem">User with 2 jobs / multiple income streams; allow confirming more than one as primary. Builds on shipped v4.5 "Confirm Your Paycheck".</div>
+        <div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-M"><span class="label">Effort:</span>M</span><span class="badge value-med"><span class="label">Stab:</span>MED</span><span class="badge value-med"><span class="label">Cust:</span>MED</span><span class="badge value-med"><span class="label">Bus:</span>MED</span></div>
+      </div>
+
+      <div class="feature" data-feature-id="feat-2-7">
+        <div class="feature-title"><span class="feature-id">F<span class="display-id">2.7</span></span>Job-change detection</div>
+        <div class="problem">When paycheck source changes, surface re-confirmation prompt: "we noticed your paycheck source changed; want to update?"</div>
+        <div class="badges"><span class="badge cat-AIDATA">AI &amp; DATA</span><span class="badge effort-M"><span class="label">Effort:</span>M</span><span class="badge value-med"><span class="label">Stab:</span>MED</span><span class="badge value-high"><span class="label">Cust:</span>HIGH</span><span class="badge value-med"><span class="label">Bus:</span>MED</span></div>
+      </div>
+
+      <div class="feature" data-feature-id="feat-2-8">
+        <div class="feature-title"><span class="feature-id">F<span class="display-id">2.8</span></span>Home-side paycheck confirmation prompt</div>
+        <div class="problem">Currently buried in Settings; surface a banner on Home when paycheck detection is ambiguous so users see the issue without digging.</div>
+        <div class="badges"><span class="badge cat-UI">UI/UX</span><span class="badge effort-S"><span class="label">Effort:</span>S</span><span class="badge value-med"><span class="label">Stab:</span>MED</span><span class="badge value-high"><span class="label">Cust:</span>HIGH</span><span class="badge value-med"><span class="label">Bus:</span>MED</span></div>
+      </div>
+    </div>
+  </details>
+
+  <!-- EPIC 1: CC INTELLIGENCE -->
+  <details class="epic" data-epic-id="epic-1">
+    <summary>
+      <div class="num"><span class="display-num">1</span></div>
+      <div class="meta">
+        <div class="name">Credit Card Intelligence</div>
+        <div class="desc">Treat CC like a smart product. Powered by Plaid Liabilities (production access available).</div>
+      </div>
+      <div class="stats">7 features &middot; ~5–6 weeks</div>
+    </summary>
+    <div class="features">
+      <div class="feature" data-feature-id="feat-1-1"><div class="feature-title"><span class="feature-id">F<span class="display-id">1.1</span></span>Plaid Liabilities integration</div><div class="problem">Fetch <code>statement_balance</code>, <code>next_payment_due_date</code>, <code>minimum_payment_amount</code>, <code>last_payment_amount</code>, <code>apr</code> per card. Foundation for <span class="ref" data-ref="feat-1-2">F1.2</span>-<span class="ref" data-ref="feat-1-7">F1.7</span>.</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-M">M</span><span class="badge value-med">Stab:MED</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-1-2"><div class="feature-title"><span class="feature-id">F<span class="display-id">1.2</span></span>CC due-date splitting in Safe to Spend</div><div class="problem">Split "$7,021" into "Due May 5: $X" + "Accumulating for next cycle: $Y". Same total subtracted; clarity goes up.</div><div class="badges"><span class="badge cat-UI">UI/UX</span><span class="badge effort-S">S</span><span class="badge value-med">Stab:MED</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-1-3"><div class="feature-title"><span class="feature-id">F<span class="display-id">1.3</span></span>Per-card due-date alerts</div><div class="problem">Push N days before each card's due date showing minimum-required amount.</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-S">S</span><span class="badge value-low">Stab:LOW</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-1-4"><div class="feature-title"><span class="feature-id">F<span class="display-id">1.4</span></span>Minimum-payment safety nudges</div><div class="problem">"Pay at least $50 to avoid late fees" — non-judgmental safety net.</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-S">S</span><span class="badge value-low">Stab:LOW</span><span class="badge value-med">Cust:MED</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-1-5"><div class="feature-title"><span class="feature-id">F<span class="display-id">1.5</span></span>APR-aware "carrying balance" warnings</div><div class="problem">Surface APR cost in dollar terms when balance lingers. Direct savings impact.</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-S">S</span><span class="badge value-low">Stab:LOW</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-1-6"><div class="feature-title"><span class="feature-id">F<span class="display-id">1.6</span></span>Apple Card-style payment simulator wheel</div><div class="problem">Drag/slider showing 25%/50%/75%/100% payment scenarios with interest impact. Sticky, share-worthy.</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-L">L</span><span class="badge value-low">Stab:LOW</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-1-7"><div class="feature-title"><span class="feature-id">F<span class="display-id">1.7</span></span>Missed-payment detection</div><div class="problem">When <code>last_payment_amount = 0</code> for closed cycle, surface as alert.</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-S">S</span><span class="badge value-med">Stab:MED</span><span class="badge value-med">Cust:MED</span><span class="badge value-med">Bus:MED</span></div></div>
+    </div>
+  </details>
+
+  <!-- EPIC 3: REAL-TIME -->
+  <details class="epic" data-epic-id="epic-3">
+    <summary><div class="num"><span class="display-num">3</span></div><div class="meta"><div class="name">Real-Time Spend Pressure</div><div class="desc">Close the latency gap between user-swipes-card and runway-updates.</div></div><div class="stats">4 features</div></summary>
+    <div class="features">
+      <div class="feature" data-feature-id="feat-3-1"><div class="feature-title"><span class="feature-id">F<span class="display-id">3.1</span></span>Plaid Signal integration</div><div class="problem">Near-real-time spend tracking. Closes the post-swipe latency gap.</div><div class="badges"><span class="badge cat-AIDATA">AI &amp; DATA</span><span class="badge effort-L">L</span><span class="badge value-med">Stab:MED</span><span class="badge value-med">Cust:MED</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-3-2"><div class="feature-title"><span class="feature-id">F<span class="display-id">3.2</span></span>Pending-balance prominence</div><div class="problem">Surface "Pending: $X" distinctly from cleared.</div><div class="badges"><span class="badge cat-UI">UI/UX</span><span class="badge effort-S">S</span><span class="badge value-low">Stab:LOW</span><span class="badge value-low">Cust:LOW</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-3-3"><div class="feature-title"><span class="feature-id">F<span class="display-id">3.3</span></span>Today's typical-discretionary minus today's already-completed swipes</div><div class="problem">Project "remaining today" instead of "fresh today".</div><div class="badges"><span class="badge cat-AIDATA">AI &amp; DATA</span><span class="badge effort-S">S</span><span class="badge value-med">Stab:MED</span><span class="badge value-med">Cust:MED</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-3-4"><div class="feature-title"><span class="feature-id">F<span class="display-id">3.4</span></span>Cache typicalDiscretionary in spending_forecasts</div><div class="problem">365-day scan on every Home open is fine at dev scale, p95 regressor at 10K+ users. Schema ready.</div><div class="badges"><span class="badge cat-TECH">TECH</span><span class="badge effort-M">M</span><span class="badge value-high">Stab:HIGH</span><span class="badge value-low">Cust:LOW</span><span class="badge value-high">Bus:HIGH</span></div></div>
+    </div>
+  </details>
+
+  <!-- EPIC 4: AI COACH -->
+  <details class="epic" data-epic-id="epic-4">
+    <summary><div class="num"><span class="display-num">4</span></div><div class="meta"><div class="name">AI Coach Quality</div><div class="desc">Smarter, more accurate Coach responses.</div></div><div class="stats">5 features</div></summary>
+    <div class="features">
+      <div class="feature" data-feature-id="feat-4-1"><div class="feature-title"><span class="feature-id">F<span class="display-id">4.1</span></span>Eval pass rate 70% → 90%+</div><div class="problem">Current pass rate ~70%. Dedicated session: teach Vik the eval system; identify failing fixtures; fix prompts/tools/grounding.</div><div class="badges"><span class="badge cat-AIDATA">AI &amp; DATA</span><span class="badge effort-L">L</span><span class="badge value-critical">Stab:CRIT</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-4-2"><div class="feature-title"><span class="feature-id">F<span class="display-id">4.2</span></span>Migration to Bedrock AgentCore</div><div class="problem">Replace custom HTTP tool-use loop with managed agent. Less maintenance.</div><div class="badges"><span class="badge cat-TECH">TECH</span><span class="badge effort-XL">XL</span><span class="badge value-med">Stab:MED</span><span class="badge value-low">Cust:LOW</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-4-3"><div class="feature-title"><span class="feature-id">F<span class="display-id">4.3</span></span>New eval fixtures for typicalDiscretionary</div><div class="problem">Coach now returns this field; we have zero fixtures testing it.</div><div class="badges"><span class="badge cat-AIDATA">AI &amp; DATA</span><span class="badge effort-S">S</span><span class="badge value-high">Stab:HIGH</span><span class="badge value-med">Cust:MED</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-4-4"><div class="feature-title"><span class="feature-id">F<span class="display-id">4.4</span></span>Morning Brief / Smart Pulse fed typicalDiscretionary</div><div class="problem">Narrate "you typically spend $890 till payday" in existing surfaces.</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-M">M</span><span class="badge value-low">Stab:LOW</span><span class="badge value-med">Cust:MED</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-4-5"><div class="feature-title"><span class="feature-id">F<span class="display-id">4.5</span></span>get_financial_insights tool (anomaly/trend)</div><div class="problem">Currently MVP+. Anomaly + trend analysis on transaction history.</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-L">L</span><span class="badge value-low">Stab:LOW</span><span class="badge value-med">Cust:MED</span><span class="badge value-med">Bus:MED</span></div></div>
+    </div>
+  </details>
+
+  <!-- EPIC 5: SPENDING CATEGORIZATION -->
+  <details class="epic" data-epic-id="epic-5">
+    <summary><div class="num"><span class="display-num">5</span></div><div class="meta"><div class="name">Spending Categorization (Phase 2 + 5)</div><div class="desc">Close the 13% Plaid-misses gap with AI fallback, then learn from user corrections.</div></div><div class="stats">3 features</div></summary>
+    <div class="features">
+      <div class="feature" data-feature-id="feat-5-1"><div class="feature-title"><span class="feature-id">F<span class="display-id">5.1</span></span>AI fallback (Bedrock Haiku) for Plaid-uncategorized</div><div class="problem">~13% of transactions don't have Plaid category. Haiku categorizer fills these in.</div><div class="badges"><span class="badge cat-AIDATA">AI &amp; DATA</span><span class="badge effort-M">M</span><span class="badge value-high">Stab:HIGH</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-5-2"><div class="feature-title"><span class="feature-id">F<span class="display-id">5.2</span></span>Category learning loop</div><div class="problem">User corrections in <code>merchant_category_overrides</code> feed back into AI prompts. Compounds.</div><div class="badges"><span class="badge cat-AIDATA">AI &amp; DATA</span><span class="badge effort-L">L</span><span class="badge value-high">Stab:HIGH</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-5-3"><div class="feature-title"><span class="feature-id">F<span class="display-id">5.3</span></span>Manual category override mobile UI</div><div class="problem">Backend exists; UI is MVP+. User taps transaction → "change category" → applies to all future txns from that merchant.</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-M">M</span><span class="badge value-med">Stab:MED</span><span class="badge value-med">Cust:MED</span><span class="badge value-med">Bus:MED</span></div></div>
+    </div>
+  </details>
+
+  <!-- EPIC 6: AUTH -->
+  <details class="epic" data-epic-id="epic-6">
+    <summary><div class="num"><span class="display-num">6</span></div><div class="meta"><div class="name">Authentication &amp; Onboarding</div><div class="desc">Real users instead of dev bypass.</div></div><div class="stats">4 features</div></summary>
+    <div class="features">
+      <div class="feature" data-feature-id="feat-6-1"><div class="feature-title"><span class="feature-id">F<span class="display-id">6.1</span></span>Cognito SMS OTP auth</div><div class="problem">Currently MVP+, dev-bypassed during sprint. Replaces dev-bypass.</div><div class="badges"><span class="badge cat-TECH">TECH</span><span class="badge effort-M">M</span><span class="badge value-critical">Stab:CRIT</span><span class="badge value-critical">Cust:CRIT</span><span class="badge value-critical">Bus:CRIT</span></div></div>
+      <div class="feature" data-feature-id="feat-6-2"><div class="feature-title"><span class="feature-id">F<span class="display-id">6.2</span></span>Multi-bank initial connection flow</div><div class="problem">Sequential Plaid Link with "add another bank" CTA.</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-M">M</span><span class="badge value-med">Stab:MED</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-6-3"><div class="feature-title"><span class="feature-id">F<span class="display-id">6.3</span></span>Plaid Link reconnection flow</div><div class="problem">Handle <code>ITEM_LOGIN_REQUIRED</code> webhook + reconnect prompt in Settings.</div><div class="badges"><span class="badge cat-TECH">TECH</span><span class="badge effort-M">M</span><span class="badge value-high">Stab:HIGH</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-6-4"><div class="feature-title"><span class="feature-id">F<span class="display-id">6.4</span></span>Empty-state messaging for thin-data users</div><div class="problem">Extend "we'll show your pattern after a few weeks" pattern to all of Safe to Spend.</div><div class="badges"><span class="badge cat-UI">UI/UX</span><span class="badge effort-S">S</span><span class="badge value-low">Stab:LOW</span><span class="badge value-med">Cust:MED</span><span class="badge value-med">Bus:MED</span></div></div>
+    </div>
+  </details>
+
+  <!-- EPIC 7: PUSH -->
+  <details class="epic" data-epic-id="epic-7">
+    <summary><div class="num"><span class="display-num">7</span></div><div class="meta"><div class="name">Push Notifications</div><div class="desc">Re-engagement and timely alerts. Infrastructure present, event triggers incomplete.</div></div><div class="stats">3 features</div></summary>
+    <div class="features">
+      <div class="feature" data-feature-id="feat-7-1"><div class="feature-title"><span class="feature-id">F<span class="display-id">7.1</span></span>FCM push notifications wiring</div><div class="problem">Hook up event triggers; foundation for <span class="ref" data-ref="feat-7-2">F7.2</span>, <span class="ref" data-ref="feat-7-3">F7.3</span>, <span class="ref" data-ref="feat-1-3">F1.3</span>, <span class="ref" data-ref="feat-14-2">F14.2</span>.</div><div class="badges"><span class="badge cat-TECH">TECH</span><span class="badge effort-M">M</span><span class="badge value-high">Stab:HIGH</span><span class="badge value-med">Cust:MED</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-7-2"><div class="feature-title"><span class="feature-id">F<span class="display-id">7.2</span></span>Smart Pulse / Morning Brief push schedule</div><div class="problem">Morning push at 8am with Brief headline.</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-S">S</span><span class="badge value-low">Stab:LOW</span><span class="badge value-med">Cust:MED</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-7-3"><div class="feature-title"><span class="feature-id">F<span class="display-id">7.3</span></span>Bill due / paycheck arrival notifications</div><div class="problem">"Your $1,200 rent hits Friday — do you have enough?"</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-M">M</span><span class="badge value-low">Stab:LOW</span><span class="badge value-med">Cust:MED</span><span class="badge value-high">Bus:HIGH</span></div></div>
+    </div>
+  </details>
+
+  <!-- EPIC 8: REFLECTION -->
+  <details class="epic" data-epic-id="epic-8">
+    <summary><div class="num"><span class="display-num">8</span></div><div class="meta"><div class="name">Evening Reflection</div><div class="desc">End-of-day mindfulness. Backend intact, frontend removed during MVP scope reduction.</div></div><div class="stats">3 features</div></summary>
+    <div class="features">
+      <div class="feature" data-feature-id="feat-8-1"><div class="feature-title"><span class="feature-id">F<span class="display-id">8.1</span></span>Re-enable Evening Reflection mobile UI</div><div class="problem">Daily reminder at 8pm; tag transactions "worth it" / "regret"; updates streak.</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-M">M</span><span class="badge value-low">Stab:LOW</span><span class="badge value-med">Cust:MED</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-8-2"><div class="feature-title"><span class="feature-id">F<span class="display-id">8.2</span></span>Worth-it / regret tagging UX</div><div class="problem">Long-press transaction → mark; feeds <code>query_reflection_stats</code> worth-it ratio.</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-M">M</span><span class="badge value-low">Stab:LOW</span><span class="badge value-med">Cust:MED</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-8-3"><div class="feature-title"><span class="feature-id">F<span class="display-id">8.3</span></span>query_reflection_stats AI tool surfaced</div><div class="problem">Backend-only currently; re-surface so Coach can answer "show me regret transactions".</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-S">S</span><span class="badge value-low">Stab:LOW</span><span class="badge value-low">Cust:LOW</span><span class="badge value-low">Bus:LOW</span></div></div>
+    </div>
+  </details>
+
+  <!-- EPIC 9: SAVE MORE (merged 9+14 from earlier) -->
+  <details class="epic" data-epic-id="epic-9">
+    <summary><div class="num"><span class="display-num">9</span></div><div class="meta"><div class="name">Save More — Goals, Challenges, and Round-Ups</div><div class="desc">Outcome-framed: every mechanic in this epic helps users save more. Spending caps and savings goals share the same end.</div></div><div class="stats">9 features &middot; ~6–7 weeks</div></summary>
+    <div class="features">
+      <div class="epic-note"><strong>Vik:</strong> "The goal of challenges is to help people save more, so I wouldn't see them as two different things." Spending caps + positive savings goals merged into one outcome-framed epic.</div>
+      <div class="feature" data-feature-id="feat-9-1"><div class="feature-title"><span class="feature-id">F<span class="display-id">9.1</span></span>Savings target setting</div><div class="problem">"Save $5K by August"; goal thermometer.</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-M">M</span><span class="badge value-low">Stab:LOW</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-9-2"><div class="feature-title"><span class="feature-id">F<span class="display-id">9.2</span></span>Auto-allocate X% of paycheck → savings</div><div class="problem">Plaid + linked savings account integration. Set-and-forget, highest impact.</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-L">L</span><span class="badge value-low">Stab:LOW</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-9-3"><div class="feature-title"><span class="feature-id">F<span class="display-id">9.3</span></span>Round-up savings</div><div class="problem">"Round Starbucks to nearest dollar; send the change to savings."</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-L">L</span><span class="badge value-low">Stab:LOW</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-9-4"><div class="feature-title"><span class="feature-id">F<span class="display-id">9.4</span></span>Bonus / refund earmarking</div><div class="problem">When income > expected, suggest saving the excess.</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-M">M</span><span class="badge value-low">Stab:LOW</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-9-5"><div class="feature-title"><span class="feature-id">F<span class="display-id">9.5</span></span>Savings nudges from overspend-avoid moments</div><div class="problem">"You skipped lunch out 3× this week → $45 saved → move to savings?"</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-M">M</span><span class="badge value-low">Stab:LOW</span><span class="badge value-med">Cust:MED</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-9-6"><div class="feature-title"><span class="feature-id">F<span class="display-id">9.6</span></span>Savings progress visualization</div><div class="problem">Goal thermometer + projected hit-date.</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-M">M</span><span class="badge value-low">Stab:LOW</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-9-7"><div class="feature-title"><span class="feature-id">F<span class="display-id">9.7</span></span>Savings streaks</div><div class="problem">Consistency gamification.</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-S">S</span><span class="badge value-low">Stab:LOW</span><span class="badge value-med">Cust:MED</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-9-8"><div class="feature-title"><span class="feature-id">F<span class="display-id">9.8</span></span>Spending caps via challenges</div><div class="problem">Existing backend re-enable: <code>UserChallenge</code>, <code>evaluate_challenges_job.ts</code>.</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-L">L</span><span class="badge value-low">Stab:LOW</span><span class="badge value-med">Cust:MED</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-9-9"><div class="feature-title"><span class="feature-id">F<span class="display-id">9.9</span></span>Challenge templates / AI suggestions</div><div class="problem">"You spent $400 dining last month — try $300?"</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-M">M</span><span class="badge value-low">Stab:LOW</span><span class="badge value-med">Cust:MED</span><span class="badge value-med">Bus:MED</span></div></div>
+    </div>
+  </details>
+
+  <!-- EPIC 10: BILL PAYMENT -->
+  <details class="epic" data-epic-id="epic-10">
+    <summary><div class="num"><span class="display-num">10</span></div><div class="meta"><div class="name">Bill Payment Tracking</div><div class="desc">Mark bills as paid; suppress them from runway projection.</div></div><div class="stats">1 feature</div></summary>
+    <div class="features">
+      <div class="feature" data-feature-id="feat-10-1"><div class="feature-title"><span class="feature-id">F<span class="display-id">10.1</span></span>Swipe-to-mark-paid on bills</div><div class="problem">Needs schema (per-occurrence <code>is_paid</code> flag).</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-M">M</span><span class="badge value-low">Stab:LOW</span><span class="badge value-med">Cust:MED</span><span class="badge value-low">Bus:LOW</span></div></div>
+    </div>
+  </details>
+
+  <!-- EPIC 12: LAUNCH -->
+  <details class="epic" data-epic-id="epic-12">
+    <summary><div class="num"><span class="display-num">12</span></div><div class="meta"><div class="name">Production Launch Readiness</div><div class="desc">Things blocking external launch — last-mile work before TestFlight + share with Vik's wife / first beta users.</div></div><div class="stats">6 features</div></summary>
+    <div class="features">
+      <div class="feature" data-feature-id="feat-12-1"><div class="feature-title"><span class="feature-id">F<span class="display-id">12.1</span></span>Plaid Production swap</div><div class="problem">Currently Sandbox/Development. Production requires Transactions product approval (in flight).</div><div class="badges"><span class="badge cat-LAUNCH">LAUNCH</span><span class="badge effort-S">S</span><span class="badge value-critical">Stab:CRIT</span><span class="badge value-critical">Cust:CRIT</span><span class="badge value-critical">Bus:CRIT</span></div></div>
+      <div class="feature" data-feature-id="feat-12-2"><div class="feature-title"><span class="feature-id">F<span class="display-id">12.2</span></span>Real device testing matrix</div><div class="problem">iOS small + iOS Pro Max + Android. Surface UI bugs.</div><div class="badges"><span class="badge cat-LAUNCH">LAUNCH</span><span class="badge effort-L">L</span><span class="badge value-high">Stab:HIGH</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-critical">Bus:CRIT</span></div></div>
+      <div class="feature" data-feature-id="feat-12-3"><div class="feature-title"><span class="feature-id">F<span class="display-id">12.3</span></span>Performance optimizations for 10K+ users</div><div class="problem">Hot paths (typical-discretionary scan, recurrence detection, AI tool calls) need profiling. RDS sizing review.</div><div class="badges"><span class="badge cat-LAUNCH">LAUNCH</span><span class="badge effort-L">L</span><span class="badge value-high">Stab:HIGH</span><span class="badge value-low">Cust:LOW</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-12-4"><div class="feature-title"><span class="feature-id">F<span class="display-id">12.4</span></span>Documentation + repo audit</div><div class="problem">End-to-end pass through every doc, every GitHub Pages visualization, every <code>LEARNINGS.md</code> entry, every README — verify each is current, comprehensive, and accurate. Clean up GitHub: stale branches, orphan PRs, untriaged issues. Tidy local Git: drop ignored junk (<code>.expo/</code>, <code>.obsidian/</code>, etc.), confirm <code>.gitignore</code> is right. The bar: anyone reading the docs can understand the app without needing to ask Vik or Claude.</div><div class="badges"><span class="badge cat-LAUNCH">LAUNCH</span><span class="badge effort-M">M</span><span class="badge value-high">Stab:HIGH</span><span class="badge value-low">Cust:LOW</span><span class="badge value-high">Bus:HIGH</span></div></div>
+    </div>
+  </details>
+
+  <!-- EPIC 13: SMART PULSE -->
+  <details class="epic" data-epic-id="epic-13">
+    <summary><div class="num"><span class="display-num">13</span></div><div class="meta"><div class="name">Smart Pulse Upgrade</div><div class="desc">Today's Pulse is one-shot Haiku output with limited differentiation. Vik: "I'm not sure the smart pulse insights are giving us a whole lot at this point."</div></div><div class="stats">9 features</div></summary>
+    <div class="features">
+      <div class="feature" data-feature-id="feat-13-1"><div class="feature-title"><span class="feature-id">F<span class="display-id">13.1</span></span>Adaptive window for Morning Brief</div><div class="problem">Currently fixed 7-day; adjust to user's payday cadence.</div><div class="badges"><span class="badge cat-AIDATA">AI &amp; DATA</span><span class="badge effort-M">M</span><span class="badge value-low">Stab:LOW</span><span class="badge value-low">Cust:LOW</span><span class="badge value-low">Bus:LOW</span></div></div>
+      <div class="feature" data-feature-id="feat-13-2"><div class="feature-title"><span class="feature-id">F<span class="display-id">13.2</span></span>Pulse history scrollable timeline</div><div class="problem">Real-time generation but no history surface.</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-M">M</span><span class="badge value-low">Stab:LOW</span><span class="badge value-med">Cust:MED</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-13-3"><div class="feature-title"><span class="feature-id">F<span class="display-id">13.3</span></span>Pulse personalization</div><div class="problem">Adapt to time of day, recent activity, day-of-week patterns.</div><div class="badges"><span class="badge cat-AIDATA">AI &amp; DATA</span><span class="badge effort-M">M</span><span class="badge value-low">Stab:LOW</span><span class="badge value-med">Cust:MED</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-13-4"><div class="feature-title"><span class="feature-id">F<span class="display-id">13.4</span></span>Tappable Pulse → action deep-link</div><div class="problem">"You could save $80/mo by paying $1K extra to Chase" → tap → CC payment / transfer screen.</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-M">M</span><span class="badge value-low">Stab:LOW</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-13-5"><div class="feature-title"><span class="feature-id">F<span class="display-id">13.5</span></span>Multi-pulse-per-day</div><div class="problem">Morning brief 8am, midday nudge if overspent, evening reflection prompt.</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-L">L</span><span class="badge value-low">Stab:LOW</span><span class="badge value-med">Cust:MED</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-13-6"><div class="feature-title"><span class="feature-id">F<span class="display-id">13.6</span></span>Pulse "why" modal</div><div class="problem">Tap Pulse → see prompt context (transparency).</div><div class="badges"><span class="badge cat-UI">UI/UX</span><span class="badge effort-S">S</span><span class="badge value-low">Stab:LOW</span><span class="badge value-med">Cust:MED</span><span class="badge value-low">Bus:LOW</span></div></div>
+      <div class="feature" data-feature-id="feat-13-7"><div class="feature-title"><span class="feature-id">F<span class="display-id">13.7</span></span>Pulse-specific eval suite</div><div class="problem">Separate fixtures from Coach evals; pulse prompts have their own quality bar.</div><div class="badges"><span class="badge cat-AIDATA">AI &amp; DATA</span><span class="badge effort-M">M</span><span class="badge value-high">Stab:HIGH</span><span class="badge value-med">Cust:MED</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-13-8"><div class="feature-title"><span class="feature-id">F<span class="display-id">13.8</span></span>Hybrid rule-based + AI pulse</div><div class="problem">Fall through to deterministic rule when AI is uncertain.</div><div class="badges"><span class="badge cat-AIDATA">AI &amp; DATA</span><span class="badge effort-M">M</span><span class="badge value-med">Stab:MED</span><span class="badge value-med">Cust:MED</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-13-9"><div class="feature-title"><span class="feature-id">F<span class="display-id">13.9</span></span>Pulse reactions (👍/👎)</div><div class="problem">Feed signal back into prompt tuning.</div><div class="badges"><span class="badge cat-AIDATA">AI &amp; DATA</span><span class="badge effort-M">M</span><span class="badge value-low">Stab:LOW</span><span class="badge value-low">Cust:LOW</span><span class="badge value-med">Bus:MED</span></div></div>
+    </div>
+  </details>
+
+  <!-- EPIC 14: PROACTIVE CASH HEALTH -->
+  <details class="epic" data-epic-id="epic-14">
+    <summary><div class="num"><span class="display-num">14</span></div><div class="meta"><div class="name">Proactive Cash Health Alerts</div><div class="desc">Detect upcoming cash crunch. Alert + actionable suggestions. <em>Cash advances out of scope (we're not a bank).</em></div></div><div class="stats">5 features</div></summary>
+    <div class="features">
+      <div class="epic-note"><strong>Vik:</strong> "Based on the upcoming bills and the safe-to-spend amount, the ability to find out: hey, there are 2-3 upcoming bills coming, but given the runway you have, you're running out of cash. The alert itself is the feature."</div>
+      <div class="feature" data-feature-id="feat-14-1"><div class="feature-title"><span class="feature-id">F<span class="display-id">14.1</span></span>Runway shortfall detection algorithm</div><div class="problem">Detect when (current runway − sum-of-bills-due-in-next-N-days) &lt; threshold. Configurable per-user. Runs in <code>generate_predictions_job.ts</code>.</div><div class="badges"><span class="badge cat-AIDATA">AI &amp; DATA</span><span class="badge effort-M">M</span><span class="badge value-med">Stab:MED</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-14-2"><div class="feature-title"><span class="feature-id">F<span class="display-id">14.2</span></span>Push alert delivery</div><div class="problem">Fires when shortfall detected; deep-links into a detail screen. Depends on <span class="ref" data-ref="feat-7-1">F7.1</span>.</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-S">S</span><span class="badge value-low">Stab:LOW</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-14-3"><div class="feature-title"><span class="feature-id">F<span class="display-id">14.3</span></span>Shortfall detail screen with suggested actions</div><div class="problem">List upcoming bills, show the gap, suggest options: "transfer $X from savings", "delay this bill", "you typically spend $Y/day — cut back N days?"</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-M">M</span><span class="badge value-low">Stab:LOW</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-14-4"><div class="feature-title"><span class="feature-id">F<span class="display-id">14.4</span></span>In-app bill defer / reminder</div><div class="problem">Let user mark a bill "I'll pay this on [later date]"; updates runway projection.</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-M">M</span><span class="badge value-low">Stab:LOW</span><span class="badge value-med">Cust:MED</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-14-5"><div class="feature-title"><span class="feature-id">F<span class="display-id">14.5</span></span>Out-of-app cash advance referral (deferred)</div><div class="problem">Partnership with cash-advance product (Earnin, Brigit). Out of scope unless we hit a revenue model that justifies it.</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-M">M</span><span class="badge value-low">Stab:LOW</span><span class="badge value-med">Cust:MED</span><span class="badge value-med">Bus:MED</span></div></div>
+    </div>
+  </details>
+
+  <!-- EPIC 15: FEEDBACK LOOP -->
+  <details class="epic" data-epic-id="epic-15">
+    <summary><div class="num"><span class="display-num">15</span></div><div class="meta"><div class="name">User Feedback &amp; Data Quality Loop</div><div class="desc">Every inferred data point should have a user-correction path. Corrections feed back into AI to improve future predictions.</div></div><div class="stats">8 new features + 8 cross-listed from other epics</div></summary>
+    <div class="features">
+      <div class="epic-note"><strong>Vik:</strong> "Right now there is no manual override on any feature. Group all of this into its own category. Take all this and feed into our AI coach and Safe to Spend to get it better."<br><br><strong>Cross-listed (already in other epics):</strong> <span class="ref" data-ref="feat-2-1">F2.1</span> Confirm-a-recurring-bill · <span class="ref" data-ref="feat-2-6">F2.6</span> Multi-paycheck · <span class="ref" data-ref="feat-2-7">F2.7</span> Job-change detection · <span class="ref" data-ref="feat-5-1">F5.1</span> AI fallback · <span class="ref" data-ref="feat-5-2">F5.2</span> Category learning loop · <span class="ref" data-ref="feat-5-3">F5.3</span> Manual category override UI · <span class="ref" data-ref="feat-8-2">F8.2</span> Worth-it/regret tagging · <span class="ref" data-ref="feat-13-9">F13.9</span> Pulse reactions</div>
+      <div class="feature" data-feature-id="feat-15-1"><div class="feature-title"><span class="feature-id">F<span class="display-id">15.1</span></span>Outlier transaction flagging</div><div class="problem">Mark a transaction as "one-time, exclude from averages." Inverse of <span class="ref" data-ref="feat-2-1">F2.1</span>. Closes a known typical-discretionary distortion.</div><div class="badges"><span class="badge cat-AIDATA">AI &amp; DATA</span><span class="badge effort-M">M</span><span class="badge value-high">Stab:HIGH</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-15-2"><div class="feature-title"><span class="feature-id">F<span class="display-id">15.2</span></span>Account-type override</div><div class="problem">"Treat this checking as savings — don't count toward Safe to Spend." User control over v4.9 setAsideAccounts boundary.</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-S">S</span><span class="badge value-med">Stab:MED</span><span class="badge value-med">Cust:MED</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-15-3"><div class="feature-title"><span class="feature-id">F<span class="display-id">15.3</span></span>Optional vs. must-pay bill tagging</div><div class="problem">Differentiate Spotify (cancellable) from rent (committed). Powers <span class="ref" data-ref="feat-14-3">F14.3</span> "what could you cut?" suggestions.</div><div class="badges"><span class="badge cat-AIDATA">AI &amp; DATA</span><span class="badge effort-M">M</span><span class="badge value-med">Stab:MED</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-15-4"><div class="feature-title"><span class="feature-id">F<span class="display-id">15.4</span></span>Coach response feedback (👍/👎 + free-text)</div><div class="problem">In-app feedback on each Coach response, fed into eval fixture pipeline. Compounds with <span class="ref" data-ref="feat-4-1">F4.1</span>.</div><div class="badges"><span class="badge cat-AIDATA">AI &amp; DATA</span><span class="badge effort-M">M</span><span class="badge value-high">Stab:HIGH</span><span class="badge value-low">Cust:LOW</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-15-5"><div class="feature-title"><span class="feature-id">F<span class="display-id">15.5</span></span>Merchant identity correction</div><div class="problem">"This isn't 'Amazon' — it's a local salon called 'Amazon Salon'." Powers a global merchant-alias map.</div><div class="badges"><span class="badge cat-AIDATA">AI &amp; DATA</span><span class="badge effort-M">M</span><span class="badge value-med">Stab:MED</span><span class="badge value-low">Cust:LOW</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-15-6"><div class="feature-title"><span class="feature-id">F<span class="display-id">15.6</span></span>Income amount override</div><div class="problem">Let user input expected paycheck amount when only one observation has happened. Addresses v4.5 "need 2+ observations" gap.</div><div class="badges"><span class="badge cat-AIDATA">AI &amp; DATA</span><span class="badge effort-S">S</span><span class="badge value-med">Stab:MED</span><span class="badge value-med">Cust:MED</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-15-7"><div class="feature-title"><span class="feature-id">F<span class="display-id">15.7</span></span>Centralized "Data Accuracy" Settings page</div><div class="problem">One place to see all your overrides + confidence flags + correction history. Transparency win.</div><div class="badges"><span class="badge cat-UI">UI/UX</span><span class="badge effort-M">M</span><span class="badge value-low">Stab:LOW</span><span class="badge value-med">Cust:MED</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-15-8"><div class="feature-title"><span class="feature-id">F<span class="display-id">15.8</span></span>Feedback → AI prompt evolution loop</div><div class="problem">Automated mechanism to roll user corrections into prompt context for next AI call. The meta-system that makes every other <span class="ref" data-ref="epic-15">Epic 15</span> item compound. <strong>The AI moat.</strong></div><div class="badges"><span class="badge cat-AIDATA">AI &amp; DATA</span><span class="badge effort-L">L</span><span class="badge value-high">Stab:HIGH</span><span class="badge value-low">Cust:LOW</span><span class="badge value-high">Bus:HIGH</span></div></div>
+    </div>
+  </details>
+
+  <!-- EPIC 16: DESIGN SYSTEM AUDIT -->
+  <details class="epic" data-epic-id="epic-16">
+    <summary><div class="num"><span class="display-num">16</span></div><div class="meta"><div class="name">Design System Audit &amp; Compliance</div><div class="desc">Make DESIGN_SYSTEM.md the source of truth. Code conforms; lint catches drift.</div></div><div class="stats">4 features</div></summary>
+    <div class="features">
+      <div class="epic-note"><strong>Vik:</strong> "I know we have a design-system.md, but I need one epic to really make sure our design system is comprehensive, accurate, deep, and broad. Use that to validate whether our code is actually following our design-system.md file."</div>
+      <div class="feature" data-feature-id="feat-16-1"><div class="feature-title"><span class="feature-id">F<span class="display-id">16.1</span></span>Design system audit</div><div class="problem">Read DESIGN_SYSTEM.md, gap-check against actual code. Produce a delta report: documented vs hardcoded vs missing.</div><div class="badges"><span class="badge cat-UI">UI/UX</span><span class="badge effort-M">M</span><span class="badge value-high">Stab:HIGH</span><span class="badge value-low">Cust:LOW</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-16-2"><div class="feature-title"><span class="feature-id">F<span class="display-id">16.2</span></span>Token coverage lint</div><div class="problem">Automated rule: fail CI when hardcoded colors/spacing/typography appear outside <code>tokens.ts</code>. Blocks regression.</div><div class="badges"><span class="badge cat-TECH">TECH</span><span class="badge effort-M">M</span><span class="badge value-high">Stab:HIGH</span><span class="badge value-low">Cust:LOW</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-16-3"><div class="feature-title"><span class="feature-id">F<span class="display-id">16.3</span></span>Component inventory</div><div class="problem">Catalog every UI component, document props/variants/states/token usage. Storybook or simpler MD table.</div><div class="badges"><span class="badge cat-UI">UI/UX</span><span class="badge effort-M">M</span><span class="badge value-med">Stab:MED</span><span class="badge value-low">Cust:LOW</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-16-4"><div class="feature-title"><span class="feature-id">F<span class="display-id">16.4</span></span>DESIGN_SYSTEM.md comprehensive rewrite</div><div class="problem">Expand: tokens, components, spacing, typography, motion, haptics, accessibility, layout grids.</div><div class="badges"><span class="badge cat-UI">UI/UX</span><span class="badge effort-L">L</span><span class="badge value-high">Stab:HIGH</span><span class="badge value-low">Cust:LOW</span><span class="badge value-med">Bus:MED</span></div></div>
+    </div>
+  </details>
+
+  <!-- EPIC 17: DESIGN ELEVATION -->
+  <details class="epic" data-epic-id="epic-17">
+    <summary><div class="num"><span class="display-num">17</span></div><div class="meta"><div class="name">Design Elevation</div><div class="desc">Good → great. Visual polish, motion, micro-interactions, brand identity. Probably involves a designer (consultant or hire).</div></div><div class="stats">8 features</div></summary>
+    <div class="features">
+      <div class="epic-note"><strong>Vik:</strong> "I want to really elevate the design that I have today. While it's good, I think it can be great." <strong>Don't fund this epic at the expense of <span class="ref" data-ref="epic-0">Epic 0</span> (parity), <span class="ref" data-ref="epic-2">Epic 2</span> (BILT detection), <span class="ref" data-ref="epic-4">Epic 4</span> (AI quality).</strong> Polish on a stable foundation.</div>
+      <div class="feature" data-feature-id="feat-17-1"><div class="feature-title"><span class="feature-id">F<span class="display-id">17.1</span></span>Visual design audit (vision exercise)</div><div class="problem">Discovery: what's good, what's basic, what's competitive, what's the brand we want to project. Possibly paid consultant.</div><div class="badges"><span class="badge cat-UI">UI/UX</span><span class="badge effort-M">M</span><span class="badge value-low">Stab:LOW</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-17-2"><div class="feature-title"><span class="feature-id">F<span class="display-id">17.2</span></span>Motion + haptics system</div><div class="problem">Opinionated transitions, micro-interactions, haptic patterns (success haptic on bill confirm, subtle bounce on Safe to Spend value change).</div><div class="badges"><span class="badge cat-UI">UI/UX</span><span class="badge effort-L">L</span><span class="badge value-low">Stab:LOW</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-17-3"><div class="feature-title"><span class="feature-id">F<span class="display-id">17.3</span></span>Empty / error / loading states design pass</div><div class="problem">Currently afterthoughts. Make them feel intentional, on-brand, sometimes delightful.</div><div class="badges"><span class="badge cat-UI">UI/UX</span><span class="badge effort-M">M</span><span class="badge value-low">Stab:LOW</span><span class="badge value-med">Cust:MED</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-17-4"><div class="feature-title"><span class="feature-id">F<span class="display-id">17.4</span></span>Onboarding redesign</div><div class="problem">Phone → OTP → biometric → Plaid Link should feel premium, not generic.</div><div class="badges"><span class="badge cat-UI">UI/UX</span><span class="badge effort-L">L</span><span class="badge value-low">Stab:LOW</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-17-5"><div class="feature-title"><span class="feature-id">F<span class="display-id">17.5</span></span>Color / brand identity refresh</div><div class="problem">Current palette is functional; explore distinctive identity (think Cash App green, Mint coral).</div><div class="badges"><span class="badge cat-UI">UI/UX</span><span class="badge effort-L">L</span><span class="badge value-low">Stab:LOW</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-17-6"><div class="feature-title"><span class="feature-id">F<span class="display-id">17.6</span></span>Typography refresh</div><div class="problem">Expressive type for hero numbers, more confident hierarchy. Maybe a custom display face.</div><div class="badges"><span class="badge cat-UI">UI/UX</span><span class="badge effort-M">M</span><span class="badge value-low">Stab:LOW</span><span class="badge value-med">Cust:MED</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-17-7"><div class="feature-title"><span class="feature-id">F<span class="display-id">17.7</span></span>Iconography system</div><div class="problem">Consistent custom icons replacing the Ionicons stock set; differentiates from "looks like every other RN app."</div><div class="badges"><span class="badge cat-UI">UI/UX</span><span class="badge effort-L">L</span><span class="badge value-low">Stab:LOW</span><span class="badge value-med">Cust:MED</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-17-8"><div class="feature-title"><span class="feature-id">F<span class="display-id">17.8</span></span>Component library expansion</div><div class="problem">Promote reusable bits we've built (DrillDownRow, IOSListRow, AnimatedNumber) into a documented system.</div><div class="badges"><span class="badge cat-UI">UI/UX</span><span class="badge effort-M">M</span><span class="badge value-med">Stab:MED</span><span class="badge value-low">Cust:LOW</span><span class="badge value-med">Bus:MED</span></div></div>
+    </div>
+  </details>
+
+  <!-- EPIC 18: NET WORTH -->
+  <details class="epic" data-epic-id="epic-18">
+    <summary><div class="num"><span class="display-num">18</span></div><div class="meta"><div class="name">Net Worth Tracking</div><div class="desc">Expand from "this-paycheck cash flow" to "full personal balance sheet." Fidelity, Schwab, Robinhood + mortgages + manual assets. <strong>Massive in scope; gated on <span class="ref" data-ref="epic-20">Epic 20</span> (Security).</strong></div></div><div class="stats">6 features &middot; ~10–12 weeks</div></summary>
+    <div class="features">
+      <div class="epic-note"><strong>Vik:</strong> "A totally new vertical. Connect to Fidelity, Charles Schwab, Robinhood. What is my net worth based on how much money I have, how it's growing, and all the mortgages and loans pending. I know it's going to be a massive project of its own."</div>
+      <div class="feature" data-feature-id="feat-18-1"><div class="feature-title"><span class="feature-id">F<span class="display-id">18.1</span></span>Investment account integration</div><div class="problem">Plaid Investments product (Fidelity, Schwab, Robinhood, Vanguard). Pull holdings, balances, performance.</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-XL">XL</span><span class="badge value-med">Stab:MED</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-18-2"><div class="feature-title"><span class="feature-id">F<span class="display-id">18.2</span></span>Loan / mortgage liability tracking</div><div class="problem">Extend Plaid Liabilities to mortgages, auto loans, student loans (separate from <span class="ref" data-ref="epic-1">Epic 1</span> CC liabilities).</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-L">L</span><span class="badge value-med">Stab:MED</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-18-3"><div class="feature-title"><span class="feature-id">F<span class="display-id">18.3</span></span>Net worth dashboard surface</div><div class="problem">Single screen: total assets − total liabilities = net worth, with breakdown.</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-M">M</span><span class="badge value-low">Stab:LOW</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-18-4"><div class="feature-title"><span class="feature-id">F<span class="display-id">18.4</span></span>Net worth time series</div><div class="problem">Track growth over time; weekly/monthly snapshots in <code>net_worth_snapshots</code>; chart progression.</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-M">M</span><span class="badge value-low">Stab:LOW</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-18-5"><div class="feature-title"><span class="feature-id">F<span class="display-id">18.5</span></span>Asset allocation breakdown</div><div class="problem">Equity / bonds / cash / real estate / crypto split visualization.</div><div class="badges"><span class="badge cat-UI">UI/UX</span><span class="badge effort-M">M</span><span class="badge value-low">Stab:LOW</span><span class="badge value-med">Cust:MED</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-18-6"><div class="feature-title"><span class="feature-id">F<span class="display-id">18.6</span></span>Manual asset entry</div><div class="problem">Home value (Zillow API or user-entered), vehicles (KBB), valuables. Plaid won't have these.</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-M">M</span><span class="badge value-low">Stab:LOW</span><span class="badge value-med">Cust:MED</span><span class="badge value-med">Bus:MED</span></div></div>
+    </div>
+  </details>
+
+  <!-- EPIC 19: WHAT-IF -->
+  <details class="epic" data-epic-id="epic-19">
+    <summary><div class="num"><span class="display-num">19</span></div><div class="meta"><div class="name">What-If Scenario Modeling</div><div class="desc">Form-based what-if UI outside the Coach chat. Reuse the safe-to-spend / payday / typical-discretionary engine to project under different assumptions.</div></div><div class="stats">6 features &middot; ~6–8 weeks</div></summary>
+    <div class="features">
+      <div class="epic-note"><strong>Vik:</strong> "I want a way to say 'what if' and let people fill in their scenario. We model things out, give them charts and a different UX to help them make the decision. I think this is going to be a big feature unlock."</div>
+      <div class="feature" data-feature-id="feat-19-1"><div class="feature-title"><span class="feature-id">F<span class="display-id">19.1</span></span>What-if input UI (form-based, not chat)</div><div class="problem">Structured "income changes / expense changes / one-time events" inputs; couple-tap entry.</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-L">L</span><span class="badge value-low">Stab:LOW</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-19-2"><div class="feature-title"><span class="feature-id">F<span class="display-id">19.2</span></span>Scenario projection engine</div><div class="problem">Extends <code>safe_to_spend_service.ts</code> with override deltas; produces 3, 6, 12-month forward projections.</div><div class="badges"><span class="badge cat-AIDATA">AI &amp; DATA</span><span class="badge effort-L">L</span><span class="badge value-med">Stab:MED</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-19-3"><div class="feature-title"><span class="feature-id">F<span class="display-id">19.3</span></span>Scenario result visualization</div><div class="problem">Side-by-side baseline vs scenario charts (runway, savings projection, debt paydown).</div><div class="badges"><span class="badge cat-UI">UI/UX</span><span class="badge effort-M">M</span><span class="badge value-low">Stab:LOW</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-19-4"><div class="feature-title"><span class="feature-id">F<span class="display-id">19.4</span></span>Scenario library</div><div class="problem">Save, name, revisit scenarios ("if I take new job", "if we have kids"); compare two saved scenarios side-by-side.</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-M">M</span><span class="badge value-low">Stab:LOW</span><span class="badge value-med">Cust:MED</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-19-5"><div class="feature-title"><span class="feature-id">F<span class="display-id">19.5</span></span>Common what-if templates</div><div class="problem">Pre-built scenarios: "raise", "lose job", "buy car", "have a kid", "move cities", "refinance mortgage".</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-M">M</span><span class="badge value-low">Stab:LOW</span><span class="badge value-high">Cust:HIGH</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-19-6"><div class="feature-title"><span class="feature-id">F<span class="display-id">19.6</span></span>Coach → Scenario handoff</div><div class="problem">When a Coach answer is what-if-ish, offer "want to see this projected? open scenario builder" deep-link.</div><div class="badges"><span class="badge cat-CX">CX</span><span class="badge effort-M">M</span><span class="badge value-low">Stab:LOW</span><span class="badge value-med">Cust:MED</span><span class="badge value-med">Bus:MED</span></div></div>
+    </div>
+  </details>
+
+  <!-- EPIC 20: SECURITY AUDIT -->
+  <details class="epic priority" data-epic-id="epic-20">
+    <summary><div class="num"><span class="display-num">20</span></div><div class="meta"><div class="name">Security Audit &amp; Hardening</div><div class="desc">Distinguished specialist review of current security model. <strong>Gates <span class="ref" data-ref="epic-18">Epic 18</span> (Net Worth)</strong> — investment-account access widens blast radius substantially. Long lead time on engagement.</div></div><div class="stats">6 features &middot; ~6–8 weeks</div></summary>
+    <div class="features">
+      <div class="epic-note"><strong>Vik:</strong> "Before I bring in all these investment accounts, I need a distinguished security specialist to take a look. What's working, what's not, what should we do to build a safer infrastructure so my data is not misused by anyone with access to my laptop, mobile app, or cell phone."</div>
+      <div class="feature" data-feature-id="feat-20-1"><div class="feature-title"><span class="feature-id">F<span class="display-id">20.1</span></span>Distinguished security specialist engagement</div><div class="problem">Paid consultant: threat model, encryption coverage, JWT scoping, IAM tightness, mobile attack surface, dev hygiene. Deliverable: prioritized findings doc. <strong>Lead time 2–4 weeks — start the conversation now.</strong></div><div class="badges"><span class="badge cat-TECH">TECH</span><span class="badge effort-M">M</span><span class="badge value-critical">Stab:CRIT</span><span class="badge value-med">Cust:MED</span><span class="badge value-critical">Bus:CRIT</span></div></div>
+      <div class="feature" data-feature-id="feat-20-2"><div class="feature-title"><span class="feature-id">F<span class="display-id">20.2</span></span>Threat model documentation</div><div class="problem">Capture what we're protecting against (lost laptop, stolen phone, malicious roommate, compromised dev machine) and what controls exist for each. Pairs with <code>security-model-map.html</code>.</div><div class="badges"><span class="badge cat-TECH">TECH</span><span class="badge effort-M">M</span><span class="badge value-high">Stab:HIGH</span><span class="badge value-low">Cust:LOW</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-20-3"><div class="feature-title"><span class="feature-id">F<span class="display-id">20.3</span></span>Mobile-side hardening</div><div class="problem">Secure-enclave token storage, biometric on every Coach query, screen-blur on background, jailbreak/root detection, certificate pinning.</div><div class="badges"><span class="badge cat-TECH">TECH</span><span class="badge effort-L">L</span><span class="badge value-high">Stab:HIGH</span><span class="badge value-med">Cust:MED</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-20-4"><div class="feature-title"><span class="feature-id">F<span class="display-id">20.4</span></span>Backend penetration test</div><div class="problem">Third-party pen-test: OWASP top-10, auth-bypass, IDOR, privilege escalation. Address findings in priority order.</div><div class="badges"><span class="badge cat-TECH">TECH</span><span class="badge effort-L">L</span><span class="badge value-high">Stab:HIGH</span><span class="badge value-low">Cust:LOW</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-20-5"><div class="feature-title"><span class="feature-id">F<span class="display-id">20.5</span></span>Local-machine data hygiene</div><div class="problem">Encrypted env files, redacted logs everywhere, dev-bypass impossible in any non-localhost environment, hard-fail on suspicious env states.</div><div class="badges"><span class="badge cat-TECH">TECH</span><span class="badge effort-S">S</span><span class="badge value-high">Stab:HIGH</span><span class="badge value-low">Cust:LOW</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-20-6"><div class="feature-title"><span class="feature-id">F<span class="display-id">20.6</span></span>Bug bounty / external red team</div><div class="problem">Pre-launch and ongoing. HackerOne or self-hosted disclosure pipeline.</div><div class="badges"><span class="badge cat-LAUNCH">LAUNCH</span><span class="badge effort-M">M</span><span class="badge value-high">Stab:HIGH</span><span class="badge value-low">Cust:LOW</span><span class="badge value-med">Bus:MED</span></div></div>
+    </div>
+  </details>
+
+  <!-- EPIC 21: EVAL DASHBOARD -->
+  <details class="epic priority" data-epic-id="epic-21">
+    <summary><div class="num"><span class="display-num">21</span></div><div class="meta"><div class="name">Eval Dashboard Comprehensiveness</div><div class="desc">Today's eval dashboard is stale by ~6 weeks of feature work. <span class="ref" data-ref="epic-4">Epic 4</span> is "raise pass rate"; <strong><span class="ref" data-ref="epic-21">Epic 21</span> is "make sure pass rate measures the right thing in the first place."</strong> Must come first.</div></div><div class="stats">7 features &middot; ~5–6 weeks</div></summary>
+    <div class="features">
+      <div class="epic-note"><strong>Vik:</strong> "The whole eval dashboard for the AI coach — I don't think it's very accurate, and I don't think it's comprehensive. We should think through the metrics, the dimensions, the criteria, and the ground truth."<br><br><strong><span class="ref" data-ref="feat-21-1">F21.1</span> + <span class="ref" data-ref="feat-21-5">F21.5</span> are the two-day audit.</strong> Run them before committing weeks to <span class="ref" data-ref="feat-4-1">F4.1</span>.</div>
+      <div class="feature" data-feature-id="feat-21-1"><div class="feature-title"><span class="feature-id">F<span class="display-id">21.1</span></span>Eval coverage audit</div><div class="problem">Gap-check shipped features against existing fixtures. List what's covered, what's missing. Read <code>evals-map.html</code> + <code>evals-dashboard.html</code> against actual <code>tool_executor.ts</code>.</div><div class="badges"><span class="badge cat-AIDATA">AI &amp; DATA</span><span class="badge effort-M">M</span><span class="badge value-critical">Stab:CRIT</span><span class="badge value-low">Cust:LOW</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-21-2"><div class="feature-title"><span class="feature-id">F<span class="display-id">21.2</span></span>New fixtures for shipped features</div><div class="problem">typicalDiscretionary, payday resolution (user_setting + inferred), setAsideAccounts boundary, multi-paycheck, BILT-like recurring detection edge cases. ~30+ new fixtures.</div><div class="badges"><span class="badge cat-AIDATA">AI &amp; DATA</span><span class="badge effort-M">M</span><span class="badge value-high">Stab:HIGH</span><span class="badge value-low">Cust:LOW</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-21-3"><div class="feature-title"><span class="feature-id">F<span class="display-id">21.3</span></span>Ground-truth dataset rebuild</div><div class="problem">Vik's real account data + 5–10 synthetic personas (thin data, biweekly, multi-job, high CC debt, retiree). Hand-curated, version-controlled.</div><div class="badges"><span class="badge cat-AIDATA">AI &amp; DATA</span><span class="badge effort-L">L</span><span class="badge value-high">Stab:HIGH</span><span class="badge value-low">Cust:LOW</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-21-4"><div class="feature-title"><span class="feature-id">F<span class="display-id">21.4</span></span>Multi-dimensional scoring</div><div class="problem">Beyond "did the model say the right thing": accuracy, groundedness, helpfulness, hallucination rate, refusal correctness, latency, token cost. Each dimension gets its own threshold.</div><div class="badges"><span class="badge cat-AIDATA">AI &amp; DATA</span><span class="badge effort-M">M</span><span class="badge value-high">Stab:HIGH</span><span class="badge value-low">Cust:LOW</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-21-5"><div class="feature-title"><span class="feature-id">F<span class="display-id">21.5</span></span>Dashboard accuracy fix</div><div class="problem">Reconcile what <code>evals-dashboard.html</code> claims against actual eval runs. The dashboard mocks/fakes some metrics today; either back them with real data or remove them.</div><div class="badges"><span class="badge cat-AIDATA">AI &amp; DATA</span><span class="badge effort-M">M</span><span class="badge value-high">Stab:HIGH</span><span class="badge value-low">Cust:LOW</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-21-6"><div class="feature-title"><span class="feature-id">F<span class="display-id">21.6</span></span>Pulse-specific eval suite <span style="font-weight:400; color:#64748b;">(cross-listed <span class="ref" data-ref="feat-13-7">F13.7</span>)</span></div><div class="problem">Separate fixtures for Smart Pulse / Morning Brief; pulse prompts have different quality bar.</div><div class="badges"><span class="badge cat-AIDATA">AI &amp; DATA</span><span class="badge effort-M">M</span><span class="badge value-high">Stab:HIGH</span><span class="badge value-med">Cust:MED</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-21-7"><div class="feature-title"><span class="feature-id">F<span class="display-id">21.7</span></span>Eval pass rate publishing</div><div class="problem">Per-PR comment + per-release report; trend tracking; alert on regression.</div><div class="badges"><span class="badge cat-TECH">TECH</span><span class="badge effort-S">S</span><span class="badge value-high">Stab:HIGH</span><span class="badge value-low">Cust:LOW</span><span class="badge value-med">Bus:MED</span></div></div>
+    </div>
+  </details>
+
+  <details class="epic" data-epic-id="epic-22">
+    <summary><div class="num"><span class="display-num">22</span></div><div class="meta"><div class="name">CI/CD Pipeline Stand-Up</div><div class="desc"><strong>CI</strong> and <strong>AI Evals</strong> went red on every run and were <strong>disabled 2026-05-28</strong> (not deleted) to stop failure-email spam. <strong>Deploy</strong> has never been exercised. Right now there is <strong>no automated quality gate on <code>main</code></strong>. Tracked in <a href="https://github.com/vikkybharadwaj/tide/issues/102" style="color:#60a5fa;">#102</a>.</div></div><div class="stats">4 features &middot; ~3–4 weeks</div></summary>
+    <div class="features">
+      <div class="epic-note">Three hand-rolled workflows (<code>ci.yaml</code>, <code>evals.yml</code>, <code>deploy.yaml</code>) + GitHub's built-in Pages deploy (green — leave it alone). The scaffolding is good; it was just never finished. This epic makes it real and turns it back on.<br><br><strong>Cross-listed CI work:</strong> <span class="ref" data-ref="feat-0-4">F0.4</span> (parity test suite), <span class="ref" data-ref="feat-16-2">F16.2</span> (token-coverage lint), <span class="ref" data-ref="feat-21-7">F21.7</span> (eval pass-rate publishing) — fold in once F22.1 is green.</div>
+      <div class="feature" data-feature-id="feat-22-1"><div class="feature-title"><span class="feature-id">F<span class="display-id">22.1</span></span>Fix + re-enable CI</div><div class="problem">Get lint/typecheck/unit green against the real backend, then <code>gh workflow enable CI</code>. Postgres+Redis services and full test-env wiring already exist in <code>ci.yaml</code> — these are real code/setup failures to fix, not infra to rebuild.</div><div class="badges"><span class="badge cat-TECH">TECH</span><span class="badge effort-M">M</span><span class="badge value-high">Stab:HIGH</span><span class="badge value-low">Cust:LOW</span><span class="badge value-med">Bus:MED</span></div></div>
+      <div class="feature" data-feature-id="feat-22-2"><div class="feature-title"><span class="feature-id">F<span class="display-id">22.2</span></span>Fix + re-enable AI Evals</div><div class="problem">Verify the <code>ANTHROPIC_API_KEY</code> secret + <code>evals/</code> scripts (<code>eval:ci</code>, <code>eval:nightly</code>, <code>dashboard</code>) run in CI; confirm the nightly dashboard auto-commit works; then re-enable. Compounds with <span class="ref" data-ref="feat-4-1">F4.1</span> / <span class="ref" data-ref="feat-21-7">F21.7</span>.</div><div class="badges"><span class="badge cat-TECH">TECH</span><span class="badge effort-M">M</span><span class="badge value-high">Stab:HIGH</span><span class="badge value-low">Cust:LOW</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-22-3"><div class="feature-title"><span class="feature-id">F<span class="display-id">22.3</span></span>Validate Deploy pipeline end-to-end</div><div class="problem">Exercise <code>deploy.yaml</code> once: ECR push, k3s SSH rollout, migration step. Confirm secrets (<code>AWS_DEPLOY_ROLE_ARN</code>, <code>K3S_HOST</code>, <code>K3S_SSH_KEY</code>) are set. Currently never run — an unknown-good.</div><div class="badges"><span class="badge cat-LAUNCH">LAUNCH</span><span class="badge effort-M">M</span><span class="badge value-high">Stab:HIGH</span><span class="badge value-low">Cust:LOW</span><span class="badge value-high">Bus:HIGH</span></div></div>
+      <div class="feature" data-feature-id="feat-22-4"><div class="feature-title"><span class="feature-id">F<span class="display-id">22.4</span></span>Branch protection on <code>main</code></div><div class="problem">Require CI green before merge, once CI is reliable (F22.1). Turns the pipeline from advisory into an actual gate.</div><div class="badges"><span class="badge cat-TECH">TECH</span><span class="badge effort-S">S</span><span class="badge value-high">Stab:HIGH</span><span class="badge value-low">Cust:LOW</span><span class="badge value-med">Bus:MED</span></div></div>
+    </div>
+  </details>
+  </div><!-- /epics-container -->
+
+  <footer>
+    <p>Backlog &middot; Source: <code style="color:#94a3b8; background:rgba(0,0,0,0.3); padding:1px 6px; border-radius:3px;">docs/backlog.html</code> + <code style="color:#94a3b8; background:rgba(0,0,0,0.3); padding:1px 6px; border-radius:3px;">docs/BACKLOG.md</code> &middot; Git-tracked.</p>
+  </footer>
+</div>
+
+<!-- EXPORT MODAL -->
+<div class="export-modal" id="export-modal">
+  <div class="panel">
+    <h3>Reordered backlog — markdown summary</h3>
+    <p>This is your current ordering, with original IDs in parentheses. Paste this back to Claude to bake the new order into <code>BACKLOG.md</code>, or save it as your own snapshot.</p>
+    <textarea id="export-text" readonly></textarea>
+    <div class="actions">
+      <span class="copied-toast" id="copied-toast">Copied to clipboard</span>
+      <button class="secondary" onclick="closeExport()">Close</button>
+      <button onclick="copyExport()">Copy to clipboard</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  const STORAGE_KEY = 'tide-backlog-order-v1';
+  const epicsContainer = document.getElementById('epics-container');
+
+  // === inject drag handles ===
+  document.querySelectorAll('details.epic').forEach(epic => {
+    if (epic.classList.contains('removed')) return; // don't drag the removed-CSV stub
+    const summary = epic.querySelector('summary');
+    if (!summary || summary.querySelector('.drag-handle')) return;
+    const handle = document.createElement('span');
+    handle.className = 'drag-handle';
+    handle.textContent = '⠇'; // ⠇ braille pattern, looks like a drag dots
+    handle.setAttribute('aria-label', 'Drag to reorder epic');
+    handle.addEventListener('click', e => { e.stopPropagation(); e.preventDefault(); });
+    summary.insertBefore(handle, summary.firstChild);
+  });
+  document.querySelectorAll('.feature').forEach(feat => {
+    if (feat.querySelector('.drag-handle-feat')) return;
+    const handle = document.createElement('span');
+    handle.className = 'drag-handle-feat';
+    handle.textContent = '⠇';
+    handle.setAttribute('aria-label', 'Drag to reorder feature');
+    feat.insertBefore(handle, feat.firstChild);
+  });
+
+  // === order persistence ===
+  function getCurrentOrder() {
+    return [...epicsContainer.querySelectorAll(':scope > details.epic')].map(epic => ({
+      id: epic.dataset.epicId,
+      features: [...epic.querySelectorAll(':scope > .features > .feature')].map(f => f.dataset.featureId),
+    }));
+  }
+  function getOriginalOrder() {
+    // The DOM order at parse time IS the original order (since we haven't applied stored order yet).
+    // We capture it once before any reordering happens.
+    return window.__originalOrder;
+  }
+  function applyOrder(order) {
+    if (!Array.isArray(order)) return;
+    order.forEach(epicSpec => {
+      const epic = epicsContainer.querySelector(`:scope > details.epic[data-epic-id="${epicSpec.id}"]`);
+      if (!epic) return;
+      epicsContainer.appendChild(epic);
+      const featuresContainer = epic.querySelector(':scope > .features');
+      if (featuresContainer && Array.isArray(epicSpec.features)) {
+        epicSpec.features.forEach(featId => {
+          const feat = featuresContainer.querySelector(`:scope > .feature[data-feature-id="${featId}"]`);
+          if (feat) featuresContainer.appendChild(feat);
+        });
+      }
+    });
+  }
+  function saveOrder() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(getCurrentOrder())); }
+    catch (e) { console.warn('Could not save order', e); }
+  }
+  function loadStoredOrder() {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      return stored ? JSON.parse(stored) : null;
+    } catch (e) { return null; }
+  }
+
+  // === label recompute ===
+  function isReorderedFromOriginal() {
+    const orig = getOriginalOrder();
+    const curr = getCurrentOrder();
+    if (orig.length !== curr.length) return true;
+    for (let i = 0; i < orig.length; i++) {
+      if (orig[i].id !== curr[i].id) return true;
+      if (orig[i].features.length !== curr[i].features.length) return true;
+      for (let j = 0; j < orig[i].features.length; j++) {
+        if (orig[i].features[j] !== curr[i].features[j]) return true;
+      }
+    }
+    return false;
+  }
+  function recomputeLabels() {
+    const epicMap = {};   // stable epic-id -> new num string
+    const featMap = {};   // stable feat-id -> new "N.M" string
+
+    // Epic 11 is the removed stub; it doesn't get renumbered (skip) but we keep it visible.
+    let epicCounter = 0;
+    [...epicsContainer.querySelectorAll(':scope > details.epic')].forEach(epic => {
+      const isRemoved = epic.classList.contains('removed');
+      const stableId = epic.dataset.epicId;
+      let displayNum;
+      if (isRemoved) {
+        displayNum = '—'; // em dash for removed item
+      } else {
+        epicCounter++;
+        displayNum = String(epicCounter);
+      }
+      epicMap[stableId] = displayNum;
+      const numEl = epic.querySelector(':scope > summary .display-num');
+      if (numEl) numEl.textContent = displayNum;
+
+      // features within this epic
+      [...epic.querySelectorAll(':scope > .features > .feature')].forEach((feat, j) => {
+        const featStable = feat.dataset.featureId;
+        const newId = isRemoved ? '—' : `${displayNum}.${j + 1}`;
+        featMap[featStable] = newId;
+        const featDisplay = feat.querySelector('.display-id');
+        if (featDisplay) featDisplay.textContent = newId;
+      });
+    });
+
+    // Update narrative cross-references
+    document.querySelectorAll('.ref').forEach(refEl => {
+      const ref = refEl.dataset.ref;
+      if (!ref) return;
+      if (ref.startsWith('feat-')) {
+        const newId = featMap[ref];
+        if (newId) refEl.textContent = `F${newId}`;
+      } else if (ref.startsWith('epic-')) {
+        const newNum = epicMap[ref];
+        if (newNum) refEl.textContent = `Epic ${newNum}`;
+      }
+    });
+
+    // Status pill
+    const status = document.getElementById('order-status');
+    if (isReorderedFromOriginal()) {
+      status.textContent = 'reordered (saved)';
+      status.classList.add('dirty');
+    } else {
+      status.textContent = 'original order';
+      status.classList.remove('dirty');
+    }
+  }
+
+  // === init: capture original order, labels, names ===
+  window.__originalOrder = getCurrentOrder();
+
+  // Capture every element's ORIGINAL display label so we can restore on reset.
+  window.__originalLabels = {};
+  document.querySelectorAll('details.epic').forEach(epic => {
+    const span = epic.querySelector(':scope > summary .display-num');
+    if (span) window.__originalLabels[epic.dataset.epicId] = span.textContent;
+  });
+  document.querySelectorAll('.feature').forEach(feat => {
+    const span = feat.querySelector('.display-id');
+    if (span) window.__originalLabels[feat.dataset.featureId] = span.textContent;
+  });
+  // Capture original cross-reference text
+  window.__originalRefs = new Map();
+  document.querySelectorAll('.ref').forEach(refEl => {
+    window.__originalRefs.set(refEl, refEl.textContent);
+  });
+
+  // Capture original epic + feature names/categories for export
+  window.__originalNames = {};
+  document.querySelectorAll('details.epic').forEach(epic => {
+    const name = epic.querySelector(':scope > summary .name')?.textContent.trim();
+    window.__originalNames[epic.dataset.epicId] = { name, original: epic.dataset.epicId };
+  });
+  window.__featureNames = {};
+  document.querySelectorAll('.feature').forEach(feat => {
+    const title = feat.querySelector('.feature-title')?.textContent.trim() || '';
+    const cleanTitle = title.replace(/^F\d+\.\d+\s*/, '').replace(/\s*\(cross-listed F\d+\.\d+\)\s*$/, '').trim();
+    const cat = feat.querySelector('.badges .badge')?.textContent.trim() || '';
+    window.__featureNames[feat.dataset.featureId] = {
+      title: cleanTitle,
+      category: cat,
+      original: feat.dataset.featureId,
+    };
+  });
+
+  function restoreOriginalLabels() {
+    document.querySelectorAll('details.epic').forEach(epic => {
+      const orig = window.__originalLabels[epic.dataset.epicId];
+      const span = epic.querySelector(':scope > summary .display-num');
+      if (span && orig !== undefined) span.textContent = orig;
+    });
+    document.querySelectorAll('.feature').forEach(feat => {
+      const orig = window.__originalLabels[feat.dataset.featureId];
+      const span = feat.querySelector('.display-id');
+      if (span && orig !== undefined) span.textContent = orig;
+    });
+    window.__originalRefs.forEach((text, el) => { el.textContent = text; });
+    const status = document.getElementById('order-status');
+    status.textContent = 'original order';
+    status.classList.remove('dirty');
+  }
+
+  // Apply stored order if present (and renumber sequentially);
+  // otherwise leave the original labels untouched.
+  const stored = loadStoredOrder();
+  if (stored) {
+    applyOrder(stored);
+    recomputeLabels();
+  } else {
+    // Confirm status pill matches reality
+    const status = document.getElementById('order-status');
+    status.textContent = 'original order';
+    status.classList.remove('dirty');
+  }
+
+  // === SortableJS init ===
+  if (typeof Sortable === 'undefined') {
+    console.error('SortableJS failed to load; drag-reorder unavailable.');
+    return;
+  }
+
+  // Top-level: drag epics
+  Sortable.create(epicsContainer, {
+    handle: '.drag-handle',
+    animation: 150,
+    ghostClass: 'sortable-ghost',
+    chosenClass: 'sortable-chosen',
+    dragClass: 'sortable-drag',
+    onEnd() { saveOrder(); recomputeLabels(); },
+  });
+
+  // Each features container: drag features within an epic
+  document.querySelectorAll('details.epic > .features').forEach(featContainer => {
+    Sortable.create(featContainer, {
+      handle: '.drag-handle-feat',
+      animation: 150,
+      ghostClass: 'sortable-ghost',
+      chosenClass: 'sortable-chosen',
+      dragClass: 'sortable-drag',
+      onEnd() { saveOrder(); recomputeLabels(); },
+    });
+  });
+
+  // === reset / export (exposed on window for the inline onclicks) ===
+  window.resetOrder = function() {
+    if (!isReorderedFromOriginal() && !localStorage.getItem(STORAGE_KEY)) {
+      return; // nothing to reset
+    }
+    if (!confirm('Reset to original ordering? Your custom order will be cleared.')) return;
+    localStorage.removeItem(STORAGE_KEY);
+    applyOrder(window.__originalOrder);
+    restoreOriginalLabels();
+  };
+
+  window.exportReorder = function() {
+    const lines = [];
+    lines.push('# Backlog — Reordered Snapshot');
+    lines.push('');
+    lines.push(`_Generated ${new Date().toISOString().slice(0,10)} from \`docs/backlog.html\` drag-reorder UI._`);
+    lines.push('');
+    lines.push('Format: **new position** — title _(was original ID)_');
+    lines.push('');
+    let epicCounter = 0;
+    [...epicsContainer.querySelectorAll(':scope > details.epic')].forEach(epic => {
+      const isRemoved = epic.classList.contains('removed');
+      const stableId = epic.dataset.epicId;
+      const meta = window.__originalNames[stableId];
+      const origNum = stableId.replace('epic-', '');
+      if (isRemoved) {
+        lines.push(`### ~~Epic — ${meta.name}~~ _(was Epic ${origNum}, removed)_`);
+        lines.push('');
+        return;
+      }
+      epicCounter++;
+      lines.push(`### Epic ${epicCounter}: ${meta.name}  _(was Epic ${origNum})_`);
+      [...epic.querySelectorAll(':scope > .features > .feature')].forEach((feat, j) => {
+        const fStable = feat.dataset.featureId;
+        const fMeta = window.__featureNames[fStable];
+        const origFid = fStable.replace('feat-', '').replace('-', '.');
+        const newFid = `${epicCounter}.${j+1}`;
+        lines.push(`- **F${newFid}** — ${fMeta.title}  _[${fMeta.category}]_  _(was F${origFid})_`);
+      });
+      lines.push('');
+    });
+    document.getElementById('export-text').value = lines.join('\n');
+    document.getElementById('export-modal').classList.add('open');
+  };
+
+  window.closeExport = function() {
+    document.getElementById('export-modal').classList.remove('open');
+    document.getElementById('copied-toast').classList.remove('show');
+  };
+  window.copyExport = function() {
+    const ta = document.getElementById('export-text');
+    ta.select();
+    navigator.clipboard.writeText(ta.value).then(() => {
+      const toast = document.getElementById('copied-toast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 1800);
+    }).catch(() => {
+      // Fallback: execCommand
+      try { document.execCommand('copy'); } catch (e) {}
+    });
+  };
+
+  // ESC closes export modal
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeExport();
+  });
+  document.getElementById('export-modal').addEventListener('click', e => {
+    if (e.target.id === 'export-modal') closeExport();
+  });
+})();
+</script>
+
+</body>
+</html>
