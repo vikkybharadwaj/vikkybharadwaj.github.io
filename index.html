@@ -115,6 +115,21 @@
   .cap.p { border-color: rgba(168,85,247,0.28); } .cap.p:hover { border-color: var(--purple); box-shadow: 0 10px 34px rgba(168,85,247,0.16); }
   .cap.a { border-color: rgba(245,158,11,0.28); } .cap.a:hover { border-color: var(--amber); box-shadow: 0 10px 34px rgba(245,158,11,0.16); }
 
+  /* the AI PM operating-loop figure */
+  .loop-figure {
+    margin: 32px 0 6px; border: 1px solid var(--border); border-radius: 18px;
+    padding: 26px 18px 16px; background: var(--surface); backdrop-filter: blur(8px);
+  }
+  .loop-figure svg { width: 100%; height: auto; max-width: 720px; display: block; margin: 0 auto; }
+  .loop-cap { text-align: center; font-size: 12px; color: var(--text-3); margin: 12px auto 2px; max-width: 680px; line-height: 1.75; }
+  .loop-cap b { color: var(--text-2); font-weight: 600; }
+  .loop-cap i { color: var(--text); font-style: normal; font-weight: 600; }
+  .grp-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 1.5px; color: var(--text-3);
+    text-transform: uppercase; margin: 36px 0 0; display: flex; align-items: center; gap: 12px;
+  }
+  .grp-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
   .project {
     display: block; border-radius: 18px; padding: 38px;
     border: 1.5px solid rgba(0,210,106,0.3);
@@ -198,9 +213,11 @@
     <div class="sec-label">About</div>
     <h2 class="sec-title">Product and engineering, together.</h2>
     <p>
-      I'm a product manager who works hands-on. On my current project, Tide, I've handled the product
-      direction and specs as well as much of the implementation — the React Native app, AdonisJS services,
-      the PostgreSQL data model, AWS infrastructure, and the Claude-based AI pipeline.
+      I'm a product manager who works hands-on, and I keep one thing at the center: the customer and the
+      outcome we're trying to move for them. On my current project, Tide, I've owned the product direction
+      and specs as well as much of the implementation — the React Native app, AdonisJS services, the
+      PostgreSQL data model, AWS infrastructure, and the Claude-based AI pipeline — so the path from a
+      customer problem to a shipped, measured outcome stays short.
     </p>
     <p>
       I'm especially interested in making AI features measurable — using evals (dimensions, fixtures,
@@ -214,38 +231,106 @@
 <section id="work">
   <div class="wrap">
     <div class="sec-label">What I do</div>
-    <h2 class="sec-title">What I work on.</h2>
-    <p class="sec-sub">Roughly where I spend my time — from product framing through to shipping.</p>
+    <h2 class="sec-title">Customer in, outcomes out.</h2>
+    <p class="sec-sub">I run product as a loop, not a checklist: start from the customer, ship the smallest bet that moves a real outcome, measure it, and feed what I learn straight back into the roadmap. The AI craft below — pipelines, evals, the data flywheel — exists to serve that loop, not the other way around.</p>
+
+    <div class="loop-figure">
+      <svg viewBox="0 0 760 600" role="img" aria-label="The AI product manager operating loop: Listen, Frame, Design, Ship, Measure, Learn — a continuous flywheel fed by explicit feedback (what users say) and implicit feedback (what users do).">
+        <defs>
+          <marker id="ah" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#94a3b8"/></marker>
+          <marker id="ahg" markerWidth="11" markerHeight="11" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#00D26A"/></marker>
+          <marker id="ahf" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#cbd5e1"/></marker>
+        </defs>
+
+        <!-- track + directional segments (clockwise) -->
+        <circle cx="380" cy="300" r="190" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1" stroke-dasharray="2 7"/>
+        <path d="M432.4 117.4 A190 190 0 0 1 512.0 163.3" fill="none" stroke="rgba(148,163,184,0.55)" stroke-width="2" marker-end="url(#ah)"/>
+        <path d="M564.4 254.0 A190 190 0 0 1 564.4 346.0" fill="none" stroke="rgba(148,163,184,0.55)" stroke-width="2" marker-end="url(#ah)"/>
+        <path d="M512.0 436.7 A190 190 0 0 1 432.4 482.6" fill="none" stroke="rgba(148,163,184,0.55)" stroke-width="2" marker-end="url(#ah)"/>
+        <path d="M327.6 482.6 A190 190 0 0 1 248.0 436.7" fill="none" stroke="rgba(148,163,184,0.55)" stroke-width="2" marker-end="url(#ah)"/>
+        <path d="M195.6 346.0 A190 190 0 0 1 195.6 254.0" fill="none" stroke="rgba(148,163,184,0.55)" stroke-width="2" marker-end="url(#ah)"/>
+        <!-- the data-flywheel return arc (Learn -> Listen) -->
+        <path d="M248.0 163.3 A190 190 0 0 1 327.6 117.4" fill="none" stroke="#00D26A" stroke-width="3" marker-end="url(#ahg)"/>
+        <text x="300" y="150" text-anchor="middle" font-size="10.5" font-weight="700" fill="#00D26A">&#8635; data flywheel</text>
+
+        <!-- center hub -->
+        <circle cx="380" cy="300" r="66" fill="#0b1120" stroke="rgba(245,158,11,0.45)" stroke-width="1.5"/>
+        <text x="380" y="288" text-anchor="middle" font-size="16" font-weight="800" fill="#f59e0b" letter-spacing="0.5">AI PM</text>
+        <text x="380" y="302" text-anchor="middle" font-size="8.5" font-weight="700" fill="#64748b" letter-spacing="1.5">OPERATING LOOP</text>
+        <line x1="344" y1="310" x2="416" y2="310" stroke="rgba(255,255,255,0.10)" stroke-width="1"/>
+        <text x="380" y="326" text-anchor="middle" font-size="10.5" fill="#94a3b8">customer in &#8594;</text>
+        <text x="380" y="340" text-anchor="middle" font-size="10.5" fill="#94a3b8">outcomes out</text>
+
+        <!-- stage nodes -->
+        <g><circle cx="380" cy="110" r="46" fill="#0d1426" stroke="#00D26A" stroke-width="1.5"/><text x="380" y="89" text-anchor="middle" font-size="9.5" font-weight="700" fill="#64748b">1</text><text x="380" y="111" text-anchor="middle" font-size="21">&#128066;</text><text x="380" y="134" text-anchor="middle" font-size="13" font-weight="700" fill="#e2e8f0">Listen</text></g>
+        <g><circle cx="544.5" cy="205" r="46" fill="#0d1426" stroke="#4F8CFF" stroke-width="1.5"/><text x="544.5" y="184" text-anchor="middle" font-size="9.5" font-weight="700" fill="#64748b">2</text><text x="544.5" y="206" text-anchor="middle" font-size="21">&#128506;</text><text x="544.5" y="229" text-anchor="middle" font-size="13" font-weight="700" fill="#e2e8f0">Frame</text></g>
+        <g><circle cx="544.5" cy="395" r="46" fill="#0d1426" stroke="#a855f7" stroke-width="1.5"/><text x="544.5" y="374" text-anchor="middle" font-size="9.5" font-weight="700" fill="#64748b">3</text><text x="544.5" y="396" text-anchor="middle" font-size="21">&#9999;</text><text x="544.5" y="419" text-anchor="middle" font-size="13" font-weight="700" fill="#e2e8f0">Design</text></g>
+        <g><circle cx="380" cy="490" r="46" fill="#0d1426" stroke="#00D26A" stroke-width="1.5"/><text x="380" y="469" text-anchor="middle" font-size="9.5" font-weight="700" fill="#64748b">4</text><text x="380" y="491" text-anchor="middle" font-size="21">&#128640;</text><text x="380" y="514" text-anchor="middle" font-size="13" font-weight="700" fill="#e2e8f0">Ship</text></g>
+        <g><circle cx="215.5" cy="395" r="46" fill="#0d1426" stroke="#4F8CFF" stroke-width="1.5"/><text x="215.5" y="374" text-anchor="middle" font-size="9.5" font-weight="700" fill="#64748b">5</text><text x="215.5" y="396" text-anchor="middle" font-size="21">&#128202;</text><text x="215.5" y="419" text-anchor="middle" font-size="13" font-weight="700" fill="#e2e8f0">Measure</text></g>
+        <g><circle cx="215.5" cy="205" r="46" fill="#0d1426" stroke="#a855f7" stroke-width="1.5"/><text x="215.5" y="184" text-anchor="middle" font-size="9.5" font-weight="700" fill="#64748b">6</text><text x="215.5" y="206" text-anchor="middle" font-size="21">&#129504;</text><text x="215.5" y="229" text-anchor="middle" font-size="13" font-weight="700" fill="#e2e8f0">Learn</text></g>
+
+        <!-- feedback inputs feeding Listen -->
+        <g>
+          <rect x="40" y="12" width="220" height="52" rx="9" fill="rgba(0,210,106,0.06)" stroke="rgba(0,210,106,0.32)"/>
+          <text x="150" y="34" text-anchor="middle" font-size="11" font-weight="700" fill="#00D26A">EXPLICIT &#183; what users say</text>
+          <text x="150" y="51" text-anchor="middle" font-size="9" fill="#94a3b8">interviews &#183; support &#183; NPS &#183; requests</text>
+        </g>
+        <g>
+          <rect x="500" y="12" width="220" height="52" rx="9" fill="rgba(79,140,255,0.06)" stroke="rgba(79,140,255,0.32)"/>
+          <text x="610" y="34" text-anchor="middle" font-size="11" font-weight="700" fill="#4F8CFF">IMPLICIT &#183; what users do</text>
+          <text x="610" y="51" text-anchor="middle" font-size="9" fill="#94a3b8">usage &#183; evals &#183; A/B &#183; churn</text>
+        </g>
+        <path d="M150 64 C 196 112, 276 100, 342 92" fill="none" stroke="rgba(203,213,225,0.55)" stroke-width="1.5" marker-end="url(#ahf)"/>
+        <path d="M610 64 C 564 112, 484 100, 418 92" fill="none" stroke="rgba(203,213,225,0.55)" stroke-width="1.5" marker-end="url(#ahf)"/>
+      </svg>
+      <p class="loop-cap"><b>The AI PM operating loop.</b> Explicit signal (what users <i>say</i>) and implicit signal (what users <i>do</i>) feed every turn — and each turn compounds: more usage &#8594; more signal &#8594; a better model &#8594; more usage. That return arc is the <b>data flywheel</b>.</p>
+    </div>
+
+    <div class="grp-label">Customer &amp; business outcomes</div>
     <div class="grid">
       <div class="cap g">
         <span class="ic">🧭</span>
-        <h3>Product &amp; Strategy</h3>
-        <p>Discovery, problem framing, roadmap, and ecosystem mapping. Specs detailed enough to build from — no hand-waving.</p>
+        <h3>Customer Discovery &amp; Obsession</h3>
+        <p>Start with the customer and work backwards. Continuous discovery — interviews <i>plus</i> real behavior — over a spec written once and frozen.</p>
       </div>
       <div class="cap b">
+        <span class="ic">🎯</span>
+        <h3>Outcomes Over Output</h3>
+        <p>Roadmaps anchored to a North Star and business impact — activation, retention, runway accuracy — not a feature checklist.</p>
+      </div>
+      <div class="cap p">
+        <span class="ic">🔄</span>
+        <h3>Feedback Loops &rarr; Roadmap</h3>
+        <p>Fuse explicit signal (interviews, support, NPS) with implicit signal (usage telemetry, eval failures, churn) into what we build next.</p>
+      </div>
+    </div>
+
+    <div class="grp-label">AI-native craft</div>
+    <div class="grid">
+      <div class="cap b">
         <span class="ic">🤖</span>
-        <h3>AI Engineering</h3>
-        <p>Claude &amp; AWS Bedrock pipelines, agent tooling, prompt design, structured outputs, and per-merchant AI classification.</p>
+        <h3>AI Engineering &amp; Agents</h3>
+        <p>Claude &amp; AWS Bedrock pipelines, agent tooling, prompt and structured-output design — turned into features users actually feel.</p>
       </div>
       <div class="cap p">
         <span class="ic">📐</span>
         <h3>AI Evals</h3>
-        <p>Dimensions, fixtures, ground-truth, and judge-scored suites that turn AI quality into a metric you can move.</p>
+        <p>Dimensions, fixtures, ground-truth, judge scoring. Evals are the new success metric — AI quality you can actually move.</p>
       </div>
       <div class="cap g">
+        <span class="ic">🌀</span>
+        <h3>The Data Flywheel</h3>
+        <p>Every interaction is a signal. Corrections and usage feed back so the model gets sharper the more the product is used.</p>
+      </div>
+      <div class="cap a">
         <span class="ic">⚙️</span>
-        <h3>Full-Stack Build</h3>
-        <p>React Native / Expo, AdonisJS, TypeScript, PostgreSQL, BullMQ. Mobile apps and the services behind them.</p>
+        <h3>Full-Stack &amp; Prototyping</h3>
+        <p>React Native / Expo, AdonisJS, PostgreSQL, BullMQ. Prototype fast, ship in short cycles, stay close to how it's built.</p>
       </div>
       <div class="cap b">
         <span class="ic">🔐</span>
-        <h3>Security &amp; Infra</h3>
-        <p>Encrypted PII, authorization policies, Docker/k3s, AWS — production-grade on a deliberately tight budget.</p>
-      </div>
-      <div class="cap a">
-        <span class="ic">🎨</span>
-        <h3>Design Systems</h3>
-        <p>Dark-premium, mobile-first UI with real design tokens — the craft layer that makes products feel trustworthy.</p>
+        <h3>Trust by Design</h3>
+        <p>Encrypted PII, authorization on every resource, and a craft UI layer — because in fintech, trust <i>is</i> the product.</p>
       </div>
     </div>
   </div>
@@ -291,8 +376,7 @@
       <div class="contact-links">
         <a class="clink" href="mailto:vikky.bharadwaj@gmail.com">✉️ vikky.bharadwaj@gmail.com</a>
         <a class="clink" href="https://github.com/vikkybharadwaj" target="_blank" rel="noopener">⌥ GitHub</a>
-        <!-- LINKEDIN_SLOT: replace href + remove "soon" class once Vik provides the URL -->
-        <a class="clink soon">in LinkedIn <span class="pill">SOON</span></a>
+        <a class="clink" href="https://www.linkedin.com/in/bharadwajvikram/" target="_blank" rel="noopener">in LinkedIn</a>
       </div>
     </div>
   </div>
