@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tide Data Flows</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', monospace; background: #0a0f1a; color: #e2e8f0; }
+
+#title {
+  padding: 16px 16px 0;
+}
+#title h1 { font-size: 18px; font-weight: 700; }
+#title p { font-size: 10px; color: #64748b; margin-top: 2px; }
+#title a { color: #3b82f6; text-decoration: none; font-size: 10px; }
+#title a:hover { text-decoration: underline; }
+
+.top-bar {
+  position: sticky; top: 0; z-index: 50;
+  background: #0a0f1a;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  margin-bottom: 8px;
+}
+
+.groups {
+  display: flex; gap: 8px;
+  padding: 12px 16px 0;
+}
+.group-btn {
+  padding: 10px 20px; border-radius: 6px; font-size: 11px; font-weight: 700;
+  cursor: pointer; border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(17,24,39,0.7); color: #94a3b8;
+  transition: all 0.2s; letter-spacing: 0.5px;
+}
+.group-btn:hover { border-color: rgba(255,255,255,0.35); color: #e2e8f0; }
+.group-btn.active-group-mvp { border-color: #22c55e; color: #22c55e; background: rgba(34,197,94,0.12); }
+.group-btn.active-group-mvpplus { border-color: #f59e0b; color: #f59e0b; background: rgba(245,158,11,0.12); }
+
+.tabs {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  padding: 12px 16px 0;
+}
+.tab {
+  padding: 8px 16px; border-radius: 6px; font-size: 11px; font-weight: 700;
+  cursor: pointer; border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(17,24,39,0.9); color: #94a3b8;
+  transition: all 0.2s; letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+.tab:hover { border-color: rgba(255,255,255,0.3); color: #e2e8f0; background: rgba(17,24,39,1); }
+.tab.active { border-color: #3b82f6; color: #3b82f6; background: rgba(59,130,246,0.15); }
+.tab[data-group="mvp-plus"] { border-style: dashed; }
+
+.flow-container {
+  padding: 24px 24px 24px;
+  max-width: 900px; margin: 0 auto;
+  display: none;
+}
+.flow-container.active { display: block; }
+
+.flow-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+.flow-desc { font-size: 11px; color: #94a3b8; margin-bottom: 24px; line-height: 1.6; }
+
+.step {
+  display: flex; gap: 16px; margin-bottom: 2px;
+  opacity: 0; transform: translateX(-20px);
+  animation: slideIn 0.4s ease forwards;
+}
+.step:nth-child(2) { animation-delay: 0.06s; }
+.step:nth-child(3) { animation-delay: 0.12s; }
+.step:nth-child(4) { animation-delay: 0.18s; }
+.step:nth-child(5) { animation-delay: 0.24s; }
+.step:nth-child(6) { animation-delay: 0.30s; }
+.step:nth-child(7) { animation-delay: 0.36s; }
+.step:nth-child(8) { animation-delay: 0.42s; }
+.step:nth-child(9) { animation-delay: 0.48s; }
+.step:nth-child(10) { animation-delay: 0.54s; }
+.step:nth-child(11) { animation-delay: 0.60s; }
+.step:nth-child(12) { animation-delay: 0.66s; }
+.step:nth-child(13) { animation-delay: 0.72s; }
+.step:nth-child(14) { animation-delay: 0.78s; }
+.step:nth-child(15) { animation-delay: 0.84s; }
+
+@keyframes slideIn {
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.step-line {
+  display: flex; flex-direction: column; align-items: center; width: 32px; flex-shrink: 0;
+}
+.step-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  border: 2px solid; flex-shrink: 0;
+}
+.step-connector {
+  width: 2px; flex: 1; min-height: 20px; opacity: 0.3;
+}
+
+.step-content {
+  flex: 1; padding-bottom: 20px;
+}
+.step-header {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
+}
+.step-num {
+  font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 3px;
+  letter-spacing: 0.5px;
+}
+.step-actor { font-size: 11px; font-weight: 700; }
+.step-action { font-size: 11px; color: #94a3b8; line-height: 1.5; }
+.step-detail {
+  margin-top: 6px; padding: 8px 12px; border-radius: 6px;
+  background: rgba(17,24,39,0.6); border: 1px solid rgba(255,255,255,0.06);
+  font-size: 10px; color: #64748b; line-height: 1.5;
+}
+.step-detail code { color: #00d4ff; }
+.step-latency {
+  display: inline-block; margin-top: 4px; padding: 1px 6px; border-radius: 3px;
+  font-size: 9px; font-weight: 600; background: rgba(34,197,94,0.1); color: #22c55e;
+}
+
+/* Flow colors */
+.flow-auth .step-dot { border-color: #ef4444; }
+.flow-auth .step-connector { background: #ef4444; }
+.flow-auth .step-num { background: rgba(239,68,68,0.15); color: #ef4444; }
+.flow-auth .flow-title { color: #ef4444; }
+
+.flow-dashboard .step-dot { border-color: #3b82f6; }
+.flow-dashboard .step-connector { background: #3b82f6; }
+.flow-dashboard .step-num { background: rgba(59,130,246,0.15); color: #3b82f6; }
+.flow-dashboard .flow-title { color: #3b82f6; }
+
+.flow-sync .step-dot { border-color: #a855f7; }
+.flow-sync .step-connector { background: #a855f7; }
+.flow-sync .step-num { background: rgba(168,85,247,0.15); color: #a855f7; }
+.flow-sync .flow-title { color: #a855f7; }
+
+.flow-chat .step-dot { border-color: #00d4ff; }
+.flow-chat .step-connector { background: #00d4ff; }
+.flow-chat .step-num { background: rgba(0,212,255,0.15); color: #00d4ff; }
+.flow-chat .flow-title { color: #00d4ff; }
+
+.flow-predictions .step-dot { border-color: #22c55e; }
+.flow-predictions .step-connector { background: #22c55e; }
+.flow-predictions .step-num { background: rgba(34,197,94,0.15); color: #22c55e; }
+.flow-predictions .flow-title { color: #22c55e; }
+
+.flow-safetospend .step-dot { border-color: #f59e0b; }
+.flow-safetospend .step-connector { background: #f59e0b; }
+.flow-safetospend .step-num { background: rgba(245,158,11,0.15); color: #f59e0b; }
+.flow-safetospend .flow-title { color: #f59e0b; }
+
+.flow-morningbrief .step-dot { border-color: #14b8a6; }
+.flow-morningbrief .step-connector { background: #14b8a6; }
+.flow-morningbrief .step-num { background: rgba(20,184,166,0.15); color: #14b8a6; }
+.flow-morningbrief .flow-title { color: #14b8a6; }
+
+.flow-reflection .step-dot { border-color: #ec4899; }
+.flow-reflection .step-connector { background: #ec4899; }
+.flow-reflection .step-num { background: rgba(236,72,153,0.15); color: #ec4899; }
+.flow-reflection .flow-title { color: #ec4899; }
+
+.flow-bankconnections .step-dot { border-color: #f59e0b; }
+.flow-bankconnections .step-connector { background: #f59e0b; }
+.flow-bankconnections .step-num { background: rgba(245,158,11,0.15); color: #f59e0b; }
+.flow-bankconnections .flow-title { color: #f59e0b; }
+
+.flow-challenges .step-dot { border-color: #06b6d4; }
+.flow-challenges .step-connector { background: #06b6d4; }
+.flow-challenges .step-num { background: rgba(6,182,212,0.15); color: #06b6d4; }
+.flow-challenges .flow-title { color: #06b6d4; }
+
+.flow-notifications .step-dot { border-color: #64748b; }
+.flow-notifications .step-connector { background: #64748b; }
+.flow-notifications .step-num { background: rgba(100,116,139,0.15); color: #64748b; }
+.flow-notifications .flow-title { color: #64748b; }
+
+.flow-insights .step-dot { border-color: #8b5cf6; }
+.flow-insights .step-connector { background: #8b5cf6; }
+.flow-insights .step-num { background: rgba(139,92,246,0.15); color: #8b5cf6; }
+.flow-insights .flow-title { color: #8b5cf6; }
+
+.flow-csvimport .step-dot { border-color: #f97316; }
+.flow-csvimport .step-connector { background: #f97316; }
+.flow-csvimport .step-num { background: rgba(249,115,22,0.15); color: #f97316; }
+.flow-csvimport .flow-title { color: #f97316; }
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <div id="title">
+    <h1>Data Flows</h1>
+    <p>13 critical paths &middot; <a href="index.html">&larr; Hub</a></p>
+    <div style="font-size:11px;color:#94a3b8;margin-top:8px;line-height:1.5;max-width:900px;">
+      Each flow is <strong>the spec</strong> for its feature &mdash; the steps contain enough detail to serve as product + implementation reference without opening the codebase. Flows are grouped under
+      <span style="color:#22c55e;font-weight:600;">MVP</span> (shipped, actively maintained &mdash; kept current with code in every PR) and
+      <span style="color:#f59e0b;font-weight:600;">MVP+</span> (planned / deferred &mdash; documented for context).
+      Rule: any PR that changes feature behavior must also update the matching flow's steps &mdash; code and spec stay in sync.
+    </div>
+  </div>
+
+  <div class="groups">
+    <div class="group-btn active-group-mvp" id="group-mvp" onclick="showGroup('mvp')">MVP</div>
+    <div class="group-btn" id="group-mvpplus" onclick="showGroup('mvp-plus')">MVP+</div>
+  </div>
+
+  <div class="tabs" id="tabs-mvp">
+    <div class="tab active" data-flow="dashboard" onclick="showFlow('dashboard', event)">DASHBOARD</div>
+    <div class="tab" data-flow="sync" onclick="showFlow('sync', event)">TRANSACTION SYNC</div>
+    <div class="tab" data-flow="chat" onclick="showFlow('chat', event)">AI COACH</div>
+    <div class="tab" data-flow="predictions" onclick="showFlow('predictions', event)">BILL PREDICTIONS</div>
+    <div class="tab" data-flow="safetospend" onclick="showFlow('safetospend', event)">SAFE TO SPEND</div>
+    <div class="tab" data-flow="morningbrief" onclick="showFlow('morningbrief', event)">SMART PULSE</div>
+    <div class="tab" data-flow="bankconnections" onclick="showFlow('bankconnections', event)">BANK CONNECTIONS</div>
+    <div class="tab" data-flow="insights" onclick="showFlow('insights', event)">SPENDING INSIGHTS</div>
+  </div>
+
+  <div class="tabs" id="tabs-mvp-plus" style="display:none;">
+    <div class="tab" data-group="mvp-plus" data-flow="auth" onclick="showFlow('auth', event)">AUTH</div>
+    <div class="tab" data-group="mvp-plus" data-flow="reflection" onclick="showFlow('reflection', event)">REFLECTION</div>
+    <div class="tab" data-group="mvp-plus" data-flow="challenges" onclick="showFlow('challenges', event)">SPENDING CHALLENGES</div>
+    <div class="tab" data-group="mvp-plus" data-flow="notifications" onclick="showFlow('notifications', event)">PUSH NOTIFICATIONS</div>
+    <div class="tab" data-group="mvp-plus" data-flow="csvimport" onclick="showFlow('csvimport', event)">CSV IMPORT</div>
+  </div>
+</div>
+
+<!-- =========================================================================
+     MVP FLOWS
+     ========================================================================= -->
+
+<div class="flow-container active flow-dashboard" id="flow-dashboard">
+  <div class="flow-title">Dashboard Load Flow (MVP)</div>
+  <div class="flow-desc">Home screen assembly in a single request. One controller handler fans out four parallel Lucid queries and returns the aggregated payload. Target: under 500ms end-to-end. The Home screen itself then issues a small number of follow-up GETs (Smart Pulse, SafeToSpend, Bills) in parallel &mdash; each of those is its own flow in this map.</div>
+  <div class="steps">
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">1</span><span class="step-actor">Mobile App</span></div><div class="step-action">User opens the app / pulls to refresh on Home</div><div class="step-detail">Home screen mounts. In dev mode <code>SKIP_AUTH=true</code> in <code>apps/mobile/app/_layout.tsx</code> bypasses onboarding and routes straight to <code>(tabs)/home</code>. Default user is dev-bypass user ID 53 (all data belongs to this user in dev).</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">2</span><span class="step-actor">Mobile App</span></div><div class="step-action">Sends <code>GET /api/dashboard</code> with Cognito access token</div><div class="step-detail">Axios instance injects <code>Authorization: Bearer {access_token}</code> from Expo SecureStore. If the token is expired (&gt;1h old), a 401 interceptor refreshes via the 30-day refresh token transparently before retrying the request. Dev mode skips <code>logout()</code> on 401 so the auth cache isn't wiped during local work.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">3</span><span class="step-actor">Backend API</span></div><div class="step-action">JWT validation via <code>aws-jwt-verify</code> in <code>auth_middleware</code></div><div class="step-detail">Validates signature, audience, expiry against Cognito JWKS (cached). Extracts <code>cognito_sub</code> and resolves to internal <code>users</code> row. <strong>Dev bypass:</strong> when <code>NODE_ENV !== 'production'</code>, middleware short-circuits to user ID 53 regardless of token &mdash; ensures dev data stays consistent for a single user.</div><span class="step-latency">~5ms (cached JWKS)</span></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">4</span><span class="step-actor">UsersController</span></div><div class="step-action">Routes <code>GET /api/dashboard</code> &rarr; <code>UsersController.dashboard()</code></div><div class="step-detail">File: <code>apps/backend/app/controllers/users_controller.ts:114-145</code>. Handler authenticates via Adonis <code>auth.user!</code>, then fans out a single <code>Promise.all()</code> with four independent queries (accounts, transactions, challenges, bills). All four run concurrently &mdash; the slowest one determines total latency.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">5a</span><span class="step-actor">Lucid ORM</span></div><div class="step-action">Query 1: active bank accounts</div><div class="step-detail"><code>BankAccount.query().where('userId', user.id).where('isActive', true)</code>. Returns depository, credit, and loan rows. Each row includes <code>availableBalance</code>, <code>currentBalance</code>, <code>accountType</code>, <code>accountSubtype</code>, <code>mask</code>, encrypted <code>officialName</code> (auto-decrypted by Lucid computed property).</div><span class="step-latency">~15-40ms</span></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">5b</span><span class="step-actor">Lucid ORM</span></div><div class="step-action">Query 2: last 10 transactions</div><div class="step-detail"><code>Transaction.query().where('userId', user.id).orderBy('transactionDate', 'desc').preload('merchant').preload('category').limit(10)</code>. Preloads nested merchant + category rows so the mobile side has display name, icon, and color in one payload. Recent-transactions list on Home renders from this directly.</div><span class="step-latency">~20-80ms</span></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">5c</span><span class="step-actor">Lucid ORM</span></div><div class="step-action">Query 3: active challenges</div><div class="step-detail"><code>UserChallenge.query().where('userId', user.id).where('isActive', true)</code>. Used by the Progress tab today; Home currently doesn't render these but they ship in the dashboard payload for zero-cost future use. (Challenges are MVP+ &mdash; the flow is documented in the MVP+ group.)</div><span class="step-latency">~10-30ms</span></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">5d</span><span class="step-actor">Lucid ORM</span></div><div class="step-action">Query 4: upcoming bills (next 5)</div><div class="step-detail"><code>RecurringStream.query().where('userId', user.id).where('isActive', true).whereIn('streamType', ['bill','subscription']).where('predictedNextDate', '&gt;=', today).orderBy('predictedNextDate', 'asc').preload('bankAccount').limit(5)</code>. Reads directly from <code>recurring_streams</code> (the sole source of truth as of 2026-04-22). Rows are mapped to a slim shape so the dashboard field matches what the Bill Predictions flow returns from <code>GET /predictions/bills</code>.</div><span class="step-latency">~10-30ms</span></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">6</span><span class="step-actor">UsersController</span></div><div class="step-action">Aggregates and serializes response</div><div class="step-detail"><code>totalBalance = accounts.reduce((sum, a) =&gt; sum + a.availableBalance, 0)</code>. Final JSON: <code>{ totalBalance, accountCount, accounts[], recentTransactions[], activeChallenges[], upcomingBills[] }</code>. <code>toJSON()</code> invokes Lucid's serialization: encrypted fields decrypted automatically; fields marked <code>serializeAs: null</code> (SSN, Plaid access_token, etc.) are excluded from the wire payload.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">7</span><span class="step-actor">Mobile App</span></div><div class="step-action">Renders Home shell and fires follow-up GETs in parallel</div><div class="step-detail">React Query caches dashboard payload under <code>['dashboard']</code> with 60s staleTime. Home immediately issues parallel follow-ups for the features that have their own endpoints: <code>GET /morning-briefs/today</code> (Smart Pulse), <code>GET /predictions/safe-to-spend?timezone=&hellip;</code> (SafeToSpend), <code>GET /predictions/bills</code> (Upcoming Bills &mdash; streams-based source of truth). Each of those is its own spec on this page.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">8</span><span class="step-actor">Mobile App</span></div><div class="step-action">Composes final Home UI in the canonical order</div><div class="step-detail">Render order on Home: <strong>SafeToSpend</strong> (with 4-tab segmented control, default Until Payday) &rarr; <strong>Smart Pulse</strong> card (regenerated on every mount) &rarr; <strong>Recent Transactions</strong> (top 10 from this dashboard call) &rarr; <strong>Upcoming Bills</strong> (top 5 from streams). Pull-to-refresh re-runs step 1 and invalidates all four React Query caches.</div><span class="step-latency">Total end-to-end: ~300-500ms</span></div></div>
+  </div>
+
+  <div style="margin-top:40px;padding:24px;background:rgba(59,130,246,0.05);border:1px solid rgba(59,130,246,0.2);border-radius:8px;">
+    <div style="font-size:14px;font-weight:700;color:#3b82f6;margin-bottom:16px;letter-spacing:1px;">SPEC &mdash; DASHBOARD</div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Endpoint contract</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        <code>GET /api/dashboard</code> &rarr; <code>{ totalBalance: number, accountCount: number, accounts: BankAccount[], recentTransactions: Transaction[10], activeChallenges: UserChallenge[], upcomingBills: UpcomingBill[5] }</code>. Auth required. Bouncer policies enforce <code>user_id === authenticatedUserId</code> on every preloaded relation. <code>upcomingBills[]</code> items carry <code>{ id, predictedAmount, predictedDate, confidence, recurrencePattern, merchant: { name }, accountName, accountType }</code> &mdash; same shape as <code>GET /predictions/bills</code> so mobile can use one component. No pagination &mdash; the limits are hard-coded (10 transactions, 5 bills) because this is a home screen summary.
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Parallelism &amp; budget</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        One <code>Promise.all()</code> over four queries. Target p95 &lt; 500ms. If any single query exceeds ~200ms we treat it as an N+1 or missing-index bug, not a design tradeoff. Home makes 4 parallel follow-ups after this call (Smart Pulse, SafeToSpend, Bills, and the notifications inbox badge) &mdash; all run off the same auth middleware cache so JWT re-verification is &lt;1ms.
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Render order on Home (canonical)</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        1. SafeToSpend (4-tab control, default Until Payday) &mdash; see <a href="#flow-safetospend" onclick="showFlow('safetospend', event);return false;" style="color:#f59e0b;">Safe to Spend Flow</a><br>
+        2. Smart Pulse card (always visible, no dismiss, regenerated every mount) &mdash; see <a href="#flow-morningbrief" onclick="showFlow('morningbrief', event);return false;" style="color:#14b8a6;">Smart Pulse Flow</a><br>
+        3. Recent Transactions (top 10 from this dashboard call, tap row &rarr; transaction detail)<br>
+        4. Upcoming Bills (top 5 from streams) &mdash; see <a href="#flow-predictions" onclick="showFlow('predictions', event);return false;" style="color:#22c55e;">Bill Predictions Flow</a>
+      </div>
+    </div>
+
+    <div>
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Security invariants</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        &bull; All four queries filter on <code>user_id = auth.user.id</code>. Never trust query params for user scope.<br>
+        &bull; Encrypted account fields (<code>officialName</code>, <code>mask</code>) auto-decrypt via Lucid computed properties. Plaid access tokens never leave the backend (<code>serializeAs: null</code>).<br>
+        &bull; Logs use <code>redactForLogging()</code> &mdash; no PII in CloudWatch.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flow-container flow-sync" id="flow-sync">
+  <div class="flow-title">Transaction Sync Flow (MVP)</div>
+  <div class="flow-desc">Daily 2 AM CST cron job syncs last 7 days of transactions for all active bank connections. Transactions land with their <code>category_id</code> assigned per the Plaid Sync Category Resolution Priority (see the block below). Also triggered by pull-to-refresh and Plaid webhooks.</div>
+  <div class="steps">
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">1</span><span class="step-actor">Cron Scheduler</span></div><div class="step-action">Triggers at 2:00 AM CST daily</div><div class="step-detail">BullMQ repeatable job. Queries all active bank_connections.</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">2</span><span class="step-actor">Worker</span></div><div class="step-action">Enqueues <code>SyncDailyTransactionsJob</code> per connection</div><div class="step-detail">Queue: <code>transactions-sync</code>, concurrency: 5, retries: 3, backoff: 2s exponential</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">3</span><span class="step-actor">BankDataProvider</span></div><div class="step-action">PlaidAdapter fetches transactions (last 7 days)</div><div class="step-detail">Circuit breaker: 5 failures &rarr; open 30s. Retry: 3 attempts with 2s/4s/8s backoff. Timeout: 10s.</div><span class="step-latency">~200-500ms per call</span></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">4a</span><span class="step-actor">Worker</span></div><div class="step-action">Upserts merchants</div><div class="step-detail">Keyed by <code>plaid_merchant_id</code> when available, else by name. Stores Plaid primary/detailed codes on merchants row.</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">4b</span><span class="step-actor">Claude Haiku 4.5</span></div><div class="step-action">Merchant AI classification (ambiguous merchants only, cached)</div><div class="step-detail">Merchants whose Plaid code is <code>GENERAL_SERVICES_OTHER</code> / <code>ENTERTAINMENT_OTHER</code> / <code>PERSONAL_CARE_OTHER</code> / <code>GENERAL_MERCHANDISE_GIFTS_AND_NOVELTIES</code> / null AND have no cached <code>ai_category_id</code> are batch-sent to Haiku (25 per call). Output constrained to <code>SOFTWARE_AND_TECH_ALL</code> / <code>SUBSCRIPTIONS_*</code> / <code>KEEP_PLAID</code>. Result persists to <code>merchants.ai_category_id</code> &mdash; one call per unique merchant, reused forever.</div><span class="step-latency">~800ms per 25-merchant batch</span></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">4c</span><span class="step-actor">Worker</span></div><div class="step-action">Upserts transactions (idempotent) + assigns <code>category_id</code> via priority chain</div><div class="step-detail">Uses <code>plaid_transaction_id</code> as unique key. Category resolved via <strong>user override &rarr; merchants.ai_category_id &rarr; Plaid detailed</strong> (see priority chain block below). <code>categorySource</code> = <code>'user' | 'ai' | 'plaid'</code>. User-set categories are NEVER clobbered on re-sync (invariant). Also stores <code>pending_transaction_id</code> from Plaid so the pending-dedup filter can fire later at read time.</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">5</span><span class="step-actor">Worker</span></div><div class="step-action">Enqueues <code>GeneratePredictionsJob</code></div><div class="step-detail">Queue: <code>predictions</code>. Recalculates bill predictions and spending forecasts based on new data. (Payday predictions generation removed 2026-04-22 &mdash; unused.)</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">6</span><span class="step-actor">Plaid Webhook</span></div><div class="step-action">Real-time webhook for intra-day updates</div><div class="step-detail"><code>POST /api/webhooks/plaid</code> &rarr; <code>ProcessWebhookEventJob</code> &rarr; selective account refresh</div></div></div>
+  </div>
+
+  <!-- Plaid Sync Category Resolution Priority &mdash; canonical location.
+       Mirrored on the AI Pipeline page for cross-reference. -->
+  <div style="margin-top:40px;padding:24px;background:rgba(168,85,247,0.05);border:1px solid rgba(168,85,247,0.2);border-radius:8px;">
+    <div style="font-size:14px;font-weight:700;color:#a855f7;margin-bottom:8px;letter-spacing:1px;">PLAID SYNC &mdash; CATEGORY RESOLUTION PRIORITY</div>
+    <div style="font-size:11px;color:#94a3b8;margin-bottom:16px;line-height:1.6;">
+      For each incoming transaction, <code>category_id</code> is resolved by walking three tiers in order. The first tier that produces a non-null category wins. Applied in step 4c above.
+    </div>
+
+    <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;background:rgba(34,197,94,0.05);border-left:3px solid #22c55e;border-radius:4px;margin-bottom:10px;">
+      <span style="font-size:10px;font-weight:700;color:#22c55e;padding:3px 8px;background:rgba(34,197,94,0.15);border-radius:3px;letter-spacing:0.5px;">TIER 1</span>
+      <div style="flex:1;">
+        <div style="font-size:13px;color:#e2e8f0;font-weight:600;margin-bottom:4px;">User Override</div>
+        <div style="font-size:11px;color:#94a3b8;line-height:1.5;">
+          <code>merchant_category_overrides</code> row &mdash; hand-set by the user on a prior transaction via the "change category" flow (backend support exists; mobile UI is MVP+). Applies to ALL future transactions from that merchant for that user. <code>categorySource='user'</code>. <strong>Never clobbered on re-sync</strong> &mdash; this is the invariant that makes user corrections stick.
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;background:rgba(79,140,255,0.05);border-left:3px solid #4f8cff;border-radius:4px;margin-bottom:10px;">
+      <span style="font-size:10px;font-weight:700;color:#4f8cff;padding:3px 8px;background:rgba(79,140,255,0.15);border-radius:3px;letter-spacing:0.5px;">TIER 2</span>
+      <div style="flex:1;">
+        <div style="font-size:13px;color:#e2e8f0;font-weight:600;margin-bottom:4px;">Merchant AI Cache</div>
+        <div style="font-size:11px;color:#94a3b8;line-height:1.5;">
+          <code>merchants.ai_category_id</code> &mdash; set by Claude Haiku on a prior sync when Plaid's code was ambiguous (step 4b). <code>categorySource='ai'</code>. One AI call per unique merchant, reused forever. Ambiguous Plaid codes today: <code>GENERAL_SERVICES_OTHER</code>, <code>ENTERTAINMENT_OTHER</code>, <code>PERSONAL_CARE_OTHER</code>, <code>GENERAL_MERCHANDISE_GIFTS_AND_NOVELTIES</code>, null. Widen this set based on DB evidence &mdash; not blind speculation.
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;background:rgba(245,158,11,0.05);border-left:3px solid #f59e0b;border-radius:4px;margin-bottom:16px;">
+      <span style="font-size:10px;font-weight:700;color:#f59e0b;padding:3px 8px;background:rgba(245,158,11,0.15);border-radius:3px;letter-spacing:0.5px;">TIER 3</span>
+      <div style="flex:1;">
+        <div style="font-size:13px;color:#e2e8f0;font-weight:600;margin-bottom:4px;">Plaid Detailed Code</div>
+        <div style="font-size:11px;color:#94a3b8;line-height:1.5;">
+          Plaid's native PFC classification. <code>categorySource='plaid'</code>. Handles confident cases (coffee, gas, groceries) with zero AI cost. Used when no user override and no AI cache.
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;line-height:1.6;padding-top:12px;border-top:1px solid rgba(168,85,247,0.15);">
+      <strong style="color:#cbd5e1;">Related:</strong>
+      See <a href="#flow-insights" onclick="showFlow('insights', event);return false;" style="color:#8b5cf6;">Spending Insights Flow</a> for how categorized transactions are aggregated into the donut + category list.
+      The same priority chain is visualized on the <a href="ai-pipeline-map.html" style="color:#8b5cf6;">AI Pipeline</a> page for the AI-first view of the system.
+    </div>
+  </div>
+</div>
+
+<div class="flow-container flow-chat" id="flow-chat">
+  <div class="flow-title">AI Coach Flow (MVP)</div>
+  <div class="flow-desc">Input-first chat UI with suggestion chips. User types &rarr; createChat &rarr; navigate with <code>initialMessage</code> &rarr; auto-send via useEffect &rarr; SSE stream via XMLHttpRequest &rarr; Tide Coach tool loop over AWS Bedrock (Claude Sonnet 4.6) &rarr; persist both messages via BullMQ. Multi-turn, tool-using, with a strict alternating-role contract that Bedrock requires and this flow enforces.</div>
+  <div class="steps">
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">1</span><span class="step-actor">User</span></div><div class="step-action">Types a message or taps a suggestion chip on AI Coach tab</div><div class="step-detail">Input-first design. Suggestion chips cover the common jobs: "How much can I spend this week?" / "Why is my dining so high?" / "What bills are coming up?". Hamburger drawer shows chat history with swipe-to-delete. New-chat button clears the thread.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">2</span><span class="step-actor">Mobile App</span></div><div class="step-action"><code>POST /api/chats</code> to create the chat row, then router.push with <code>initialMessage</code></div><div class="step-detail"><code>createChat</code> returns <code>{ id }</code>. App navigates to <code>/chat/[id]</code> with the first message as a URL param. Chat screen's <code>useEffect</code> on mount reads <code>initialMessage</code> and fires <code>sendMessage</code> exactly once &mdash; same path as any subsequent user turn. This unifies "first message" and "nth message" into one code path.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">3</span><span class="step-actor">Mobile App</span></div><div class="step-action">Opens SSE stream via <code>XMLHttpRequest</code> (not fetch)</div><div class="step-detail">React Native's <code>fetch()</code> does NOT expose <code>response.body</code> as a ReadableStream &mdash; so streaming via fetch is impossible. <code>apps/mobile/src/api/sse-client.ts</code> uses <code>XMLHttpRequest</code> with <code>onprogress</code> to read incremental bytes, parses <code>event:</code>/<code>data:</code> lines, and re-emits events as they arrive. This is load-bearing &mdash; see LEARNINGS.md "Streaming not supported".</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">4</span><span class="step-actor">ChatsController</span></div><div class="step-action"><code>POST /api/chats/:id/messages</code> &rarr; <code>ChatsController.sendMessage()</code></div><div class="step-detail">File: <code>apps/backend/app/controllers/chats_controller.ts:76-291</code>. Bouncer: <code>ChatPolicy.edit(chat)</code> enforces ownership. Validator: <code>sendMessageValidator</code> (non-empty content). If <code>isBedrockAvailable()</code> returns false (missing AWS creds), returns 503. First turn also sets <code>chat.title</code> to the first 100 chars of the user message.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">5</span><span class="step-actor">ChatsController</span></div><div class="step-action">Persists the user message SYNCHRONOUSLY before loading history</div><div class="step-detail">The user message is written to <code>chat_messages</code> via <code>ChatMessage.create()</code> &mdash; NOT queued. Why: the next turn's history query would otherwise see two consecutive user roles because the queued assistant response from this turn isn't persisted yet. Content is AES-256 encrypted at rest. Role = <code>'user'</code>.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">6</span><span class="step-actor">ChatsController</span></div><div class="step-action">Loads chat history and builds Bedrock message array</div><div class="step-detail">Query: last <code>chatConfig.maxContextMessages</code> messages for this chat (default 20, covers ~10 turns). Reverses to chronological. Decrypts each with <code>getDecryptedContent()</code>. <strong>Filters out blank messages</strong> &mdash; Bedrock's <code>ConverseStream</code> API rejects empty text ContentBlocks, which caused a multi-turn crash (see LEARNINGS.md 2026-04-18).</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">7</span><span class="step-actor">ChatsController</span></div><div class="step-action">Enforces strict alternating user/assistant roles</div><div class="step-detail">Bedrock's Converse API REJECTS consecutive same-role messages. Cleanup loop: (a) if two consecutive user messages (queue lag dropped the assistant reply), keep the later one; (b) if two consecutive assistant messages, keep the first; (c) strip leading non-user messages so conversation starts with <code>'user'</code>. This is defensive &mdash; the synchronous user persistence in step 5 usually prevents the issue, but the queue fallback path can still produce gaps.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">8</span><span class="step-actor">Intent Classifier</span></div><div class="step-action">(Disabled) Claude Haiku 4.5 intent classification</div><div class="step-detail"><code>const intentPromise = Promise.resolve('unknown')</code>. Intent classification is currently turned OFF &mdash; it consumed a separate Haiku call per message and competed with the chat stream for Bedrock quota, causing throttle errors during multi-turn sessions (see commit <code>32cd3ad</code>). Re-enable once AWS quota is raised. The persistence path still writes <code>intentClassified</code> to <code>chat_messages</code> for future filtering.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">9</span><span class="step-actor">ChatsController</span></div><div class="step-action">Opens SSE response headers and starts streaming</div><div class="step-detail"><code>Content-Type: text/event-stream</code>, <code>Cache-Control: no-cache</code>, <code>Connection: keep-alive</code>, <code>X-Accel-Buffering: no</code> (prevents nginx/CDN buffering). Local <code>sendSSE(event, data)</code> helper writes <code>event: X\ndata: JSON\n\n</code> frames. Builds system prompt via <code>buildCoachSystemPrompt(user.fullName)</code> and instantiates <code>new ToolExecutor(user.id)</code> against a read-only DB connection.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">10</span><span class="step-actor">BedrockService</span></div><div class="step-action"><code>streamTide CoachResponse</code> &mdash; Converse loop with tool use</div><div class="step-detail">Model: <code>us.anthropic.claude-sonnet-4-20250514-v1:0</code> (Tide Coach). Tool loop: max <code>MAX_TOOL_ITERATIONS = 10</code> iterations. Each iteration: Bedrock streams text chunks + possibly a tool use block; controller relays text to SSE as <code>event: token</code>; if the model requests a tool, controller pauses, runs it via <code>ToolExecutor</code>, feeds the result back into the next Converse round. Throttle handling: <code>ThrottlingException</code> triggers exponential backoff retry (1s/2s/4s).</div><span class="step-latency">First token &lt; 2s</span></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">11</span><span class="step-actor">ToolExecutor</span></div><div class="step-action">Executes Tide Coach tools against read-only DB</div><div class="step-detail">11 tools available (see AI Pipeline page for the full list). Headliners: <code>calculate_safe_to_spend</code> (delegates to shared <code>safe_to_spend_service.ts</code> &mdash; same numbers as the SafeToSpend card), <code>get_spending_by_category</code>, <code>get_recent_transactions</code>, <code>get_upcoming_bills</code>, <code>get_payday_info</code>. Each tool call runs with Bouncer policies enforced on the read-only connection. Tool input/output appended to <code>accumulatedTools</code> for persistence. Each tool call is emitted as <code>event: tool-use</code> over SSE so mobile can render a "thinking about X" chip.</div><span class="step-latency">~30-200ms per tool</span></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">12</span><span class="step-actor">Mobile App</span></div><div class="step-action">Renders streaming tokens + tool chips in chat UI</div><div class="step-detail">Tokens append to the in-flight assistant bubble character-by-character as <code>event: token</code> frames arrive. Tool use frames render as small chips ("Checking your spending&hellip;"). On <code>event: done</code> the bubble freezes. On network drop or malformed frame, the client keeps whatever partial text it has rather than erasing &mdash; mirrors server-side partial persistence.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">13</span><span class="step-actor">ChatsController</span></div><div class="step-action">Persists the assistant message via BullMQ (with synchronous fallback)</div><div class="step-detail"><code>persistAssistantMessage(accumulatedText, accumulatedTools)</code> dispatches <code>PersistChatMessageJob</code> to queue <code>chat-messages</code> (30-day failure retention &mdash; do not reduce). Job writes <code>{ chatId, role: 'assistant', content, intentClassified, toolsUsed (JSON), modelUsed: 'claude-sonnet-4-6' }</code> with AES-256 encrypted content. If queue dispatch throws (Redis down), falls back to a synchronous <code>ChatMessage.create()</code>. <strong>Both success and error paths</strong> call this &mdash; partial assistant responses are persisted even when streaming errors out mid-flight.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">14</span><span class="step-actor">ChatsController</span></div><div class="step-action">Emits <code>event: done</code> and closes the SSE stream</div><div class="step-detail">Final frame carries <code>{ latencyMs, firstTokenMs, toolCount }</code> for client-side telemetry. <code>nodeRes.end()</code> closes the HTTP response. On error path: <code>event: error</code> with a user-facing message, then <code>done</code>, then persist whatever partial text accumulated.</div></div></div>
+  </div>
+
+  <div style="margin-top:40px;padding:24px;background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.2);border-radius:8px;">
+    <div style="font-size:14px;font-weight:700;color:#00d4ff;margin-bottom:16px;letter-spacing:1px;">SPEC &mdash; AI COACH</div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Models</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        Tide Coach (streaming, tool use): <code>us.anthropic.claude-sonnet-4-20250514-v1:0</code>. Intent classifier (disabled today, reserved for quota recovery): <code>us.anthropic.claude-haiku-4-5-20251001-v1:0</code>. Access via AWS Bedrock Converse / ConverseStream APIs. Custom HTTP strategy is used for Bedrock AgentCore JWT auth (AWS SDK cannot &mdash; see CLAUDE.md).
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Context window</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        <code>chatConfig.maxContextMessages = 20</code> (chronological). Blank messages are filtered out before sending to Bedrock (empty text blocks crash ConverseStream). Alternating user/assistant roles enforced &mdash; defensive cleanup handles the rare queue-lag gap.
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Tool loop</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        Max <code>MAX_TOOL_ITERATIONS = 10</code> per turn. All tools run against a read-only DB connection. Bouncer policies still enforced: <code>user_id === authenticatedUserId</code> at every query. <code>calculate_safe_to_spend</code> delegates to the shared <code>safe_to_spend_service.ts</code> &mdash; Home card and AI Coach return byte-for-byte identical numbers.
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Streaming transport (React Native quirk)</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        Mobile client uses <code>XMLHttpRequest</code> + <code>onprogress</code>, not <code>fetch()</code>. RN's fetch does not expose <code>response.body</code> as a ReadableStream. See <code>apps/mobile/src/api/sse-client.ts</code>. Server writes <code>text/event-stream</code> with <code>X-Accel-Buffering: no</code> to disable CDN buffering.
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Persistence contract</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        User message: synchronous write BEFORE history load (invariant for alternating-role contract). Assistant message: BullMQ <code>chat-messages</code> queue with 30-day failure retention (never reduce). Synchronous fallback if queue dispatch fails. Partial responses persisted even on streaming errors.
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Throttling &amp; quota</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        Bedrock ThrottlingException triggers exponential backoff (1s / 2s / 4s) &mdash; see commit <code>2e33ff4</code>. Intent classification was disabled to free quota for the chat stream &mdash; re-enable only after AWS quota increase. Circuit breaker on AI service: 5 failures &rarr; open 30s. All AI calls use the shared circuit breaker + retry wrapper per CLAUDE.md.
+      </div>
+    </div>
+
+    <div>
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Error paths covered</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        &bull; Bedrock unavailable &rarr; 503 before opening stream<br>
+        &bull; Throttle &rarr; retry w/ backoff, surface only after exhausting attempts<br>
+        &bull; Streaming error mid-flight &rarr; persist partial text, emit <code>event: error</code> + <code>done</code><br>
+        &bull; Empty ContentBlock in history &rarr; filtered at step 6<br>
+        &bull; Consecutive same-role messages &rarr; cleanup at step 7<br>
+        &bull; Queue dispatch failure &rarr; synchronous DB fallback at step 13
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flow-container flow-predictions" id="flow-predictions">
+  <div class="flow-title">Bill Predictions Flow (MVP)</div>
+  <div class="flow-desc">On-demand recurrence detection. <code>GET /predictions/bills</code> auto-runs the 5-stage <code>RecurrenceDetectionService</code> when streams are stale (&gt;24h) or missing &mdash; bypassing any background-job dependency. Streams are persisted to <code>recurring_streams</code> (17 columns incl. <code>predicted_next_amount</code>, <code>predicted_next_date</code>, <code>confidence_score</code>). Consumers: Upcoming Bills card, Smart Pulse context, Safe to Spend bills/income projection, AI Coach <code>get_upcoming_bills</code> tool.</div>
+  <div class="steps">
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">1</span><span class="step-actor">Mobile App</span></div><div class="step-action">Requests <code>GET /predictions/bills?daysAhead=60&amp;limit=25</code></div><div class="step-detail">Home Upcoming Bills card and the dedicated Bills screen both hit this. Default <code>daysAhead = 60</code>, <code>limit = 25</code>. Auth token required. React Query caches under <code>['bills', daysAhead, limit]</code> with 60s staleTime.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">2</span><span class="step-actor">PredictionsController</span></div><div class="step-action">Freshness check on <code>recurring_streams</code></div><div class="step-detail">File: <code>apps/backend/app/controllers/predictions_controller.ts:17-106</code>. Reads the first active stream for this user. <code>needsRefresh = !existingStreams || (updatedAt older than 24h)</code>. If fresh, skip to step 8. If stale or none, run detection in-request (on-demand, NOT background).</div><span class="step-latency">~5ms if fresh</span></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">3</span><span class="step-actor">RecurrenceDetectionService</span></div><div class="step-action">Stage 1 &mdash; Normalize merchant descriptions</div><div class="step-detail"><code>normalizeDescription()</code> strips: payment processor prefixes (<code>SQ*</code>, <code>PAYPAL*</code>, <code>TST*</code>, <code>SP*</code>), phone numbers (10+ digit runs with punctuation), trailing <code>#codes</code> and <code>REF:codes</code>, corporate suffixes (<code>.COM</code>, <code>INC</code>, <code>LLC</code>, <code>LTD</code>, <code>CORP</code>), and city/state patterns. Result: "NETFLIX.COM #4321 LOS GATOS CA" &rarr; "NETFLIX".</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">4</span><span class="step-actor">RecurrenceDetectionService</span></div><div class="step-action">Stage 2 &mdash; Fuzzy-match and group transactions</div><div class="step-detail">Groups by <code>merchant_id</code> when available, else by normalized name. Dice coefficient 0.75 threshold merges near-duplicate names (e.g., "SPOTIFY USA" vs "SPOTIFY"). Each group carries <code>{ key, merchantId, normalizedName, transactions[] }</code>. Groups with fewer than 3 transactions are dropped &mdash; not enough signal.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">5</span><span class="step-actor">RecurrenceDetectionService</span></div><div class="step-action">Stage 3 &mdash; Detect period from inter-transaction intervals</div><div class="step-detail">Sorts each group's transactions by date. Computes median interval in days. Matches against <code>KNOWN_PERIODS</code>: <code>weekly=7 (&plusmn;2)</code>, <code>biweekly=14 (&plusmn;3)</code>, <code>semi_monthly=15 (&plusmn;3)</code>, <code>monthly=30 (&plusmn;5)</code>, <code>quarterly=91 (&plusmn;10)</code>, <code>annual=365 (&plusmn;20)</code>. First period inside tolerance wins. Groups with no matching period are dropped.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">6</span><span class="step-actor">RecurrenceDetectionService</span></div><div class="step-action">Stage 4 &mdash; Compute anchor day + next occurrence</div><div class="step-detail"><code>anchorDay</code> = modal day-of-period (e.g., day 1 for monthly rent, day 15 for mid-month). Predicted next date = last observed + detected period, snapped to the anchor day when applicable. <code>averageAmount</code> = mean; <code>lastAmount</code> = most recent; <code>predictedNextAmount</code> = lastAmount (more recent &gt; long-run average for subscriptions that got price hikes).</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">7</span><span class="step-actor">RecurrenceDetectionService</span></div><div class="step-action">Stage 5 &mdash; Confidence score + stream type classification</div><div class="step-detail">Confidence 0-1 from: (a) interval regularity (lower stdev &rarr; higher), (b) amount consistency (coefficient of variation), (c) occurrence count (more samples &rarr; higher). Streams below <code>MIN_CONFIDENCE = 0.3</code> are dropped. <code>streamType</code>: positive-amount runs tagged <code>'income'</code> (paychecks, direct deposits); negative amounts get <code>'bill'</code> or <code>'subscription'</code> based on amount stability and merchant name heuristics.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">8</span><span class="step-actor">PredictionsController</span></div><div class="step-action">Upserts detected streams to <code>recurring_streams</code></div><div class="step-detail">Marks all existing active streams <code>isActive = false</code>, then upserts each detected stream by <code>(userId, normalizedMerchantName, frequency)</code> composite key. This gives idempotent refreshes &mdash; renamed or merged merchants gracefully deactivate instead of leaving stale predictions.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">9</span><span class="step-actor">PredictionsController</span></div><div class="step-action">Reads streams filtered to bill/subscription in the requested window</div><div class="step-detail"><code>where streamType IN ('bill', 'subscription') AND isActive = true AND predictedNextDate BETWEEN today AND today+daysAhead</code>. Preloads <code>bankAccount</code> for the "Chase &bull; Checking &bull;&bull;4321" label. Sorted by <code>predictedNextDate ASC</code>. Income streams are NOT returned here &mdash; they feed Safe to Spend and Smart Pulse separately.</div><span class="step-latency">~10-30ms</span></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">10</span><span class="step-actor">PredictionsController</span></div><div class="step-action">Shapes the response envelope</div><div class="step-detail">Maps each stream to the slim bill shape: <code>{ id, userId, merchantId: null, predictedAmount, predictedDate, confidence, predictionConfidence, recurrencePattern, merchant: { name }, accountName, accountType }</code>. Response envelope: <code>{ meta: { total, perPage, currentPage, lastPage }, data: [&hellip;] }</code>. Same shape returned by the dashboard's <code>upcomingBills[]</code> field so mobile uses one component for both.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">11</span><span class="step-actor">Mobile App</span></div><div class="step-action">Renders Upcoming Bills UI</div><div class="step-detail">Home card: top 3-5 bills by date. Full screen: all within 60 days, grouped by week. Each row: merchant name, amount (<code>$XX.XX</code>), date (e.g., "Apr 22 &middot; 3 days"), account label, confidence pill (green &ge;0.75, yellow 0.3-0.75). Swipe-to-mark-paid is deferred to MVP+ and will require a new <code>is_paid</code>-style column on <code>recurring_streams</code> or a separate per-occurrence table.</div><span class="step-latency">Total: ~200-800ms (stale) / ~50ms (fresh)</span></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">12</span><span class="step-actor">Downstream consumers</span></div><div class="step-action">The same <code>recurring_streams</code> table feeds three other flows</div><div class="step-detail">&bull; <strong>Safe to Spend</strong> subtracts bills with <code>confidence &ge; 0.3</code> and adds income with <code>confidence &ge; 0.75</code> &mdash; see that flow.<br>&bull; <strong>Smart Pulse</strong> pulls bills/income in the next 7 days for the Haiku context snapshot.<br>&bull; <strong>AI Coach</strong> <code>get_upcoming_bills</code> tool reads streams directly via the read-only connection.<br>Single source of truth &rarr; all four UIs quote the same numbers.</div></div></div>
+  </div>
+
+  <div style="margin-top:40px;padding:24px;background:rgba(34,197,94,0.05);border:1px solid rgba(34,197,94,0.2);border-radius:8px;">
+    <div style="font-size:14px;font-weight:700;color:#22c55e;margin-bottom:16px;letter-spacing:1px;">SPEC &mdash; BILL PREDICTIONS</div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Detection pipeline (5 stages)</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        1. Normalize description (strip processor prefixes, phone numbers, suffixes, city/state).<br>
+        2. Fuzzy-group by merchant (Dice 0.75). Drop groups with &lt;3 occurrences.<br>
+        3. Detect period against <code>KNOWN_PERIODS</code> with tolerance bands.<br>
+        4. Compute anchor day + predicted next amount (uses last, not average, to catch price hikes).<br>
+        5. Score confidence (interval regularity + amount consistency + occurrence count). Drop &lt;0.3.
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Periods and tolerances</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        <code>weekly=7 (&plusmn;2)</code>, <code>biweekly=14 (&plusmn;3)</code>, <code>semi_monthly=15 (&plusmn;3)</code>, <code>monthly=30 (&plusmn;5)</code>, <code>quarterly=91 (&plusmn;10)</code>, <code>annual=365 (&plusmn;20)</code>. First match wins (narrowest tolerance). Tighten bands only with DB evidence &mdash; false positives are cheap, missed subscriptions are not.
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Thresholds (shared with consumers)</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        Write-side: <code>MIN_CONFIDENCE = 0.3</code> (stream must clear this to persist).<br>
+        Read-side: Upcoming Bills UI shows everything &ge; 0.3 (full list) and highlights &ge; 0.75 as green.<br>
+        Safe to Spend bills: &ge; 0.3 conservative (to avoid overspending).<br>
+        Safe to Spend income: &ge; 0.75 (lowered from 0.85 in v4; 'high' label stays at 0.85).<br>
+        Smart Pulse: bills &ge; 0.3, income &ge; 0.8 &mdash; see that flow.
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Staleness + refresh</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        On-demand refresh at read time when the oldest stream is &gt;24h. No background job dependency &mdash; this was an explicit MVP decision. The Transaction Sync flow also enqueues <code>GeneratePredictionsJob</code> after every sync, which refreshes the same streams when the queue worker is running. Either path keeps streams current.
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Storage: <code>recurring_streams</code></div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        17 columns. Unique key: <code>(userId, normalizedMerchantName, frequency)</code>. Key fields: <code>streamType</code> (<code>bill</code>/<code>income</code>/<code>subscription</code>), <code>detectedPeriodDays</code>, <code>anchorDay</code>, <code>averageAmount</code>, <code>lastAmount</code>, <code>predictedNextAmount</code>, <code>predictedNextDate</code>, <code>lastObservedDate</code>, <code>confidenceScore</code>, <code>occurrenceCount</code>, <code>isActive</code>, <code>bankAccountId</code>.
+      </div>
+    </div>
+
+    <div>
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">MVP+ (deferred)</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        &bull; Swipe-to-mark-paid from mobile (needs an <code>is_paid</code>-style column on <code>recurring_streams</code> or a separate per-occurrence table; old <code>bills_predictions.is_paid</code> feature was dropped with the table)<br>
+        &bull; Variable-amount bill support (e.g., utility bills that change month-to-month)<br>
+        &bull; User-editable streams (pause, rename, delete false positives)<br>
+        &bull; Reminders 3/1 days before each predicted bill (ties into Push Notifications)
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flow-container flow-safetospend" id="flow-safetospend">
+  <div class="flow-title">Safe to Spend Flow (MVP &mdash; v4.9)</div>
+  <div class="flow-desc">Per-window formula: <code>amount = spendableBalance + expectedIncome(&ge;0.75) &minus; upcomingBills(&ge;0.3) &minus; creditCardDebt</code>. Four always-visible tabs: Until Payday (default), Today, This Week (ISO Mon-Sun in user tz), This Month (today &rarr; endOfMonth). Shared backend service <code>safe_to_spend_service.ts</code> &mdash; Home dashboard and AI Coach <code>calculate_safe_to_spend</code> tool both delegate to it so numbers match byte-for-byte.<br><br><strong>What the formula captures (v4.6):</strong>
+    <table style="width:100%; border-collapse:collapse; margin-top:8px; font-size:11px;">
+      <thead>
+        <tr style="background:rgba(255,255,255,0.03);">
+          <th style="text-align:left; padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:#94a3b8;">Category</th>
+          <th style="text-align:left; padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:#94a3b8;">Captured?</th>
+          <th style="text-align:left; padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:#94a3b8;">How</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Past debit / checking spending (cleared)</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:#22c55e;">&#10003;</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);"><code>spendableBalance</code> reads <code>availableBalance</code> from Plaid <strong>checking</strong> accounts only (v4.9 — savings excluded as deliberate behavioral choice; surfaced separately as <code>setAsideAccounts</code>) &mdash; cleared txns already reduced the balance</td></tr>
+        <tr><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Past debit / checking spending (pending)</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:#22c55e;">&#10003;</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Plaid <code>availableBalance</code> subtracts pending debits automatically. Pending charges typically appear within minutes-to-hours of swipe; posted charges lag 1-3 days</td></tr>
+        <tr><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Past credit-card spending</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:#22c55e;">&#10003;</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);"><code>creditCardDebt</code> = sum of current CC balances</td></tr>
+        <tr><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Future recurring bills (rent, Netflix, gym)</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:#22c55e;">&#10003;</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);"><code>upcomingBills</code> from <code>recurring_streams</code> with conf &ge; 0.3</td></tr>
+        <tr><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Future recurring income (paycheck)</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:#22c55e;">&#10003;</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);"><code>expectedIncome</code> from income streams with conf &ge; 0.75</td></tr>
+        <tr><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Future non-recurring discretionary (dinner, Target, impulse) &mdash; <strong>checking + credit card swipes</strong></td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:#f59e0b;">Context only</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);"><code>typicalDiscretionary</code> (v4.6; broadened in v4.7 to include CC swipes). Per-window projections on every tab (today / thisWeek / restOfMonth / untilPayday). NOT subtracted from runway &mdash; surfaced as &ldquo;Projection at &lt;windowEnd&gt;&rdquo; informational context. <a href="safe-to-spend-typical-spending-spec.html" style="color:#fbbf24; text-decoration:underline; font-weight:600;">See the full math spec &rarr;</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">1</span><span class="step-actor">Mobile App</span></div><div class="step-action">Requests <code>GET /predictions/safe-to-spend?timezone=America/New_York</code></div><div class="step-detail">Timezone auto-detected via <code>Intl.DateTimeFormat().resolvedOptions().timeZone</code>. Segmented control shows Until Payday / Today / This Week / This Month &mdash; all 4 tabs always visible, identical styling. Default: Until Payday.</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">2</span><span class="step-actor">Backend API</span></div><div class="step-action">Resolves next payday via the canonical <code>resolvePayday()</code> helper</div><div class="step-detail">Single source of truth &mdash; same helper the AI Coach's <code>query_payday_predictions</code> + <code>calculate_safe_to_spend</code> tools use, so Home and Coach quote the same date. <strong>Two cases</strong>: (1) <code>user_setting</code> &mdash; user has told us the cadence in Settings. Monthly uses <code>payday_day_of_month</code>; <strong>semi-monthly</strong> picks one of two US-standard variants via <code>payday_day_of_month</code>: <code>1</code> &rarr; 1st + 15th, <code>15</code> &rarr; 15th + last-day; biweekly/weekly derive the anchor from the highest-confidence income stream OR any stream with <code>user_confirmed=true</code> (v4.5 — user's explicit paycheck flag bypasses the confidence bar). (2) <code>inferred</code> &mdash; no setting, or the setting couldn't compute. Use the primary stream if it's user-confirmed or has conf &ge; 0.6; else fall back to today + 14 days. <code>pickPrimaryIncomeStream()</code> always ranks <code>user_confirmed=true</code> above unconfirmed regardless of amount&times;confidence score. Amount inclusion in SafeToSpend still requires conf &ge; 0.75 &mdash; user-confirming a single transaction does NOT promote its amount into runway math. Returns <code>ResolvedPayday</code> envelope: <code>{ nextPayday, predictedAmount, frequency, source, confidence, daysUntilPayday, isPaydayToday, anchorDate }</code>. Postgres <code>date</code> columns are normalized via <code>toUserLocalDate()</code> to avoid UTC-midnight-to-Eastern-evening shifts that previously slid May 2 bills into the May 1 window.</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">3</span><span class="step-actor">Lucid ORM</span></div><div class="step-action">Query spendable accounts + credit debt + loans</div><div class="step-detail"><code>bank_accounts WHERE is_active = true</code>. Depository &rarr; <code>spendableBalance</code> (sum of <code>available_balance</code>, fallback <code>current_balance</code>). Credit &rarr; <code>creditCardDebt</code>. Loan accounts surfaced as <code>loansExcluded[]</code> but NOT used in formula. Decimals parsed with <code>Number()</code>.</div><span class="step-latency">~10ms</span></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">4</span><span class="step-actor">Lucid ORM</span></div><div class="step-action">Query bills + income streams for all windows</div><div class="step-detail"><code>recurring_streams WHERE user_id = ? AND is_active = true</code>. Bills threshold &ge; 0.3 (conservative). <strong>Income threshold &ge; 0.75 in the service</strong> (v4 &mdash; lowered from 0.85; confidenceLabel 'high' stays at 0.85 for Smart Pulse / Morning Brief narratives). Each stream joined with <code>bank_accounts</code> via <code>bank_account_id</code> FK for account name + type labeling.</div><span class="step-latency">~10ms</span></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">5</span><span class="step-actor">SafeToSpendService</span></div><div class="step-action">Computes per-window TimeframeData</div><div class="step-detail">Windows: Today = <code>now.endOf('day')</code>; This Week = <code>now.endOf('week')</code> (ISO Mon-Sun); Until Payday = <code>nextPayday</code>; This Month = <code>now.endOf('month')</code>. For each: filter streams, apply formula, return <code>{ amount, daysInWindow, perDayInWindow, bills[], income[], possibleBills[], upcomingBillsTotal, expectedIncomeTotal, windowEnd }</code>. Today's <code>amount</code> is special-cased to <code>dailyBudget</code> (pay-cycle-averaged) &mdash; it's a per-day concept, not a window sum.</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">6</span><span class="step-actor">Backend API</span></div><div class="step-action">Returns SafeToSpend JSON response</div><div class="step-detail"><code>{ today, thisWeek, untilPayday, restOfMonth, dailyBudget, daysUntilPayday, nextPayday, isPaydayToday, resolved, spendableBalance, creditCardDebt, accountsIncluded, creditCards, loansExcluded, lastSyncedAt }</code>. Each TimeframeData includes <code>daysInWindow</code> + <code>perDayInWindow</code> for breakdown math. <code>resolved</code> is the 2-case payday envelope: <code>{ source: 'user_setting' | 'inferred', confidence, anchorDate, predictedAmount, frequency }</code>. No more <code>paydaySource</code> alias, <code>thisMonth</code> alias, <code>isStale</code>, or <code>divergenceWarning</code> &mdash; all retired in v4.4.</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">7</span><span class="step-actor">Mobile App</span></div><div class="step-action">Renders 4-tab control + animated amount + color legend</div><div class="step-detail">Color: Green (&gt;20% of balance), Yellow (5&ndash;20%), Red (&lt;5% or negative). Tap <code>&#9432;</code> next to the number &rarr; bottom-sheet legend (SecureStore remembers "seen"). Subtitles: <code>"safe until end of day"</code> / <code>"safe until Sun Apr 27"</code> / <code>"safe until Thu Apr 30"</code> / <code>"safe until payday (Fri Apr 25)"</code>. Expandable breakdown (v4.7 &mdash; stacked sections on every tab): <strong>(1) Runway until payday</strong> &mdash; <code>Checking &minus; Bills before payday &minus; Credit card balances + Income before payday = Runway</code>. <em>Aggregated rows show a chevron and reveal a horizontal-scrolling strip of compact cards when tapped</em>: Checking → per-account balances, Bills → per-merchant with dates, Credit card balances → per-card balances. Single-row-open accordion (tapping a new row closes the previous) caps expanded card height. <strong>(2) Your daily budget</strong> &mdash; <code>&divide; N days to payday = $dailyBudget/day</code>. <strong>(3) Safe &lt;window&gt;</strong> &mdash; <code>$dailyBudget/day &times; daysInWindow days = safeAmount</code>. <strong>(4) Projection block (v4.8 &mdash; on every tab, per-window-day cards)</strong> &mdash; surfaces <code>typicalDiscretionary.windows[selectedTimeframe].forecastAmount</code> per tab (Today → end of today; This Week → through Sunday; This Month → through end-of-month; Until Payday → through nextPayday). Computed from up to 365 days of history across <strong>both checking and credit card outflows</strong>, robust-mean-per-weekday capped at 90th percentile, excluding recurring streams via <code>recurring_stream_id IS NULL</code>. Aggregated "Typical spending" row expands to <strong>per-day cards for the selected window</strong> (not just 7 weekday summaries) &mdash; e.g., Until Payday&rsquo;s 9-day window renders 9 cards (Thu Apr 23, Fri Apr 24, Sat, Sun, Mon, Tue, Wed, Thu, Fri), each showing weekday name + date + that day&rsquo;s typical spend, exposing the exact addends behind the sum. Total-line copy reads as the outcome: "= You'd likely have $X left at payday (May 1)". Tap the "How?" link for a methodology modal with sample size, observed-days coverage, per-weekday histogram, AND all four window projections side-by-side. Null when the user has &lt;60 days of Plaid history. Optional "Also coming up in this window" context section appears on Today / This Week / This Month when bills or income fall inside that tab's window; hidden on Until Payday because those rows duplicate the runway decomposition.</div><span class="step-latency">Total: ~50-100ms</span></div></div>
+  </div>
+</div>
+
+<div class="flow-container flow-morningbrief" id="flow-morningbrief">
+  <div class="flow-title">Smart Pulse Flow (MVP)</div>
+  <div class="flow-desc">Real-time financial insight that regenerates on every app open and pull-to-refresh &mdash; NOT idempotent once-per-day. On each hit: delete today's brief row, rebuild a full financial snapshot (balances + bills + income + today's transactions + prior-day brief category), call Haiku 4.5 for an 80-char date-aware insight, persist, and return. Streak is recorded on the same fetch via <code>StreakService</code>. "Dig deeper with AI Coach" links from Home card and detail page pass the insight text as initialMessage.</div>
+  <div class="steps">
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">1</span><span class="step-actor">Mobile App</span></div><div class="step-action">Home mount OR pull-to-refresh fires <code>GET /morning-briefs/today?timezone=America/New_York</code></div><div class="step-detail">Fires on every Home mount (not just first-of-day). Pull-to-refresh invalidates the React Query cache and re-triggers the same endpoint. Timezone is passed so the streak service resolves "today" correctly when the user is in PST and the server is UTC.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">2</span><span class="step-actor">MorningBriefsController</span></div><div class="step-action">Routes to <code>MorningBriefsController.today()</code>, calls service</div><div class="step-detail">Controller at <code>morning_briefs_controller.ts:13-27</code>. Validates timezone, delegates to <code>MorningBriefService.generate(userId)</code>. Returns the fresh brief. Also invokes <code>StreakService.recordCheckin(userId, timezone)</code>.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">3</span><span class="step-actor">MorningBriefService</span></div><div class="step-action">Deletes existing brief for today (regen contract)</div><div class="step-detail"><code>MorningBrief.query().where('userId', userId).where('briefDate', today).delete()</code>. <strong>Invariant</strong>: one brief row per user per day. Every mount rebuilds &mdash; Smart Pulse is real-time, not daily. The old row is discarded before the new context snapshot is built so there's never a window where both exist.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">4</span><span class="step-actor">MorningBriefService</span></div><div class="step-action">Gathers balances (depository + credit card debt)</div><div class="step-detail"><code>BankAccount.query().where('userId').where('isActive', true).where('accountType', 'depository').preload('bankConnection')</code> &rarr; <code>totalBalance = sum(availableBalance ?? currentBalance)</code>. Credit accounts: <code>sum(abs(currentBalance))</code> &rarr; <code>creditCardDebt</code>. Per-account breakdown preserved with institution name and nickname so the AI prompt can reference specific banks ("Chase Checking is your largest balance").</div><span class="step-latency">~20-40ms</span></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">5</span><span class="step-actor">MorningBriefService</span></div><div class="step-action">Gathers bills + income for the next 7 days from <code>recurring_streams</code></div><div class="step-detail"><code>RecurringStream.where('isActive', true).where('predictedNextDate' BETWEEN today AND today+7)</code>. Streams split by <code>streamType</code>: income &rarr; <code>{ source, amount, confidence, date }</code>; bill/subscription &rarr; <code>{ merchant, amount, confidence, date }</code>. Each stream carries its confidence so the next step can filter. Actual dates (not "Sunday" / "next week") flow into the prompt &mdash; date-aware bill references are a hard requirement.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">6</span><span class="step-actor">MorningBriefService</span></div><div class="step-action">Loads today's already-posted transactions</div><div class="step-detail"><code>Transaction.query().where('userId').where('transactionDate', today)</code>. Mapped to <code>{ description, amount, category: 'uncategorized' }</code> for the snapshot. Gives Haiku something fresh to comment on when the user reopens the app after a purchase ("you spent $18 at Chipotle for lunch").</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">7</span><span class="step-actor">MorningBriefService</span></div><div class="step-action">Computes simplified 7-day safe-to-spend for the prompt</div><div class="step-detail"><code>highConfidenceBills = sum(bills where confidence &ge; 0.3)</code>. <code>highConfidenceIncome = sum(income where confidence &ge; 0.8)</code>. <code>safeToSpendWeek = totalBalance &minus; highConfidenceBills &minus; creditCardDebt + highConfidenceIncome</code>. <code>dailyBudget = round(safeToSpendWeek / 7)</code>. These are NOT the same numbers the SafeToSpend card shows &mdash; this is a simplified figure for the prompt context; the card uses the full shared <code>safe_to_spend_service.ts</code>. This is intentional and scoped to Haiku narrative generation.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">8</span><span class="step-actor">MorningBriefService</span></div><div class="step-action">Loads previous brief's category to avoid repetition</div><div class="step-detail"><code>MorningBrief.where('briefDate', '&lt;', today).orderBy('briefDate', 'desc').first()</code>. Passes <code>previousCategory</code> to <code>generateBriefInsight()</code>. Haiku prompt says "avoid repeating <code>{previousCategory}</code>" &mdash; users don't want to see "watch your dining spending" three days running.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">9</span><span class="step-actor">Claude Haiku 4.5</span></div><div class="step-action">Generates 80-char date-aware insight via <code>generateBriefInsight()</code></div><div class="step-detail">Model: <code>us.anthropic.claude-haiku-4-5-20251001-v1:0</code>. Prompt includes full snapshot (balances, bill list with actual dates, income list, today's transactions, daily budget, previous category). Output constrained to &le;80 chars plus a category tag (one of: <code>balance</code>, <code>bills</code>, <code>spending</code>, <code>income</code>, <code>streak</code>). Date-aware: "Netflix hits Apr 22" not "Netflix due soon". Errors caught &mdash; brief still persists with <code>aiInsight = null</code> if Haiku fails (card falls back to a static balance summary).</div><span class="step-latency">~300-500ms</span></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">10</span><span class="step-actor">MorningBriefService</span></div><div class="step-action">Persists new <code>morning_briefs</code> row</div><div class="step-detail"><code>MorningBrief.create({ userId, briefDate, totalBalance, expectedBills, expectedIncome, todaysTransactions, safeToSpendWeek, aiInsight, aiInsightCategory })</code>. Nullable JSON columns for arrays that can be empty. No acknowledgment flow &mdash; brief is always visible on Home until replaced. Returned directly to the controller.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">11</span><span class="step-actor">StreakService</span></div><div class="step-action">Records check-in &mdash; streak advances on app open, not on brief generation</div><div class="step-detail"><code>recordCheckin(userId, timezone)</code> compares <code>user_streaks.last_checkin_date</code> against today-in-user-tz (normalized via Luxon UTC because pg returns Date objects at UTC midnight &mdash; see LEARNINGS.md "PostgreSQL date column comparisons"). Four outcomes: (a) same day &rarr; no-op, (b) consecutive day &rarr; increment, (c) missed 1 day &rarr; freeze (max 2 freezes banked), (d) missed &gt;1 &rarr; reset. This is why streak is really "app open streak," not "engagement streak."</div><span class="step-latency">~10-20ms</span></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">12</span><span class="step-actor">Mobile App</span></div><div class="step-action">Renders Smart Pulse card on Home (always visible, no dismiss)</div><div class="step-detail">Card order on Home: SafeToSpend &rarr; <strong>Smart Pulse</strong> &rarr; Recent Transactions &rarr; Upcoming Bills. Card shows: category icon, insight text (&le;80 chars), "Dig deeper with AI Coach" link. Tap link &rarr; navigate to <code>/chat</code> with the insight text as <code>initialMessage</code>. Tap anywhere else on the card &rarr; brief detail screen with the full snapshot (balances, bills, income lists) via <code>GET /morning-briefs/:id</code>.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">13</span><span class="step-actor">Progress Tab</span></div><div class="step-action">Historical view &mdash; streak + past briefs only</div><div class="step-detail">Progress tab shows streak count (current, longest, freezes remaining) and a reverse-chronological list of past briefs. Smart Pulse card was REMOVED from Progress tab &mdash; that screen is historical, Home is real-time. Past-brief detail page fetches by ID via <code>GET /morning-briefs/:id</code>.</div></div></div>
+  </div>
+
+  <div style="margin-top:40px;padding:24px;background:rgba(20,184,166,0.05);border:1px solid rgba(20,184,166,0.2);border-radius:8px;">
+    <div style="font-size:14px;font-weight:700;color:#14b8a6;margin-bottom:16px;letter-spacing:1px;">SPEC &mdash; SMART PULSE</div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Regeneration contract</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        Every app open and pull-to-refresh regenerates. Invariant: exactly one <code>morning_briefs</code> row per (user, day). Previous row is DELETED before the new snapshot is built &mdash; never a window where two exist. Not idempotent-once-per-day by design: Smart Pulse is real-time.
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Snapshot composition (what Haiku sees)</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        &bull; <code>totalBalance</code> (sum of active depository available/current)<br>
+        &bull; <code>accountBreakdown</code> (per-account bank + name + balance so narratives can name specific banks)<br>
+        &bull; <code>creditCardDebt</code> (sum of credit account <code>|currentBalance|</code>)<br>
+        &bull; <code>safeToSpendWeek</code> + <code>dailyBudget</code> (simplified 7-day calc &mdash; NOT the shared service's number)<br>
+        &bull; <code>billDetails</code> in next 7 days (merchant, amount, date &mdash; confidence &ge; 0.3)<br>
+        &bull; <code>incomeDetails</code> in next 7 days (source, amount, date &mdash; confidence &ge; 0.8)<br>
+        &bull; <code>todaysTransactions</code> (description, amount)<br>
+        &bull; <code>previousCategory</code> (avoid repetition)
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Output constraints</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        &le; 80 characters (enforced by prompt, validated server-side). Date-aware &mdash; absolute dates ("Apr 22"), never relative ("next week"). Category tag &isin; <code>{balance, bills, spending, income, streak}</code>. On Haiku error, insight is <code>null</code>; mobile falls back to a static balance summary ("$4,382 across 3 accounts").
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Streak</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        Recorded on every <code>/morning-briefs/today</code> fetch (i.e., on every app open). Logic: same-day no-op / consecutive increment / 1-day-missed freeze (max 2 banked) / break. Timezone-aware &mdash; pg Date columns normalized via Luxon UTC before comparing to user-local today. This fixed a 10-day silent streak break (see LEARNINGS.md).
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Why the simplified safe-to-spend in the prompt?</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        Haiku needs a quick numeric anchor, not byte-for-byte match with the card. The card uses the full shared <code>safe_to_spend_service.ts</code> (4 windows, CC debt, loans excluded, etc.). Keeping the prompt's simplified calc prevents cross-feature drift when the service is iterated &mdash; the card is the source of truth, Smart Pulse narrates context.
+      </div>
+    </div>
+
+    <div>
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">MVP+ (deferred)</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        &bull; Push notification at user-chosen local time with the day's insight (ties into Push Notifications)<br>
+        &bull; Week-in-review summary (Sunday roll-up)<br>
+        &bull; Reaction / thumbs-up feedback loop for AI quality evals<br>
+        &bull; Per-category drill-in from the card
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flow-container flow-bankconnections" id="flow-bankconnections">
+  <div class="flow-title">Bank Connections Flow (MVP)</div>
+  <div class="flow-desc">Native Plaid Link SDK (<code>react-native-plaid-link-sdk</code> v12.8.0) for production bank connections, including OAuth redirect for institutions like Chase. End-to-end: mobile requests a Link token, Plaid Link UI runs natively, token exchange stores an encrypted <code>access_token</code>, account rows seed, then <code>SyncDailyTransactionsJob</code> backfills the last 30 days. Webhooks keep subsequent updates asynchronous.</div>
+  <div class="steps">
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">1</span><span class="step-actor">Mobile App</span></div><div class="step-action">User taps "Add bank" on Accounts / onboarding screen</div><div class="step-detail">Requires a custom Expo dev build &mdash; NOT Expo Go. The native Plaid Link SDK ships as a native iOS/Android module and can't be loaded into Expo Go. Built via <code>xcodebuild</code> + installed via <code>xcrun devicectl</code> (iOS) &mdash; see LEARNINGS.md. <code>SKIP_AUTH</code> dev bypass doesn't block this &mdash; it still creates the connection under user ID 53.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">2</span><span class="step-actor">Mobile App</span></div><div class="step-action"><code>POST /api/plaid/link-token</code> to request a Link token</div><div class="step-detail">File: <code>apps/backend/app/controllers/plaid_controller.ts:7-25</code>. Empty body &mdash; never send <code>null</code>, AdonisJS bodyparser strict mode rejects "null" with 422 (see CLAUDE.md Gotchas). Use <code>{}</code>.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">3</span><span class="step-actor">PlaidService</span></div><div class="step-action">Calls Plaid <code>linkTokenCreate</code> via BankDataProvider adapter</div><div class="step-detail">All Plaid traffic goes through <code>packages/bank-data-provider</code> &mdash; never direct in app code (CLAUDE.md). Request includes <code>client_user_id</code> (internal user ID), product <code>transactions</code>, country <code>US</code>, language <code>en</code>, and <code>redirect_uri</code> = universal link for OAuth institutions (Chase). The redirect URI requires Associated Domains entitlement in <code>Tide.entitlements</code> + matching <code>apple-app-site-association</code> at the redirect host (otherwise Chase's OAuth flow cannot return to the app and the Link session hangs).</div><span class="step-latency">~200-400ms</span></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">4</span><span class="step-actor">Mobile App</span></div><div class="step-action">Opens Plaid Link natively with the returned token</div><div class="step-detail"><code>react-native-plaid-link-sdk</code> presents the native institution picker. <strong>Not a WebView</strong> &mdash; this was a deliberate switch from the WebView flow because OAuth institutions (Chase primarily) require the native SDK for reliable redirect handling. User picks bank, authenticates, selects accounts.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">5</span><span class="step-actor">Plaid Link SDK</span></div><div class="step-action">OAuth redirect handled natively (Chase, Wells Fargo, &hellip;)</div><div class="step-detail">For OAuth banks: Plaid Link opens the bank's OAuth page in <code>SFSafariViewController</code>, user logs in, bank redirects to the universal link URL. iOS delivers the universal link back to our app, Plaid Link picks it up via <code>continue(from: redirect_uri)</code>, and resumes the Link session. Plaid returns a <code>public_token</code> + accounts metadata to the mobile callback. Non-OAuth banks skip the redirect entirely &mdash; same outcome, one less round trip.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">6</span><span class="step-actor">Mobile App</span></div><div class="step-action"><code>POST /api/plaid/exchange</code> with <code>{ publicToken, metadata }</code></div><div class="step-detail">Sends the short-lived public token back to the backend. Metadata includes institution ID, institution name, and the list of accounts the user selected (Plaid account IDs, names, mask, type).</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">7</span><span class="step-actor">PlaidService</span></div><div class="step-action"><code>exchangeAndPersist()</code> &mdash; itemPublicTokenExchange + row creation</div><div class="step-detail">File: <code>apps/backend/app/services/plaid_service.ts:39-86</code>. Exchanges <code>public_token</code> for a permanent <code>access_token</code> + Plaid <code>item_id</code>. Creates a <code>bank_connections</code> row with the access token AES-256 encrypted at rest, <code>serializeAs: null</code> so it never leaves the backend. Institution name + logo persisted. Then per-account: <code>bank_accounts</code> rows created with Plaid's <code>account_id</code>, masked number, type/subtype, balance snapshot, <code>isActive = true</code>.</div><span class="step-latency">~150-300ms</span></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">8</span><span class="step-actor">PlaidService</span></div><div class="step-action"><code>syncAccounts()</code> refreshes balances immediately</div><div class="step-detail">Second Plaid call: <code>accountsGet</code> returns current balances for all accounts under the new item. Writes <code>availableBalance</code>, <code>currentBalance</code>, <code>limit</code> to each <code>bank_accounts</code> row. Ensures Home renders a real balance on the very next render, not "&mdash;".</div><span class="step-latency">~200-400ms</span></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">9</span><span class="step-actor">PlaidService</span></div><div class="step-action">Registers webhook URL with Plaid</div><div class="step-detail">Plaid is told to <code>POST /api/webhooks/plaid</code> on future events (<code>TRANSACTIONS</code>: <code>INITIAL_UPDATE</code>, <code>DEFAULT_UPDATE</code>, <code>HISTORICAL_UPDATE</code>; <code>ITEM</code>: <code>ERROR</code>, <code>PENDING_EXPIRATION</code>). Webhook endpoint is HMAC-verified via Plaid's <code>verification_key_id</code> JWKS. Unsigned hits are rejected.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">10</span><span class="step-actor">Worker</span></div><div class="step-action">Enqueues <code>SyncDailyTransactionsJob</code> for initial 30-day backfill</div><div class="step-detail">Queue: <code>transactions-sync</code>. First sync uses a 30-day window (vs daily cron's 7-day) to give the app immediate historical context for categorization and recurrence detection. Same circuit-breaker + retry wrapper (<code>5 failures &rarr; open 30s</code>, <code>3 attempts with 2s/4s/8s backoff</code>). See the <a href="#flow-sync" onclick="showFlow('sync', event);return false;" style="color:#a855f7;">Transaction Sync Flow</a> for the category resolution priority applied to these rows.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">11</span><span class="step-actor">Backend API</span></div><div class="step-action">Returns success + new accounts to mobile</div><div class="step-detail">Response shape: <code>{ bankConnection: { id, institutionName }, accounts: [{ id, name, mask, type, availableBalance }] }</code>. Mobile invalidates React Query caches for <code>['dashboard']</code>, <code>['accounts']</code>, <code>['bills']</code>, <code>['safe-to-spend']</code> so the next render shows the new bank everywhere. Initial transaction backfill is still running async &mdash; transactions appear within ~10-30s.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">12</span><span class="step-actor">Plaid Webhook</span></div><div class="step-action">Ongoing refresh via <code>POST /api/webhooks/plaid</code></div><div class="step-detail"><code>HISTORICAL_UPDATE</code> (full backfill complete) / <code>DEFAULT_UPDATE</code> (new transactions) / <code>TRANSACTIONS_REMOVED</code> (tx corrected) / <code>ITEM_ERROR</code> (credentials expired &mdash; user must re-auth) events fan out to <code>ProcessWebhookEventJob</code>. Each triggers a targeted sync for the affected item &mdash; much cheaper than the full 2 AM cron.</div></div></div>
+  </div>
+
+  <div style="margin-top:40px;padding:24px;background:rgba(245,158,11,0.05);border:1px solid rgba(245,158,11,0.2);border-radius:8px;">
+    <div style="font-size:14px;font-weight:700;color:#f59e0b;margin-bottom:16px;letter-spacing:1px;">SPEC &mdash; BANK CONNECTIONS</div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">SDK &amp; build requirements</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        Mobile: <code>react-native-plaid-link-sdk</code> v12.8.0 (native module, NOT WebView). Requires a custom Expo dev build &mdash; Expo Go cannot load native modules. iOS build via <code>xcodebuild</code>, installed via <code>xcrun devicectl</code>. Android: standard <code>expo prebuild</code> + Gradle build.
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">OAuth redirect plumbing (Chase, Wells Fargo, &hellip;)</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        Backend passes <code>redirect_uri</code> = universal link URL to <code>linkTokenCreate</code>. iOS app must declare the matching domain in <code>Tide.entitlements</code> (<code>applinks:&lt;domain&gt;</code>) and the host must serve <code>apple-app-site-association</code> with this app's bundle + team ID. Without either, the Link session hangs at the OAuth return step.
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Secret handling</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        Plaid <code>access_token</code> is stored AES-256 encrypted on <code>bank_connections.access_token</code> with <code>serializeAs: null</code> &mdash; never appears in any API response, never logged. All logs use <code>redactForLogging()</code>. <code>client_id</code>/<code>secret</code> live in backend env vars, never shipped to mobile.
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Resilience</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        All Plaid calls routed through the <code>BankDataProvider</code> interface with circuit breaker (<code>failureThreshold=5</code>, <code>resetTimeoutMs=30000</code>, <code>requestTimeoutMs=10000</code>) and exponential backoff retry (3 attempts: 2s/4s/8s). Circuit open &rarr; fail fast; user sees "Connection paused, try again in 30s" rather than a cascade of errors.
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Webhook contract</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        <code>POST /api/webhooks/plaid</code> &mdash; HMAC-verified via Plaid JWKS (<code>verification_key_id</code>). Events handled: <code>TRANSACTIONS.INITIAL_UPDATE</code>, <code>TRANSACTIONS.HISTORICAL_UPDATE</code>, <code>TRANSACTIONS.DEFAULT_UPDATE</code>, <code>TRANSACTIONS.TRANSACTIONS_REMOVED</code>, <code>ITEM.ERROR</code>, <code>ITEM.PENDING_EXPIRATION</code>. Each maps to <code>ProcessWebhookEventJob</code>. Unsigned hits &rarr; 401.
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Production readiness</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        Plaid production config prepared; gated on Transactions product approval. Once approved, swap <code>PLAID_ENV=sandbox</code> &rarr; <code>PLAID_ENV=production</code> and rotate <code>PLAID_SECRET</code>. Sandbox-specific heuristics (pending/posted dedup fallback in Spending Insights) stay valid in prod because real banks also sometimes omit the FK.
+      </div>
+    </div>
+
+    <div>
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">MVP+ (deferred)</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        &bull; Disconnect / re-auth UI from the Accounts screen (backend <code>itemRemove</code> exists, mobile UI not shipped)<br>
+        &bull; Multi-item management (labeling, hiding specific accounts from SafeToSpend)<br>
+        &bull; Auto-recovery flow for <code>ITEM_ERROR</code> (push + deep link back into Plaid Link update mode)<br>
+        &bull; Balance history chart (requires a periodic snapshot job &mdash; out of MVP scope)
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flow-container flow-insights" id="flow-insights">
+  <div class="flow-title">Spending Insights Flow (MVP &mdash; actively iterated 2026-04-22)</div>
+  <div class="flow-desc">The donut + category list on the Spending tab. Reads already-categorized transactions &mdash; category assignment itself happens upstream in Transaction Sync (see that flow for the Plaid Sync Category Resolution Priority). This flow is the spec for: windowing, filters (pending dedup, CC double-side, NON_SPENDING exclusion), aggregation into primaries + children, mobile drill-in flow with back-preserving breadcrumbs.</div>
+  <div class="steps">
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">1</span><span class="step-actor">Mobile App</span></div><div class="step-action">User taps Spending tab &mdash; selects timeframe chip (Today / Last 7 Days / This Month)</div><div class="step-detail">Default <code>timeframe='week'</code>. Timezone auto-detected via <code>Intl.DateTimeFormat().resolvedOptions().timeZone</code>. Optional account filter (<code>bankAccountIds</code> array) selects which depository + credit accounts to include.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">2</span><span class="step-actor">Mobile App</span></div><div class="step-action">Requests <code>GET /insights/spending-by-category?timeframe=week&amp;timezone=America/New_York</code></div><div class="step-detail">React Query hook <code>useSpendingByCategory</code> &mdash; cached in-memory with 60s staleTime. QueryKey includes timeframe, bankAccountIds, timezone &mdash; ensures different filters cache separately.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">3</span><span class="step-actor">Backend API</span></div><div class="step-action">Validates request, resolves window in user timezone</div><div class="step-detail"><code>spendingByCategoryValidator</code> &rarr; <code>InsightsController.spendingByCategory()</code>. Computes <code>windowStart</code>/<code>windowEnd</code>:<br>&bull; <code>day</code> = <code>now.startOf('day')</code> to <code>now.endOf('day')</code><br>&bull; <code>week</code> = rolling 7 days: <code>now.minus({days:6}).startOf('day')</code> to end-of-today<br>&bull; <code>month</code> = <code>now.startOf('month')</code> to end-of-today</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">4</span><span class="step-actor">InsightsController</span></div><div class="step-action">Builds shared filter closure <code>applyFilters(query)</code></div><div class="step-detail"><code>transactions.user_id = user.id</code> + <code>transaction_date</code> within window + <code>is_pending = false</code> (default) + optional <code>bank_account_id IN (bankAccountIds)</code>. This closure is composed into the main aggregation query below.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">5</span><span class="step-actor">Lucid ORM</span></div><div class="step-action">Detail aggregation &mdash; transactions &times; categories &times; parent categories</div><div class="step-detail">One query with two LEFT JOINs:<br><code>db.from('transactions') .leftJoin('categories as c', 'transactions.category_id', 'c.id') .leftJoin('categories as p', 'c.parent_code', 'p.code')</code><br>SELECT <code>c.id, c.code, c.name, c.parent_code, p.name as primaryName, p.icon, p.color</code>, SUM(<code>amount</code>), COUNT(*). GROUP BY all selected columns.</div><span class="step-latency">~20-50ms</span></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">6</span><span class="step-actor">Filter layer 1</span></div><div class="step-action"><code>excludeSupersededPending()</code> &mdash; pending dedup</div><div class="step-detail">Applied via shared helper from <code>transaction_filters.ts</code>. Two conditions (NOT &hellip;): (a) Plaid's <code>pending_transaction_id</code> points to this row's <code>plaid_transaction_id</code>, OR (b) heuristic: same <code>user_id</code> + <code>bank_account_id</code> + <code>merchant_id</code> + <code>amount</code> + date within 7 days AND this row is pending with a posted sibling. The heuristic covers Plaid sandbox where the FK is rarely set.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">7</span><span class="step-actor">Filter layer 2</span></div><div class="step-action"><code>excludeCreditCardSideOfCcPayment()</code> &mdash; CC payment double-side filter</div><div class="step-detail">When a credit card payment happens from checking, Plaid returns 2 rows (one per account), both tagged <code>LOAN_PAYMENTS_CREDIT_CARD_PAYMENT</code>. In spending contexts we suppress the credit-card-account side so the payment only counts once. Applied unconditionally in this endpoint; applied in <code>/transactions</code> only when <code>categoryId</code> or <code>parentCategoryCode</code> is set AND <code>bankAccountId</code> is not (so per-account views still show both sides).</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">8</span><span class="step-actor">InsightsController</span></div><div class="step-action">Partition rows: spending / excluded / uncategorized</div><div class="step-detail"><code>NON_SPENDING_PRIMARIES = ['INCOME', 'TRANSFER_IN', 'TRANSFER_OUT']</code>. Rows whose <code>parent_code</code> is in this set go to the <code>excluded</code> bucket (surfaced separately in the footer). Rows with null <code>category_id</code> go to <code>uncategorized</code>. Everything else is "spending."</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">9</span><span class="step-actor">InsightsController</span></div><div class="step-action">Group spending rows by primary code &rarr; primaryMap</div><div class="step-detail">For each spending row, accumulate into the primary bucket: sum <code>totalAmount</code>, sum <code>transactionCount</code>, append to <code>children[]</code> (each child has its own categoryId, code, name, amount, count). Primary metadata (icon, color, name) comes from the <code>p.*</code> join columns. <code>pctOfTotal</code> = <code>Math.round((primary.amount / totalSpent) &times; 1000) / 10</code> (1 decimal).</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">10</span><span class="step-actor">Backend API</span></div><div class="step-action">Returns <code>SpendingByCategoryResponse</code> JSON</div><div class="step-detail"><code>{ timeframe, windowStart, windowEnd, timezone, totalSpent, transactionCount, primaries: [{ primaryCode, name, icon, color, totalAmount, transactionCount, pctOfTotal, children: [...] }], excluded: { income, transfersIn, transfersOut }, uncategorized: { totalAmount, transactionCount } }</code>. Primaries sorted by totalAmount desc; children within each primary also sorted desc.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">11</span><span class="step-actor">Mobile App</span></div><div class="step-action">Renders donut chart + primary rows + footer</div><div class="step-detail"><code>CategoryDonut</code> component (animated slices by color). Each primary row: icon in a colored circle, name, txn count &middot; <code>formatPercent(pctOfTotal)</code>, totalAmount, chevron. Tiny percentages render as <code>&lt;0.1%</code> not <code>0%</code>. Footer: "Not counted in spending" with collapsed Transfers (tappable) + Uncategorized (tappable info icon). Income and Transfers-in are hidden &mdash; not spending-adjacent.</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">12</span><span class="step-actor">Drill-in</span></div><div class="step-action">Tap primary &rarr; drill-down OR single-child shortcut</div><div class="step-detail">If <code>primary.children.length === 1</code>, navigate direct to <code>/(tabs)/all-transactions</code> with params <code>{categoryId, categoryName, startDate, endDate, timeframeLabel, categoryColor, categoryIcon}</code>. Otherwise push to <code>/(tabs)/spending/[primaryCode]</code> drill-down. Drill-down passes <code>timeframe</code> + <code>accountIds</code> through params so numbers match parent. Tapping a child passes the SAME params plus a breadcrumb <code>fromPrimaryCode</code> / <code>fromTimeframe</code> / <code>fromAccountIds</code> so the Back button on <code>all-transactions</code> returns to the exact drill-down page (not Home, not Spending index).</div></div></div>
+
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">13</span><span class="step-actor">Mobile App</span></div><div class="step-action">Transactions drill-in &mdash; rich context header</div><div class="step-detail">Top of <code>all-transactions</code>: category icon (colored circle), name, total (client-side sum over loaded pages), transaction count, date range like <code>Apr 13 &ndash; Apr 19</code>, &times; to clear. <code>useInfiniteTransactions</code> sends <code>categoryId</code> + <code>startDate</code> + <code>endDate</code> to <code>/transactions</code>, which applies the same pending dedup + CC double-side filters. Context header auto-hides during search.</div><span class="step-latency">Total end-to-end: ~100&ndash;200ms</span></div></div>
+  </div>
+
+  <!-- Inline spec &mdash; embedded so the flow page is the single source of truth. -->
+  <div style="margin-top:40px;padding:24px;background:rgba(139,92,246,0.05);border:1px solid rgba(139,92,246,0.2);border-radius:8px;">
+    <div style="font-size:14px;font-weight:700;color:#8b5cf6;margin-bottom:16px;letter-spacing:1px;">SPEC &mdash; SPENDING INSIGHTS</div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Timeframes (MVP)</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        <code>day</code> &middot; today only &middot; <code>week</code> &middot; rolling last 7 days (not calendar week) &middot; <code>month</code> &middot; calendar month-to-date (1st &rarr; today).
+        Label shown to user: "Today" / "Last 7 Days" / "This Month" &mdash; week is honest about the rolling window.
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Category taxonomy</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        Primaries come from Plaid PFC (16 categories) plus two Tide extensions: <code>SOFTWARE_AND_TECH</code> (single catch-all subcategory <code>SOFTWARE_AND_TECH_ALL</code>) and <code>SUBSCRIPTIONS</code> (entertainment subs). Reparented Plaid codes: <code>ENTERTAINMENT_MUSIC_AND_AUDIO</code> + <code>ENTERTAINMENT_TV_AND_MOVIES</code> &rarr; <code>SUBSCRIPTIONS</code>; <code>GENERAL_SERVICES_INSURANCE</code> &rarr; <code>TRANSFER_OUT</code> (insurance is investment-like, not discretionary spending).
+        <br>Seeded via <code>category_seeder.ts</code> + <code>plaid_pfc_taxonomy.csv</code>. <code>NAME_OVERRIDES</code> map handles display names for reparented codes.
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Filters &mdash; applied in order</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        1. <strong>Pending dedup</strong> (<code>excludeSupersededPending</code>) &mdash; hides pending rows that have a posted sibling. Primary rule: <code>pending_transaction_id</code> FK; heuristic fallback: user + account + merchant + amount within 7 days.
+        <br>2. <strong>CC double-side</strong> (<code>excludeCreditCardSideOfCcPayment</code>) &mdash; suppresses the credit-card-account side of <code>LOAN_PAYMENTS_CREDIT_CARD_PAYMENT</code>. Applied unconditionally in the insights query (per-account semantics don't apply here since this is aggregate spending).
+        <br>3. <strong>NON_SPENDING partition</strong> &mdash; rows with <code>parent_code</code> in <code>[INCOME, TRANSFER_IN, TRANSFER_OUT]</code> land in the <code>excluded</code> bucket and don't count toward <code>totalSpent</code>.
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Footer behavior (what's "Not counted in spending")</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        Hidden entirely: Income, Transfers-in (not spending-adjacent).
+        <br>Shown + tappable: Transfers-out (tap &rarr; drills into the Transfer Out primary via <code>parentCategoryCode=TRANSFER_OUT</code>) and Uncategorized.
+        <br>Both rows have an &#9432; affordance opening an explanation sheet.
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Related flows (upstream)</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        Category assignment to each transaction row happens at <strong>Transaction Sync</strong> time &mdash; see <a href="#flow-sync" onclick="showFlow('sync', event);return false;" style="color:#a855f7;">Transaction Sync Flow</a> for the Plaid Sync Category Resolution Priority (user override &rarr; AI cache &rarr; Plaid detailed). Spending Insights just READS <code>transactions.category_id</code>.
+      </div>
+    </div>
+
+    <div>
+      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">MVP+ (deferred)</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+        &bull; Year-to-date + user-picked custom date range (needs <code>react-native-calendars</code> for the range picker, validator extension, date-picker bottom sheet)<br>
+        &bull; User-facing recategorization UI on transaction detail screen (backend <code>merchant_category_overrides</code> table exists, mobile UI not built)<br>
+        &bull; Anomaly detection ("you spent 2&times; your usual on dining this month")<br>
+        &bull; Monthly spending trend charts<br>
+        &bull; AI-generated category insights ("Your SaaS spend grew 40% QoQ")<br>
+        &bull; Budget-vs-actual overlays per category<br>
+        &bull; Export (CSV) of filtered transactions from drill-in view
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =========================================================================
+     MVP+ FLOWS
+     ========================================================================= -->
+
+<div class="flow-container flow-auth" id="flow-auth">
+  <div class="flow-title">Authentication Flow (MVP+)</div>
+  <div class="flow-desc"><strong>MVP+ &mdash; dev-bypassed during the MVP sprint.</strong> Passwordless SMS OTP via AWS Cognito. User gets JWT tokens stored in SecureStore. Dev mode uses a hard-coded bypass user (ID 53) so Claude/dev work is not blocked by auth during the sprint.</div>
+  <div class="steps">
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">1</span><span class="step-actor">User</span></div><div class="step-action">Opens app, enters phone number</div><div class="step-detail">Mobile validates phone format before API call</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">2</span><span class="step-actor">Mobile App</span></div><div class="step-action">Calls <code>Cognito.initiateAuth()</code> with CUSTOM_AUTH flow</div><div class="step-detail">Uses <code>aws-amplify</code> Auth module. Trigger: <code>DefineAuthChallenge</code> Lambda</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">3</span><span class="step-actor">AWS Cognito</span></div><div class="step-action">Sends SMS OTP via SNS</div><div class="step-detail">6-digit code, 3-minute expiry. Cost: ~$0.01 per SMS via SNS</div><span class="step-latency">~2s delivery</span></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">4</span><span class="step-actor">User</span></div><div class="step-action">Enters OTP code</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">5</span><span class="step-actor">Cognito</span></div><div class="step-action">Validates OTP, returns JWT tokens</div><div class="step-detail">Access Token (1h) + ID Token (1h) + Refresh Token (30d)</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">6</span><span class="step-actor">Mobile App</span></div><div class="step-action">Stores tokens in Expo SecureStore</div><div class="step-detail">Keychain (iOS) / Keystore (Android). Auto-refresh on 401 using refresh token. 401 interceptor skips <code>logout()</code> in dev-bypass mode to prevent auth cache wipe.</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">7</span><span class="step-actor">All API Calls</span></div><div class="step-action"><code>Authorization: Bearer {access_token}</code></div><div class="step-detail">Backend validates JWT via <code>aws-jwt-verify</code> with JWKS rotation. Bouncer policies check <code>user_id === authenticatedUserId</code>.</div></div></div>
+  </div>
+</div>
+
+<div class="flow-container flow-reflection" id="flow-reflection">
+  <div class="flow-title">Evening Reflection Session Flow (MVP+)</div>
+  <div class="flow-desc"><strong>MVP+ &mdash; Backend intact, frontend removed entirely.</strong> Daily cron checks for untagged transactions, sends reminder, user tags transactions, session completes and updates streak. Removed from all frontend screens (Home, Progress, Settings, tab bar). Backend files preserved for MVP+ reactivation.</div>
+  <div class="steps">
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">1</span><span class="step-actor">Cron Scheduler</span></div><div class="step-action">Triggers evening reflection check based on user settings</div><div class="step-detail">BullMQ repeatable job on <code>evening-reflections</code> queue. Queries <code>reflection_settings</code> for enabled users matching reminder time window.</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">2</span><span class="step-actor">Worker</span></div><div class="step-action">Checks for untagged transactions today</div><div class="step-detail">Queries today's transactions that have no <code>transaction_reflections</code> record. If none found, skips user.</div><span class="step-latency">~20-50ms</span></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">3</span><span class="step-actor">Worker</span></div><div class="step-action">Creates reflection session and sends FCM reminder</div><div class="step-detail">Creates <code>reflection_sessions</code> record with status <code>pending</code>. Sends push notification: "You have X transactions to reflect on today."</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">4</span><span class="step-actor">User</span></div><div class="step-action">Opens app and tags each transaction</div><div class="step-detail">Swipe UI for each transaction: worth-it, regret, or neutral. Optional note per transaction. Creates <code>transaction_reflections</code> records.</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">5</span><span class="step-actor">Backend API</span></div><div class="step-action">Marks session complete</div><div class="step-detail">Updates <code>reflection_sessions.status</code> to <code>complete</code> and sets <code>completed_at</code>. All transactions tagged.</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">6</span><span class="step-actor">Backend API</span></div><div class="step-action">Updates reflection streak</div><div class="step-detail">Increments <code>user_streaks.current_count</code> for <code>reflection</code> type. Checks milestone thresholds (3, 7, 14, 30 days).</div></div></div>
+  </div>
+</div>
+
+<div class="flow-container flow-challenges" id="flow-challenges">
+  <div class="flow-title">Spending Challenges Flow (MVP+)</div>
+  <div class="flow-desc">Personalized spending challenges with daily progress tracking and auto-completion.</div>
+  <div class="steps">
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">1</span><span class="step-actor">Mobile App</span></div><div class="step-action">GET /challenges/recommendations for personalized suggestions</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">2</span><span class="step-actor">User</span></div><div class="step-action">Creates challenge with name, target amount, frequency, excluded categories</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">3</span><span class="step-actor">Backend API</span></div><div class="step-action">Persists UserChallenge + ExcludedChallengeCategory records</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">4</span><span class="step-actor">Backend Worker</span></div><div class="step-action">CreateChallengeTransactionsJob matches transactions to active challenges</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">5</span><span class="step-actor">Backend Worker</span></div><div class="step-action">EvaluateChallengesJob runs daily, calculates progress percentage</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">6</span><span class="step-actor">Mobile App</span></div><div class="step-action">Shows daily progress, matched transactions, completion status</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">7</span><span class="step-actor">Backend</span></div><div class="step-action">Auto-completes challenge if end date passed with &gt;70% success rate</div></div></div>
+  </div>
+</div>
+
+<div class="flow-container flow-notifications" id="flow-notifications">
+  <div class="flow-title">Push Notifications Flow (MVP+)</div>
+  <div class="flow-desc">Device registration, event-driven push delivery via FCM, and notification inbox management.</div>
+  <div class="steps">
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">1</span><span class="step-actor">Mobile App</span></div><div class="step-action">POST /devices registers device token (iOS/Android platform)</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">2</span><span class="step-actor">Backend</span></div><div class="step-action">Stores DeviceToken record for user</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">3</span><span class="step-actor">Backend Worker</span></div><div class="step-action">On event (Smart Pulse, streak milestone), creates Notification record</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">4</span><span class="step-actor">Backend</span></div><div class="step-action">Sends FCM push via NotificationService with deep link data</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">5</span><span class="step-actor">Mobile App</span></div><div class="step-action">User taps notification, deep links to target screen</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">6</span><span class="step-actor">Mobile App</span></div><div class="step-action">GET /notifications loads inbox, PATCH /notifications/:id/read marks as read</div></div></div>
+  </div>
+</div>
+
+<div class="flow-container flow-csvimport" id="flow-csvimport">
+  <div class="flow-title">CSV Import Flow (MVP+)</div>
+  <div class="flow-desc"><strong>MVP+ &mdash; backend scaffolding exists (TransactionImportJob + Haiku categorizer), mobile upload UI not shipped.</strong> Upload and categorize transactions from CSV files using AI-powered batch categorization.</div>
+  <div class="steps">
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">1</span><span class="step-actor">Mobile App</span></div><div class="step-action">User uploads CSV file of transactions</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">2</span><span class="step-actor">Backend API</span></div><div class="step-action">POST /transactions/import parses CSV rows</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">3</span><span class="step-actor">Backend Worker</span></div><div class="step-action">TransactionImportJob processes each row</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">4</span><span class="step-actor">Claude Haiku 4.5</span></div><div class="step-action">categorizeTransactionsBatch assigns categories to descriptions</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">5</span><span class="step-actor">Backend</span></div><div class="step-action">Persists categorized transactions to database</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">6</span><span class="step-actor">Mobile App</span></div><div class="step-action">Dashboard refreshes with imported transactions</div></div></div>
+  </div>
+</div>
+
+<script>
+/**
+ * Two-level selector: top-level group (MVP / MVP+) filters which tab strip is
+ * visible; then the tab within the strip picks a flow. Default: MVP &rarr; Dashboard.
+ */
+function showGroup(group) {
+  document.getElementById('group-mvp').classList.remove('active-group-mvp');
+  document.getElementById('group-mvpplus').classList.remove('active-group-mvpplus');
+  document.getElementById('tabs-mvp').style.display = 'none';
+  document.getElementById('tabs-mvp-plus').style.display = 'none';
+
+  if (group === 'mvp') {
+    document.getElementById('group-mvp').classList.add('active-group-mvp');
+    document.getElementById('tabs-mvp').style.display = 'flex';
+    // Auto-select first tab in group if nothing from this group is active
+    ensureActiveTabInGroup('tabs-mvp', 'dashboard');
+  } else {
+    document.getElementById('group-mvpplus').classList.add('active-group-mvpplus');
+    document.getElementById('tabs-mvp-plus').style.display = 'flex';
+    ensureActiveTabInGroup('tabs-mvp-plus', 'auth');
+  }
+}
+
+function ensureActiveTabInGroup(stripId, defaultFlow) {
+  const strip = document.getElementById(stripId);
+  const anyActive = strip.querySelector('.tab.active');
+  if (anyActive) return; // keep current selection if it's already in this group
+  showFlowByName(defaultFlow);
+}
+
+function showFlow(name, evt) {
+  showFlowByName(name);
+  if (evt && evt.target) {
+    document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+    evt.target.classList.add('active');
+  }
+}
+
+function showFlowByName(name) {
+  document.querySelectorAll('.flow-container').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+  const flow = document.getElementById('flow-' + name);
+  if (!flow) return;
+  flow.classList.add('active');
+  // Mark matching tab (may be in hidden strip; showGroup handles visibility)
+  const tab = document.querySelector('.tab[data-flow="' + name + '"]');
+  if (tab) tab.classList.add('active');
+  // Re-trigger step animations
+  flow.querySelectorAll('.step').forEach(step => {
+    step.style.animation = 'none';
+    step.offsetHeight;
+    step.style.animation = '';
+  });
+}
+</script>
+</body>
+</html>

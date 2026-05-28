@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tide Architecture Map</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'JetBrains Mono', monospace; background: #0a0f1a; color: #e2e8f0; }
+#canvas { width: 100%; height: 100%; position: relative; }
+svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+svg path, svg line { pointer-events: none; }
+
+/* Node styles */
+.node {
+  position: absolute; border-radius: 10px; padding: 12px 16px;
+  cursor: pointer; transition: transform 0.2s, box-shadow 0.2s, opacity 0.25s, filter 0.25s;
+  border: 1.5px solid rgba(255,255,255,0.1);
+  backdrop-filter: blur(8px); z-index: 2;
+  min-width: 140px; text-align: center;
+}
+.node:hover { transform: scale(1.08); z-index: 10; }
+.node .label { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; }
+.node .sub { font-size: 9px; color: #94a3b8; margin-top: 2px; }
+.node .mvp-pill {
+  display: inline-block; margin-top: 4px; padding: 1px 5px;
+  font-size: 8px; font-weight: 700; border-radius: 3px; letter-spacing: 0.3px;
+}
+.node .mvp-pill.mvp { background: rgba(34,197,94,0.22); color: #22c55e; }
+.node .mvp-pill.mvpplus { background: rgba(245,158,11,0.22); color: #f59e0b; }
+.node.dimmed { opacity: 0.25; filter: grayscale(60%); }
+
+/* Node type colors */
+.node-mobile   { background: rgba(249,115,22,0.15); border-color: #f97316; }
+.node-mobile:hover { box-shadow: 0 0 20px rgba(249,115,22,0.4); }
+.node-backend  { background: rgba(59,130,246,0.15); border-color: #3b82f6; }
+.node-backend:hover { box-shadow: 0 0 20px rgba(59,130,246,0.4); }
+.node-worker   { background: rgba(168,85,247,0.15); border-color: #a855f7; }
+.node-worker:hover { box-shadow: 0 0 20px rgba(168,85,247,0.4); }
+.node-ai       { background: rgba(0,212,255,0.15); border-color: #00d4ff; }
+.node-ai:hover { box-shadow: 0 0 20px rgba(0,212,255,0.4); }
+.node-ai-disabled { background: rgba(100,116,139,0.12); border-color: #64748b; border-style: dashed; }
+.node-ai-disabled:hover { box-shadow: 0 0 20px rgba(100,116,139,0.3); }
+.node-data     { background: rgba(34,197,94,0.15); border-color: #22c55e; }
+.node-data:hover { box-shadow: 0 0 20px rgba(34,197,94,0.4); }
+.node-external { background: rgba(245,158,11,0.15); border-color: #f59e0b; }
+.node-external:hover { box-shadow: 0 0 20px rgba(245,158,11,0.4); }
+.node-security { background: rgba(239,68,68,0.15); border-color: #ef4444; }
+.node-security:hover { box-shadow: 0 0 20px rgba(239,68,68,0.4); }
+.node-infra    { background: rgba(148,163,184,0.15); border-color: #94a3b8; }
+.node-infra:hover { box-shadow: 0 0 20px rgba(148,163,184,0.4); }
+
+/* Detail panel */
+#detail-panel {
+  position: fixed; right: -440px; top: 0; width: 420px; height: 100%;
+  background: #111827; border-left: 1px solid rgba(255,255,255,0.1);
+  padding: 24px; overflow-y: auto; transition: right 0.3s ease;
+  z-index: 100;
+}
+#detail-panel.open { right: 0; }
+#detail-panel h2 { font-size: 16px; margin-bottom: 8px; }
+#detail-panel .type-badge {
+  display: inline-block; padding: 2px 8px; border-radius: 4px;
+  font-size: 10px; font-weight: 700; margin-bottom: 12px; margin-right: 6px;
+}
+#detail-panel .mvp-label {
+  display: inline-block; padding: 2px 8px; border-radius: 4px;
+  font-size: 10px; font-weight: 700; margin-bottom: 12px;
+}
+#detail-panel .mvp-label.mvp { background: rgba(34,197,94,0.2); color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
+#detail-panel .mvp-label.mvpplus { background: rgba(245,158,11,0.2); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); }
+#detail-panel .section { margin-bottom: 16px; }
+#detail-panel .section h3 { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+#detail-panel .section p, #detail-panel .section li { font-size: 12px; line-height: 1.6; color: #cbd5e1; }
+#detail-panel ul { padding-left: 16px; }
+#detail-panel code { color: #00d4ff; font-family: inherit; font-size: 11px; }
+#detail-panel .close-btn {
+  position: absolute; top: 16px; right: 16px; background: none; border: none;
+  color: #94a3b8; font-size: 20px; cursor: pointer;
+}
+#detail-panel .close-btn:hover { color: #e2e8f0; }
+#detail-panel .warning {
+  background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3);
+  padding: 10px 12px; border-radius: 6px; font-size: 11px; color: #f59e0b;
+  margin-top: 8px; line-height: 1.5;
+}
+
+/* Edge legend */
+#legend {
+  position: fixed; bottom: 16px; left: 16px; background: rgba(17,24,39,0.9);
+  border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
+  padding: 12px 16px; z-index: 50; font-size: 10px;
+}
+#legend .row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+#legend .row:last-child { margin-bottom: 0; }
+#legend .line { width: 24px; height: 2px; border-radius: 1px; }
+
+/* Filter bar */
+#filter-bar {
+  position: fixed; top: 64px; left: 16px; z-index: 50;
+  display: flex; gap: 8px;
+}
+.filter-btn {
+  padding: 7px 14px; border-radius: 6px; font-size: 10px; font-weight: 700;
+  cursor: pointer; border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(17,24,39,0.8); color: #94a3b8;
+  transition: all 0.2s; letter-spacing: 0.3px;
+  font-family: inherit;
+}
+.filter-btn:hover { border-color: rgba(255,255,255,0.35); color: #e2e8f0; }
+.filter-btn.active-all { border-color: #3b82f6; color: #3b82f6; background: rgba(59,130,246,0.12); }
+.filter-btn.active-mvp { border-color: #22c55e; color: #22c55e; background: rgba(34,197,94,0.12); }
+.filter-btn.active-mvpplus { border-color: #f59e0b; color: #f59e0b; background: rgba(245,158,11,0.12); }
+
+/* Title */
+#title { position: fixed; top: 16px; left: 16px; z-index: 50; }
+#title h1 { font-size: 18px; font-weight: 700; }
+#title p { font-size: 10px; color: #64748b; margin-top: 2px; }
+#title a { color: #3b82f6; text-decoration: none; font-size: 10px; }
+
+/* Animated edge dashes */
+@keyframes dash { to { stroke-dashoffset: -20; } }
+.edge-animated { animation: dash 1.5s linear infinite; }
+
+/* Tooltip */
+.tooltip {
+  position: absolute; background: #1e293b; border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 6px; padding: 8px 12px; font-size: 10px; color: #e2e8f0;
+  pointer-events: none; z-index: 200; max-width: 220px;
+  opacity: 0; transition: opacity 0.15s;
+}
+.tooltip.visible { opacity: 1; }
+</style>
+</head>
+<body>
+<div id="canvas"></div>
+<div id="title">
+  <h1>Tide Architecture</h1>
+  <p>Click any node for details &middot; $46/month AWS budget &middot; <a href="index.html">&larr; Hub</a></p>
+</div>
+<div id="filter-bar">
+  <button class="filter-btn active-all" data-filter="all" onclick="setFilter('all')">ALL</button>
+  <button class="filter-btn" data-filter="mvp" onclick="setFilter('mvp')">MVP</button>
+  <button class="filter-btn" data-filter="mvp-plus" onclick="setFilter('mvp-plus')">MVP+</button>
+</div>
+<div id="detail-panel"><button class="close-btn" onclick="closePanel()">&times;</button><div id="panel-content"></div></div>
+<div id="legend"></div>
+<div class="tooltip" id="tooltip"></div>
+<svg id="edges"></svg>
+<script>
+// ============================================================================
+// NODES — audited against codebase 2026-04-22.
+// MVP: shipped + actively maintained. MVP+: deferred / partially wired / disabled.
+// ============================================================================
+const nodes = [
+  { id:"mobile", label:"Tide App", sub:"Expo Dev Build (Native)", type:"mobile", mvp:"mvp", x:120, y:300,
+    detail:{
+      desc:"iOS-first React Native app on an Expo Development Build (NOT Expo Go — native modules required for Plaid Link). Native iOS project generated via expo prebuild, built with Xcode.",
+      bullets:[
+        "Expo ~54.0, React Native 0.81.5, React 19.1, Expo Router ~6.0",
+        "Native Plaid Link SDK (react-native-plaid-link-sdk v12.8.0) — not WebView",
+        "SSE streaming via XMLHttpRequest (RN fetch lacks response.body as ReadableStream)",
+        "Token storage: Expo SecureStore (Keychain iOS / Keystore Android)",
+        "Biometric unlock: Face ID / Touch ID via expo-local-authentication (service exists)",
+        "Home render order: SafeToSpend → Smart Pulse → Recent Transactions → Upcoming Bills",
+        "SafeToSpend v4.9: 4 always-visible tabs (Until Payday default), uniform $dailyBudget × daysInWindow, accordion rows tap-to-expand with horizontal-scroll card strips (Checking → per-account; Bills → per-merchant with dates; CC balances → per-card; Typical spending → per-weekday averages). Chevron affordance. Projection block on EVERY tab (Today/This Week/This Month/Until Payday) using per-window forecasts. typical-discretionary forecast spans BOTH checking and credit card outflows, robust-mean-per-weekday capped at 90th percentile. Methodology modal shows histogram + all 4 window projections. Payday helper: 2 cases (user_setting | inferred). 'Confirm your paycheck' UX bypasses confidence bar for anchor, not amount inclusion",
+        "Smart Pulse: regenerates on every app open / pull-to-refresh — real-time, not daily",
+        "Pull-to-refresh triggers Plaid sync on Home; SyncStatus shows last sync time",
+        "Dev bypass: SKIP_AUTH=true in app/_layout.tsx routes direct to (tabs)/home as user 53",
+        "React Query for server state (60s staleTime on dashboard)"
+      ],
+      tech:"React Native 0.81.5, Expo 54 Dev Build, Xcode, TypeScript strict"
+    }},
+  { id:"backend", label:"Backend API", sub:"AdonisJS 6", type:"backend", mvp:"mvp", x:440, y:180,
+    detail:{
+      desc:"REST API on AdonisJS 6 with JWT auth. One binary per pod. Read-only DB connection used by the AI ToolExecutor; primary connection for everything else.",
+      bullets:[
+        "103 REST endpoints (up from 102 — public root added)",
+        "JWT validation via aws-jwt-verify — signature / expiry / audience / issuer / token_use",
+        "17 Bouncer policies (13 exported in main.ts; 3 defined-but-inline: MorningBrief, Reflection, Streak). BillsPrediction + PaydayPrediction policies dropped 2026-04-22 with their legacy tables.",
+        "Lucid ORM for every DB access — never raw SQL",
+        "Circuit breaker + exponential backoff retry on all external calls",
+        "SSE streaming endpoint: POST /api/v1/chats/:id/messages (event: token / tool-use / done / error)",
+        "Dev auth bypass: NODE_ENV !== 'production' → user 53 regardless of Cognito token",
+        "Request logs + PII redaction via redactForLogging() (41 fields redacted)"
+      ],
+      tech:"AdonisJS 6.20+, TypeScript strict, Node.js, Lucid ORM"
+    }},
+  { id:"worker", label:"Worker", sub:"BullMQ + AdonisJS", type:"worker", mvp:"mvp", x:440, y:420,
+    detail:{
+      desc:"Background job processor. Runs 12 BullMQ queues (up from 11 — morning-briefs / evening-reflections / chat-cleanup added). Separate process from API but shares the same codebase.",
+      bullets:[
+        "transactions-sync — daily 2 AM CST cron, concurrency 5, 3 retries (2s/4s/8s backoff)",
+        "predictions — runs RecurrenceDetectionService after each sync",
+        "chat-messages — async persist AI responses; 30-day failure retention (never reduce)",
+        "webhook-events — consumes Plaid webhooks, fans out targeted syncs",
+        "transactions-refresh — on-demand manual sync endpoint",
+        "morning-briefs — Smart Pulse generation job",
+        "evening-reflections (MVP+) — reminder push, backend intact, mobile UI removed",
+        "challenge-transactions + challenges (MVP+) — match + evaluate challenges",
+        "staging-txn-pool + transaction-import (MVP+) — CSV import via Haiku categorizer",
+        "chat-cleanup — archive chats >30 days idle"
+      ],
+      tech:"AdonisJS 6, BullMQ, 12 queues, Redis as queue backend"
+    }},
+  { id:"classifier", label:"Intent Classifier", sub:"Haiku 4.5 — DISABLED", type:"ai-disabled", mvp:"mvp-plus", x:750, y:120,
+    detail:{
+      desc:"Fast query routing — was designed to classify user intent in <500ms so Tide Coach could pre-select tools. Currently DISABLED (commit 32cd3ad) because a separate Haiku call per message was consuming Bedrock quota and throttling the critical chat stream. Re-enable once AWS quota is raised.",
+      bullets:[
+        "Model ID: us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "Status: DISABLED — intentPromise hardcoded to 'unknown' (chats_controller.ts:151)",
+        "Persistence path still writes intent_classified column for future filtering",
+        "Will be re-enabled after AWS Bedrock quota increase"
+      ],
+      tech:"Claude Haiku 4.5 via AWS Bedrock (suspended)",
+      warning:"Feature is OFF in production. chats_controller.ts:151 hardcodes intentPromise = Promise.resolve('unknown')."
+    }},
+  { id:"coach", label:"Tide Coach Agent", sub:"Claude Sonnet 4", type:"ai", mvp:"mvp", x:750, y:280,
+    detail:{
+      desc:"User-facing AI financial coach. Streaming tool-use loop (max 10 iterations). 11 tools registered; 9 are MVP-active, 2 are MVP+.",
+      bullets:[
+        "Model ID: us.anthropic.claude-sonnet-4-20250514-v1:0",
+        "Max 10 tool iterations per turn; first token <2s target",
+        "MVP tools: query_user_profile, query_bank_accounts, query_transactions, query_bills_predictions, query_payday_predictions, calculate_safe_to_spend (shares service with Home card), get_spending_by_category, query_coaching_history, query_morning_brief",
+        "MVP+ tools: get_financial_insights (anomaly/trend analysis), query_reflection_stats (backend-only, UI removed)",
+        "All tools run on read-only DB connection (RO if DB_READONLY_HOST set)",
+        "Bouncer policy enforcement: ChatPolicy on the controller; tool queries filter by user.id",
+        "Throttle retry: 1s/2s/4s exponential backoff on ThrottlingException",
+        "ConverseStream API; 20-message context window (chatConfig.maxContextMessages)"
+      ],
+      tech:"Claude Sonnet 4 via AWS Bedrock, 11 tools, SSE streaming via XMLHttpRequest"
+    }},
+  { id:"postgres", label:"PostgreSQL", sub:"RDS db.t4g.micro", type:"data", mvp:"mvp", x:440, y:600,
+    detail:{
+      desc:"Primary data store. 38 tables across 10 domain groups. See the Database Schema Map for the full table-by-table breakdown.",
+      bullets:[
+        "38 tables total (dropped legacy transaction_locations, payment_providers, bills_predictions, payday_predictions 2026-04-22 — recurring_streams is now the sole prediction table)",
+        "Domain groups: Core Identity (2) / Banking (6) / Predictions (4) / Challenges (5) / AI Chat (3) / Engagement (7) / Notifications (3) / Subscriptions & Overdraft (3) / System (3) / Observability (1)",
+        "18 fields AES-256-GCM encrypted at rest + 4 HMAC-SHA256 hash indexes for searchable PII",
+        "serializeAs:null prevents encrypted + sensitive fields from leaking to JSON",
+        "Read-only connection pool (connection name 'readonly') used by AI ToolExecutor",
+        "Encryption-at-rest via AWS-managed KMS key (storage_encrypted=true)",
+        "Single-AZ to stay under budget (saves $14/mo vs Multi-AZ)"
+      ],
+      tech:"AWS RDS PostgreSQL 16.4, db.t4g.micro, 20GB gp2"
+    }},
+  { id:"redis", label:"Redis", sub:"Self-hosted in k3s", type:"data", mvp:"mvp", x:220, y:520,
+    detail:{
+      desc:"In-memory store. Hosts all BullMQ queues + caching + rate limiting. Self-hosted in a k3s pod — no ElastiCache (saves ~$15/mo).",
+      bullets:[
+        "BullMQ job queues — all 12 queues",
+        "Response caching (controller-level)",
+        "Rate limiting",
+        "$0/month — runs inside the k3s cluster"
+      ],
+      tech:"Redis 8, k3s StatefulSet pod"
+    }},
+  { id:"cognito", label:"AWS Cognito", sub:"SMS OTP Auth (MVP+ gate)", type:"security", mvp:"mvp-plus", x:120, y:100,
+    detail:{
+      desc:"Passwordless SMS OTP identity provider. Wired end-to-end but gated behind a dev bypass during the MVP sprint (SKIP_AUTH=true on mobile + NODE_ENV bypass on backend). Flipping off the bypass restores full auth.",
+      bullets:[
+        "CUSTOM_AUTH flow with 3 Lambda triggers (DefineAuthChallenge, CreateAuthChallenge, VerifyAuthChallenge)",
+        "Access Token: 1 hour expiry",
+        "Refresh Token: 30 day expiry",
+        "JWKS key rotation (auto, AWS-managed)",
+        "Mobile auto-refreshes expired tokens via 401 interceptor (skips logout() when SKIP_AUTH=true)",
+        "Biometric unlock: Face ID / Touch ID (expo-local-authentication)",
+        "Cost: <100 MAU ≈ $1/month via SNS SMS"
+      ],
+      tech:"AWS Cognito User Pool + SNS SMS + 3 Lambda triggers",
+      warning:"Dev bypass active. /infra/lambda/create-auth-challenge/index.mjs:29 still logs OTP to CloudWatch — production blocker."
+    }},
+  { id:"plaid", label:"Plaid", sub:"Native Link SDK", type:"external", mvp:"mvp", x:750, y:480,
+    detail:{
+      desc:"Bank aggregation. Always routed through the BankDataProvider interface — app code never imports Plaid directly. Native mobile SDK handles OAuth redirects for Chase etc. without a WebView.",
+      bullets:[
+        "Mobile: react-native-plaid-link-sdk v12.8.0 (native, not WebView)",
+        "Backend: plaid npm v41.4.0",
+        "OAuth redirect URI support — Associated Domains entitlement + apple-app-site-association required for Chase",
+        "Circuit breaker: 5 failures → open 30s, 10s request timeout",
+        "3 retries with 2s / 4s / 8s exponential backoff",
+        "Webhook endpoint: POST /api/webhooks/plaid → ProcessWebhookEventJob",
+        "Production config prepared; awaiting Transactions product approval"
+      ],
+      tech:"Plaid API v41, react-native-plaid-link-sdk v12.8.0, BankDataProvider + PlaidAdapter"
+    }},
+  { id:"bedrock", label:"AWS Bedrock", sub:"AI Model Hosting", type:"ai", mvp:"mvp", x:1000, y:200,
+    detail:{
+      desc:"Managed AI inference. Hosts both Claude models. Mobile never calls Bedrock directly — all inference is proxied by the backend over SSE.",
+      bullets:[
+        "Custom HTTP strategy (AWS SDK cannot do JWT auth for Bedrock AgentCore)",
+        "SSE streaming from backend to mobile via XMLHttpRequest",
+        "Chat breaker: 5 failures → open 60s, 30s request timeout",
+        "Utility breaker: 5 failures → open 30s, 15s request timeout",
+        "Throttle retry: 3 attempts with 1s/2s/4s backoff",
+        "Haiku cost: disabled for now (quota); was ~$2/month at 1K req/mo",
+        "Sonnet cost: variable with conversation volume"
+      ],
+      tech:"AWS Bedrock, @aws-sdk/client-bedrock-runtime 3.700, custom AuthenticatedAgentRuntimeStrategy"
+    }},
+  { id:"fcm", label:"FCM", sub:"Push (MVP+)", type:"external", mvp:"mvp-plus", x:120, y:500,
+    detail:{
+      desc:"Firebase Cloud Messaging for push notifications. Device tokens captured and notification rows written, but event triggers not all wired yet. MVP+ feature — infrastructure present, UX incomplete.",
+      bullets:[
+        "POST /api/v1/devices registers device tokens (iOS + Android)",
+        "Backend: NotificationService wraps FCM send",
+        "In-app inbox: GET /api/v1/notifications, PATCH /notifications/:id/read",
+        "Per-type preferences: notification_preferences table",
+        "Reserved for Smart Pulse daily push, bill reminders, streak milestones"
+      ],
+      tech:"Firebase Cloud Messaging"
+    }},
+  { id:"k3s", label:"k3s Cluster", sub:"EC2 t4g.small (ARM)", type:"infra", mvp:"mvp", x:1000, y:450,
+    detail:{
+      desc:"Lightweight Kubernetes hosting all services on a single EC2 Graviton instance. Replaces ALB + ElastiCache with in-cluster equivalents (saves ~$30/mo).",
+      bullets:[
+        "Instance: EC2 t4g.small (ARM Graviton2), 2 vCPU, 2GB RAM",
+        "Pods: API deployment, Worker deployment, Redis StatefulSet, Nginx Ingress, cert-manager",
+        "Liveness / Readiness / Startup probes on API + Worker",
+        "Nginx Ingress + Let's Encrypt via cert-manager (TLS 1.2+, auto-renewal)",
+        "EBS: 30GB gp3 encrypted root volume",
+        "Cost: ~$11-15/mo EC2 + $2.40/mo EBS + $3.65/mo public IPv4",
+        "No ALB (saves $22/mo), no ElastiCache (saves ~$15/mo), no NAT Gateway"
+      ],
+      tech:"k3s on EC2 t4g.small, 30GB gp3 EBS, Nginx Ingress Controller"
+    }},
+];
+
+// ============================================================================
+// EDGES — current traffic paths.
+// ============================================================================
+const edges = [
+  { from:"mobile", to:"cognito", color:"#ef4444", label:"SMS OTP auth", type:"auth" },
+  { from:"mobile", to:"backend", color:"#3b82f6", label:"REST API (JWT)", type:"data" },
+  { from:"mobile", to:"bedrock", color:"#00d4ff", label:"SSE streaming via backend", type:"ai" },
+  { from:"mobile", to:"fcm", color:"#f59e0b", label:"Push notifications (MVP+)", type:"data" },
+  { from:"backend", to:"postgres", color:"#22c55e", label:"Lucid ORM queries", type:"data" },
+  { from:"backend", to:"redis", color:"#a855f7", label:"Cache + rate limit", type:"data" },
+  { from:"backend", to:"worker", color:"#a855f7", label:"Enqueue jobs", type:"data" },
+  { from:"backend", to:"plaid", color:"#f59e0b", label:"BankDataProvider", type:"external" },
+  { from:"worker", to:"postgres", color:"#22c55e", label:"Read/write jobs", type:"data" },
+  { from:"worker", to:"redis", color:"#a855f7", label:"BullMQ queues (12)", type:"data" },
+  { from:"worker", to:"plaid", color:"#f59e0b", label:"Transaction sync", type:"external" },
+  { from:"coach", to:"backend", color:"#3b82f6", label:"Tool calls (read-only DB)", type:"ai" },
+  { from:"bedrock", to:"coach", color:"#00d4ff", label:"Sonnet 4 inference", type:"ai" },
+  { from:"cognito", to:"backend", color:"#ef4444", label:"JWKS validation", type:"auth" },
+  { from:"plaid", to:"backend", color:"#f59e0b", label:"Webhooks", type:"external" },
+];
+
+// RENDER
+const canvas = document.getElementById('canvas');
+const svgEl = document.getElementById('edges');
+const panel = document.getElementById('detail-panel');
+const panelContent = document.getElementById('panel-content');
+const tooltip = document.getElementById('tooltip');
+const legend = document.getElementById('legend');
+const nodeW = 160, nodeH = 60;
+
+// Place nodes
+nodes.forEach(n => {
+  const div = document.createElement('div');
+  div.className = `node node-${n.type}`;
+  div.dataset.mvp = n.mvp;
+  div.style.left = n.x + 'px';
+  div.style.top = n.y + 'px';
+  const mvpPill = n.mvp === 'mvp-plus'
+    ? '<div class="mvp-pill mvpplus">MVP+</div>'
+    : '<div class="mvp-pill mvp">MVP</div>';
+  div.innerHTML = `<div class="label">${n.label}</div><div class="sub">${n.sub}</div>${mvpPill}`;
+  div.addEventListener('click', () => openPanel(n));
+  div.addEventListener('mouseenter', (e) => showTooltip(e, n));
+  div.addEventListener('mouseleave', hideTooltip);
+  canvas.appendChild(div);
+});
+
+function getCenter(n) { return { x: n.x + nodeW/2, y: n.y + nodeH/2 }; }
+function drawEdges() {
+  let svg = '';
+  edges.forEach(e => {
+    const from = nodes.find(n => n.id === e.from);
+    const to = nodes.find(n => n.id === e.to);
+    if (!from || !to) return;
+    const a = getCenter(from), b = getCenter(to);
+    const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+    const dx = b.x - a.x, dy = b.y - a.y;
+    const cx = mx - dy * 0.15, cy = my + dx * 0.15;
+    svg += `<path d="M${a.x},${a.y} Q${cx},${cy} ${b.x},${b.y}" fill="none" stroke="${e.color}" stroke-width="1.5" stroke-opacity="0.5" stroke-dasharray="6 4" class="edge-animated"/>`;
+  });
+  svgEl.innerHTML = svg;
+}
+drawEdges();
+
+// Legend
+const legendTypes = [
+  { label:"Auth flow", color:"#ef4444" },
+  { label:"Data flow", color:"#3b82f6" },
+  { label:"AI flow", color:"#00d4ff" },
+  { label:"Job queue", color:"#a855f7" },
+  { label:"External API", color:"#f59e0b" },
+  { label:"DB access", color:"#22c55e" },
+];
+legend.innerHTML = legendTypes.map(t =>
+  `<div class="row"><div class="line" style="background:${t.color}"></div><span>${t.label}</span></div>`
+).join('');
+
+// Detail panel
+function openPanel(n) {
+  const d = n.detail;
+  const colorMap = { mobile:"#f97316", backend:"#3b82f6", worker:"#a855f7", ai:"#00d4ff", "ai-disabled":"#64748b", data:"#22c55e", external:"#f59e0b", security:"#ef4444", infra:"#94a3b8" };
+  const c = colorMap[n.type] || "#64748b";
+  const mvpLabelClass = n.mvp === 'mvp-plus' ? 'mvpplus' : 'mvp';
+  const mvpLabelText = n.mvp === 'mvp-plus' ? 'MVP+' : 'MVP';
+  const warning = d.warning ? `<div class="warning">&#9888; ${d.warning}</div>` : '';
+  panelContent.innerHTML = `
+    <h2 style="color:${c}">${n.label}</h2>
+    <div>
+      <span class="type-badge" style="background:${c}22;color:${c};border:1px solid ${c}">${n.type.toUpperCase()}</span>
+      <span class="mvp-label ${mvpLabelClass}">${mvpLabelText}</span>
+    </div>
+    <div class="section"><h3>Overview</h3><p>${d.desc}</p>${warning}</div>
+    <div class="section"><h3>Key Details</h3><ul>${d.bullets.map(b => `<li>${b}</li>`).join('')}</ul></div>
+    <div class="section"><h3>Technology</h3><p>${d.tech}</p></div>
+  `;
+  panel.classList.add('open');
+}
+function closePanel() { panel.classList.remove('open'); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
+
+// Tooltip
+function showTooltip(e, n) {
+  tooltip.textContent = `${n.label} — ${n.sub}`;
+  tooltip.style.left = (e.clientX + 12) + 'px';
+  tooltip.style.top = (e.clientY - 28) + 'px';
+  tooltip.classList.add('visible');
+}
+function hideTooltip() { tooltip.classList.remove('visible'); }
+
+// Filter
+function setFilter(filter) {
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.classList.remove('active-all', 'active-mvp', 'active-mvpplus');
+  });
+  const activeBtn = document.querySelector(`.filter-btn[data-filter="${filter}"]`);
+  if (filter === 'all') activeBtn.classList.add('active-all');
+  else if (filter === 'mvp') activeBtn.classList.add('active-mvp');
+  else activeBtn.classList.add('active-mvpplus');
+
+  document.querySelectorAll('.node').forEach(node => {
+    const mvp = node.dataset.mvp;
+    let show = false;
+    if (filter === 'all') show = true;
+    else if (filter === 'mvp') show = mvp === 'mvp';
+    else show = mvp === 'mvp-plus';
+    node.classList.toggle('dimmed', !show);
+  });
+}
+</script>
+</body>
+</html>

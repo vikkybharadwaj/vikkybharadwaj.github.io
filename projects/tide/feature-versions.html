@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feature Versions &middot; Tide</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', monospace; background: #0a0f1a; color: #e2e8f0; }
+.container { max-width: 1100px; margin: 0 auto; padding: 48px 24px; }
+
+header { text-align: center; margin-bottom: 40px; }
+header .back { display: inline-block; font-size: 11px; color: #64748b; margin-bottom: 16px; text-decoration: none; }
+header .back:hover { color: #94a3b8; }
+header h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+header p { font-size: 13px; color: #64748b; max-width: 640px; margin: 0 auto; line-height: 1.6; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+
+.feature-card {
+  display: block; text-decoration: none; color: inherit;
+  border-radius: 12px; padding: 28px;
+  border: 1.5px solid rgba(236,72,153,0.3);
+  background: rgba(17,24,39,0.6);
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+.feature-card:hover { transform: translateY(-4px); box-shadow: 0 8px 32px rgba(236,72,153,0.2); border-color: #ec4899; }
+.feature-card .icon { font-size: 36px; margin-bottom: 14px; display: block; color: #ec4899; }
+.feature-card h2 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+.feature-card p { font-size: 12px; color: #94a3b8; line-height: 1.6; margin-bottom: 14px; }
+.feature-card .metrics { display: flex; gap: 14px; flex-wrap: wrap; }
+.feature-card .metric {
+  padding: 3px 10px; border-radius: 4px; font-size: 10px; font-weight: 700;
+  background: rgba(236,72,153,0.15); color: #ec4899; letter-spacing: 0.5px;
+}
+.feature-card .metric.ghost {
+  background: transparent; color: #64748b;
+  border: 1px solid rgba(100,116,139,0.3);
+}
+
+.coming-soon {
+  border-radius: 12px; padding: 28px;
+  border: 1.5px dashed rgba(100,116,139,0.2);
+  background: rgba(17,24,39,0.3);
+  opacity: 0.5;
+}
+.coming-soon h2 { font-size: 18px; font-weight: 700; margin-bottom: 8px; color: #64748b; }
+.coming-soon p { font-size: 12px; color: #475569; line-height: 1.6; }
+
+footer { text-align: center; margin-top: 48px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.06); }
+footer p { font-size: 10px; color: #475569; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <a href="index.html" class="back">&larr; Back to visual docs</a>
+    <h1>Feature Versions</h1>
+    <p>Documented iteration history for every major feature in the app. Each entry shows what we built, what we learned, what we kept, and what we threw away. Click a feature to see its full version timeline.</p>
+    <p style="font-size: 11px; color: #64748b; margin-top: 12px;">
+      Markdown companion: <a href="https://github.com/vikkybharadwaj/Tide_Vik-s-Version/blob/main/docs/FEATURE_VERSIONS.md" style="color: #ec4899;"><code style="background:rgba(0,0,0,0.3); padding:1px 6px; border-radius:3px;">docs/FEATURE_VERSIONS.md</code></a>
+    </p>
+  </header>
+
+  <div class="grid">
+    <a class="feature-card" href="feature-versions-safe-to-spend.html">
+      <span class="icon">&#9930;</span>
+      <h2>Safe to Spend</h2>
+      <p>The core runway card on Home. From a single hero number to 4 always-visible timeframe tabs with a full runway decomposition accordion and a "Confirm your paycheck" escape hatch.</p>
+      <div class="metrics">
+        <span class="metric">20 VERSIONS</span>
+        <span class="metric">v0 &rarr; v4.9</span>
+        <span class="metric ghost">2026-03-24 &rarr; 2026-04-25</span>
+      </div>
+      <p style="margin-top: 12px; font-size: 11px; color: #94a3b8; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 10px;">
+        &rarr; <span style="color: #fbbf24; font-weight: 700;">Typical Spending Forecast math spec</span> &mdash; step-by-step algorithm with worked example from real user data
+      </p>
+    </a>
+
+    <div class="coming-soon">
+      <h2>Smart Pulse</h2>
+      <p>Real-time daily insight card. History coming soon.</p>
+    </div>
+
+    <div class="coming-soon">
+      <h2>AI Coach</h2>
+      <p>Multi-tool conversational agent. History coming soon.</p>
+    </div>
+
+    <div class="coming-soon">
+      <h2>Spending Insights</h2>
+      <p>Category breakdown + drill-ins. History coming soon.</p>
+    </div>
+  </div>
+
+  <footer>
+    <p>Iteration is the product. Every version that shipped is a hypothesis that was tested on real data.</p>
+  </footer>
+</div>
+</body>
+</html>

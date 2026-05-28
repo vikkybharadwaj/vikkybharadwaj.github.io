@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Typical Spending Forecast &mdash; Math Spec &middot; Tide</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', monospace; background: #0a0f1a; color: #e2e8f0; line-height: 1.6; }
+.container { max-width: 1000px; margin: 0 auto; padding: 48px 24px; }
+
+header { margin-bottom: 40px; }
+header .back { display: inline-block; font-size: 11px; color: #64748b; margin-bottom: 16px; text-decoration: none; }
+header .back:hover { color: #94a3b8; }
+header h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+header .tagline { font-size: 12px; color: #94a3b8; max-width: 680px; }
+header .badges { margin-top: 14px; display: flex; gap: 10px; flex-wrap: wrap; }
+header .badge { display: inline-block; padding: 3px 10px; border-radius: 4px; font-size: 10px; font-weight: 700; background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); letter-spacing: 0.5px; }
+
+section {
+  background: rgba(17,24,39,0.6);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin-bottom: 24px;
+}
+section h2 { font-size: 17px; font-weight: 700; margin-bottom: 12px; color: #fbbf24; }
+section h3 { font-size: 14px; font-weight: 700; margin: 14px 0 8px 0; color: #e2e8f0; }
+section p { font-size: 12px; color: #cbd5e1; margin-bottom: 10px; }
+section ul, section ol { margin: 4px 0 10px 16px; }
+section li { font-size: 12px; color: #cbd5e1; margin-bottom: 4px; }
+section code { background: rgba(0,0,0,0.3); padding: 1px 6px; border-radius: 3px; font-size: 11px; color: #fbbf24; }
+section pre { background: rgba(0,0,0,0.35); padding: 12px 14px; border-radius: 6px; font-size: 11px; overflow-x: auto; color: #cbd5e1; margin: 8px 0; border-left: 2px solid #fbbf24; }
+
+table { width: 100%; border-collapse: collapse; font-size: 11px; margin: 10px 0; }
+table th, table td { padding: 6px 10px; border: 1px solid rgba(255,255,255,0.06); text-align: left; }
+table th { background: rgba(251,191,36,0.08); color: #fbbf24; font-weight: 700; }
+table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+table tr.highlight td { background: rgba(251,191,36,0.06); font-weight: 600; }
+
+.callout {
+  border-left: 3px solid #ec4899;
+  padding: 10px 14px;
+  background: rgba(236,72,153,0.06);
+  border-radius: 4px;
+  font-size: 12px;
+  color: #cbd5e1;
+  margin: 12px 0;
+}
+.callout strong { color: #ec4899; }
+
+.step-list { counter-reset: step; }
+.step-list .step { counter-increment: step; padding-left: 32px; position: relative; margin-bottom: 14px; font-size: 12px; color: #cbd5e1; }
+.step-list .step::before {
+  content: counter(step);
+  position: absolute;
+  left: 0; top: 0;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: #fbbf24;
+  color: #0a0f1a;
+  font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.step-list .step strong { color: #fbbf24; }
+
+.window-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  margin-top: 14px;
+}
+.window-card {
+  padding: 12px 14px;
+  background: rgba(0,0,0,0.25);
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.window-card h4 { font-size: 13px; font-weight: 700; color: #e2e8f0; margin-bottom: 6px; }
+.window-card .detail { font-size: 11px; color: #94a3b8; line-height: 1.5; }
+.window-card .total {
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #ec4899;
+}
+
+footer { text-align: center; margin-top: 48px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.06); }
+footer p { font-size: 10px; color: #475569; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <a href="feature-versions-safe-to-spend.html" class="back">&larr; Back to Safe to Spend Versions</a>
+    <h1>Typical Spending Forecast &mdash; Math Spec</h1>
+    <p style="font-size: 11px; color: #64748b; margin-top: 6px;">
+      Markdown companion: <a href="https://github.com/vikkybharadwaj/Tide_Vik-s-Version/blob/main/docs/SAFE_TO_SPEND_TYPICAL_SPENDING_SPEC.md" style="color: #fbbf24;"><code style="background:rgba(0,0,0,0.3); padding:1px 6px; border-radius:3px;">docs/SAFE_TO_SPEND_TYPICAL_SPENDING_SPEC.md</code></a>
+    </p>
+    <p class="tagline">How we compute the per-tab "you&rsquo;d likely have $X left by {date}" number on Home&rsquo;s Safe to Spend card. Walks the actual algorithm, the actual filters, and a worked example from user 53&rsquo;s real transaction history.</p>
+    <div class="badges">
+      <span class="badge">SAFE TO SPEND v4.8</span>
+      <span class="badge">SERVICE: typical_discretionary_service.ts</span>
+      <span class="badge">MVP &middot; CONTEXT-ONLY</span>
+    </div>
+  </header>
+
+  <section>
+    <h2>What this number represents</h2>
+    <p>SafeToSpend&rsquo;s Runway line tells you <em>how much cash is available</em> today after settling all committed liabilities (known bills, CC balances) and adding expected income up to your next payday. Runway answers: "if nothing non-recurring happens, where do I land?"</p>
+    <p>Real life isn&rsquo;t that clean. Users swipe cards at restaurants, hit Target, grab Ubers. Those outflows don&rsquo;t show up in Runway because they aren&rsquo;t recurring bills. The <strong>Typical Spending Forecast</strong> projects that unplanned spending from the user&rsquo;s actual history &mdash; across both checking and credit card accounts &mdash; so the accordion can show &ldquo;you&rsquo;d likely have $X left by {date}&rdquo; as a realistic projection.</p>
+    <div class="callout">
+      <strong>This is context, not a Runway input.</strong> The Runway formula (<code>spendableBalance &minus; upcomingBills &minus; creditCardDebt + expectedIncome</code>) is unchanged. Typical Spending is shown as a separate line; users can see Runway, then Runway minus Typical, and decide what they trust.
+    </div>
+  </section>
+
+  <section>
+    <h2>Which transactions feed the forecast?</h2>
+    <p>Only transactions that match <em>all</em> of these rules in the last <strong>up to 365 days</strong> (adaptive: <code>min(365, daysOfHistoryAvailable)</code>; returns null below 60 days):</p>
+    <ul>
+      <li><code>user_id = current_user</code></li>
+      <li><code>transaction_type = 'debit'</code> (outflow from the account)</li>
+      <li><code>recurring_stream_id IS NULL</code> &mdash; not part of a detected recurring stream (so Netflix, rent, Amazon Prime are <em>excluded</em>; that stuff is already in the Runway&rsquo;s &ldquo;Bills before payday&rdquo; line)</li>
+      <li><code>is_pending = false</code> (cleared only)</li>
+      <li><code>bank_accounts.account_type IN ('depository', 'credit')</code> &mdash; checking, savings, AND credit cards. Loans are out (mortgage payments aren&rsquo;t discretionary)</li>
+      <li>Not already superseded by a posted version (via <code>excludeSupersededPending</code>)</li>
+      <li><code>categories.parent_code NOT IN ('INCOME','TRANSFER_IN','TRANSFER_OUT','LOAN_PAYMENTS','BANK_FEES')</code> &mdash; these are never discretionary spending</li>
+      <li>Not the CC-account side of a CC bill payment (via <code>excludeCreditCardSideOfCcPayment</code>)</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>The algorithm, step-by-step</h2>
+    <div class="step-list">
+      <div class="step">
+        <strong>Pull adaptive lookback.</strong> Find the user&rsquo;s oldest transaction. <code>lookbackDays = min(365, today &minus; oldest + 1)</code>. If <code>&lt; 60</code>, return null (the UI renders &ldquo;we&rsquo;ll show your pattern after a few more weeks&rdquo;).
+      </div>
+      <div class="step">
+        <strong>Query qualifying transactions</strong> over the lookback window (see filters above). Return only <code>transaction_date</code> and <code>amount</code>.
+      </div>
+      <div class="step">
+        <strong>Aggregate by date.</strong> Build <code>dailySpend: Map&lt;ISODate, TotalSpendThatDay&gt;</code>. The map only stores keys for days that have at least one qualifying transaction &mdash; zero-spend days have no entry at this stage. <strong>This is just an intermediate data structure; zero-spend days are added back as zeros in the next step.</strong>
+      </div>
+      <div class="step">
+        <strong>Walk every day in the lookback window</strong> (not just days with spend &mdash; critical). For each day, look up its spend in <code>dailySpend</code> with <code>?? 0</code> (defaulting to zero when the date isn't in the map) and push it into a bucket keyed by weekday. <strong>So zero-spend days ARE included in the per-weekday samples</strong> &mdash; they just enter as zeros at this step rather than being stored in the intermediate map.
+      </div>
+      <div class="step">
+        <strong>Robust-mean per weekday.</strong> For each weekday&rsquo;s samples: sort ascending, find the 90th-percentile index via <code>floor(n &times; 0.9)</code>, take that value as the <em>cap</em>, replace any observation above the cap with the cap value, then take the plain mean. Below 4 samples for a weekday &rarr; return 0 (refuse to publish noise).
+      </div>
+      <div class="step">
+        <strong>Per-tab window forecasts.</strong> Each SafeToSpend tab has its own <code>windowEnd</code> (Today = today; This Week = end-of-ISO-week-in-user-tz; This Month = end-of-month; Until Payday = nextPayday). For each tab: walk today through <code>windowEnd</code> inclusive, sum the <code>perDayOfWeek[weekday]</code> value for each day in the walk. That sum is <code>forecastAmount</code>.
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Why robust mean and not median?</h2>
+    <p>Previous iteration used median per weekday. It breaks on sparse-data users: if Monday has 14 samples with 10 zeros and 4 non-zero spend days, the median is zero. The forecast collapses to zero. Wrong &mdash; the user does sometimes spend on Mondays.</p>
+    <p>Plain mean is too fragile the other way: one $4,210 Thursday pulls the Thursday average up by <code>$4,210 / n</code>. A single Costco run warps the whole forecast.</p>
+    <p>Robust mean with p90 cap gets both: zero-heavy weekdays still produce non-zero estimates (because the non-zeros count at full weight), and outliers get pulled down to the 90th-percentile value. Simple enough to explain, strong enough to survive real user data.</p>
+    <p class="callout">
+      <strong>Known limitation:</strong> day-of-week seasonality only. Month-of-year patterns (December holiday spike, summer travel) need multi-year data to denoise. We have at most 1 year. When we have 3+, we&rsquo;ll layer month-of-year as a second signal.
+    </p>
+  </section>
+
+  <section>
+    <h2>Worked example &mdash; user 53, April 23 2026</h2>
+    <p><strong>Lookback:</strong> 101 days (oldest transaction is 2026-01-13; today is 2026-04-23; capped at 365).<br>
+    <strong>Sample size after filters:</strong> 160 non-recurring discretionary transactions.<br>
+    <strong>Observed days (days with any qualifying spend):</strong> 67 of 101 &asymp; 66%.</p>
+
+    <h3>Step A: daily spend (top recent days shown)</h3>
+    <p>From the filtered query, grouping by date:</p>
+    <table>
+      <thead><tr><th>Date</th><th>Weekday</th><th>Daily total</th><th>Tx count</th></tr></thead>
+      <tbody>
+        <tr><td>2026-04-22</td><td>Wed</td><td class="num">$44.89</td><td class="num">1</td></tr>
+        <tr><td>2026-04-21</td><td>Tue</td><td class="num">$201.07</td><td class="num">3</td></tr>
+        <tr><td>2026-04-19</td><td>Sun</td><td class="num">$1,944.37</td><td class="num">5</td></tr>
+        <tr><td>2026-04-17</td><td>Fri</td><td class="num">$2,210.64</td><td class="num">2</td></tr>
+        <tr><td>2026-04-16</td><td>Thu</td><td class="num">$15.00</td><td class="num">1</td></tr>
+        <tr><td>2026-04-15</td><td>Wed</td><td class="num">$133.95</td><td class="num">3</td></tr>
+        <tr><td>2026-04-13</td><td>Mon</td><td class="num">$77.88</td><td class="num">4</td></tr>
+        <tr><td>2026-04-10</td><td>Fri</td><td class="num">$16,979.10</td><td class="num">6</td></tr>
+        <tr><td>2026-04-08</td><td>Wed</td><td class="num">$54.76</td><td class="num">3</td></tr>
+        <tr><td>2026-04-07</td><td>Tue</td><td class="num">$193.08</td><td class="num">4</td></tr>
+        <tr><td>&hellip; (57 more rows)</td><td></td><td></td><td></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Step B: walk all 101 days, bucket by weekday</h3>
+    <p>Every day in the 101-day lookback is pushed into exactly one weekday bucket with its spend (zero if no qualifying transactions). Example &mdash; all 15 Thursdays in the window:</p>
+    <table>
+      <thead><tr><th>Date</th><th>Spend</th></tr></thead>
+      <tbody>
+        <tr><td>2026-01-15</td><td class="num">$7.25</td></tr>
+        <tr><td>2026-01-22</td><td class="num">$0.00</td></tr>
+        <tr><td>2026-01-29</td><td class="num">$69.38</td></tr>
+        <tr><td>2026-02-05</td><td class="num">$17.04</td></tr>
+        <tr><td>2026-02-12</td><td class="num">$37.31</td></tr>
+        <tr><td>2026-02-19</td><td class="num">$357.00</td></tr>
+        <tr><td>2026-02-26</td><td class="num">$166.00</td></tr>
+        <tr><td>2026-03-05</td><td class="num">$11.95</td></tr>
+        <tr><td>2026-03-12</td><td class="num">$4,180.56</td></tr>
+        <tr><td>2026-03-19</td><td class="num">$0.00</td></tr>
+        <tr><td>2026-03-26</td><td class="num">$957.12</td></tr>
+        <tr><td>2026-04-02</td><td class="num">$4,210.00</td></tr>
+        <tr><td>2026-04-09</td><td class="num">$0.00</td></tr>
+        <tr><td>2026-04-16</td><td class="num">$15.00</td></tr>
+        <tr><td>2026-04-23</td><td class="num">$0.00 (today)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Step C: compute the robust mean for Thursday</h3>
+    <p>Sort the 15 samples ascending:</p>
+    <pre>[0, 0, 0, 0, 7.25, 11.95, 15, 17.04, 37.31, 69.38, 166, 357, 957.12, 4180.56, 4210]</pre>
+    <p>90th-percentile index: <code>floor(15 &times; 0.9) = floor(13.5) = 13</code>. <code>sorted[13] = 4180.56</code>. That&rsquo;s the cap.</p>
+    <p>Apply the cap (replace values above <code>$4,180.56</code>): the single <code>$4,210</code> outlier gets pulled down to <code>$4,180.56</code>. Everything else unchanged.</p>
+    <pre>capped = [0, 0, 0, 0, 7.25, 11.95, 15, 17.04, 37.31, 69.38, 166, 357, 957.12, 4180.56, 4180.56]</pre>
+    <p>Mean: <code>sum(capped) / 15 = 9999.17 / 15 = </code><strong>$666.61</strong>. That&rsquo;s the Thursday number you see on the Typical Spending card.</p>
+
+    <h3>Step D: all seven weekday averages</h3>
+    <table>
+      <thead><tr><th>Weekday</th><th>Sample count</th><th>Raw mean</th><th>P90 cap</th><th class="num">Robust mean (shipped)</th></tr></thead>
+      <tbody>
+        <tr><td>Monday</td><td class="num">14</td><td class="num">$75.00</td><td class="num">$226.33</td><td class="num"><strong>$72.15</strong></td></tr>
+        <tr><td>Tuesday</td><td class="num">15</td><td class="num">$160.12</td><td class="num">$215.24</td><td class="num"><strong>$120.56</strong></td></tr>
+        <tr><td>Wednesday</td><td class="num">15</td><td class="num">$227.49</td><td class="num">$133.95</td><td class="num"><strong>$59.96</strong></td></tr>
+        <tr><td>Thursday</td><td class="num">15</td><td class="num">$716.33</td><td class="num">$4,180.56</td><td class="num"><strong>$666.61</strong></td></tr>
+        <tr><td>Friday</td><td class="num">14</td><td class="num">$1,516.38</td><td class="num">$2,210.64</td><td class="num"><strong>$461.49</strong></td></tr>
+        <tr><td>Saturday</td><td class="num">14</td><td class="num">$0.00</td><td class="num">$0.00</td><td class="num"><strong>$0.00</strong></td></tr>
+        <tr><td>Sunday</td><td class="num">14</td><td class="num">$261.51</td><td class="num">$312.17</td><td class="num"><strong>$146.30</strong></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Step E: per-tab window forecasts</h3>
+    <p>For each SafeToSpend tab, walk today through the tab&rsquo;s <code>windowEnd</code> inclusive, sum <code>perDayOfWeek[weekday]</code> for every day walked. Today is Thursday April 23, 2026.</p>
+
+    <div class="window-grid">
+      <div class="window-card">
+        <h4>Today tab</h4>
+        <div class="detail">Window: Apr 23 → Apr 23 (1 day)<br>Thu $666.61</div>
+        <div class="total">$666.61</div>
+      </div>
+      <div class="window-card">
+        <h4>This Week tab</h4>
+        <div class="detail">Window: Apr 23 → Apr 26 (4 days)<br>Thu $666.61 + Fri $461.49 + Sat $0.00 + Sun $146.30</div>
+        <div class="total">$1,274.40</div>
+      </div>
+      <div class="window-card">
+        <h4>This Month tab</h4>
+        <div class="detail">Window: Apr 23 → Apr 30 (8 days)<br>Thu + Fri + Sat + Sun + Mon + Tue + Wed + Thu<br>$666.61 + $461.49 + $0 + $146.30 + $72.15 + $120.56 + $59.96 + $666.61</div>
+        <div class="total">$2,193.68</div>
+      </div>
+      <div class="window-card">
+        <h4>Until Payday tab</h4>
+        <div class="detail">Window: Apr 23 → May 1 (9 days)<br>This Month&rsquo;s 8 days + Fri May 1<br>$2,193.68 + $461.49</div>
+        <div class="total">$2,655.17</div>
+      </div>
+    </div>
+
+    <p class="callout" style="margin-top: 18px;">
+      <strong>Why Until Payday &gt; This Month.</strong> Until Payday&rsquo;s 9-day window stretches past end-of-month into May 1 (Friday &mdash; your next payday). Friday is a heavy-spend weekday ($461.49). That single extra Friday explains why Until Payday is $461.49 more than This Month, even though both end within 24 hours of each other.
+    </p>
+  </section>
+
+  <section>
+    <h2>Projection-at-{windowEnd} math</h2>
+    <p>The number users see as "You&rsquo;d likely have $X left at payday (May 1)" is:</p>
+    <pre>projection = runway − typicalDiscretionary.windows[selectedTab].forecastAmount</pre>
+    <p>For user 53 today:</p>
+    <table>
+      <thead><tr><th>Tab</th><th class="num">Runway</th><th class="num">Typical spending</th><th class="num">You&rsquo;d have left</th></tr></thead>
+      <tbody>
+        <tr><td>Today</td><td class="num">$6,795.80</td><td class="num">$666.61</td><td class="num"><strong>$6,129.19</strong></td></tr>
+        <tr><td>This Week</td><td class="num">$6,795.80</td><td class="num">$1,274.40</td><td class="num"><strong>$5,521.40</strong></td></tr>
+        <tr><td>This Month</td><td class="num">$6,795.80</td><td class="num">$2,193.68</td><td class="num"><strong>$4,602.12</strong></td></tr>
+        <tr class="highlight"><td>Until Payday</td><td class="num">$6,795.80</td><td class="num">$2,655.17</td><td class="num"><strong>$4,140.63</strong></td></tr>
+      </tbody>
+    </table>
+    <p>Runway stays constant across tabs &mdash; it&rsquo;s a snapshot of the moment. What changes is how much typical spending gets subtracted, because each tab projects over a different length of time.</p>
+  </section>
+
+  <section>
+    <h2>What&rsquo;s excluded and why</h2>
+    <table>
+      <thead><tr><th>Excluded</th><th>Reason</th></tr></thead>
+      <tbody>
+        <tr><td>Recurring streams (via <code>recurring_stream_id IS NOT NULL</code>)</td><td>Already in Runway&rsquo;s &ldquo;Bills before payday&rdquo; line &mdash; would double-count</td></tr>
+        <tr><td>Transfers (<code>TRANSFER_IN</code>, <code>TRANSFER_OUT</code>)</td><td>Between your own accounts; not net spending</td></tr>
+        <tr><td>Loan payments (<code>LOAN_PAYMENTS</code> parent)</td><td>Mortgage, auto, student loan &mdash; committed, not discretionary. Some are recurring (already excluded) but this also catches one-off paydowns</td></tr>
+        <tr><td>Bank fees (<code>BANK_FEES</code>)</td><td>Interest, overdraft, maintenance &mdash; not user-chosen spending</td></tr>
+        <tr><td>Income (<code>INCOME</code> parent, but also filtered by <code>transaction_type = 'debit'</code>)</td><td>Inflows aren&rsquo;t spending</td></tr>
+        <tr><td>CC-account side of a CC bill payment</td><td>When you pay a CC from checking, Plaid emits two transactions (one on each account). The checking side is already a <code>LOAN_PAYMENTS</code> outflow; the CC side is a balance credit. Excluded so we don&rsquo;t count the same event twice</td></tr>
+        <tr><td>Pending transactions</td><td>Amount/date could still change. Once cleared they flow back into the sample</td></tr>
+        <tr><td>Loan accounts</td><td>Plaid reports them but they&rsquo;re not discretionary spend sources</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section style="background:rgba(239,68,68,0.06); border:1px solid rgba(239,68,68,0.3);">
+    <h2 style="color:#ef4444;">Why is user 53&rsquo;s Thursday so high? &mdash; the BILT story</h2>
+    <p>$666 felt high. Here&rsquo;s why: <strong>your monthly rent ($4,200/mo on Bilt Rewards card) is misclassified as discretionary because the recurrence detector hasn&rsquo;t caught it yet</strong>. Bilt has only fired twice in your 102-day lookback (Mar 12, Apr 2 — about 21 days apart, not exactly biweekly or monthly), so the detector hasn&rsquo;t built a stream for it. With <code>recurring_stream_id IS NULL</code> on those transactions, they fall into typical-discretionary&rsquo;s sample.</p>
+    <h3>The two big Thursdays</h3>
+    <table>
+      <thead><tr><th>Date</th><th>Description</th><th>Amount</th><th>Should be?</th></tr></thead>
+      <tbody>
+        <tr><td>2026-03-12 Thu</td><td>BILT CARD HOUSING</td><td class="num">$4,170.55</td><td>Recurring bill (rent)</td></tr>
+        <tr><td>2026-04-02 Thu</td><td>BILT CARD HOUSING</td><td class="num">$4,200.00</td><td>Recurring bill (rent)</td></tr>
+      </tbody>
+    </table>
+    <p>Even with the p90 cap, both contribute heavily: cap = sorted[13] = $4,180.56, so Apr 2&rsquo;s $4,210 gets clamped to $4,180.56 but Mar 12&rsquo;s $4,170.55 is below the cap and contributes its full value.</p>
+    <h3>What it would look like if BILT were detected as a stream</h3>
+    <p>If BILT were classified as a recurring bill:</p>
+    <ul>
+      <li>$4,200 would be subtracted from runway as <strong>Upcoming Bills before payday</strong> (correct — it IS a known committed expense)</li>
+      <li>BILT&rsquo;s past occurrences would have <code>recurring_stream_id != NULL</code> and would be EXCLUDED from typical-discretionary's sample</li>
+      <li>Thursday's robust mean would drop from <strong>$666.61</strong> to roughly <strong>$15-50</strong> &mdash; reflecting actual non-recurring Thursday spending</li>
+    </ul>
+    <h3>The fix &mdash; "Confirm a recurring bill" UX (planned)</h3>
+    <p>Mirror of the existing &ldquo;Confirm your paycheck&rdquo; pattern. User taps a transaction in their history → it gets <code>user_confirmed=true</code> on a <code>recurring_streams</code> row → bypasses the detector's occurrence-count threshold. Same plumbing exists; just needs UI and the bill-side flag. Documented as planned post-MVP feature.</p>
+    <h3>What this means for everyone, not just you</h3>
+    <p>Any user with thin Plaid history (less than ~3 months), irregular-cadence bills (quarterly insurance, semiannual property tax), or just-started bills (new gym, first month of rent on a new card) will see the same misclassification. The typical-discretionary bucket over-counts in those cases, projection-at-payday under-counts what they&rsquo;ll have left. Resolved by Confirm-a-recurring-bill once we ship it.</p>
+  </section>
+
+  <section>
+    <h2>Code references</h2>
+    <ul>
+      <li><code>apps/backend/app/services/typical_discretionary_service.ts</code> &mdash; the whole algorithm. <code>computeTypicalDiscretionary()</code> is the entry point.</li>
+      <li><code>apps/backend/app/services/transaction_filters.ts</code> &mdash; the <code>NON_DISCRETIONARY_PRIMARIES</code> constant, <code>excludeNonDiscretionary()</code>, <code>excludeCreditCardSideOfCcPayment()</code>, <code>excludeSupersededPending()</code> helpers. <em>Note: <code>excludeCreditCardSideOfCcPayment</code> is defense-in-depth in this query &mdash; the CC-account side of CC bill payments is already filtered out by <code>transaction_type = 'debit'</code> (it's a credit on the CC), and the checking-account side is filtered out by the <code>LOAN_PAYMENTS</code> parent-code exclusion. The explicit filter is redundant but cheap; it protects against future regressions if filter 1 or 3 ever loosens.</em></li>
+      <li><code>apps/backend/app/services/recurrence_detection_service.ts</code> &mdash; writes <code>transactions.recurring_stream_id</code> on the detector&rsquo;s upsert pass. That&rsquo;s the FK the service uses to exclude recurring spend.</li>
+      <li><code>apps/backend/app/services/safe_to_spend_service.ts</code> &mdash; calls <code>computeTypicalDiscretionary</code>, attaches result to the API response.</li>
+      <li><code>apps/mobile/src/components/dashboard/SafeToSpend.tsx</code> &mdash; renders the Projection block with the per-day cards.</li>
+    </ul>
+    <p class="callout">
+      <strong>Single caller, single source of truth.</strong> Both the Home dashboard and the AI Coach&rsquo;s <code>calculate_safe_to_spend</code> tool read the same numbers from the same service. If a user asks the Coach &ldquo;what would I typically spend by payday?&rdquo; the answer comes from exactly this math, not a second implementation.
+    </p>
+  </section>
+
+  <footer>
+    <p>Typical Spending Forecast spec &middot; SafeToSpend v4.8 &middot; shipped 2026-04-23</p>
+  </footer>
+</div>
+</body>
+</html>

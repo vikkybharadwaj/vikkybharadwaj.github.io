@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vik Bharadwaj — Portfolio</title>
+<meta name="description" content="Vik Bharadwaj — product builder. Selected projects and their interactive documentation.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #07090f;
+  --bg-soft: #0d1119;
+  --card: rgba(20,26,38,0.72);
+  --border: rgba(255,255,255,0.08);
+  --text: #e8edf5;
+  --muted: #8a98ad;
+  --faint: #5a6678;
+  --accent: #5b9dff;
+}
+html, body { width: 100%; min-height: 100vh; }
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background:
+    radial-gradient(1100px 600px at 75% -10%, rgba(91,157,255,0.10), transparent 60%),
+    radial-gradient(900px 500px at 10% 5%, rgba(168,85,247,0.08), transparent 55%),
+    var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+/* ---------- Hero / About ---------- */
+header.hero { padding: 96px 0 56px; }
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 18px;
+}
+header.hero h1 {
+  font-size: clamp(34px, 6vw, 56px); font-weight: 800; letter-spacing: -1.5px;
+  line-height: 1.05; margin-bottom: 20px;
+}
+header.hero h1 .grad {
+  background: linear-gradient(100deg, #5b9dff 0%, #a855f7 60%, #22d3ee 100%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+header.hero .blurb {
+  font-size: clamp(16px, 2.2vw, 19px); color: var(--muted);
+  max-width: 640px; line-height: 1.65;
+}
+/* EDIT: tweak the title line + blurb above/below to your own framing */
+
+.links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+.links a {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 600; text-decoration: none;
+  color: var(--text); padding: 9px 16px; border-radius: 9px;
+  border: 1px solid var(--border); background: rgba(255,255,255,0.03);
+  transition: border-color .18s, background .18s, transform .18s;
+}
+.links a:hover { border-color: var(--accent); background: rgba(91,157,255,0.10); transform: translateY(-2px); }
+.links a .ic { font-size: 15px; line-height: 1; }
+
+/* ---------- Section heading ---------- */
+.section-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  margin: 28px 0 22px; padding-top: 40px;
+  border-top: 1px solid var(--border);
+}
+.section-head h2 { font-size: 14px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+.section-head .count { font-size: 12px; color: var(--faint); font-family: 'JetBrains Mono', monospace; }
+
+/* ---------- Project grid ---------- */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+.card {
+  position: relative; display: flex; flex-direction: column;
+  text-decoration: none; color: inherit;
+  border-radius: 16px; padding: 26px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+  transition: transform .2s, border-color .2s, box-shadow .2s;
+}
+.card::before {
+  content: ""; position: absolute; inset: 0 0 auto 0; height: 3px;
+  background: var(--c, var(--accent)); opacity: .8;
+}
+.card.live { cursor: pointer; }
+.card.live:hover { transform: translateY(-5px); border-color: var(--c, var(--accent)); box-shadow: 0 14px 40px rgba(0,0,0,0.45); }
+.card .row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.card .logo {
+  width: 42px; height: 42px; border-radius: 11px; flex: none;
+  display: grid; place-items: center; font-size: 22px; font-weight: 800;
+  background: color-mix(in srgb, var(--c, var(--accent)) 18%, transparent);
+  color: var(--c, var(--accent));
+  font-family: 'JetBrains Mono', monospace;
+}
+.card h3 { font-size: 19px; font-weight: 700; letter-spacing: -0.3px; }
+.card .kicker { font-size: 11px; color: var(--faint); font-family: 'JetBrains Mono', monospace; letter-spacing: .5px; }
+.card p { font-size: 13.5px; color: var(--muted); line-height: 1.6; flex: 1; }
+.card .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 18px; }
+.card .tag {
+  font-size: 10px; font-weight: 700; letter-spacing: .5px;
+  padding: 4px 9px; border-radius: 6px;
+  background: color-mix(in srgb, var(--c, var(--accent)) 14%, transparent);
+  color: var(--c, var(--accent));
+  font-family: 'JetBrains Mono', monospace;
+}
+.card .go { margin-top: 18px; font-size: 12px; font-weight: 600; color: var(--c, var(--accent)); font-family: 'JetBrains Mono', monospace; }
+
+/* coming-soon variant */
+.card.soon { opacity: .55; cursor: default; }
+.card.soon::before { opacity: .35; }
+.card.soon .logo { background: rgba(255,255,255,0.05); color: var(--faint); }
+.card.soon .badge {
+  align-self: flex-start; margin-top: 18px;
+  font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 6px;
+  border: 1px dashed var(--border); color: var(--faint);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* accent per card */
+.c-tide   { --c: #5b9dff; }
+.c-soon-1 { --c: #a855f7; }
+.c-soon-2 { --c: #22d3ee; }
+
+footer { text-align: center; padding: 64px 0 48px; margin-top: 48px; border-top: 1px solid var(--border); }
+footer p { font-size: 12px; color: var(--faint); font-family: 'JetBrains Mono', monospace; }
+
+@media (max-width: 560px) {
+  header.hero { padding: 64px 0 40px; }
+  .grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ HERO / ABOUT ============ -->
+  <header class="hero">
+    <div class="eyebrow">Vik Bharadwaj</div>
+    <!-- EDIT: your one-line title / headline -->
+    <h1>Product builder shipping <span class="grad">AI-native consumer software</span>.</h1>
+    <!-- EDIT: your short bio blurb -->
+    <p class="blurb">
+      I design and build end-to-end products — from data model and backend to mobile UX and
+      the AI evaluation systems that keep them honest. Below are selected projects, each with
+      its own deep, interactive documentation.
+    </p>
+    <nav class="links">
+      <a href="https://github.com/vikkybharadwaj" target="_blank" rel="noopener"><span class="ic">&#9670;</span> GitHub</a>
+      <a href="mailto:vikky.bharadwaj@gmail.com"><span class="ic">&#9993;</span> Email</a>
+      <!-- EDIT: replace with your real LinkedIn URL -->
+      <a href="https://www.linkedin.com/in/CHANGEME" target="_blank" rel="noopener"><span class="ic">&#9656;</span> LinkedIn</a>
+    </nav>
+  </header>
+
+  <!-- ============ PROJECTS ============ -->
+  <div class="section-head">
+    <h2>Projects</h2>
+    <span class="count">1 live · more soon</span>
+  </div>
+
+  <div class="grid">
+
+    <!-- ---- Tide (live) ---- -->
+    <a class="card live c-tide" href="projects/tide/index.html">
+      <div class="row">
+        <span class="logo">T</span>
+        <div>
+          <h3>Tide</h3>
+          <div class="kicker">Cash-flow app · React Native + AdonisJS</div>
+        </div>
+      </div>
+      <p>
+        A mobile-first personal cash-flow app with payday-aware "Safe to Spend", an AI
+        coach, and bank sync via Plaid. The docs below walk through the system:
+        architecture, data flows, the AI pipeline, feature-version history, the Safe-to-Spend
+        math, and a live evals dashboard — all interactive.
+      </p>
+      <div class="tags">
+        <span class="tag">ARCHITECTURE</span>
+        <span class="tag">DATA FLOWS</span>
+        <span class="tag">AI PIPELINE</span>
+        <span class="tag">EVALS</span>
+      </div>
+      <div class="go">Explore the docs &rarr;</div>
+    </a>
+
+    <!-- ---- Coming soon slot 1 ----
+         TO MAKE LIVE: vendor the project's HTML into projects/<slug>/, then change this
+         <div> to <a class="card live c-..." href="projects/<slug>/index.html"> and add a
+         description + tags + a "go" link like the Tide card above. -->
+    <div class="card soon c-soon-1">
+      <div class="row">
+        <span class="logo">&middot;</span>
+        <div>
+          <h3>Project Two</h3>
+          <div class="kicker">Coming from another session</div>
+        </div>
+      </div>
+      <p>Documentation for the next project will live here once its HTML docs are ready.</p>
+      <span class="badge">Coming soon</span>
+    </div>
+
+    <!-- ---- Coming soon slot 2 ---- -->
+    <div class="card soon c-soon-2">
+      <div class="row">
+        <span class="logo">&middot;</span>
+        <div>
+          <h3>Project Three</h3>
+          <div class="kicker">Coming from another session</div>
+        </div>
+      </div>
+      <p>Another slot, ready to be wired up to a vendored docs hub.</p>
+      <span class="badge">Coming soon</span>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>&copy; Vik Bharadwaj · Built with Claude Code · vikkybharadwaj.github.io</p>
+  </footer>
+
+</div>
+</body>
+</html>

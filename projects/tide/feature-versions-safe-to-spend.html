@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Safe to Spend &mdash; Version History &middot; Tide</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', monospace; background: #0a0f1a; color: #e2e8f0; line-height: 1.6; }
+.container { max-width: 980px; margin: 0 auto; padding: 48px 24px; }
+
+header { margin-bottom: 48px; text-align: center; }
+header .back { display: inline-block; font-size: 11px; color: #64748b; margin-bottom: 16px; text-decoration: none; }
+header .back:hover { color: #94a3b8; }
+header h1 { font-size: 30px; font-weight: 700; margin-bottom: 10px; }
+header .subtitle { font-size: 13px; color: #64748b; max-width: 680px; margin: 0 auto; }
+header .legend { margin-top: 28px; display: inline-flex; gap: 20px; padding: 14px 22px; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; background: rgba(17,24,39,0.5); flex-wrap: wrap; justify-content: center; }
+header .legend .item { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #94a3b8; }
+header .legend .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+.summary { background: rgba(17,24,39,0.6); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 24px 28px; margin-bottom: 40px; }
+.summary h3 { font-size: 13px; font-weight: 700; margin-bottom: 10px; letter-spacing: 0.5px; color: #ec4899; }
+.summary p { font-size: 12px; color: #cbd5e1; }
+.summary ul { margin-top: 10px; list-style: none; padding: 0; }
+.summary li { font-size: 12px; color: #94a3b8; padding: 4px 0 4px 16px; position: relative; }
+.summary li::before { content: '\25B8'; position: absolute; left: 0; color: #ec4899; }
+
+/* Timeline */
+.timeline { position: relative; padding-left: 40px; }
+.timeline::before {
+  content: ''; position: absolute; left: 12px; top: 16px; bottom: 16px;
+  width: 2px; background: linear-gradient(to bottom, #ec4899 0%, #a855f7 50%, #3b82f6 100%);
+}
+
+.version-card {
+  position: relative; margin-bottom: 24px; padding: 26px 28px;
+  border-radius: 12px; background: rgba(17,24,39,0.6);
+  border: 1.5px solid rgba(255,255,255,0.08);
+}
+.version-card::before {
+  content: ''; position: absolute; left: -34px; top: 28px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #0a0f1a; border: 3px solid currentColor;
+}
+
+.version-card.v-base { color: #64748b; }
+.version-card.v-base { border-color: rgba(100,116,139,0.3); }
+.version-card.v-evolve { color: #3b82f6; }
+.version-card.v-evolve { border-color: rgba(59,130,246,0.3); }
+.version-card.v-rework { color: #a855f7; }
+.version-card.v-rework { border-color: rgba(168,85,247,0.3); }
+.version-card.v-correction { color: #f59e0b; }
+.version-card.v-correction { border-color: rgba(245,158,11,0.3); }
+.version-card.v-simplify { color: #22c55e; }
+.version-card.v-simplify { border-color: rgba(34,197,94,0.3); }
+.version-card.v-current { color: #ec4899; }
+.version-card.v-current { border-color: rgba(236,72,153,0.4); background: rgba(236,72,153,0.05); }
+.version-card.v-revert { color: #ef4444; opacity: 0.7; }
+.version-card.v-revert { border-color: rgba(239,68,68,0.3); border-style: dashed; }
+
+.version-header { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 8px; }
+.version-label { font-size: 22px; font-weight: 700; color: #f8fafc; }
+.version-date { font-size: 11px; color: #64748b; }
+.version-tag {
+  display: inline-block; padding: 3px 10px; border-radius: 4px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+  background: currentColor; filter: brightness(1);
+  color: #0a0f1a;
+}
+
+.version-title { font-size: 14px; font-weight: 600; color: #e2e8f0; margin: 2px 0 14px; }
+
+.version-section { margin-top: 14px; }
+.version-section h4 { font-size: 10px; font-weight: 700; color: #94a3b8; margin-bottom: 6px; letter-spacing: 1px; text-transform: uppercase; }
+.version-section p, .version-section ul { font-size: 12px; color: #cbd5e1; }
+.version-section ul { list-style: none; padding: 0; }
+.version-section li { padding: 3px 0 3px 14px; position: relative; }
+.version-section li::before { content: '\25B8'; position: absolute; left: 0; color: currentColor; }
+.version-section code { background: rgba(0,0,0,0.3); padding: 1px 5px; border-radius: 3px; font-size: 11px; color: #fbbf24; }
+
+.version-footer { margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.06); display: flex; gap: 16px; flex-wrap: wrap; font-size: 10px; color: #64748b; }
+.version-footer code { background: transparent; padding: 0; color: #64748b; }
+
+.meta-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px; }
+@media (max-width: 680px) {
+  .meta-pair { grid-template-columns: 1fr; }
+  .timeline { padding-left: 30px; }
+  .timeline::before { left: 6px; }
+  .version-card::before { left: -30px; }
+}
+.meta-pair .box { background: rgba(0,0,0,0.2); border-radius: 8px; padding: 10px 14px; border: 1px solid rgba(255,255,255,0.05); }
+.meta-pair .box h5 { font-size: 9px; font-weight: 700; color: #64748b; letter-spacing: 1px; margin-bottom: 4px; text-transform: uppercase; }
+.meta-pair .box p { font-size: 11px; color: #94a3b8; }
+
+footer { text-align: center; margin-top: 56px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.06); }
+footer p { font-size: 10px; color: #475569; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <a href="feature-versions.html" class="back">&larr; Back to Feature Versions</a>
+    <h1>Safe to Spend &mdash; Version History</h1>
+    <p style="font-size: 11px; color: #64748b; margin-top: 6px;">
+      Markdown companion: <a href="https://github.com/vikkybharadwaj/Tide_Vik-s-Version/blob/main/docs/FEATURE_VERSIONS_SAFE_TO_SPEND.md" style="color: #ec4899;"><code style="background:rgba(0,0,0,0.3); padding:1px 6px; border-radius:3px;">docs/FEATURE_VERSIONS_SAFE_TO_SPEND.md</code></a>
+    </p>
+    <p class="subtitle">Twenty iterations from a single hero number to a behaviorally-tuned runway with savings deliberately set aside, drill-downs on every aggregate, and per-tab projections. Each version shipped on real user data, each change was earned.</p>
+    <p style="margin-top: 12px; font-size: 12px; display:flex; flex-direction:column; gap:6px;">
+      <a href="safe-to-spend-math-explorer.html" style="color: #fbbf24; text-decoration: underline; font-weight: 600;">
+        &rarr; Safe to Spend math explorer &mdash; click-to-expand component breakdown of the whole formula
+      </a>
+      <a href="safe-to-spend-typical-spending-spec.html" style="color: #fbbf24; text-decoration: underline; font-weight: 600;">
+        &rarr; Typical Spending Forecast spec &mdash; day-by-day worked example
+      </a>
+    </p>
+    <div class="legend">
+      <span class="item"><span class="dot" style="background:#64748b"></span>Foundation</span>
+      <span class="item"><span class="dot" style="background:#3b82f6"></span>Evolve</span>
+      <span class="item"><span class="dot" style="background:#a855f7"></span>Rework</span>
+      <span class="item"><span class="dot" style="background:#f59e0b"></span>Correction</span>
+      <span class="item"><span class="dot" style="background:#22c55e"></span>Simplify</span>
+      <span class="item"><span class="dot" style="background:#ec4899"></span>Current</span>
+      <span class="item"><span class="dot" style="background:#ef4444"></span>Reverted</span>
+    </div>
+  </header>
+
+  <div class="summary">
+    <h3>Thematic arc</h3>
+    <p>Three big shifts across five weeks of iteration:</p>
+    <ul>
+      <li><strong>Information density up</strong> &mdash; one number (v0) &rarr; three timeframes (v1) &rarr; four tabs with math breakdown (v4) &rarr; full runway decomposition accordion (v4.3)</li>
+      <li><strong>Data model consolidation</strong> &mdash; duplicated math across Home + AI Coach (v1) &rarr; shared <code>safe_to_spend_service.ts</code> (v3.1) &rarr; DB as single source of truth (v4.4)</li>
+      <li><strong>Let the user edit reality when the detector gets it wrong</strong> &mdash; silent detection (v0&ndash;v4.3) &rarr; &ldquo;Confirm your paycheck&rdquo; (v4.5)</li>
+    </ul>
+  </div>
+
+  <div class="timeline">
+
+    <!-- v0 -->
+    <div class="version-card v-base">
+      <div class="version-header">
+        <div>
+          <div class="version-label">v0</div>
+          <div class="version-date">2026-03-24</div>
+        </div>
+        <span class="version-tag">FOUNDATION</span>
+      </div>
+      <div class="version-title">Safe-to-Spend hero card on the dashboard</div>
+
+      <div class="version-section">
+        <h4>What shipped</h4>
+        <ul>
+          <li>A single number: current account balance shown as &ldquo;safe to spend&rdquo;</li>
+          <li>Static balance, no payday awareness, no bills subtracted</li>
+          <li>Lived inside the broader dashboard-with-real-API-data effort</li>
+        </ul>
+      </div>
+      <div class="version-section">
+        <h4>Why this was the starting point</h4>
+        <p>Minimum viable affordance: give the user one honest number they can glance at. Most cashflow apps stop here. Quickly became clear that &ldquo;your balance&rdquo; is not the same as &ldquo;what you can safely spend&rdquo; &mdash; pending bills and upcoming rent change the answer dramatically.</p>
+      </div>
+      <div class="version-footer">
+        <code>d8b0fb5</code>
+        <span>feat: build dashboard with real API data &mdash; Safe-to-Spend hero, charts, widgets</span>
+      </div>
+    </div>
+
+    <!-- v1 -->
+    <div class="version-card v-evolve">
+      <div class="version-header">
+        <div>
+          <div class="version-label">v1</div>
+          <div class="version-date">2026-04-01</div>
+        </div>
+        <span class="version-tag">EVOLVE</span>
+      </div>
+      <div class="version-title">Three timeframes + confidence-weighted bills</div>
+
+      <div class="version-section">
+        <h4>What changed</h4>
+        <ul>
+          <li>Added three timeframe tabs: <code>Today</code>, <code>This Week</code>, <code>This Month</code></li>
+          <li>Bills subtracted only when confidence &ge; some threshold &mdash; the formula was born</li>
+          <li>Formula: <code>amount = spendableBalance &minus; upcomingBills + expectedIncome</code></li>
+        </ul>
+      </div>
+      <div class="meta-pair">
+        <div class="box"><h5>Kept from v0</h5><p>The hero-card format &mdash; users recognize &ldquo;a big number with context underneath&rdquo;.</p></div>
+        <div class="box"><h5>New problem</h5><p>Timeframes were rolling windows from the moment of request &mdash; &ldquo;This Week&rdquo; on a Thursday was Thu&rarr;Wed, which matched nobody&rsquo;s mental model of a week.</p></div>
+      </div>
+      <div class="version-footer">
+        <code>9674241</code>
+        <span>feat: Safe to Spend with three timeframes and confidence-weighted bills</span>
+      </div>
+    </div>
+
+    <!-- v1.1 -->
+    <div class="version-card v-correction">
+      <div class="version-header">
+        <div>
+          <div class="version-label">v1.1</div>
+          <div class="version-date">2026-04-02</div>
+        </div>
+        <span class="version-tag">CORRECTION</span>
+      </div>
+      <div class="version-title">Rolling windows + date parsing fix</div>
+
+      <div class="version-section">
+        <h4>What changed</h4>
+        <ul>
+          <li>Timeframes clamped to calendar boundaries (<code>endOf('week')</code>, <code>endOf('month')</code>)</li>
+          <li>Date string parsing on the mobile side fixed &mdash; dates were off-by-one in some zones</li>
+        </ul>
+      </div>
+      <div class="version-section">
+        <h4>What we learned</h4>
+        <p>First lesson in what would become a recurring theme: timezone and date semantics are the hardest part of a cashflow app. A date is not an instant.</p>
+      </div>
+      <div class="version-footer">
+        <code>12ab36a</code>
+        <span>fix: rolling windows and date parsing for Safe to Spend</span>
+      </div>
+    </div>
+
+    <!-- v1.2 -->
+    <div class="version-card v-evolve">
+      <div class="version-header">
+        <div>
+          <div class="version-label">v1.2</div>
+          <div class="version-date">2026-04-13</div>
+        </div>
+        <span class="version-tag">EVOLVE</span>
+      </div>
+      <div class="version-title">Payday-aware daily budget</div>
+
+      <div class="version-section">
+        <h4>What changed</h4>
+        <ul>
+          <li>Introduced the concept of <code>dailyBudget = runway &divide; daysUntilPayday</code></li>
+          <li>&ldquo;Today&rdquo; stopped showing full balance and started showing a per-day budget</li>
+          <li>User payday setting (frequency + day-of-month) began to drive the math</li>
+        </ul>
+      </div>
+      <div class="version-section">
+        <h4>Why this was big</h4>
+        <p>The shift from &ldquo;here&rsquo;s your runway&rdquo; to &ldquo;here&rsquo;s what you can spend today and have runway left.&rdquo; Debt-by-day, not windowed sum.</p>
+      </div>
+      <div class="version-footer">
+        <code>365b605</code>
+        <span>feat: payday-aware SafeToSpend &mdash; daily budget, not full balance</span>
+      </div>
+    </div>
+
+    <!-- v1.3 -->
+    <div class="version-card v-correction">
+      <div class="version-header">
+        <div>
+          <div class="version-label">v1.3</div>
+          <div class="version-date">2026-04-14</div>
+        </div>
+        <span class="version-tag">CORRECTION</span>
+      </div>
+      <div class="version-title">AI Coach daily budget matches Home</div>
+
+      <div class="version-section">
+        <h4>Why</h4>
+        <p>AI Coach was computing its own daily budget; Home was computing a different one. Users asked the Coach &ldquo;what can I spend today?&rdquo; and got a different number than the hero card on Home. Hot-patched the AI Coach to match.</p>
+      </div>
+      <div class="version-section">
+        <h4>What we learned</h4>
+        <p>Two systems independently implementing the same math <em>will</em> drift. This became the motivation for extracting <code>SafeToSpendService</code> as the shared source of truth in v3.1.</p>
+      </div>
+      <div class="version-footer">
+        <code>286723a</code>
+        <span>fix: AI Coach SafeToSpend matches Home &mdash; payday-aware daily budget</span>
+      </div>
+    </div>
+
+    <!-- v2.0 -->
+    <div class="version-card v-rework">
+      <div class="version-header">
+        <div>
+          <div class="version-label">v2.0</div>
+          <div class="version-date">2026-04-15</div>
+        </div>
+        <span class="version-tag">REWORK</span>
+      </div>
+      <div class="version-title">Credit card debt in the formula</div>
+
+      <div class="version-section">
+        <h4>What changed</h4>
+        <ul>
+          <li>Formula now: <code>spendableBalance &minus; upcomingBills &minus; creditCardDebt + expectedIncome</code></li>
+          <li>Bills attributed to specific accounts</li>
+          <li>New response field: <code>creditCards[]</code> with per-card balance</li>
+        </ul>
+      </div>
+      <div class="version-section">
+        <h4>Why</h4>
+        <p>Users with rolling CC balances saw &ldquo;Safe to Spend = $X&rdquo; when they actually owed $X+ to their cards and were negative in net worth. Subtracting CC debt made the number honest at the cost of looking smaller &mdash; a deliberate tradeoff for financial accuracy over optimism.</p>
+      </div>
+      <div class="version-footer">
+        <code>4a0f96a</code>
+        <span>feat: SafeToSpend V2 &mdash; credit card debt + account-level bills</span>
+      </div>
+    </div>
+
+    <!-- v2.1 -->
+    <div class="version-card v-correction">
+      <div class="version-header">
+        <div>
+          <div class="version-label">v2.1</div>
+          <div class="version-date">2026-04-16</div>
+        </div>
+        <span class="version-tag">CORRECTION</span>
+      </div>
+      <div class="version-title">Server-persisted payday settings</div>
+
+      <div class="version-section">
+        <h4>What changed</h4>
+        <ul>
+          <li>Payday frequency + day-of-month moved from client-only state to the <code>profiles</code> row</li>
+          <li>AI Coach read the same DB row so Home and Coach now agreed on <em>when</em> payday was</li>
+        </ul>
+      </div>
+      <div class="version-section">
+        <h4>The seed of a future mistake</h4>
+        <p>Mobile <em>also</em> still sent payday values as query params on every request &mdash; two sources of truth that would silently drift until v4.4. This version half-fixed the consistency problem.</p>
+      </div>
+      <div class="version-footer">
+        <code>9018717</code>
+        <span>fix: payday settings persisted server-side &mdash; AI Coach matches dashboard</span>
+      </div>
+    </div>
+
+    <!-- v2.2 -->
+    <div class="version-card v-evolve">
+      <div class="version-header">
+        <div>
+          <div class="version-label">v2.2</div>
+          <div class="version-date">2026-04-17</div>
+        </div>
+        <span class="version-tag">EVOLVE</span>
+      </div>
+      <div class="version-title">Loan accounts surfaced as context, not math input</div>
+
+      <div class="version-section">
+        <h4>What changed</h4>
+        <ul>
+          <li>Added <code>loansExcluded[]</code> to the response &mdash; mortgage / auto loan shown to the user but NOT subtracted from runway</li>
+        </ul>
+      </div>
+      <div class="version-section">
+        <h4>Why</h4>
+        <p>Plaid doesn&rsquo;t return loan transactions reliably, and a mortgage isn&rsquo;t the kind of debt you pay off next month anyway. Surfacing it as context (&ldquo;here are the big liabilities we&rsquo;re aware of&rdquo;) without contaminating the formula was the right line.</p>
+      </div>
+      <div class="version-footer">
+        <code>9527123</code>
+        <span>fix: SafeToSpend response includes loansExcluded for user transparency</span>
+      </div>
+    </div>
+
+    <!-- v3.0 -->
+    <div class="version-card v-evolve">
+      <div class="version-header">
+        <div>
+          <div class="version-label">v3.0</div>
+          <div class="version-date">2026-04-17</div>
+        </div>
+        <span class="version-tag">EVOLVE</span>
+      </div>
+      <div class="version-title">Until Payday is default + visually primary</div>
+
+      <div class="version-section">
+        <h4>What changed</h4>
+        <ul>
+          <li>Until Payday became the default tab (was This Week)</li>
+          <li>Visual primacy: slightly larger type + accent color on Until Payday</li>
+        </ul>
+      </div>
+      <div class="version-section">
+        <h4>Why</h4>
+        <p>Feedback that the emotionally-relevant question is always &ldquo;how much can I spend before the next paycheck lands?&rdquo; &mdash; not &ldquo;how much this calendar week?&rdquo;. Paycheck cycle is the real rhythm of cash management.</p>
+      </div>
+      <div class="version-footer">
+        <code>c1746c4</code>
+        <span>feat: SafeToSpend &mdash; Until Payday is default + visually primary</span>
+      </div>
+    </div>
+
+    <!-- v3.1 -->
+    <div class="version-card v-rework">
+      <div class="version-header">
+        <div>
+          <div class="version-label">v3.1</div>
+          <div class="version-date">2026-04-18</div>
+        </div>
+        <span class="version-tag">REWORK</span>
+      </div>
+      <div class="version-title">Shared service + Rest of Month + payday-today</div>
+
+      <div class="version-section">
+        <h4>What changed</h4>
+        <ul>
+          <li>Extracted <code>safe_to_spend_service.ts</code> &mdash; AI Coach and Home now both delegate to it. The v1.3 duplication finally killed.</li>
+          <li>Added a 4th timeframe: <code>Rest of Month</code> (today &rarr; endOfMonth)</li>
+          <li>Fixed the payday-today edge case: on your payday morning, <code>daysUntilPayday = 0</code> correctly, no forward-roll to the next cycle</li>
+        </ul>
+      </div>
+      <div class="version-section">
+        <h4>What we learned</h4>
+        <p>Consolidation > abstraction. One implementation of the math with two callers is simpler than two implementations with a shared interface.</p>
+      </div>
+      <div class="version-footer">
+        <code>e0793ad</code>
+        <span>feat: SafeToSpend P2 &mdash; extract SafeToSpendService, add Rest of Month, allow payday-today</span>
+      </div>
+    </div>
+
+    <!-- Reverted -->
+    <div class="version-card v-revert">
+      <div class="version-header">
+        <div>
+          <div class="version-label">v3.2 (reverted)</div>
+          <div class="version-date">2026-04-19</div>
+        </div>
+        <span class="version-tag">REVERTED</span>
+      </div>
+      <div class="version-title">Removed user-configured payday &mdash; and put it right back</div>
+
+      <div class="version-section">
+        <h4>What we tried</h4>
+        <p>Attempted to remove user-facing payday configuration entirely and rely only on stream detection. The thinking: &ldquo;we can tell when you get paid from your bank data &mdash; why ask?&rdquo;</p>
+      </div>
+      <div class="version-section">
+        <h4>Why it was reverted</h4>
+        <p>For new users with thin Plaid history, stream detection needs weeks of data before it&rsquo;s reliable. Until then, payday predictions were wrong &mdash; and &ldquo;wrong by design&rdquo; for new users is a dealbreaker. User control had to stay.</p>
+      </div>
+      <div class="version-footer">
+        <code>4151695</code> &middot; reverted by <code>a494aed</code>
+      </div>
+    </div>
+
+    <!-- v4.0 -->
+    <div class="version-card v-rework">
+      <div class="version-header">
+        <div>
+          <div class="version-label">v4.0</div>
+          <div class="version-date">2026-04-20</div>
+        </div>
+        <span class="version-tag">REWORK</span>
+      </div>
+      <div class="version-title">4 always-visible tabs, ISO week, 0.75 income threshold</div>
+
+      <div class="version-section">
+        <h4>What changed</h4>
+        <ul>
+          <li>All 4 tabs always rendered &mdash; no auto-hide based on redundancy (same number across tabs is fine)</li>
+          <li>Week became ISO Mon-Sun in the user&rsquo;s timezone (not rolling 7 days)</li>
+          <li>Income math-inclusion threshold lowered from 0.85 to 0.75 &mdash; scoped ONLY to <code>SafeToSpendService</code>; Smart Pulse / Morning Brief narratives kept the stricter 0.85 bar</li>
+          <li>Per-window math added: <code>daysInWindow</code> + <code>perDayInWindow</code> computed server-side</li>
+          <li>Color legend with &ldquo;seen&rdquo; state via SecureStore</li>
+          <li>Breakdown shows total then derivation line: <code>"= $perDayInWindow/day &times; daysInWindow days"</code></li>
+          <li>Removed the <code>min(payCycle, dailyBudget&times;7)</code> cap on This Week</li>
+        </ul>
+      </div>
+      <div class="version-section">
+        <h4>What we learned</h4>
+        <p>&ldquo;If you want intuitive math, don&rsquo;t lie about the cap.&rdquo; Showing the honest per-window sum with a legible derivation beat a capped-but-opaque number. Consistency across tabs &mdash; even when redundant &mdash; felt more trustworthy than hidden logic.</p>
+      </div>
+      <div class="version-footer">
+        <code>8750ff3</code>
+        <span>feat: SafeToSpend v4 &mdash; 4 always-visible tabs, ISO week, per-window math, 0.75 income threshold</span>
+      </div>
+    </div>
+
+    <!-- v4.1 -->
+    <div class="version-card v-correction">
+      <div class="version-header">
+        <div>
+          <div class="version-label">v4.1</div>
+          <div class="version-date">2026-04-22</div>
+        </div>
+        <span class="version-tag">CORRECTION</span>
+      </div>
+      <div class="version-title">Per-tab amount = dailyBudget &times; daysInWindow, capped at runway</div>
+
+      <div class="version-section">
+        <h4>What changed</h4>
+        <ul>
+          <li>Per-tab <code>amount</code> formula: <code>min(dailyBudget &times; daysInWindow, untilPayday.amount)</code> for Today / This Week / This Month</li>
+          <li>Breakdown components (bills / income in window) preserved as CONTEXT but no longer arithmetically sum to amount</li>
+        </ul>
+      </div>
+      <div class="version-section">
+        <h4>Why</h4>
+        <p>On-device test revealed the v4 formula collapsed <code>amount</code> to <code>spendable &minus; ccDebt</code> whenever no bills/income fell inside the window. Wednesday-to-Sunday &ldquo;This Week&rdquo; returned the same number as Until Payday. User&rsquo;s mental model: &ldquo;$777/day &times; 5 days left in week = $3,887.&rdquo; Fixed by switching to the daily-budget-allocation model.</p>
+      </div>
+      <div class="version-section">
+        <h4>Lesson</h4>
+        <p>&ldquo;Mathematically honest&rdquo; lost to &ldquo;user-intuitive&rdquo; on this one. Pay-cycle-daily-budget allocation > window-scoped sum.</p>
+      </div>
+      <div class="version-footer">
+        <code>eababad</code>
+        <span>fix(safe-to-spend): This Week showed full runway instead of 5-day allocation</span>
+      </div>
+    </div>
+
+    <!-- v4.2 -->
+    <div class="version-card v-correction">
+      <div class="version-header">
+        <div>
+          <div class="version-label">v4.2</div>
+          <div class="version-date">2026-04-22</div>
+        </div>
+        <span class="version-tag">CORRECTION</span>
+      </div>
+      <div class="version-title">Drop the cap, uniform $/day across all tabs</div>
+
+      <div class="version-section">
+        <h4>What changed</h4>
+        <ul>
+          <li>Removed the <code>min(..., untilPayday.amount)</code> cap from v4.1</li>
+          <li>All 4 tabs now show <code>amount = dailyBudget &times; daysInWindow</code> with uniform <code>perDayInWindow = dailyBudget</code></li>
+          <li>When This Month extends past next payday, a footnote explains: &ldquo;Extends N days past your next payday &mdash; this projection assumes the same daily rate continues.&rdquo;</li>
+          <li>Breakdown UX reworked: every tab now shows how we derived the daily budget (<code>runway &divide; days = $/day</code>), then the per-tab math (<code>$/day &times; days</code>)</li>
+          <li>Components moved to a secondary &ldquo;Also coming up in this window&rdquo; section &mdash; context, not arithmetic inputs</li>
+        </ul>
+      </div>
+      <div class="version-section">
+        <h4>Why</h4>
+        <p>v4.1&rsquo;s cap had a side effect: <code>perDayInWindow = amount / daysInWindow</code> varied across tabs. User feedback: &ldquo;This Month is taking $777/day for 9 days whereas Until Payday is taking $874/day times 8 days &mdash; doesn&rsquo;t make sense.&rdquo; Dropping the cap preserved a single daily rate everywhere.</p>
+      </div>
+      <div class="version-footer">
+        <code>341c4dd</code>
+        <span>fix(safe-to-spend): v4.2 &mdash; uniform $/day across tabs + legible derivation</span>
+      </div>
+    </div>
+
+    <!-- v4.3 -->
+    <div class="version-card v-evolve">
+      <div class="version-header">
+        <div>
+          <div class="version-label">v4.3</div>
+          <div class="version-date">2026-04-23</div>
+        </div>
+        <span class="version-tag">EVOLVE</span>
+      </div>
+      <div class="version-title">Runway decomposition in the accordion</div>
+
+      <div class="version-section">
+        <h4>What changed</h4>
+        <ul>
+          <li>Expanded accordion gains a new top section on every tab: <code>Checking &minus; Bills before payday &minus; Credit card balances + Income before payday = Runway</code></li>
+          <li>Rows conditionally rendered (CC debt / income / bills hidden when zero)</li>
+          <li>Values pulled from the until-payday window regardless of which tab is active &mdash; same runway drives daily budget everywhere</li>
+          <li>&ldquo;Also coming up in this window&rdquo; hidden on Until Payday tab (would duplicate the runway rows)</li>
+          <li>Operators (<code>&minus; + = &divide;</code>) live in the label column; value column shows positive magnitudes color-coded by role</li>
+        </ul>
+      </div>
+      <div class="version-section">
+        <h4>User trigger</h4>
+        <p>&ldquo;I know we&rsquo;re starting with runway until payday. I think people are going to want to know how that was arrived at.&rdquo; &mdash; Vik, 2026-04-23</p>
+      </div>
+      <div class="version-section">
+        <h4>Lesson</h4>
+        <p>Transparent derivation goes one layer deeper each iteration. v4 showed the math, v4.2 showed where $/day came from, v4.3 shows where runway came from. If you write <code>= X</code> anywhere in a financial UI, someone eventually asks <code>= how?</code></p>
+      </div>
+      <div class="version-footer">
+        <code>af6a875</code> (PR #85)
+        <span>feat(home): show runway decomposition in Safe to Spend accordion (v4.3)</span>
+      </div>
+    </div>
+
+    <!-- v4.4 -->
+    <div class="version-card v-simplify">
+      <div class="version-header">
+        <div>
+          <div class="version-label">v4.4</div>
+          <div class="version-date">2026-04-23</div>
+        </div>
+        <span class="version-tag">SIMPLIFY</span>
+      </div>
+      <div class="version-title">Payday v2: 2 cases, DB single source of truth, date hydration fix</div>
+
+      <div class="version-section">
+        <h4>What changed</h4>
+        <ul>
+          <li>Payday precedence collapsed from 5 cases to 2: <code>user_setting</code> or <code>inferred</code></li>
+          <li>DB <code>profiles</code> row is the ONLY source of truth &mdash; mobile writes via <code>PUT /users/me/profile</code>, no query-param overrides on SafeToSpend</li>
+          <li>Deleted: <code>PaydayDivergenceBanner</code>, <code>isStale</code>, <code>divergenceWarning</code>, <code>legacyPaydaySource</code>, <code>thisMonth</code> alias, <code>legacy_data</code> AI tool block, backfill ace command, &ldquo;Last Paycheck&rdquo; Settings row</li>
+          <li>Semi-monthly hardcoded to 15th + last-day of month (standard US contract)</li>
+          <li>Biweekly/weekly anchor derives silently from the highest-confidence income stream&rsquo;s <code>last_observed_date</code></li>
+          <li>Fixed Postgres <code>date</code> hydration off-by-one: May 2 was sliding into May 1 windows because <code>DateTime.fromJSDate(d, { zone: tz })</code> converted UTC midnight to the user&rsquo;s previous evening. New helper <code>toUserLocalDate()</code> normalizes everywhere</li>
+        </ul>
+      </div>
+      <div class="version-section">
+        <h4>User trigger</h4>
+        <p>&ldquo;I think we&rsquo;re complicating this a lot. Do you agree?&rdquo; &mdash; after discovering the Settings UI showed Biweekly while the API quietly received <code>monthly/1</code> via stale query params.</p>
+      </div>
+      <div class="version-section">
+        <h4>Lesson</h4>
+        <p>Complexity compounds silently. Every &ldquo;edge case&rdquo; branch added pre-PMF is a bug factory. Solve for the W2-salaried regular-paycheck user first; defer multiple income sources, job changes, thin Plaid history, and divergence detection.</p>
+      </div>
+      <div class="version-section">
+        <h4>Scope of the delete</h4>
+        <p>Net <strong>&minus;500+ LoC</strong> across backend + mobile. Zero eval fixture churn (distinguished-engineer review confirmed no fixture referenced any dropped field).</p>
+      </div>
+      <div class="version-footer">
+        <code>c8217f2</code> (PR #86)
+        <span>refactor: payday v2 &mdash; collapse to 2 cases, DB as single source of truth, fix date-hydration bug</span>
+      </div>
+    </div>
+
+    <!-- v4.5 -->
+    <div class="version-card v-evolve">
+      <div class="version-header">
+        <div>
+          <div class="version-label">v4.5</div>
+          <div class="version-date">2026-04-23</div>
+        </div>
+        <span class="version-tag">EVOLVE</span>
+      </div>
+      <div class="version-title">Confirm your paycheck + semi-monthly variant + split confidence bars</div>
+
+      <div class="version-section">
+        <h4>What changed</h4>
+        <ul>
+          <li>&ldquo;Confirm your paycheck&rdquo; Settings row &mdash; user taps a specific income transaction, sets <code>user_confirmed=true</code> on its <code>recurring_streams</code> row</li>
+          <li>Split the confidence bar by decision: <code>user_confirmed</code> bypasses the &ge;0.6 ANCHOR bar (dates trusted), but NOT the &ge;0.75 AMOUNT bar (one observation isn&rsquo;t a forecast)</li>
+          <li>Semi-monthly variant picker: &ldquo;1st &amp; 15th&rdquo; vs &ldquo;15th &amp; Last day&rdquo; &mdash; reuses existing <code>payday_day_of_month</code> column (1 or 15)</li>
+          <li>Normalizer extended to strip ACH metadata tags and mixed-alphanumeric transaction codes; 4-word cap on merchant keys</li>
+          <li>Bills deactivate-pass excludes user-confirmed streams so detect-and-replace cycle doesn&rsquo;t wipe them</li>
+          <li>New endpoints: <code>GET /paycheck-confirmations/candidates</code> + <code>POST /paycheck-confirmations</code></li>
+        </ul>
+      </div>
+      <div class="version-section">
+        <h4>User trigger</h4>
+        <p>Real-data reveal: the single <code>confidence_score</code> was gating TWO independent questions &mdash; &ldquo;are the DATES reliable?&rdquo; and &ldquo;are the AMOUNTS reliable?&rdquo; &mdash; and blended-low blocked the reliable-dates half. User: recent job change (1 paycheck, partial period) + paternity leave ending ($1,278&ndash;$3,197 variance). Both paths failed &rarr; 14-day fallback &rarr; negative runway on every tab. &ldquo;Resolve it for me like I&rsquo;m any other customer.&rdquo;</p>
+      </div>
+      <div class="version-section">
+        <h4>Lesson</h4>
+        <p>When auto-detection is uncertain, let the user tap ground truth. Recognition tasks (pick from a list) reliably beat recall tasks (remember a date). Confidence scores are a signal, not a verdict &mdash; one user tap beats six noisy observations.</p>
+      </div>
+      <div class="version-section">
+        <h4>Before / after on real user data</h4>
+        <div class="meta-pair">
+          <div class="box"><h5>Before v4.5 (user 53)</h5><p>source = <code>inferred (fallback)</code><br>nextPayday = May 7 (14-day default)<br>bills = $11,821.83 (14-day window, mortgage included)<br>runway = <span style="color:#ef4444">&minus;$5,011</span></p></div>
+          <div class="box"><h5>After v4.5 (user 53)</h5><p>source = <code>user_setting</code><br>nextPayday = May 1 (1st &amp; 15th variant)<br>bills = $13.85 (just LA Fitness + Amazon Prime)<br>runway = <span style="color:#22c55e">+$6,796</span></p></div>
+        </div>
+      </div>
+      <div class="version-footer">
+        <code>d2d9efd</code> (PR #87)
+        <span>feat(payday): Confirm your paycheck UX + semi-monthly variant + anchor/amount bar split</span>
+      </div>
+    </div>
+
+    <!-- v4.6 -->
+    <div class="version-card v-evolve">
+      <div class="version-header">
+        <div>
+          <div class="version-label">v4.6</div>
+          <div class="version-date">2026-04-23</div>
+        </div>
+        <span class="version-tag">EVOLVE</span>
+      </div>
+      <div class="version-title">Drill-downs on every aggregated row + typical discretionary spending as CONTEXT</div>
+
+      <div class="version-section">
+        <h4>What changed</h4>
+        <ul>
+          <li>Aggregated accordion rows are now tap-to-expand: Checking &rarr; per-account balances, Bills before payday &rarr; per-merchant list with dates, Credit card balances &rarr; per-card balances. Single-row-open accordion (tapping a new row closes the previous) caps card height.</li>
+          <li>New <strong>"Projection at payday"</strong> block on the Until Payday tab, placed AFTER the per-tab math (NOT inserted between Runway and Daily Budget, which would break the arithmetic identity). Shows <code>typical non-recurring spending</code> and <code>= if habits repeat, at payday</code>.</li>
+          <li>New <code>transactions.recurring_stream_id</code> FK, populated by the recurrence detector. Lets downstream services filter recurring vs discretionary via <code>WHERE recurring_stream_id IS NULL</code> &mdash; no more error-prone normalized-name lookups.</li>
+          <li>New <code>typical_discretionary_service.ts</code>: up to 365 days of history, robust-mean-per-weekday capped at the 90th percentile, excludes non-discretionary primaries (<code>INCOME</code>, <code>TRANSFER_IN/OUT</code>, <code>LOAN_PAYMENTS</code>, <code>BANK_FEES</code>) and the CC-account side of CC bill payments. Adaptive lookback: <code>min(365, daysOfHistoryAvailable)</code>, null when &lt;60 days.</li>
+          <li>Methodology modal (tap the "How?" link on the projection header): sample size, observed-days coverage percentage, per-weekday bar chart, window dates. Honest about scope: day-of-week seasonality only; month-of-year needs multi-year data.</li>
+          <li>AI Coach's <code>calculate_safe_to_spend</code> tool now surfaces <code>typicalDiscretionary</code> so the model can answer "what if I go out this weekend?" with a grounded baseline.</li>
+        </ul>
+      </div>
+
+      <div class="version-section">
+        <h4>User trigger</h4>
+        <p>Vik noticed two gaps. (1) <em>"If I want to drill down into what those specifically are, I think I need a way to know that"</em> &mdash; Credit card balances $7,021 and Bills before payday $14 were opaque; the data was on the response but not surfaced. (2) <em>"What if you are buying things on your debit card that's not recurring? Do you think we have actually taken into account that at all?"</em> &mdash; future impulse spending isn't in the runway formula. Industry norm says don't try to predict it; Vik said close the gap as honest context, using "at least one year of data to predict seasonality."</p>
+      </div>
+
+      <div class="version-section">
+        <h4>What the formula captures now</h4>
+        <table style="width:100%; border-collapse:collapse; margin-top:8px; font-size:11px;">
+          <thead>
+            <tr style="background:rgba(255,255,255,0.03);">
+              <th style="text-align:left; padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Category</th>
+              <th style="text-align:left; padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Captured?</th>
+              <th style="text-align:left; padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">How</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Past debit / checking spending (cleared)</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:#22c55e;">&#10003;</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);"><code>spendableBalance</code> reads <code>availableBalance</code> from Plaid</td></tr>
+            <tr><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Past debit / checking spending (pending)</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:#22c55e;">&#10003;</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Plaid <code>availableBalance</code> subtracts pending debits automatically</td></tr>
+            <tr><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Past credit-card spending</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:#22c55e;">&#10003;</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);"><code>creditCardDebt</code> = sum of current CC balances</td></tr>
+            <tr><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Future recurring bills (rent, Netflix, gym)</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:#22c55e;">&#10003;</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);"><code>upcomingBills</code> from <code>recurring_streams</code> (conf &ge; 0.3)</td></tr>
+            <tr><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Future recurring income (paycheck)</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:#22c55e;">&#10003;</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);"><code>expectedIncome</code> from income streams (conf &ge; 0.75)</td></tr>
+            <tr><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);"><strong>Future non-recurring discretionary</strong></td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:#f59e0b;"><strong>Context (v4.6)</strong></td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);"><code>typicalDiscretionary</code> forecast, shown as &ldquo;Projection at payday&rdquo; &mdash; NOT subtracted from runway</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="version-section">
+        <h4>Lesson</h4>
+        <p>When one threshold is doing two jobs, split it. v4.5 split <em>confidence</em> into anchor-reliability vs amount-reliability. v4.6 splits <em>recurrence-match</em> into "exclude from discretionary forecast" (FK-based, precise) vs "stream-level membership" (name-based, lenient). Both times the split produced a better answer. Also: typical spend stays as CONTEXT, not a formula input &mdash; runway is the user's contract with the number; don't bury a prediction inside it.</p>
+      </div>
+
+      <div class="version-footer">
+        <code>PR #89</code>
+        <span>feat(safe-to-spend): v4.6 &mdash; drill-down UX + typical-discretionary forecast</span>
+      </div>
+    </div>
+
+    <!-- v4.7 -->
+    <div class="version-card v-evolve">
+      <div class="version-header">
+        <div>
+          <div class="version-label">v4.7</div>
+          <div class="version-date">2026-04-23</div>
+        </div>
+        <span class="version-tag">EVOLVE</span>
+      </div>
+      <div class="version-title">Horizontal-scroll drill-downs + CC swipes in the forecast + per-tab projections</div>
+
+      <div class="version-section">
+        <h4>What changed</h4>
+        <ul>
+          <li>Aggregated rows (Checking / Bills / CC balances / Typical spending) now carry a chevron affordance and reveal a <strong>horizontal-scrolling strip of compact cards</strong> when tapped. Previous inline-list drill-down felt visually weak and the tappability wasn&apos;t obvious.</li>
+          <li><code>typicalDiscretionary</code> now spans <strong>both checking and credit card outflows</strong>. A future $50 Uber on CC is still a real outflow &mdash; excluding CC swipes was conservative but dishonest. User 53&apos;s sample size jumped <strong>16 &rarr; 160</strong> transactions (10&times;) just by lifting the depository-only filter.</li>
+          <li><strong>Projection block appears on every tab</strong> (Today / This Week / This Month / Until Payday), not just Until Payday. Backend returns a <code>typicalDiscretionary.windows</code> map; each tab reads its own window&apos;s <code>forecastAmount</code>. <code>perDayOfWeek</code> is user-level (computed once); per-window projections are just different day-range sums of the same weekday averages.</li>
+          <li>Tab-aware labels: <em>&ldquo;If habits repeat, by tonight / by week end / by month end / at payday.&rdquo;</em></li>
+          <li>Methodology modal gains a <strong>projections-per-window</strong> table showing all four scenarios side-by-side.</li>
+          <li>Deleted <code>ExpandableBreakdownRow</code> + <code>ChildLine</code>; replaced by the new <code>DrillDownRow</code> component.</li>
+        </ul>
+      </div>
+
+      <div class="version-section">
+        <h4>User triggers</h4>
+        <ul>
+          <li>&ldquo;It&apos;s hard to know that it can be clickable. The breakdown of the points of rows for what&apos;s in Credit Card Balance and what is Bills before payday is not great. Maybe we make this a small square box that can be scrollable to the left and right.&rdquo;</li>
+          <li>&ldquo;Shouldn&apos;t you include credit card transactions that are not included in the balance as of today? Things that you would predict as expenses in credit card until next payday, similar to how you have calculated for checking?&rdquo;</li>
+          <li>&ldquo;Shouldn&apos;t we bring this thinking into all of the tabs? Why just until payday?&rdquo;</li>
+        </ul>
+      </div>
+
+      <div class="version-section">
+        <h4>Lesson</h4>
+        <p>Three tightly-related lessons in one release. (1) <strong>Conservative scope choices read as hedging.</strong> Depository-only was &ldquo;safe&rdquo; but invisibly cut sample size 10&times; and pretended CC spending wasn&apos;t real. Own the scope or explain why you scoped down. (2) <strong>When the same math conceptually applies across UI slices</strong> (tabs), compute it once at the user level and project per-slice &mdash; don&apos;t force per-slice repeated compute or per-slice feature gaps. (3) <strong>Tappable = chevron.</strong> Typography-only affordance (underline) was too subtle; iOS users look for the right-chevron.</p>
+      </div>
+
+      <div class="version-footer">
+        <code>PR #90</code>
+        <span>feat(safe-to-spend): v4.7 &mdash; horizontal-scroll drill-down + CC swipes + per-tab projections</span>
+      </div>
+    </div>
+
+    <!-- v4.8 -->
+    <div class="version-card v-evolve">
+      <div class="version-header">
+        <div>
+          <div class="version-label">v4.8</div>
+          <div class="version-date">2026-04-23</div>
+        </div>
+        <span class="version-tag">EVOLVE</span>
+      </div>
+      <div class="version-title">Scroll gesture fix + per-window-day cards + &ldquo;you&rsquo;d likely have&rdquo; copy</div>
+
+      <div class="version-section">
+        <h4>What changed</h4>
+        <ul>
+          <li><strong>Horizontal scroll fixed.</strong> v4.7 card strips wouldn&rsquo;t swipe &mdash; the outer <code>&lt;Pressable onPress={toggleExpanded}&gt;</code> that wrapped the entire SafeToSpend card was swallowing ScrollView gestures. Restructured so only the hero header (amount + subtitle + chevron) lives inside the toggle Pressable; the drill-down section lives outside it.</li>
+          <li><strong>Per-window-day cards.</strong> The Typical Spending drill-down now shows ONE CARD PER DAY in the selected tab&rsquo;s window (not 7 weekday summaries). For Until Payday&rsquo;s 9-day window, you see 9 cards: Thu Apr 23, Fri Apr 24, Sat Apr 25, Sun Apr 26, Mon Apr 27, Tue Apr 28, Wed Apr 29, Thu Apr 30, Fri May 1. Each card shows weekday name + date + that day&rsquo;s typical spend. Users can now see exactly WHY the sum is what it is &mdash; in user 53&rsquo;s case, Thursday and Friday appear twice in the Until Payday window, which is what drives the total past This Month.</li>
+          <li><strong>Projection total label reworded.</strong> "If habits repeat, at payday" → "You&rsquo;d likely have $X left at payday (May 1)". Names the outcome (remaining balance) instead of forcing the user to infer it. Per-tab variants: "by tonight", "by Sun Apr 27", "by Apr 30", "at payday (May 1)".</li>
+        </ul>
+      </div>
+
+      <div class="version-section">
+        <h4>User triggers</h4>
+        <ul>
+          <li>&ldquo;I&rsquo;m not able to scroll through any of those square boxes to the left or right.&rdquo;</li>
+          <li>&ldquo;I don&rsquo;t know how typical spending for Until Payday for 9 days is $2,658, whereas Today it&rsquo;s $666 something.&rdquo;</li>
+          <li>&ldquo;If habits repeat by payday ... like you have another certain amount, like is that what&rsquo;s remaining? I think we need to make that a little bit more clear.&rdquo;</li>
+        </ul>
+      </div>
+
+      <div class="version-section">
+        <h4>Lessons</h4>
+        <ul>
+          <li><strong>Don&rsquo;t wrap a scroll container inside a tap-Pressable.</strong> React Native&rsquo;s gesture system gives the outer Pressable first dibs on touch; horizontal scroll gestures get interpreted as taps.</li>
+          <li><strong>Show the addends, not the group&rsquo;s averages</strong> &mdash; when a sum spans multiple instances of the same group (two Thursdays in one window), per-group summaries hide the explanation.</li>
+          <li><strong>Projection copy should name the outcome, not the hypothesis.</strong> "If habits repeat" makes the user do the inference work; "You&rsquo;d likely have $X left" just tells them.</li>
+        </ul>
+      </div>
+
+      <div class="version-footer">
+        <code>PR #91</code>
+        <span>feat(safe-to-spend): v4.8 &mdash; scroll-gesture fix, per-window-day cards, projection copy clarity</span>
+      </div>
+    </div>
+
+    <!-- v4.9 -->
+    <div class="version-card v-current">
+      <div class="version-header">
+        <div>
+          <div class="version-label">v4.9</div>
+          <div class="version-date">2026-04-25</div>
+        </div>
+        <span class="version-tag">CURRENT</span>
+      </div>
+      <div class="version-title">Savings exclusion as a behavioral choice + open-question dump from on-device review</div>
+
+      <div class="version-section">
+        <h4>What changed (code)</h4>
+        <ul>
+          <li>Spendable balance filter changed from <code>account_type = 'depository'</code> to <code>account_type = 'depository' AND account_subtype = 'checking'</code>. Savings, money-market, HSA, and CD balances no longer count toward Safe to Spend.</li>
+          <li>New <code>setAsideAccounts[]</code> field on the API response — savings/HSA/MM/CD accounts surfaced separately for transparency (mirror of the existing <code>loansExcluded[]</code> pattern).</li>
+          <li>New &ldquo;Set aside in savings&rdquo; row in the SafeToSpend accordion (only renders when the user has any setAside accounts) — drill-down shows per-account balance with a subtitle of "savings, HSA, money market, etc."</li>
+        </ul>
+      </div>
+
+      <div class="version-section">
+        <h4>Why this is the right call (deliberate behavioral choice)</h4>
+        <p>Vik: <em>"Yes, I think we need to help people save more. I would like the safe to spend component to reflect that in the math and UX. Yes, it's a deliberate choice, not a hacky label choice."</em></p>
+        <p>Including savings in &ldquo;safe to spend&rdquo; would silently encourage users to dip into their savings the moment runway feels tight. Excluding it surfaces saving as separate, protected money &mdash; the &ldquo;set aside&rdquo; framing reinforces that it&rsquo;s not for spending. Same psychological pattern Apple, Wealthfront, and behavioral finance research consistently endorse.</p>
+      </div>
+
+      <div class="version-section">
+        <h4>What got documented (no code change)</h4>
+        <p>Long thread of on-device review with Vik produced a list of follow-on questions, simplifications, and planned features. All captured in the math explorer&rsquo;s expanded "Open Questions" section:</p>
+        <ul>
+          <li><strong>Plaid Liabilities-based CC due-date splitting</strong> — split the CC line into "Due [date]" + "Accumulating for next cycle" using statement balance + due date from Plaid Liabilities (we have production access). Same total subtracted, much better clarity.</li>
+          <li><strong>Apple Card-style payment simulator</strong> — slider/wheel UX showing 25%/50%/75%/100% payment scenarios with interest impact.</li>
+          <li><strong>Plaid Signal for live spend tracking</strong> — close the post-swipe latency gap (today: pending charges in minutes-to-hours, posted in 1-3 days).</li>
+          <li><strong>Detector coverage gap</strong> — recurring stuff with thin history gets misclassified. <em>User 53&rsquo;s BILT rent ($4,200/mo) is the canonical example: 2 occurrences in 102 days, not detected as recurring → lands in typical-discretionary → inflates Thursday average from ~$15 to $666.</em> Fix: parallel "Confirm a recurring bill" UX.</li>
+          <li><strong>Lookback bump</strong> — 365 → 730 days when users approach 1 year of history.</li>
+        </ul>
+      </div>
+
+      <div class="version-section">
+        <h4>What also got fixed in docs (no code, but real)</h4>
+        <ul>
+          <li>Typical-spending spec: clarified the misleading "zero-spend days are NOT in this map" wording (they ARE included as zeros in the per-weekday samples; just not in the intermediate Map).</li>
+          <li>Typical-spending spec: noted that <code>excludeCreditCardSideOfCcPayment</code> is defense-in-depth, not a primary inclusion path — CC payments are already excluded by other filters.</li>
+          <li>Math explorer: Spendable Balance card updated to reflect checking-only filter and savings exclusion rationale.</li>
+          <li>Typical-spending spec: new "Why is your Thursday so high?" section walking through the BILT story.</li>
+        </ul>
+      </div>
+
+      <div class="version-section">
+        <h4>Lessons</h4>
+        <ul>
+          <li><strong>Filter mismatches are silent until they aren&rsquo;t.</strong> The label said "Checking" for weeks; the filter included savings. We just got lucky that user 53 had no savings accounts.</li>
+          <li><strong>Behavioral defaults > "be neutral."</strong> Showing savings as part of safe-to-spend looks neutral but quietly nudges users toward worse outcomes. Excluding it is opinionated, but the right opinion.</li>
+          <li><strong>Detector coverage gap is the single biggest distortion in typical-discretionary today.</strong> Real recurring stuff misclassified as discretionary inflates averages by orders of magnitude. Confirm-a-recurring-bill is the unblocking feature.</li>
+        </ul>
+      </div>
+
+      <div class="version-footer">
+        <code>pending PR</code>
+        <span>feat(safe-to-spend): v4.9 &mdash; savings exclusion + open-question dump</span>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>Twenty versions. Every one earned by a real user interaction or a real bug hitting real data. Next iteration, same process.</p>
+  </footer>
+</div>
+</body>
+</html>

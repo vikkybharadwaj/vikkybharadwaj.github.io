@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tide AI Pipeline</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', monospace; background: #0a0f1a; color: #e2e8f0; }
+
+#title { position: fixed; top: 16px; left: 16px; z-index: 50; }
+#title h1 { font-size: 18px; font-weight: 700; }
+#title p { font-size: 10px; color: #64748b; margin-top: 2px; }
+#title a { color: #3b82f6; text-decoration: none; font-size: 10px; }
+#title a:hover { text-decoration: underline; }
+
+.container { max-width: 900px; margin: 0 auto; padding: 80px 24px 48px; }
+
+/* Pipeline visualization */
+.pipeline { margin-bottom: 32px; }
+.pipeline-stage {
+  display: flex; gap: 16px; margin-bottom: 0; position: relative;
+}
+.pipeline-connector {
+  display: flex; justify-content: center; padding: 4px 0;
+}
+.pipeline-connector .arrow {
+  width: 2px; height: 24px; background: rgba(0,212,255,0.3); position: relative;
+}
+.pipeline-connector .arrow::after {
+  content: ''; position: absolute; bottom: -4px; left: -4px;
+  border-left: 5px solid transparent; border-right: 5px solid transparent;
+  border-top: 6px solid rgba(0,212,255,0.5);
+}
+
+.stage-card {
+  flex: 1; border-radius: 10px; padding: 16px;
+  border: 1.5px solid rgba(255,255,255,0.08);
+  background: rgba(17,24,39,0.6);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+.stage-card:hover { border-color: rgba(255,255,255,0.2); box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+.stage-card .stage-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+.stage-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+.stage-card p { font-size: 10px; color: #94a3b8; line-height: 1.5; }
+.stage-card .latency { display: inline-block; margin-top: 6px; padding: 2px 8px; border-radius: 4px; font-size: 9px; font-weight: 600; }
+
+.stage-user { border-color: rgba(249,115,22,0.3); }
+.stage-user .stage-label { color: #f97316; }
+.stage-user .latency { background: rgba(249,115,22,0.1); color: #f97316; }
+
+.stage-classifier { border-color: rgba(0,212,255,0.3); }
+.stage-classifier .stage-label { color: #00d4ff; }
+.stage-classifier .latency { background: rgba(0,212,255,0.1); color: #00d4ff; }
+
+.stage-coach { border-color: rgba(168,85,247,0.3); }
+.stage-coach .stage-label { color: #a855f7; }
+.stage-coach .latency { background: rgba(168,85,247,0.1); color: #a855f7; }
+
+.stage-tools { border-color: rgba(34,197,94,0.3); }
+.stage-tools .stage-label { color: #22c55e; }
+.stage-tools .latency { background: rgba(34,197,94,0.1); color: #22c55e; }
+
+.stage-response { border-color: rgba(59,130,246,0.3); }
+.stage-response .stage-label { color: #3b82f6; }
+.stage-response .latency { background: rgba(59,130,246,0.1); color: #3b82f6; }
+
+.stage-persist { border-color: rgba(245,158,11,0.3); }
+.stage-persist .stage-label { color: #f59e0b; }
+.stage-persist .latency { background: rgba(245,158,11,0.1); color: #f59e0b; }
+
+/* Tools section */
+.tools-section { margin-top: 32px; }
+.tools-section h2 { font-size: 14px; margin-bottom: 16px; color: #a855f7; }
+.tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
+.tool-card {
+  border-radius: 8px; padding: 12px 16px;
+  border: 1px solid rgba(168,85,247,0.15);
+  background: rgba(17,24,39,0.5);
+  transition: border-color 0.2s;
+}
+.tool-card:hover { border-color: rgba(168,85,247,0.4); }
+.tool-card .tool-num { font-size: 9px; font-weight: 700; color: #a855f7; }
+.tool-card .tool-name { font-size: 12px; font-weight: 700; margin: 2px 0; }
+.tool-card .tool-name code { color: #00d4ff; font-weight: 400; }
+.tool-card .tool-desc { font-size: 10px; color: #94a3b8; }
+.tool-card .tool-tier { font-size: 9px; margin-top: 4px; padding: 1px 6px; border-radius: 3px; display: inline-block; }
+.tier-2 { background: rgba(59,130,246,0.15); color: #3b82f6; }
+.tier-3 { background: rgba(245,158,11,0.15); color: #f59e0b; }
+
+/* Memory model */
+.memory-section { margin-top: 32px; padding: 20px; border-radius: 12px; border: 1px solid rgba(0,212,255,0.2); background: rgba(0,212,255,0.03); }
+.memory-section h2 { font-size: 14px; color: #00d4ff; margin-bottom: 16px; }
+.tier-row {
+  display: flex; gap: 12px; margin-bottom: 10px; padding: 10px;
+  border-radius: 8px; background: rgba(15,23,42,0.5);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+.tier-badge {
+  flex-shrink: 0; width: 60px; height: 28px; border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700;
+}
+.tier-badge.t1 { background: rgba(34,197,94,0.15); color: #22c55e; }
+.tier-badge.t2 { background: rgba(59,130,246,0.15); color: #3b82f6; }
+.tier-badge.t3 { background: rgba(245,158,11,0.15); color: #f59e0b; }
+.tier-content { flex: 1; }
+.tier-content h3 { font-size: 11px; font-weight: 700; margin-bottom: 2px; }
+.tier-content p { font-size: 10px; color: #94a3b8; line-height: 1.5; }
+
+/* Models comparison */
+.models-section { margin-top: 32px; }
+.models-section h2 { font-size: 14px; margin-bottom: 16px; color: #64748b; }
+.model-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.model-card {
+  border-radius: 10px; padding: 16px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(17,24,39,0.5);
+}
+.model-card h3 { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+.model-card .model-row { display: flex; justify-content: space-between; font-size: 10px; padding: 3px 0; }
+.model-card .model-row .label { color: #64748b; }
+.model-card .model-row .value { color: #e2e8f0; }
+
+.model-haiku { border-color: rgba(0,212,255,0.3); }
+.model-haiku h3 { color: #00d4ff; }
+.model-sonnet { border-color: rgba(168,85,247,0.3); }
+.model-sonnet h3 { color: #a855f7; }
+</style>
+</head>
+<body>
+<div id="title">
+  <h1>AI Pipeline</h1>
+  <p>Multi-agent architecture &middot; <a href="index.html">&larr; Hub</a></p>
+</div>
+
+<div class="container">
+
+  <!-- Pipeline stages -->
+  <div class="pipeline">
+    <div class="stage-card stage-user">
+      <div class="stage-label">Stage 1 &mdash; Input</div>
+      <h3>User Message</h3>
+      <p>User sends natural language query via mobile chat UI. Example: "How much did I spend on dining this month?"</p>
+    </div>
+    <div class="pipeline-connector"><div class="arrow"></div></div>
+
+    <div class="stage-card stage-classifier">
+      <div class="stage-label">Stage 2 &mdash; Classification</div>
+      <h3>Intent Classifier (Haiku 4.5)</h3>
+      <p>Lightweight, fast model classifies query intent and routes to the correct Tide Coach tool set. Runs on AWS Bedrock.</p>
+      <span class="latency">&lt;500ms target</span>
+    </div>
+    <div class="pipeline-connector"><div class="arrow"></div></div>
+
+    <div class="stage-card stage-coach">
+      <div class="stage-label">Stage 3 &mdash; Agent</div>
+      <h3>Tide Coach Agent (Sonnet 4)</h3>
+      <p>Primary AI financial coach. Selects from 11 tools based on classified intent. Generates personalized financial advice with full conversation context.</p>
+      <span class="latency">First token &lt;2s</span>
+    </div>
+    <div class="pipeline-connector"><div class="arrow"></div></div>
+
+    <div class="stage-card stage-tools">
+      <div class="stage-label">Stage 4 &mdash; Tool Execution</div>
+      <h3>Backend API (Read-Only DB)</h3>
+      <p>Agent's tool calls execute against PostgreSQL via Backend API. Uses dedicated read-only connection. Bouncer policies enforced.</p>
+      <span class="latency">30-200ms per query</span>
+    </div>
+    <div class="pipeline-connector"><div class="arrow"></div></div>
+
+    <div class="stage-card stage-response">
+      <div class="stage-label">Stage 5 &mdash; Streaming</div>
+      <h3>SSE Response via XMLHttpRequest</h3>
+      <p>Tide Coach generates natural language response streamed via SSE using XMLHttpRequest (not fetch — RN's fetch lacks response.body). Tokens appear in real-time. Partial responses saved even when streaming errors occur.</p>
+      <span class="latency">SSE via XHR</span>
+    </div>
+    <div class="pipeline-connector"><div class="arrow"></div></div>
+
+    <div class="stage-card stage-persist">
+      <div class="stage-label">Stage 6 &mdash; Persistence (Async + Fallback)</div>
+      <h3>Chat Persistence + Coaching History</h3>
+      <p>Both user and assistant messages persisted with intent, model, and toolsUsed metadata. toolsUsed jsonb column uses JSON.stringify prepare/consume serializers. BullMQ primary with synchronous DB fallback if dispatch fails. Error path: partial AI responses saved even on streaming errors. Content AES-256 encrypted.</p>
+      <span class="latency">BullMQ async &middot; sync fallback &middot; 30d retention</span>
+    </div>
+  </div>
+
+  <!-- Tools -->
+  <div class="tools-section">
+    <h2>Tide Coach Tools (11)</h2>
+    <div class="tools-grid">
+      <div class="tool-card">
+        <div class="tool-num">TOOL 1</div>
+        <div class="tool-name"><code>query_user_profile</code></div>
+        <div class="tool-desc">Get user demographic and account information</div>
+        <span class="tool-tier tier-2">TIER 2 — FINANCIAL DATA</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-num">TOOL 2</div>
+        <div class="tool-name"><code>query_bank_accounts</code></div>
+        <div class="tool-desc">Get connected bank account balances and details</div>
+        <span class="tool-tier tier-2">TIER 2 — FINANCIAL DATA</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-num">TOOL 3</div>
+        <div class="tool-name"><code>query_transactions</code></div>
+        <div class="tool-desc">Flexible transaction filtering by date, amount, category, merchant</div>
+        <span class="tool-tier tier-2">TIER 2 — FINANCIAL DATA</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-num">TOOL 4</div>
+        <div class="tool-name"><code>query_bills_predictions</code></div>
+        <div class="tool-desc">Upcoming predicted bills + subscriptions from <code>recurring_streams</code> (stream_type IN 'bill','subscription'). Tool name preserved for eval stability.</div>
+        <span class="tool-tier tier-2">TIER 2 — FINANCIAL DATA</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-num">TOOL 5</div>
+        <div class="tool-name"><code>query_payday_predictions</code></div>
+        <div class="tool-desc">Routes through canonical <code>resolvePayday()</code>. Returns <code>{ resolved, upcoming }</code>. <code>resolved</code> is the authoritative next-payday envelope: <code>{ nextPayday, predictedAmount, frequency, source: 'user_setting' | 'inferred', confidence, daysUntilPayday, isPaydayToday }</code> &mdash; matches what Home shows. <code>upcoming[]</code> is the raw stream list for "list my next N paychecks" questions. (v4.4 &mdash; dropped <code>legacy_data</code> flat array, <code>isStale</code>, <code>divergenceWarning</code>; source enum collapsed from 5 values to 2.)</div>
+        <span class="tool-tier tier-2">TIER 2 — FINANCIAL DATA</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-num">TOOL 6</div>
+        <div class="tool-name"><code>calculate_safe_to_spend</code></div>
+        <div class="tool-desc">SafeToSpend v4.9 — returns 4 windows: today (daily budget), thisWeek (ISO Mon–Sun in user tz), untilPayday, restOfMonth. Each window includes <code>amount</code>, <code>daysInWindow</code>, <code>perDayInWindow</code>. Bill threshold &ge; 0.3; income threshold &ge; 0.75 (scoped to this tool — narrative "confident" bar is still 0.85). <strong>In v4.7:</strong> <code>typicalDiscretionary.windows</code> — per-window non-recurring-spend forecasts for today / thisWeek / restOfMonth / untilPayday. Computed from BOTH checking + credit card outflows over up to 365 days, robust-mean-per-weekday capped at 90th percentile. Null when history is thin (&lt;60 days). Use matching window: "this weekend" → thisWeek; "by payday" → untilPayday. Timezone from <code>profiles.timezone</code>. Shared service + shared <code>resolvePayday()</code> so numbers match the Home dashboard byte-for-byte.</div>
+        <span class="tool-tier tier-2">TIER 2 — FINANCIAL DATA</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-num">TOOL 7</div>
+        <div class="tool-name"><code>get_spending_by_category</code></div>
+        <div class="tool-desc">Category-level spending breakdown for any time period</div>
+        <span class="tool-tier tier-2">TIER 2 — FINANCIAL DATA</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-num">TOOL 8</div>
+        <div class="tool-name"><code>get_financial_insights</code></div>
+        <div class="tool-desc">Complex analytics via Backend API aggregation endpoints</div>
+        <span class="tool-tier tier-2">TIER 2 — FINANCIAL DATA</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-num">TOOL 9</div>
+        <div class="tool-name"><code>query_coaching_history</code></div>
+        <div class="tool-desc">Past recommendations, user responses, outcomes. Enables follow-up continuity.</div>
+        <span class="tool-tier tier-3">TIER 3 — COACHING HISTORY</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-num">TOOL 10</div>
+        <div class="tool-name"><code>query_smart_pulse</code></div>
+        <div class="tool-desc">Get current Smart Pulse insight (real-time, regenerated on every app open). Date-aware bill references (actual dates, not "today"). Streak = app opens. "Dig deeper with AI Coach" link.</div>
+        <span class="tool-tier tier-2">TIER 2 — FINANCIAL DATA</span>
+      </div>
+      <div class="tool-card">
+        <div class="tool-num">TOOL 11</div>
+        <div class="tool-name"><code>query_reflection_stats</code></div>
+        <div class="tool-desc">Reflection session history, transaction tags (worth-it/regret), and streak progress. <strong>MVP+</strong> — backend intact, frontend removed entirely.</div>
+        <span class="tool-tier tier-2">TIER 2 — FINANCIAL DATA</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Memory Model -->
+  <div class="memory-section">
+    <h2>Agent Memory Model (Tool-Based Context)</h2>
+    <p style="font-size:10px;color:#94a3b8;margin-bottom:16px;">The agent pulls context on demand via tools — no pre-loaded financial profile in prompts. Scales with data growth, token-efficient.</p>
+    <div class="tier-row">
+      <div class="tier-badge t1">TIER 1</div>
+      <div class="tier-content">
+        <h3>Session Context</h3>
+        <p>Current chat thread built into the conversation. Resets between sessions. Provides immediate conversational continuity.</p>
+      </div>
+    </div>
+    <div class="tier-row">
+      <div class="tier-badge t2">TIER 2</div>
+      <div class="tier-content">
+        <h3>Financial Data</h3>
+        <p>Accounts, transactions, predictions, spending, Smart Pulse (real-time, date-aware), reflections (MVP+). Agent pulls on demand via tools 1-8, 10-11. Data lives in Postgres, fetched only when relevant.</p>
+      </div>
+    </div>
+    <div class="tier-row">
+      <div class="tier-badge t3">TIER 3</div>
+      <div class="tier-content">
+        <h3>Coaching History</h3>
+        <p>Past recommendations + user responses + outcomes. Via tool 9 (query_coaching_history). Enables: "I suggested canceling Hulu last month — did you follow through?"</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Models -->
+  <div class="models-section">
+    <h2>Model Specifications</h2>
+    <div class="model-grid">
+      <div class="model-card model-haiku">
+        <h3>Claude Haiku 4.5</h3>
+        <div class="model-row"><span class="label">Role</span><span class="value">Intent Classifier</span></div>
+        <div class="model-row"><span class="label">Latency</span><span class="value">&lt;500ms</span></div>
+        <div class="model-row"><span class="label">Purpose</span><span class="value">Fast query routing</span></div>
+        <div class="model-row"><span class="label">Platform</span><span class="value">AWS Bedrock</span></div>
+        <div class="model-row"><span class="label">Cost</span><span class="value">~$2/mo at 1K req</span></div>
+      </div>
+      <div class="model-card model-sonnet">
+        <h3>Claude Sonnet 4</h3>
+        <div class="model-row"><span class="label">Role</span><span class="value">Tide Coach Agent</span></div>
+        <div class="model-row"><span class="label">Latency</span><span class="value">First token &lt;2s</span></div>
+        <div class="model-row"><span class="label">Purpose</span><span class="value">Financial coaching + tools</span></div>
+        <div class="model-row"><span class="label">Platform</span><span class="value">AWS Bedrock</span></div>
+        <div class="model-row"><span class="label">Tools</span><span class="value">11 tools available</span></div>
+      </div>
+      <div class="model-card model-haiku">
+        <h3>Claude Haiku 4.5 &mdash; Merchant Classifier</h3>
+        <div class="model-row"><span class="label">Role</span><span class="value">Plaid-sync merchant classification</span></div>
+        <div class="model-row"><span class="label">Trigger</span><span class="value">Merchants in ambiguous Plaid codes (GENERAL_SERVICES_OTHER, etc.)</span></div>
+        <div class="model-row"><span class="label">Purpose</span><span class="value">Fill the Software &amp; Tech / Subscriptions gap Plaid's PFC taxonomy leaves</span></div>
+        <div class="model-row"><span class="label">Batch size</span><span class="value">25 merchants per call</span></div>
+        <div class="model-row"><span class="label">Cache</span><span class="value">merchants.ai_category_id (once per unique merchant)</span></div>
+        <div class="model-row"><span class="label">Platform</span><span class="value">AWS Bedrock</span></div>
+        <div class="model-row"><span class="label">Cost</span><span class="value">~pennies per user lifetime</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Plaid sync priority chain — mirrored from Transaction Sync Flow.
+       Canonical location is data-flow-map.html#flow-sync (this is the
+       AI-first view for the same priority chain). -->
+  <div class="tier-section">
+    <h2>Plaid Sync &mdash; Category Resolution Priority</h2>
+    <p style="font-size:11px;color:#94a3b8;margin-bottom:16px;">
+      Canonical spec in <a href="data-flow-map.html" style="color:#a855f7;">Transaction Sync Flow</a> (where it executes at sync time). Mirrored here for the AI-first view since Tier 2 runs Claude Haiku.
+    </p>
+    <div class="tier-row">
+      <div class="tier-badge t1">TIER 1</div>
+      <div class="tier-content">
+        <h3>User Override</h3>
+        <p>merchant_category_overrides row &mdash; hand-set by the user on a prior transaction. Never clobbered on re-sync (invariant: categorySource='user' is immutable).</p>
+      </div>
+    </div>
+    <div class="tier-row">
+      <div class="tier-badge t2">TIER 2</div>
+      <div class="tier-content">
+        <h3>Merchant AI Cache</h3>
+        <p>merchants.ai_category_id &mdash; set by Claude Haiku on a prior sync when Plaid's code was ambiguous. categorySource='ai'. One Haiku call per unique merchant, reused forever.</p>
+      </div>
+    </div>
+    <div class="tier-row">
+      <div class="tier-badge t3">TIER 3</div>
+      <div class="tier-content">
+        <h3>Plaid Detailed Code</h3>
+        <p>Plaid's native PFC classification. Used when no user override and no AI cache. categorySource='plaid'. Handles confident cases (coffee, gas, groceries) with no AI cost.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
