@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Operating System — Tide</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', monospace; background: #0a0f1a; color: #e2e8f0; line-height: 1.6; }
+a { color: #3b82f6; text-decoration: none; }
+a:hover { text-decoration: underline; }
+code { font-family: 'JetBrains Mono', monospace; }
+
+.container { max-width: 1180px; margin: 0 auto; padding: 48px 24px 96px; }
+
+/* ---- header ---- */
+header { text-align: center; margin-bottom: 40px; }
+header h1 { font-size: 34px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.5px; }
+header .sub { font-size: 14px; color: #94a3b8; }
+header .eyebrow { font-size: 11px; color: #475569; letter-spacing: 3px; margin-top: 10px; text-transform: uppercase; }
+
+.living {
+  max-width: 860px; margin: 28px auto 0; padding: 16px 20px;
+  border: 1px solid rgba(34,197,94,0.35); border-radius: 10px;
+  background: rgba(34,197,94,0.06); font-size: 12px; color: #cbd5e1; text-align: left;
+}
+.living b { color: #4ade80; }
+.living .leaf { color: #4ade80; font-weight: 700; letter-spacing: 1px; font-size: 10px; }
+
+/* ---- section shell ---- */
+section { margin-top: 48px; border: 1.5px solid rgba(255,255,255,0.07); border-radius: 16px; background: rgba(17,24,39,0.45); padding: 32px; backdrop-filter: blur(6px); }
+.sec-head { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+.sec-num { width: 26px; height: 26px; border-radius: 50%; background: #ef4444; color: #fff; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex: 0 0 26px; }
+.sec-head h2 { font-size: 21px; font-weight: 700; }
+.sec-desc { font-size: 12.5px; color: #94a3b8; margin-bottom: 26px; max-width: 880px; }
+
+/* ---- §1 lifecycle timeline ---- */
+.timeline { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 22px; }
+.tl-axis { display: grid; grid-template-columns: 220px 1fr; align-items: center; margin-bottom: 14px; }
+.tl-axis .axis-label { font-size: 10px; color: #64748b; letter-spacing: 2px; text-align: center; }
+.tl-axis .ends { display: flex; justify-content: space-between; font-size: 10px; color: #64748b; padding: 0 2px; }
+.tl-row { display: grid; grid-template-columns: 220px 1fr; align-items: center; padding: 9px 0; }
+.tl-name { font-size: 13px; font-weight: 600; }
+.tl-name span { display: block; font-size: 10px; color: #64748b; font-weight: 400; }
+.tl-track { position: relative; height: 12px; border-radius: 6px; background: rgba(255,255,255,0.04); }
+.tl-track .bar { position: absolute; top: 0; height: 12px; border-radius: 6px; }
+.tl-track .dot { position: absolute; top: 1px; width: 10px; height: 10px; border-radius: 50%; transform: translateX(-50%); }
+.tl-track .dashed { position: absolute; top: 5px; left: 0; right: 0; border-top: 1px dashed rgba(255,255,255,0.12); }
+
+.c-anchor { background: #ef4444; } .c-anchor-d { background: #ef4444; }
+.c-hook   { background: #00d4ff; } .c-hook-d { background: #00d4ff; }
+.c-policy { background: #f59e0b; }
+.c-skill  { background: #22c55e; }
+.c-mcp    { background: #64748b; }
+.c-sub    { background: #a855f7; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 14px 22px; margin-top: 22px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.08); }
+.legend .item { display: flex; align-items: center; gap: 7px; font-size: 11px; color: #94a3b8; }
+.legend .sw { width: 11px; height: 11px; border-radius: 3px; flex: 0 0 11px; }
+
+/* ---- card columns (repo map / connections) ---- */
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; }
+.rcard { border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px; background: rgba(10,15,26,0.5); }
+.rcard h3 { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+.rcard .blurb { font-size: 11px; color: #94a3b8; font-style: italic; margin-bottom: 14px; }
+.rcard .row { font-size: 12px; margin: 7px 0; display: flex; flex-wrap: wrap; gap: 6px; align-items: baseline; }
+.rcard .row code { color: #e2e8f0; background: rgba(255,255,255,0.05); padding: 1px 6px; border-radius: 4px; font-size: 11.5px; }
+.rcard .row .note { font-size: 10.5px; color: #64748b; }
+
+.t-anchor { border-color: rgba(239,68,68,0.35); } .t-anchor h3 { color: #f87171; }
+.t-hook   { border-color: rgba(0,212,255,0.35);  } .t-hook h3   { color: #38bdf8; }
+.t-policy { border-color: rgba(245,158,11,0.35); } .t-policy h3 { color: #fbbf24; }
+.t-skill  { border-color: rgba(34,197,94,0.35);  } .t-skill h3  { color: #4ade80; }
+.t-content{ border-color: rgba(168,85,247,0.35); } .t-content h3{ color: #c084fc; }
+.t-ops    { border-color: rgba(148,163,184,0.35);} .t-ops h3    { color: #cbd5e1; }
+
+.pill { display: inline-block; font-size: 9px; font-weight: 700; padding: 1px 7px; border-radius: 999px; letter-spacing: 0.5px; vertical-align: middle; }
+.pill-live { background: rgba(34,197,94,0.15); color: #4ade80; }
+.pill-avail { background: rgba(148,163,184,0.15); color: #cbd5e1; }
+.pill-park { background: rgba(245,158,11,0.15); color: #fbbf24; }
+
+/* ---- §3 comparison table ---- */
+table.cmp { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 6px; }
+table.cmp th, table.cmp td { text-align: left; padding: 12px 14px; vertical-align: top; border-bottom: 1px solid rgba(255,255,255,0.06); }
+table.cmp thead th { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #94a3b8; }
+table.cmp tbody th { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: #64748b; width: 130px; }
+table.cmp .col-hook   { background: rgba(0,212,255,0.05); }
+table.cmp .col-policy { background: rgba(245,158,11,0.05); }
+table.cmp .col-skill  { background: rgba(34,197,94,0.05); }
+table.cmp .head-hook   { color: #38bdf8; }
+table.cmp .head-policy { color: #fbbf24; }
+table.cmp .head-skill  { color: #4ade80; }
+table.cmp .tagline { font-weight: 700; font-size: 13px; }
+table.cmp code { font-size: 11px; color: #cbd5e1; display: block; margin: 2px 0; }
+.banner { margin-top: 20px; text-align: center; padding: 14px; border-radius: 10px; background: #05080f; border: 1px solid rgba(255,255,255,0.08); font-size: 14px; font-weight: 600; letter-spacing: 0.5px; color: #e2e8f0; }
+.banner .dot { color: #475569; margin: 0 12px; }
+
+/* ---- §5 maintenance cards ---- */
+.mgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 16px; }
+.mcard { border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 18px 20px; background: rgba(10,15,26,0.5); }
+.mcard .when { font-size: 9.5px; letter-spacing: 2px; text-transform: uppercase; color: #64748b; }
+.mcard h4 { font-size: 14px; margin: 4px 0 8px; }
+.mcard p { font-size: 11.5px; color: #94a3b8; }
+.mcard code { color: #cbd5e1; background: rgba(255,255,255,0.05); padding: 1px 5px; border-radius: 4px; font-size: 11px; }
+
+footer { text-align: center; margin-top: 56px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.06); }
+footer p { font-size: 10px; color: #475569; }
+footer a { color: #64748b; }
+
+@media (max-width: 720px) {
+  .tl-axis, .tl-row { grid-template-columns: 130px 1fr; }
+  .tl-name { font-size: 11px; }
+  section { padding: 22px 16px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>The Operating System</h1>
+    <div class="sub">Session Lifecycle &middot; Repo Map &middot; Primitives &middot; Connections &middot; Maintenance</div>
+    <div class="eyebrow">Tide Cash Flow App</div>
+
+    <div class="living">
+      <span class="leaf">&#127793; LIVING DOCUMENT — ALWAYS LATEST &amp; GREATEST</span>
+      &nbsp;This page describes how the <b>Tide</b> repo runs as a Claude Code workspace — the
+      anchors, hooks, slash-command skills, MCP servers and self-maintenance loops the agent
+      operates inside. It <b>continues to be updated</b> as new skills, policies, and hooks get added.
+      The diagram below evolves as the system does.
+    </div>
+  </header>
+
+  <!-- ============ §1 SESSION LIFECYCLE ============ -->
+  <section>
+    <div class="sec-head"><div class="sec-num">1</div><h2>Session lifecycle</h2></div>
+    <p class="sec-desc">
+      When each Claude Code primitive activates over a session. The harness fires hooks
+      deterministically; Claude reads anchors (CLAUDE.md) and applies its conventions/guardrails as
+      situations arise; slash-command skills run only when invoked. MCP servers are available the
+      whole session once configured; subagents get isolated context for delegated work.
+    </p>
+
+    <div class="timeline">
+      <div class="tl-axis">
+        <div></div>
+        <div class="axis-label">SESSION TIME</div>
+      </div>
+      <div class="tl-axis">
+        <div></div>
+        <div class="ends"><span>START</span><span>END</span></div>
+      </div>
+
+      <!-- CLAUDE.md -->
+      <div class="tl-row">
+        <div class="tl-name">CLAUDE.md<span>Foundation — auto-loaded</span></div>
+        <div class="tl-track"><div class="bar c-anchor" style="left:0;right:0;"></div></div>
+      </div>
+      <!-- Reference docs -->
+      <div class="tl-row">
+        <div class="tl-name">Reference docs<span>ARCHITECTURE / LEARNINGS / specs</span></div>
+        <div class="tl-track"><div class="bar c-anchor" style="left:0;right:0;opacity:0.55;"></div></div>
+      </div>
+      <!-- Hooks -->
+      <div class="tl-row">
+        <div class="tl-name">Hooks<span>SessionStart (session-role.sh)</span></div>
+        <div class="tl-track"><div class="bar c-hook" style="left:0;width:18%;"></div></div>
+      </div>
+      <!-- Conventions / policies -->
+      <div class="tl-row">
+        <div class="tl-name">Conventions<span>Read on situational trigger</span></div>
+        <div class="tl-track">
+          <div class="dashed"></div>
+          <div class="dot c-policy" style="left:24%;"></div>
+          <div class="dot c-policy" style="left:46%;"></div>
+          <div class="dot c-policy" style="left:69%;"></div>
+          <div class="dot c-policy" style="left:88%;"></div>
+        </div>
+      </div>
+      <!-- Skills -->
+      <div class="tl-row">
+        <div class="tl-name">Skills<span>User-invoked (/command)</span></div>
+        <div class="tl-track">
+          <div class="dashed"></div>
+          <div class="dot c-skill" style="left:38%;"></div>
+          <div class="dot c-skill" style="left:62%;"></div>
+        </div>
+      </div>
+      <!-- MCPs -->
+      <div class="tl-row">
+        <div class="tl-name">MCP servers<span>Available once configured</span></div>
+        <div class="tl-track"><div class="bar c-mcp" style="left:0;right:0;opacity:0.5;"></div></div>
+      </div>
+      <!-- Subagents -->
+      <div class="tl-row">
+        <div class="tl-name">Subagents<span>Isolated context for delegation</span></div>
+        <div class="tl-track">
+          <div class="dashed"></div>
+          <div class="bar c-sub" style="left:30%;width:14%;"></div>
+          <div class="bar c-sub" style="left:58%;width:12%;"></div>
+        </div>
+      </div>
+
+      <div class="legend">
+        <div class="item"><span class="sw c-anchor"></span> Anchors (CLAUDE.md, docs) — loaded all session</div>
+        <div class="item"><span class="sw c-hook"></span> Hooks — harness-fired, deterministic</div>
+        <div class="item"><span class="sw c-policy"></span> Conventions — Claude reads on situational trigger</div>
+        <div class="item"><span class="sw c-skill"></span> Skills — Claude runs on user invocation</div>
+        <div class="item"><span class="sw c-mcp"></span> MCPs — external tool servers</div>
+        <div class="item"><span class="sw c-sub"></span> Subagents — isolated context for delegation</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ §2 REPO MAP ============ -->
+  <section>
+    <div class="sec-head"><div class="sec-num">2</div><h2>Repo map — the Tide monorepo</h2></div>
+    <p class="sec-desc">
+      An npm-workspaces monorepo. Every top-level folder performs one of six roles. Color-coded to
+      match the primitives in §3 and the lifecycle bars in §1.
+    </p>
+
+    <div class="cols">
+      <!-- anchors -->
+      <div class="rcard t-anchor">
+        <h3>Anchors</h3>
+        <div class="blurb">Always-on context loaded every session.</div>
+        <div class="row"><code>CLAUDE.md</code><span class="note">root — conventions, gotchas, workflow</span></div>
+        <div class="row"><code>README.md</code><span class="note">project overview + stack</span></div>
+        <div class="row"><code>docs/*.md</code><span class="note">ARCHITECTURE, DATABASE, LEARNINGS, specs</span></div>
+        <div class="row"><code>docs/*.html</code><span class="note">visual maps (GitHub Pages site)</span></div>
+      </div>
+
+      <!-- hooks -->
+      <div class="rcard t-hook">
+        <h3>Hooks</h3>
+        <div class="blurb">Harness-fired / manual shell scripts. Deterministic.</div>
+        <div class="row"><code>scripts/session-role.sh</code><span class="note">SessionStart — OWNER vs CONSUMER detection</span></div>
+        <div class="row"><code>scripts/dev-stack.sh</code><span class="note">manual — become OWNER (docker + API + worker)</span></div>
+        <div class="row"><code>scripts/check-api-key-security.sh</code><span class="note">manual — guards leaked API keys / .env</span></div>
+        <div class="row"><code>.claude/settings.json</code><span class="note">wires the SessionStart hook + permissions</span></div>
+      </div>
+
+      <!-- conventions / policies -->
+      <div class="rcard t-policy">
+        <h3>Conventions (policy layer)</h3>
+        <div class="blurb">Rules in CLAUDE.md Claude applies when a trigger fires.</div>
+        <div class="row"><code>Doc-sync</code><span class="note">schema/arch/flow change → update .md + .html same PR</span></div>
+        <div class="row"><code>DATA FLOW = SPEC</code><span class="note">data-flow-map.html is the primary spec</span></div>
+        <div class="row"><code>LEARNINGS loop</code><span class="note">auto-append bugs/lessons to LEARNINGS.md</span></div>
+        <div class="row"><code>$46/mo budget</code><span class="note">no EKS / NAT / ALB / ElastiCache / Secrets Mgr</span></div>
+        <div class="row"><code>Security</code><span class="note">AES-256 PII, Bouncer per resource, redactForLogging</span></div>
+        <div class="row"><code>BankDataProvider</code><span class="note">never call Plaid directly</span></div>
+        <div class="row"><code>OWNER / CONSUMER</code><span class="note">one session owns the stack + migrations</span></div>
+      </div>
+
+      <!-- skills -->
+      <div class="rcard t-skill">
+        <h3>Skills</h3>
+        <div class="blurb">Bundled workflows. User invokes via slash command (<code>.claude/commands/</code>).</div>
+        <div class="row"><code>/dimensions</code><span class="note">identify eval dimensions (MECE failure modes)</span></div>
+        <div class="row"><code>/fixtures</code><span class="note">generate eval test cases across dimensions</span></div>
+        <div class="row"><code>/ground-truth</code><span class="note">author golden ideal responses</span></div>
+        <div class="row"><code>/ux-critique</code><span class="note">principal-designer mobile UI/UX audit</span></div>
+      </div>
+
+      <!-- content / app surface -->
+      <div class="rcard t-content">
+        <h3>App &amp; packages — the substance</h3>
+        <div class="blurb">The shipping code: mobile, backend, shared libs.</div>
+        <div class="row"><code>apps/mobile/</code><span class="note">React Native + Expo (iOS dev build)</span></div>
+        <div class="row"><code>apps/backend/</code><span class="note">AdonisJS 6 API + BullMQ worker</span></div>
+        <div class="row"><code>packages/bank-data-provider/</code><span class="note">BankDataProvider + PlaidAdapter</span></div>
+        <div class="row"><code>packages/shared/</code><span class="note">types, encryption utils, constants</span></div>
+        <div class="row"><code>evals/</code><span class="note">fixtures, judges, runner — AI quality suite</span></div>
+      </div>
+
+      <!-- ops -->
+      <div class="rcard t-ops">
+        <h3>Operations</h3>
+        <div class="blurb">Infra, CI, meta- and contributor docs.</div>
+        <div class="row"><code>infra/</code><span class="note">Dockerfiles, k3s manifests, Terraform</span></div>
+        <div class="row"><code>.github/workflows/</code><span class="note">ci.yaml, evals.yml, deploy.yaml</span></div>
+        <div class="row"><code>docker-compose.yml</code><span class="note">local Postgres + Redis</span></div>
+        <div class="row"><code>GitHub Pages</code><span class="note">serves <code>docs/</code> as the visual-docs site (Settings → Pages, main /docs)</span></div>
+        <div class="row"><code>.worktreeinclude</code><span class="note">parallel-session worktree isolation</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ §3 HOOKS vs CONVENTIONS vs SKILLS ============ -->
+  <section>
+    <div class="sec-head"><div class="sec-num">3</div><h2>Hooks vs. Conventions vs. Skills</h2></div>
+    <p class="sec-desc">
+      The three layers people most commonly confuse — different in <i>who runs them, when, and what
+      they're best for</i>. In Tide, the "policy" layer lives as conventions inside <code>CLAUDE.md</code>
+      rather than a dedicated <code>policies/</code> folder.
+    </p>
+
+    <table class="cmp">
+      <thead>
+        <tr>
+          <th>Dimension</th>
+          <th class="col-hook head-hook">Hooks</th>
+          <th class="col-policy head-policy">Conventions</th>
+          <th class="col-skill head-skill">Skills</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th></th>
+          <td class="col-hook"><span class="tagline head-hook">Tripwire</span></td>
+          <td class="col-policy"><span class="tagline head-policy">Checklist</span></td>
+          <td class="col-skill"><span class="tagline head-skill">Playbook</span></td>
+        </tr>
+        <tr>
+          <th>What it is</th>
+          <td class="col-hook">Shell scripts run by the harness at lifecycle events</td>
+          <td class="col-policy">Markdown rules in CLAUDE.md Claude reads when a trigger fires</td>
+          <td class="col-skill">Bundled workflows (command prompt + instructions)</td>
+        </tr>
+        <tr>
+          <th>Who runs it</th>
+          <td class="col-hook">The harness (deterministic)</td>
+          <td class="col-policy">Claude (judgment)</td>
+          <td class="col-skill">Claude (on demand)</td>
+        </tr>
+        <tr>
+          <th>When it fires</th>
+          <td class="col-hook">Lifecycle events (SessionStart, …)</td>
+          <td class="col-policy">When the matching situation arises</td>
+          <td class="col-skill">When invoked via slash command</td>
+        </tr>
+        <tr>
+          <th>Best for</th>
+          <td class="col-hook">Non-negotiables; observability; deterministic side effects</td>
+          <td class="col-policy">Situational judgment</td>
+          <td class="col-skill">Reusable multi-step workflows</td>
+        </tr>
+        <tr>
+          <th>In this repo</th>
+          <td class="col-hook"><code>scripts/session-role.sh</code><code>scripts/dev-stack.sh</code><code>scripts/check-api-key-security.sh</code></td>
+          <td class="col-policy"><code>Doc-sync (code+docs same PR)</code><code>DATA FLOW = SPEC</code><code>LEARNINGS loop</code><code>$46/mo budget guard</code></td>
+          <td class="col-skill"><code>/dimensions</code><code>/fixtures</code><code>/ground-truth</code><code>/ux-critique</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="banner">Hooks fire <span class="dot">&middot;</span> Conventions judge <span class="dot">&middot;</span> Skills execute</div>
+  </section>
+
+  <!-- ============ §4 EXTERNAL CONNECTIONS ============ -->
+  <section>
+    <div class="sec-head"><div class="sec-num">4</div><h2>External connections</h2></div>
+    <p class="sec-desc">
+      What the workspace talks to outside its own repo: runtime services, MCP tool servers, and the
+      Claude Code host.
+    </p>
+
+    <div class="cols">
+      <div class="rcard t-content">
+        <h3>Runtime services</h3>
+        <div class="blurb">What the app itself depends on.</div>
+        <div class="row"><code>Plaid</code><span class="note">bank data — via BankDataProvider only</span></div>
+        <div class="row"><code>AWS Bedrock</code><span class="note">Claude Sonnet/Haiku — AI coach + classifiers</span></div>
+        <div class="row"><code>AWS Cognito</code><span class="note">JWT auth (1h access / 30d refresh)</span></div>
+        <div class="row"><code>PostgreSQL</code><span class="note">local docker / RDS-ready</span></div>
+        <div class="row"><code>Redis + BullMQ</code><span class="note">queue / background jobs</span></div>
+      </div>
+
+      <div class="rcard t-hook">
+        <h3>MCP servers</h3>
+        <div class="blurb">Tool servers reachable from the session.</div>
+        <div class="row"><code>Figma</code> <span class="pill pill-live">integrated</span><span class="note">design context for UI work</span></div>
+        <div class="row"><code>GitHub</code> <span class="pill pill-live">integrated</span><span class="note">PRs, issues, CI, reviews</span></div>
+        <div class="row"><code>Google Drive / Box</code> <span class="pill pill-avail">available</span></div>
+        <div class="row"><code>Gmail / Calendar</code> <span class="pill pill-avail">available</span></div>
+        <div class="row"><code>Vercel / DocuSign</code> <span class="pill pill-avail">available</span></div>
+      </div>
+
+      <div class="rcard t-ops">
+        <h3>Host &amp; sites</h3>
+        <div class="blurb">The Claude Code host and published surfaces.</div>
+        <div class="row"><code>Claude Code</code><span class="note">Opus 4.8 (1M ctx) — web / remote container</span></div>
+        <div class="row"><code>.claude/settings.json</code><span class="note">repo-level hooks + permissions</span></div>
+        <div class="row"><code>.claude/commands/</code><span class="note">repo slash-command skills</span></div>
+        <div class="row"><code>GitHub Pages</code> <span class="pill pill-live">live</span><span class="note">publishes <code>docs/</code> on merge to main</span></div>
+        <div class="row"><a href="https://vikkybharadwaj.github.io/tide/">vikkybharadwaj.github.io/tide</a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ §5 MAINTENANCE ============ -->
+  <section>
+    <div class="sec-head"><div class="sec-num">5</div><h2>How the system maintains itself</h2></div>
+    <p class="sec-desc">
+      The cadences and automations that keep the workspace current and the docs honest — Tide's
+      "self-improvement layer."
+    </p>
+
+    <div class="mgrid">
+      <div class="mcard">
+        <div class="when">Per session start</div>
+        <h4>Role detection</h4>
+        <p><code>scripts/session-role.sh</code> probes ports 3333 / 8081 / 5432 / 6379 and prints
+        whether this session is the dev-stack <b>OWNER</b> or a <b>CONSUMER</b>, so parallel sessions
+        don't collide on the shared DB or port.</p>
+      </div>
+
+      <div class="mcard">
+        <div class="when">Every PR (always)</div>
+        <h4>Code + docs move together</h4>
+        <p>Changing schema, API flows, security model, or the AI pipeline <i>requires</i> updating the
+        matching <code>.md</code> + <code>.html</code> maps in the same PR. <code>data-flow-map.html</code>
+        is the product spec — code and flow must never drift.</p>
+      </div>
+
+      <div class="mcard">
+        <div class="when">On discovery</div>
+        <h4>LEARNINGS loop</h4>
+        <p>When a bug, crash, or non-obvious stack fact surfaces, it's appended to
+        <code>docs/LEARNINGS.md</code> automatically — reviewed before writing mobile code to avoid
+        repeating known pitfalls.</p>
+      </div>
+
+      <div class="mcard">
+        <div class="when">Every push / PR to main</div>
+        <h4>CI: lint, typecheck, test</h4>
+        <p><code>.github/workflows/ci.yaml</code> runs lint + typecheck + tests against an ephemeral
+        Postgres. Reused by <code>deploy.yaml</code> as a pre-deploy gate.</p>
+      </div>
+
+      <div class="mcard">
+        <div class="when">AI changes + nightly</div>
+        <h4>AI eval suite</h4>
+        <p><code>.github/workflows/evals.yml</code> runs on changes under
+        <code>apps/backend/app/services/ai/**</code> or <code>evals/**</code>, plus a nightly cron —
+        scored against fixtures + judges.</p>
+      </div>
+
+      <div class="mcard">
+        <div class="when">On merge to main</div>
+        <h4>Docs auto-publish</h4>
+        <p>GitHub Pages publishes the <code>docs/</code> folder, so this page and every visual map go live at
+        <a href="https://vikkybharadwaj.github.io/tide/">vikkybharadwaj.github.io/tide</a> without a build step.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>Tide Cash Flow App &middot; The Operating System &middot; <a href="index.html">← back to Visual Docs hub</a></p>
+  </footer>
+
+</div>
+</body>
+</html>

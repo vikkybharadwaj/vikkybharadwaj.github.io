@@ -88,6 +88,11 @@ header .badge { display: inline-block; padding: 3px 10px; border-radius: 4px; fo
 .card-backlog .icon { color: #818cf8; }
 .card-backlog .tag { background: rgba(99,102,241,0.15); color: #818cf8; }
 
+.card-os { border-color: rgba(20,184,166,0.3); }
+.card-os:hover { box-shadow: 0 8px 32px rgba(20,184,166,0.2); border-color: #14b8a6; }
+.card-os .icon { color: #14b8a6; }
+.card-os .tag { background: rgba(20,184,166,0.15); color: #14b8a6; }
+
 footer { text-align: center; margin-top: 48px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.06); }
 footer p { font-size: 10px; color: #475569; }
 </style>
@@ -149,6 +154,13 @@ footer p { font-size: 10px; color: #475569; }
       <h2>Product Backlog</h2>
       <p>Every deferred idea, scored and bucketed. 120 features across 22 epics, each forced into one of five categories (CX, Tech Debt, UI/UX, AI &amp; Data, Launch) so stabilization stays visible. Drag-to-reorder to explore prioritization trade-offs.</p>
       <span class="tag">22 EPICS &middot; 120 FEATURES &middot; 5 CATEGORIES</span>
+    </a>
+
+    <a class="card card-os" href="operating-system.html">
+      <span class="icon">&#9881;</span>
+      <h2>The Operating System</h2>
+      <p>How the Tide repo runs as a Claude Code workspace: session lifecycle, monorepo map, the hooks vs conventions vs skills layers, MCP servers, and the self-maintenance loops (role detection, doc-sync, LEARNINGS, CI/evals).</p>
+      <span class="tag">5 SECTIONS &middot; HARNESS MAP</span>
     </a>
 
   </div>
