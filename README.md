@@ -9,11 +9,18 @@ The site is fully self-contained: each project's HTML docs are **vendored** into
 ## Structure
 
 ```
-index.html            # the portfolio landing page (hero + project cards)
+index.html            # the portfolio landing page (hero + 3-prong "Explore my work" band
+                      #   + about + experience timeline + highlights + what-I-do + contact)
 .nojekyll             # tells GitHub Pages to serve every file verbatim (no Jekyll)
 projects/
   tide/               # vendored Tide docs; projects/tide/index.html is the entry point
+  product-cockpit/    # vendored Product Cockpit (AI-native operating system) case study
 ```
+
+The homepage's three front-doors ("Explore my work"):
+1. **Tide** → `projects/tide/` (in-repo)
+2. **Product Cockpit — Operating System** → `projects/product-cockpit/` (in-repo)
+3. **How I Learn AI** → links out to `https://vikkybharadwaj.github.io/ai_knowledgecenter/` (separate path)
 
 ## Adding a new project
 

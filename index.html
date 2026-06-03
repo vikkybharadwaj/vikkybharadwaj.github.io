@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vik Bharadwaj — AI Product Manager &amp; Builder</title>
-<meta name="description" content="Vik Bharadwaj — AI Product Manager &amp; Builder. A product manager who works hands-on across the stack: product specs, the app, the AI pipeline, the data model, and evals.">
-<meta property="og:title" content="Vik Bharadwaj — AI Product Manager &amp; Builder">
-<meta property="og:description" content="A product manager who works hands-on across the stack — product specs, the app, the AI pipeline, the data model, and the evals.">
+<title>Vik Bharadwaj — Staff PM &amp; AI Product Builder</title>
+<meta name="description" content="Vik Bharadwaj — Staff PM and AI product builder. A product manager who works hands-on across the stack. Three bodies of work: Tide, the Product Cockpit operating system, and how I learn AI.">
+<meta property="og:title" content="Vik Bharadwaj — Staff PM &amp; AI Product Builder">
+<meta property="og:description" content="A product manager who builds — across the app, the AI pipeline, the data model, and the evals. Explore Tide, the Product Cockpit operating system, and how I learn AI.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://vikkybharadwaj.github.io/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,6 +22,8 @@
     --blue: #4F8CFF;
     --purple: #a855f7;
     --amber: #f59e0b;
+    --teal: #14b8a6;
+    --cyan: #00d4ff;
     --border: rgba(255,255,255,0.08);
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -57,9 +59,9 @@
   nav .logo span { color: var(--green); }
   nav .links { display: flex; gap: 22px; font-size: 12px; color: var(--text-2); }
   nav .links a:hover { color: var(--text); }
-  @media (max-width: 600px) { nav .links { display: none; } }
+  @media (max-width: 680px) { nav .links { display: none; } }
 
-  header.hero { padding: 110px 0 70px; }
+  header.hero { padding: 104px 0 56px; }
   .eyebrow {
     display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 2px;
     color: var(--green); padding: 5px 12px; border-radius: 6px;
@@ -74,7 +76,7 @@
     background: linear-gradient(100deg, var(--green), var(--blue));
     -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
   }
-  .hero .lede { font-size: clamp(15px, 2.4vw, 19px); color: var(--text-2); max-width: 680px; line-height: 1.7; }
+  .hero .lede { font-size: clamp(15px, 2.4vw, 19px); color: var(--text-2); max-width: 700px; line-height: 1.7; }
   .hero .lede b { color: var(--text); font-weight: 600; }
   .cta-row { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 36px; }
   .btn {
@@ -88,7 +90,7 @@
   .btn-ghost { background: transparent; border-color: var(--border); color: var(--text); }
   .btn-ghost:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.25); }
 
-  section { padding: 60px 0; }
+  section { padding: 58px 0; }
   .sec-label {
     font-size: 11px; font-weight: 700; letter-spacing: 2px; color: var(--text-3);
     text-transform: uppercase; margin-bottom: 14px;
@@ -96,11 +98,78 @@
   .sec-title { font-size: clamp(22px, 3.4vw, 30px); font-weight: 800; letter-spacing: -1px; margin-bottom: 10px; }
   .sec-sub { color: var(--text-2); font-size: 14px; max-width: 720px; line-height: 1.8; }
 
+  /* ---------- Explore my work — the 3-pronged band ---------- */
+  .explore-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 30px; }
+  @media (max-width: 880px) { .explore-grid { grid-template-columns: 1fr; } }
+  .xcard {
+    display: flex; flex-direction: column; position: relative; overflow: hidden;
+    border-radius: 18px; padding: 30px 26px;
+    border: 1.5px solid var(--border); background: var(--surface); backdrop-filter: blur(8px);
+    transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+  }
+  .xcard::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--accent, var(--green)); opacity: .8;
+  }
+  .xcard:hover { transform: translateY(-6px); }
+  .xcard .xnum { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; color: var(--text-3); }
+  .xcard .xic { font-size: 30px; margin: 14px 0 14px; display: block; }
+  .xcard h3 { font-size: 21px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.15; }
+  .xcard .xsub { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--accent, var(--green)); margin-top: 6px; }
+  .xcard .xdesc { font-size: 13px; color: var(--text-2); line-height: 1.75; margin-top: 14px; }
+  .xcard .xtags { display: flex; flex-wrap: wrap; gap: 7px; margin: 18px 0 0; }
+  .xcard .xtag { font-size: 10.5px; font-weight: 600; color: var(--text-2); padding: 4px 9px; border-radius: 999px; border: 1px solid var(--border); background: rgba(255,255,255,0.02); }
+  .xcard .xopen { display: inline-flex; align-items: center; gap: 8px; margin-top: auto; padding-top: 22px; font-size: 12.5px; font-weight: 700; color: var(--accent, var(--green)); }
+  .xcard .xopen .arr { transition: transform .2s ease; }
+  .xcard:hover .xopen .arr { transform: translateX(5px); }
+  .xcard.ext .xopen .arr::after { content: ' ↗'; }
+  .xcard.g { --accent: var(--green); border-color: rgba(0,210,106,0.30); }
+  .xcard.g:hover { border-color: var(--green); box-shadow: 0 18px 50px rgba(0,210,106,0.16); }
+  .xcard.t { --accent: var(--teal); border-color: rgba(20,184,166,0.30); }
+  .xcard.t:hover { border-color: var(--teal); box-shadow: 0 18px 50px rgba(20,184,166,0.16); }
+  .xcard.c { --accent: var(--cyan); border-color: rgba(0,212,255,0.30); }
+  .xcard.c:hover { border-color: var(--cyan); box-shadow: 0 18px 50px rgba(0,212,255,0.16); }
+
   .about p { color: var(--text-2); font-size: 15px; line-height: 1.9; max-width: 760px; }
   .about p b { color: var(--text); font-weight: 600; }
   .about p + p { margin-top: 18px; }
 
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; margin-top: 30px; }
+  /* ---------- Experience timeline ---------- */
+  .xp { display: flex; flex-direction: column; gap: 14px; margin-top: 28px; }
+  .xp-item {
+    border: 1px solid var(--border); border-left: 3px solid var(--accent, var(--blue));
+    border-radius: 14px; padding: 22px 24px; background: var(--surface); backdrop-filter: blur(8px);
+    transition: transform .15s ease, border-color .2s ease;
+  }
+  .xp-item:hover { transform: translateX(3px); }
+  .xp-item.g { --accent: var(--green); } .xp-item.b { --accent: var(--blue); }
+  .xp-item.p { --accent: var(--purple); } .xp-item.a { --accent: var(--amber); }
+  .xp-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 16px; }
+  .xp-role { font-size: 15px; font-weight: 700; }
+  .xp-co { font-size: 13px; color: var(--accent, var(--blue)); font-weight: 600; }
+  .xp-date { font-size: 11px; color: var(--text-3); font-weight: 600; letter-spacing: .5px; white-space: nowrap; }
+  .xp-item ul { list-style: none; margin: 12px 0 0; padding: 0; }
+  .xp-item li { position: relative; padding-left: 16px; font-size: 12.5px; color: var(--text-2); line-height: 1.7; margin-bottom: 7px; }
+  .xp-item li::before { content: '›'; position: absolute; left: 0; color: var(--accent, var(--blue)); font-weight: 700; }
+  .xp-item li b { color: var(--text); font-weight: 600; }
+  .xp-item.earlier p { font-size: 12.5px; color: var(--text-2); line-height: 1.7; }
+  .xp-item.earlier b { color: var(--text); font-weight: 600; }
+
+  .edu { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 16px; }
+  @media (max-width: 600px) { .edu { grid-template-columns: 1fr; } }
+  .edu .e { border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; background: var(--surface); }
+  .edu .e .deg { font-size: 13.5px; font-weight: 700; }
+  .edu .e .sch { font-size: 12px; color: var(--text-2); margin-top: 4px; }
+
+  /* ---------- Highlights ---------- */
+  .hl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 16px; margin-top: 28px; }
+  .hl { border: 1px solid var(--border); border-radius: 14px; padding: 22px; background: var(--surface); backdrop-filter: blur(8px); }
+  .hl h3 { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent, var(--text-3)); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .hl.g { --accent: var(--green); } .hl.b { --accent: var(--blue); } .hl.p { --accent: var(--purple); } .hl.a { --accent: var(--amber); } .hl.c { --accent: var(--cyan); }
+  .hl .pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .hl .pill { font-size: 11.5px; font-weight: 600; color: var(--text-2); padding: 5px 11px; border-radius: 999px; border: 1px solid var(--border); background: rgba(255,255,255,0.02); }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; margin-top: 22px; }
   .cap {
     border: 1px solid var(--border); border-radius: 14px; padding: 24px;
     background: var(--surface); backdrop-filter: blur(8px);
@@ -130,25 +199,6 @@
   }
   .grp-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-  .project {
-    display: block; border-radius: 18px; padding: 38px;
-    border: 1.5px solid rgba(0,210,106,0.3);
-    background: linear-gradient(160deg, rgba(0,210,106,0.07), rgba(79,140,255,0.05));
-    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
-    position: relative; overflow: hidden;
-  }
-  .project:hover { transform: translateY(-5px); border-color: var(--green); box-shadow: 0 20px 60px rgba(0,210,106,0.18); }
-  .project .flag { display: inline-flex; align-items: center; gap: 7px; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; color: var(--green); margin-bottom: 16px; }
-  .project .flag .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 10px var(--green); }
-  .project h3 { font-size: clamp(24px, 4vw, 32px); font-weight: 800; letter-spacing: -1px; margin-bottom: 12px; }
-  .project .desc { color: var(--text-2); font-size: 14.5px; line-height: 1.85; max-width: 760px; }
-  .project .desc b { color: var(--text); font-weight: 600; }
-  .tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0 8px; }
-  .tag { font-size: 11px; font-weight: 600; color: var(--text-2); padding: 5px 11px; border-radius: 999px; border: 1px solid var(--border); background: rgba(255,255,255,0.02); }
-  .project .open { display: inline-flex; align-items: center; gap: 9px; margin-top: 22px; font-size: 13px; font-weight: 700; color: var(--green); }
-  .project:hover .open .arr { transform: translateX(5px); }
-  .open .arr { transition: transform .2s ease; }
-
   .more { margin-top: 22px; font-size: 13px; color: var(--text-2); }
   .more a { color: var(--blue); font-weight: 600; border-bottom: 1px solid rgba(79,140,255,0.4); }
   .more a:hover { color: #7aa9ff; }
@@ -166,9 +216,6 @@
     color: var(--text); transition: transform .15s ease, border-color .2s ease, background .2s ease;
   }
   .clink:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.28); background: rgba(255,255,255,0.03); }
-  .clink.soon { opacity: 0.55; cursor: default; }
-  .clink.soon:hover { transform: none; }
-  .clink .pill { font-size: 9px; font-weight: 700; letter-spacing: 1px; color: var(--amber); border: 1px solid rgba(245,158,11,0.4); border-radius: 5px; padding: 1px 6px; }
 
   footer { padding: 50px 0 60px; border-top: 1px solid var(--border); margin-top: 40px; text-align: center; }
   footer p { font-size: 12px; color: var(--text-3); }
@@ -183,9 +230,10 @@
   <div class="wrap">
     <a class="logo" href="#top">Vik<span>.</span>Bharadwaj</a>
     <div class="links">
+      <a href="#explore">Explore</a>
       <a href="#about">About</a>
-      <a href="#work">Work</a>
-      <a href="#tide">Tide</a>
+      <a href="#experience">Experience</a>
+      <a href="#highlights">Highlights</a>
       <a href="#contact">Contact</a>
     </div>
   </div>
@@ -194,37 +242,250 @@
 <a id="top"></a>
 <header class="hero">
   <div class="wrap">
-    <span class="eyebrow">AI PRODUCT MANAGER &amp; BUILDER</span>
+    <span class="eyebrow">STAFF PM · AI PRODUCT BUILDER</span>
     <h1>Hi, I'm Vik —<br>a product manager who <span class="grad">builds.</span></h1>
     <p class="lede">
-      I work hands-on across the stack — product specs, the app, the AI pipeline, the data model, and the
-      evals. Staying close to how things actually get built keeps my product decisions grounded. Below is
-      some of that work.
+      For ~12 years I've shipped consumer products at scale — at <b>Zillow</b>, <b>Wayfair</b>, <b>Ahold
+      Delhaize</b>, and <b>Whirlpool</b>. Today I build <b>AI-native products end-to-end</b>: the app, the AI
+      pipeline, the data model, and the evals. Staying close to how things actually get built keeps my product
+      decisions grounded. Three bodies of that work, below.
     </p>
     <div class="cta-row">
-      <a class="btn btn-primary" href="#tide">Explore Tide <span>→</span></a>
+      <a class="btn btn-primary" href="#explore">Explore my work <span>→</span></a>
       <a class="btn btn-ghost" href="#contact">Get in touch</a>
     </div>
   </div>
 </header>
+
+<section id="explore">
+  <div class="wrap">
+    <div class="sec-label">Explore my work</div>
+    <h2 class="sec-title">Three ways in.</h2>
+    <p class="sec-sub">A shipped product, an operating system for how a team decides, and how I keep getting sharper at AI. Pick a door.</p>
+
+    <div class="explore-grid">
+
+      <a class="xcard g" href="projects/tide/index.html">
+        <span class="xnum">01 · THE PRODUCT</span>
+        <span class="xic">🌊</span>
+        <h3>Tide</h3>
+        <span class="xsub">Personal cash flow, AI-native</span>
+        <p class="xdesc">
+          A mobile-first personal finance app built around one question — <b>what's actually safe to spend?</b>
+          Behind it: an AI pipeline on Claude + AWS Bedrock, payday-aware Safe-to-Spend, a categorization engine
+          that learns, and a living visual-docs site where every data flow doubles as the spec.
+        </p>
+        <div class="xtags">
+          <span class="xtag">React Native · Expo</span>
+          <span class="xtag">Claude · Bedrock</span>
+          <span class="xtag">AI Evals</span>
+        </div>
+        <span class="xopen">Explore the interactive system docs <span class="arr">→</span></span>
+      </a>
+
+      <a class="xcard t" href="projects/product-cockpit/index.html">
+        <span class="xnum">02 · THE OPERATING SYSTEM</span>
+        <span class="xic">🛰️</span>
+        <h3>Product Cockpit</h3>
+        <span class="xsub">An AI-native operating system</span>
+        <p class="xdesc">
+          An operating system for product decisions — <b>hooks observe, policies judge, skills execute</b> — so a
+          team (and an AI agent) decide with cited evidence instead of folklore, and the knowledge compounds
+          instead of walking out the door. An anonymized case study of a real internal build.
+        </p>
+        <div class="xtags">
+          <span class="xtag">Observe · Judge · Execute</span>
+          <span class="xtag">Anti-drift governance</span>
+          <span class="xtag">Figma · Linear MCP</span>
+        </div>
+        <span class="xopen">Explore the case study <span class="arr">→</span></span>
+      </a>
+
+      <a class="xcard c ext" href="https://vikkybharadwaj.github.io/ai_knowledgecenter/index.html" target="_blank" rel="noopener">
+        <span class="xnum">03 · HOW I THINK</span>
+        <span class="xic">🧠</span>
+        <h3>How I Learn AI</h3>
+        <span class="xsub">My open knowledge center</span>
+        <p class="xdesc">
+          The deliberate side of getting better — a learning hub of <b>interactive maps and mental models</b> for
+          how I capture signal, distill it into core ideas, organize it, and actually retain it. The theory engine
+          behind the practice.
+        </p>
+        <div class="xtags">
+          <span class="xtag">Capture · Distill</span>
+          <span class="xtag">Organize · Retrieve</span>
+          <span class="xtag">Visual thinking</span>
+        </div>
+        <span class="xopen">Explore the knowledge center <span class="arr">→</span></span>
+      </a>
+
+    </div>
+  </div>
+</section>
 
 <section id="about" class="about">
   <div class="wrap">
     <div class="sec-label">About</div>
     <h2 class="sec-title">Product and engineering, together.</h2>
     <p>
-      I'm a product manager who works hands-on, and I keep one thing at the center: the customer and the
-      outcome we're trying to move for them. On my current project, Tide, I've owned the product direction
-      and specs as well as much of the implementation — the React Native app, AdonisJS services, the
-      PostgreSQL data model, AWS infrastructure, and the Claude-based AI pipeline — so the path from a
-      customer problem to a shipped, measured outcome stays short.
+      I'm a product manager who works hands-on, and I keep one thing at the center: the <b>customer and the
+      outcome</b> we're trying to move for them. Over ~12 years I've built <b>0→1 products</b> and led platform
+      transformations across consumer shopping and fintech — and I've grown as a people leader, managing and
+      mentoring PMs across organizations along the way.
     </p>
     <p>
-      I'm especially interested in making AI features measurable — using evals (dimensions, fixtures,
-      ground-truth, judge scoring) so quality is something you can track and improve rather than guess at.
-      I also try to keep documentation as a living spec next to the code, so what's written stays in step
-      with what's shipped.
+      Today I build <b>AI-native products end-to-end</b> — shipping production code across the frontend and
+      backend, designing the AI pipeline and its evals, and building internal operating systems (like <b>Product
+      Cockpit</b>) that connect strategy, customer evidence, design, execution, and analytics with live read-access
+      to the code. I'm especially interested in making AI features <b>measurable</b> — so quality is something you
+      can track and improve rather than guess at.
     </p>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="wrap">
+    <div class="sec-label">Experience</div>
+    <h2 class="sec-title">~12 years, customer-in to outcomes-out.</h2>
+    <p class="sec-sub" style="margin-bottom:6px;">Selected roles. Impact shown directionally — figures held as <b>$XX</b> / <b>YY%</b> placeholders, kept high-level on purpose.</p>
+
+    <div class="xp">
+
+      <div class="xp-item g">
+        <div class="xp-top">
+          <span class="xp-role">Staff PM, AI Product Builder · <span class="xp-co">Trustly</span></span>
+          <span class="xp-date">2026 — PRESENT · NEW YORK</span>
+        </div>
+        <ul>
+          <li>Building an <b>AI-native financial-coaching app</b> for US consumers — combining probabilistic LLM systems and evals with deterministic models, shipping production code across frontend and backend.</li>
+          <li>Designed and built <b>Product Cockpit</b>, an internal product operating system connecting business &amp; product strategy, voice-of-customer, UX research, design (Figma MCP), execution (Linear MCP), and analytics — with live read-access to the latest code so the whole team decides with full context.</li>
+        </ul>
+      </div>
+
+      <div class="xp-item b">
+        <div class="xp-top">
+          <span class="xp-role">Sr. Product Manager, Core Shopping · <span class="xp-co">Zillow</span></span>
+          <span class="xp-date">2024 — 2026 · NEW YORK</span>
+        </div>
+        <ul>
+          <li><b>DRI for multiplayer / collaborative experiences</b> across Zillow Shopping — defined the vision, strategy, and roadmap for Zillow's first collaborative features (0→1).</li>
+          <li>Launched <b>Collections</b> across iOS, Android, and Web — invite, share, compare, and collaborate on saved homes — lifting retention by <b>+YY%</b>; shipped Compare and touring experiments that grew engagement and conversion (<b>+YY%</b>).</li>
+          <li>Drove PM <b>AI-tooling enablement</b> — led n8n and Cursor + Xcode prototyping workshops; among the org's top AI-tool adopters.</li>
+        </ul>
+      </div>
+
+      <div class="xp-item p">
+        <div class="xp-top">
+          <span class="xp-role">Product Lead, Middle &amp; Lower Funnel · <span class="xp-co">Wayfair</span></span>
+          <span class="xp-date">2022 — 2024 · CHICAGO</span>
+        </div>
+        <ul>
+          <li>Global product lead managing PMs across <b>Browse, PDP, Cart, Checkout, and Receipt</b>; set the vision and roadmap to grow engagement and conversion.</li>
+          <li>Drove funnel experiments and UX improvements — reviews on PDP, return policy, address validation, cross-sell — delivering <b>+$XXM GMV/yr</b>, <b>+YY% CVR</b>, and lower customer-contact costs.</li>
+        </ul>
+      </div>
+
+      <div class="xp-item a">
+        <div class="xp-top">
+          <span class="xp-role">Sr. Product Manager, Mobile Apps · <span class="xp-co">Ahold Delhaize</span></span>
+          <span class="xp-date">2020 — 2022 · CHICAGO</span>
+        </div>
+        <ul>
+          <li>Led discovery and delivery of <b>Click &amp; Collect</b> curbside pickup across Giant, Martin's, and Stop &amp; Shop — from pilot to nationwide rollout.</li>
+          <li>Spearheaded <b>Click &amp; Collect 2.0</b> across research, design, engineering, ops, and marketing, improving opt-in, check-in, and wait times; led native mobile app transformation across ADUSA brands.</li>
+        </ul>
+      </div>
+
+      <div class="xp-item g">
+        <div class="xp-top">
+          <span class="xp-role">Product Manager (Global Leadership Program) · <span class="xp-co">Whirlpool</span></span>
+          <span class="xp-date">2015 — 2020 · MICHIGAN</span>
+        </div>
+        <ul>
+          <li>Led the end-to-end transformation of the <b>JennAir connected app</b> and managed an APM on KitchenAid; owned cart &amp; checkout for whirlpool.com and maytag.com; led a B2B portal transformation.</li>
+          <li>Recognized with the <b>Golden Lever Award (CIO)</b> and the <b>Customer 1st Mindset Award (President)</b>.</li>
+        </ul>
+      </div>
+
+      <div class="xp-item earlier b">
+        <p><b>Earlier · Bangalore, 2009–2013.</b> Senior Associate at Burson-Marsteller (PR for Flipkart, a Walmart company) and Systems Engineer at Tata Consultancy Services (Bank of America) — where I learned to translate business needs into systems.</p>
+      </div>
+
+    </div>
+
+    <div class="grp-label">Education</div>
+    <div class="edu">
+      <div class="e">
+        <div class="deg">MBA · Strategy &amp; Marketing</div>
+        <div class="sch">Purdue University — Krannert School of Management</div>
+      </div>
+      <div class="e">
+        <div class="deg">B.E. · Industrial Engineering &amp; Management</div>
+        <div class="sch">BMS College of Engineering, Bangalore</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="highlights">
+  <div class="wrap">
+    <div class="sec-label">Highlights &amp; achievements</div>
+    <h2 class="sec-title">Beyond the roadmap.</h2>
+    <p class="sec-sub">Awards, talks, the AI craft I keep sharpening, and the stuff outside work.</p>
+
+    <div class="hl-grid">
+      <div class="hl a">
+        <h3>🏆 Awards</h3>
+        <div class="pills">
+          <span class="pill">Golden Lever Award — CIO (Whirlpool)</span>
+          <span class="pill">Customer 1st Mindset — President (Whirlpool)</span>
+        </div>
+      </div>
+      <div class="hl b">
+        <h3>🎤 Speaking</h3>
+        <div class="pills">
+          <span class="pill">Chicago E-Commerce Summit '24</span>
+          <span class="pill">Department of Product Podcast '24</span>
+          <span class="pill">An Hour of Innovation '24</span>
+          <span class="pill">Click &amp; Collect best practices '23</span>
+        </div>
+      </div>
+      <div class="hl g">
+        <h3>🤖 AI learning</h3>
+        <div class="pills">
+          <span class="pill">Agentic AI Crash Course '25</span>
+          <span class="pill">AI Evals Crash Course '25</span>
+          <span class="pill">AI Bootcamp '24</span>
+          <span class="pill">Reforge — Growth &amp; Retention</span>
+        </div>
+      </div>
+      <div class="hl c">
+        <h3>🛠️ AI tools</h3>
+        <div class="pills">
+          <span class="pill">Replit</span>
+          <span class="pill">Cursor</span>
+          <span class="pill">Figma Make</span>
+          <span class="pill">n8n</span>
+          <span class="pill">Databricks AI</span>
+          <span class="pill">NotebookLM</span>
+        </div>
+      </div>
+      <div class="hl p">
+        <h3>📜 Certifications</h3>
+        <div class="pills">
+          <span class="pill">AWS Cloud Practitioner</span>
+          <span class="pill">Intro to Generative AI</span>
+          <span class="pill">SQL Basics</span>
+          <span class="pill">Tableau 10 A–Z</span>
+        </div>
+      </div>
+      <div class="hl a">
+        <h3>🏃 Beyond work</h3>
+        <div class="pills">
+          <span class="pill">Chicago Marathon 2024</span>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -296,12 +557,7 @@
       <div class="cap b">
         <span class="ic">🎯</span>
         <h3>Outcomes Over Output</h3>
-        <p>Roadmaps anchored to a North Star and business impact — activation, retention, runway accuracy — not a feature checklist.</p>
-      </div>
-      <div class="cap p">
-        <span class="ic">🔄</span>
-        <h3>Feedback Loops &rarr; Roadmap</h3>
-        <p>Fuse explicit signal (interviews, support, NPS) with implicit signal (usage telemetry, eval failures, churn) into what we build next.</p>
+        <p>Roadmaps anchored to a North Star and business impact — activation, retention, conversion — not a feature checklist.</p>
       </div>
     </div>
 
@@ -322,46 +578,7 @@
         <h3>The Data Flywheel</h3>
         <p>Every interaction is a signal. Corrections and usage feed back so the model gets sharper the more the product is used.</p>
       </div>
-      <div class="cap a">
-        <span class="ic">⚙️</span>
-        <h3>Full-Stack &amp; Prototyping</h3>
-        <p>React Native / Expo, AdonisJS, PostgreSQL, BullMQ. Prototype fast, ship in short cycles, stay close to how it's built.</p>
-      </div>
-      <div class="cap b">
-        <span class="ic">🔐</span>
-        <h3>Trust by Design</h3>
-        <p>Encrypted PII, authorization on every resource, and a craft UI layer — because in fintech, trust <i>is</i> the product.</p>
-      </div>
     </div>
-  </div>
-</section>
-
-<section id="tide">
-  <div class="wrap">
-    <div class="sec-label">Featured project</div>
-    <h2 class="sec-title">Tide.</h2>
-    <p class="sec-sub" style="margin-bottom:30px;">One project, shown end-to-end — product, AI, and engineering.</p>
-
-    <a class="project" href="projects/tide/index.html">
-      <span class="flag"><span class="dot"></span>FEATURED PROJECT</span>
-      <h3>Tide — personal cash flow.</h3>
-      <p class="desc">
-        A mobile-first personal finance app built around one question: <b>what's actually safe to spend?</b>
-        Behind it is a working system — an <b>AI pipeline on AWS Bedrock + Claude</b>, payday-aware Safe-to-Spend,
-        bank sync through a provider-abstracted layer, a categorization engine that learns, and a
-        <b>living visual-docs site</b> where each data flow doubles as the product spec.
-      </p>
-      <div class="tags">
-        <span class="tag">React Native · Expo</span>
-        <span class="tag">AdonisJS</span>
-        <span class="tag">Claude · AWS Bedrock</span>
-        <span class="tag">PostgreSQL · BullMQ</span>
-        <span class="tag">AI Evals</span>
-      </div>
-      <span class="open">Explore the interactive system docs <span class="arr">→</span></span>
-    </a>
-
-    <p class="more">More builds and experiments live on <a href="https://github.com/vikkybharadwaj" target="_blank" rel="noopener">github.com/vikkybharadwaj</a>.</p>
   </div>
 </section>
 
@@ -384,7 +601,7 @@
 
 <footer>
   <div class="wrap">
-    <p>© 2026 Vik Bharadwaj · AI Product Manager &amp; Builder</p>
+    <p>© 2026 Vik Bharadwaj · Staff PM &amp; AI Product Builder</p>
     <p class="built">Built &amp; hosted on <b>GitHub Pages</b>.</p>
   </div>
 </footer>

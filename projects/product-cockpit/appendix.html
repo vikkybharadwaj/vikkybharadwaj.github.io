@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Artifacts — Product Cockpit</title>
+<meta name="description" content="The actual shape of the machine: a generalized hook, policy, and skill, plus a worked end-to-end example. All examples use a fabricated stand-in domain." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap">
+    <a href="../../index.html">&larr; Portfolio</a>
+    <a class="brand" href="index.html">Product Cockpit</a>
+    <a href="index.html">Overview</a>
+    <a href="docs/architecture.html">Architecture</a>
+    <a class="active" href="appendix.html">Artifacts</a>
+  </div>
+</nav>
+
+<header class="hero" style="padding-bottom:40px;">
+  <div class="wrap">
+    <span class="nda">All artifacts below are generalized &amp; use a fabricated stand-in domain</span>
+    <p class="eyebrow">The machine, not the manifesto</p>
+    <h1>What it actually<br>looks like.</h1>
+    <p class="lead">Anyone can describe a system. Here is the real <em>shape</em> of it &mdash; one of each primitive, structurally faithful to what I built, with every domain detail replaced by a neutral stand-in (a consumer <strong>habit-building app</strong>). Read code, not adjectives.</p>
+  </div>
+</header>
+
+<!-- HOOK -->
+<section id="hook" style="padding-top:40px;">
+  <div class="wrap">
+    <p class="eyebrow"><span class="kdot" style="background:#5c6b52;"></span>A hook &middot; it observes, it never decides</p>
+    <h2>Keep the picture fresh, flag drift.</h2>
+    <p class="lead maxw-readable">Hooks are deterministic shell scripts the harness fires automatically. This one runs at session start: it refreshes the reference material and surfaces a warning if the structure changed &mdash; then gets out of the way.</p>
+    <div class="artifact-label">hooks/session-start.sh &middot; generalized</div>
+<pre><span class="c">#!/usr/bin/env bash</span>
+<span class="c"># Fired by the harness at session start. Observes and surfaces —</span>
+<span class="c"># it does not make decisions. That is the agent's job, later.</span>
+<span class="k">set</span> -euo pipefail
+
+<span class="c"># 1. Pull the latest reference material so context is never stale</span>
+<span class="k">for</span> repo <span class="k">in</span> "${REFERENCE_REPOS[@]}"; <span class="k">do</span>
+  git -C "$repo" fetch --quiet && git -C "$repo" merge --ff-only --quiet || \
+    <span class="k">echo</span> <span class="s">"⚠  $repo could not fast-forward — review before trusting its specs"</span>
+<span class="k">done</span>
+
+<span class="c"># 2. Detect structural drift: has the folder map changed since last snapshot?</span>
+current=$(find . -maxdepth 2 -type d | sort | sha1sum)
+<span class="k">if</span> [[ "$current" != "$(cat .structure-snapshot 2>/dev/null)" ]]; <span class="k">then</span>
+  <span class="k">echo</span> <span class="s">"⚠  Structure changed — the self-portrait diagram may need a refresh."</span>
+<span class="k">fi</span>
+
+<span class="c"># 3. Load cross-session memory (the last ~20 sessions) into context</span>
+cat memory/episode-index.md
+</pre>
+    <p class="muted" style="font-size:.92rem;">The discipline that matters: a hook <em>surfaces</em> a warning. It never edits, never merges over a conflict, never decides what the drift means. Determinism stays in shell; judgement stays with the agent.</p>
+  </div>
+</section>
+
+<!-- POLICY -->
+<section id="policy">
+  <div class="wrap">
+    <p class="eyebrow"><span class="kdot" style="background:#b4541f;"></span>A policy &middot; it judges a situation</p>
+    <h2>Stop strategy drift before it ships.</h2>
+    <p class="lead maxw-readable">Policies are plain-language rules, loaded only when their trigger fires. This is the one I leaned on most: whenever work touches strategy, walk a fixed set of alignment signals before it merges.</p>
+    <div class="artifact-label">policies/strategy-alignment.md &middot; generalized</div>
+<pre><span class="c"># Policy: strategy-alignment</span>
+
+<span class="k">**When this fires:**</span> any change under `roadmap/` or `capabilities/`,
+or whenever the strategy itself meaningfully changes.
+
+<span class="k">**What to do:**</span> walk all six signals. If any fails, flag it in the
+PR and push back (player-coach style) — up to three rounds — before merge.
+
+1. <span class="k">Pillar</span>      — does this serve one of the named strategic pillars?
+2. <span class="k">Core job</span>    — can it trace to the core job the product is hired for?
+3. <span class="k">Persona</span>     — does it serve the *target* user, not a louder edge case?
+4. <span class="k">Evidence</span>    — is there a validated problem behind it, with a cited source?
+5. <span class="k">Trade-off</span>   — what are we explicitly choosing *not* to do, and why?
+6. <span class="k">Constraints</span> — does it respect the known platform &amp; policy limits?
+
+<span class="k">**Stand-in example (habit app):**</span> "Add streak leaderboards" →
+fails signal 3 (serves competitive power-users, not the tentative-beginner
+target persona) and signal 5 (no stated trade-off). Flagged, not merged.
+</pre>
+    <p class="muted" style="font-size:.92rem;">Encoding judgement once, in plain language, means the hundredth strategy decision gets the same rigor as the first &mdash; without re-explaining it to anyone, human or agent.</p>
+  </div>
+</section>
+
+<!-- SKILL -->
+<section id="skill">
+  <div class="wrap">
+    <p class="eyebrow"><span class="kdot" style="background:#bd9540;"></span>A skill &middot; it executes a procedure</p>
+    <h2>Interview &rarr; structured brief, every time.</h2>
+    <p class="lead maxw-readable">Skills package a repeatable multi-step workflow you invoke on demand. The input is messy (raw research); the output is always the same disciplined shape, so briefs are comparable across the whole product.</p>
+    <div class="artifact-label">skills/interview-to-brief &middot; generalized definition</div>
+<pre><span class="c"># Skill: /interview-to-brief</span>
+<span class="k">trigger:</span>  user pastes or points to interview notes
+<span class="k">output:</span>   a problem brief in the standard template
+
+<span class="k">steps:</span>
+  1. extract every distinct pain point + the verbatim quote behind it
+  2. cluster pains; keep only those that recur across participants
+  3. for each cluster, draft: problem · evidence (cited) · who it hurts
+  4. check each against the target persona — drop edge-case-only pains
+  5. propose one starting direction + the trade-off it accepts
+  6. emit the brief; never invent a quote that isn't in the source
+</pre>
+    <div class="artifact-label" style="margin-top:18px;">Example output &middot; fabricated habit-app domain</div>
+<pre><span class="c"># Problem brief: the "day-3 cliff"</span>
+
+<span class="k">Problem.</span>   New users build a streak for two days, then vanish on day 3.
+<span class="k">Evidence.</span>  4 of 6 interviewees described the same drop-off.
+           > "I did it Monday and Tuesday, then Wednesday got away from
+           >  me and I just... never opened it again." — P2 (cited)
+<span class="k">Who it hurts.</span> The tentative-beginner persona — not power users, who
+           recover streaks fine.
+<span class="k">Starting direction.</span> A forgiving "streak repair" on the first miss.
+<span class="k">Trade-off accepted.</span> Slightly softer accountability, in exchange for
+           surviving the moment most users currently churn.
+</pre>
+    <p class="muted" style="font-size:.92rem;">Same shape every time means briefs stack, compare, and compound &mdash; instead of each one being a fresh act of improvisation.</p>
+  </div>
+</section>
+
+<!-- WORKED EXAMPLE / GOVERNANCE -->
+<section id="worked">
+  <div class="wrap">
+    <p class="eyebrow">Putting it together &middot; the anti-drift loop</p>
+    <h2>Why the map never lies.</h2>
+    <p class="lead maxw-readable">The governance idea, made concrete. Suppose I add a new skill. Here&rsquo;s what the system forces to happen &mdash; or the change fails its own audit.</p>
+
+    <div class="timeline">
+      <div class="tl-step"><span class="t">1 &middot; add the primitive</span><h3>Create <code>skills/interview-to-brief</code></h3><p>The new capability lands in its folder.</p></div>
+      <div class="tl-step"><span class="t">2 &middot; the rule fires</span><h3>&ldquo;A new primitive must update every registry that names it.&rdquo;</h3><p>A policy triggers on the change.</p></div>
+      <div class="tl-step"><span class="t">3 &middot; sync the registries</span><h3>Index, capabilities map, and the visual self-portrait all update</h3><p>The skill now appears everywhere the system describes itself.</p></div>
+      <div class="tl-step"><span class="t">4 &middot; the audit</span><h3>Self-portrait check: does the diagram match reality?</h3><p>If the skill exists but isn&rsquo;t on the map, the audit fails and the change is blocked.</p></div>
+      <div class="tl-step"><span class="t">Result</span><h3>The description can never quietly fall out of date</h3><p>Six months later, the map is still the territory. That&rsquo;s what makes it survive its author.</p></div>
+    </div>
+
+    <div class="card" style="margin-top:30px; border-left:4px solid var(--rust);">
+      <h3 style="font-family:var(--serif); font-size:1.4rem;">Want the reasoning behind it?</h3>
+      <p class="muted" style="font-size:1rem;">The overview is the fast version; the architecture deep-dive has the whole argument &mdash; the design decisions, the philosophy, and why an AI agent changes the calculus.</p>
+      <div class="btnrow">
+        <a class="btn primary" href="docs/architecture.html">Architecture deep-dive</a>
+        <a class="btn ghost" href="index.html">&larr; Back to overview</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <p class="muted">Every artifact on this page is structurally faithful to the real system but generalized, with all domain detail replaced by a fabricated stand-in. No real code, data, names, or identifiers appear anywhere on this site.</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Product Cockpit — An AI-Native Operating System for Product Decisions</title>
+<meta name="description" content="A case study in building a self-maintaining operating system that lets a product team — and an AI agent — make evidence-grounded decisions without depending on whoever last reconstructed the context." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<nav class="nav">
+  <div class="wrap">
+    <a href="../../index.html">&larr; Portfolio</a>
+    <a class="brand" href="index.html">Product Cockpit</a>
+    <a class="active" href="index.html">Overview</a>
+    <a href="docs/architecture.html">Architecture</a>
+    <a href="appendix.html">Artifacts</a>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="top">
+  <div class="wrap">
+    <span class="nda">Anonymized case study &middot; real domain under NDA</span>
+    <p class="eyebrow">It starts with the customer</p>
+    <h1>Keep the customer at the<br>center of every decision.</h1>
+    <p class="lead">The best product decisions start with what customers actually said &mdash; and that&rsquo;s the first signal to get buried under everything else. I built a working surface that keeps customer evidence at the center of every decision and answers product questions in seconds, with the evidence cited. The thing that makes it durable is an AI-native operating system underneath &mdash; engineering in service of the customer, not the other way round.</p>
+    <div class="btnrow">
+      <a class="btn primary" href="#tour">Take the 3-minute tour</a>
+      <a class="btn ghost" href="docs/architecture.html">Skip to the architecture</a>
+    </div>
+    <p class="by">A solo build, ~2 weeks &middot; product strategy + the infrastructure underneath it</p>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="n">39</div>
+        <div class="l">working primitives: 6 hooks &middot; 23 policies &middot; 10 skills</div>
+        <span class="tag">actual &middot; system depth</span>
+      </div>
+      <div class="stat">
+        <div class="n">18</div>
+        <div class="l">interlocking content + system folders, one clear job each</div>
+        <span class="tag">actual</span>
+      </div>
+      <div class="stat">
+        <div class="n">327</div>
+        <div class="l">merged PRs, solo-authored &mdash; evidence of cadence, not feature count</div>
+        <span class="tag">actual &middot; ~2 weeks</span>
+      </div>
+      <div class="stat">
+        <div class="n">3</div>
+        <div class="l">kinds of primitive &mdash; observe, judge, execute &mdash; kept deliberately distinct</div>
+        <span class="tag">actual &middot; the core idea</span>
+      </div>
+    </div>
+    <p class="muted" style="font-size:.82rem; margin-top:14px;">Structural counts are real. The PR figure reflects small, frequently-merged docs &amp; infrastructure changes in a solo repo &mdash; a deliberate working style, not 327 features. Every outcome figure further down is labelled <em>illustrative</em>.</p>
+  </div>
+</header>
+
+<!-- ============ ONBOARDING / HOOK ============ -->
+<section id="start">
+  <div class="wrap">
+    <p class="eyebrow">The shape of the story</p>
+    <h2>Customer first. Engineering last. On purpose.</h2>
+    <p class="lead maxw-readable">This isn&rsquo;t an engineering project with a customer bolted on &mdash; it&rsquo;s the reverse. The whole system exists to keep the customer at the center of decisions; the engineering is simply what makes that durable. Four beats, in order:</p>
+
+    <div class="grid cols-4" style="margin-top:28px;">
+      <div class="card k-anchor ktag">
+        <div class="ico"><span class="kdot"></span>1 &middot; Customer</div>
+        <h3>Where it starts</h3>
+        <p>The voice that should drive every decision is the easiest to lose. Step one is keeping it present, and cited.</p>
+      </div>
+      <div class="card k-policy ktag">
+        <div class="ico"><span class="kdot"></span>2 &middot; Product</div>
+        <h3>A decision surface</h3>
+        <p>One place that holds customer evidence, strategy, and execution &mdash; and answers product questions in seconds.</p>
+      </div>
+      <div class="card k-hook ktag">
+        <div class="ico"><span class="kdot"></span>3 &middot; Outcome</div>
+        <h3>Decisions that stick</h3>
+        <p>Faster calls, far less rework, and knowledge that compounds instead of walking out the door.</p>
+      </div>
+      <div class="card k-skill ktag">
+        <div class="ico"><span class="kdot"></span>4 &middot; Engineering</div>
+        <h3>What enables it</h3>
+        <p>An AI-native operating system &mdash; hooks observe, policies judge, skills execute &mdash; keeping the whole picture current.</p>
+      </div>
+    </div>
+
+    <h3 id="tour" style="margin-top:44px; font-family:var(--serif); font-size:1.5rem;">Take the tour &mdash; jump anywhere</h3>
+    <p class="muted" style="max-width:680px;">Read straight down, or click into whatever you care about. The nav up top (Architecture &middot; Artifacts) and your back button bring you home any time.</p>
+    <ol class="tour">
+      <li><a href="#problem"><span class="tour-n">01</span><span><span class="tour-t">The problem</span> <span class="tour-d">&mdash; why decisions quietly stall</span></span></a></li>
+      <li><a href="#bet"><span class="tour-n">02</span><span><span class="tour-t">The bet</span> <span class="tour-d">&mdash; treat knowledge as a system</span></span></a></li>
+      <li><a href="#architecture"><span class="tour-n">03</span><span><span class="tour-t">The architecture</span> <span class="tour-d">&mdash; the six layers + the anti-drift idea</span></span></a></li>
+      <li><a href="#how"><span class="tour-n">04</span><span><span class="tour-t">How we used it</span> <span class="tour-d">&mdash; three concrete examples</span></span></a></li>
+      <li><a href="#outcomes"><span class="tour-n">05</span><span><span class="tour-t">Outcomes</span> <span class="tour-d">&mdash; what changed (and what&rsquo;s illustrative)</span></span></a></li>
+      <li><a href="#about"><span class="tour-n">06</span><span><span class="tour-t">What it demonstrates</span> <span class="tour-d">&mdash; and what I&rsquo;d do differently</span></span></a></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ PROBLEM ============ -->
+<section id="problem">
+  <div class="wrap">
+    <p class="eyebrow">The problem</p>
+    <h2>Knowledge scatters faster than teams can decide.</h2>
+    <p class="lead maxw-readable">Customer evidence, design, code reality, strategy, and analytics each live in a different place &mdash; and drift apart the moment they&rsquo;re written. So the quality of a decision ends up depending on who&rsquo;s in the room and what they happen to remember.</p>
+
+    <div class="grid cols-3" style="margin-top:34px;">
+      <div class="card">
+        <div class="ico">Symptom 01</div>
+        <h3>Folklore decisions</h3>
+        <p>&ldquo;I think we decided that because of something a customer said&rdquo; &mdash; but the quote, the trade-off, and the reasoning are gone.</p>
+      </div>
+      <div class="card">
+        <div class="ico">Symptom 02</div>
+        <h3>Reconstruction tax</h3>
+        <p>Every decision re-opens with someone spending half a day re-assembling context that already existed, somewhere.</p>
+      </div>
+      <div class="card">
+        <div class="ico">Symptom 03</div>
+        <h3>Silent drift</h3>
+        <p>Strategy changes; the roadmap, the specs, and the briefs don&rsquo;t. Nobody notices until they contradict each other in a review.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE BET ============ -->
+<section id="bet">
+  <div class="wrap">
+    <p class="eyebrow">The bet</p>
+    <h2>Treat the body of product knowledge as a system &mdash; with infrastructure, not just documents.</h2>
+    <p class="lead maxw-readable">A docs folder decays. A <em>system</em> maintains itself. The insight: if the same context the team uses to decide is also structured for an AI agent to read, you can wrap it in lightweight infrastructure that keeps it fresh, flags its own drift, and compounds every time it&rsquo;s used.</p>
+
+    <div class="ba" style="margin-top:30px;">
+      <div class="col before">
+        <h3>A docs folder</h3>
+        <ul>
+          <li>Read once, then rots</li>
+          <li>Context lives in people&rsquo;s heads</li>
+          <li>Drift is invisible until it bites</li>
+          <li>Onboarding = asking around</li>
+          <li>The same questions, re-answered weekly</li>
+        </ul>
+      </div>
+      <div class="col after">
+        <h3>An operating system</h3>
+        <ul>
+          <li>Refreshes itself every session</li>
+          <li>Context is loaded, cited, and compounding</li>
+          <li>Drift is flagged before merge</li>
+          <li>Onboarding = the system explains itself</li>
+          <li>Answers in seconds &mdash; evidence-backed</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ARCHITECTURE ============ -->
+<section id="architecture">
+  <div class="wrap">
+    <p class="eyebrow">The architecture &middot; the centerpiece</p>
+    <h2>Six layers that keep the picture assembled.</h2>
+    <p class="lead maxw-readable">The design idea worth stealing: a clean separation of concerns between what <em>observes</em>, what <em>judges</em>, and what <em>executes</em> &mdash; with a governance layer whose only job is to stop the system from ever drifting away from its own description.</p>
+
+    <!-- the three-verb model -->
+    <h3 style="margin-top:38px; font-family:var(--serif); font-size:1.5rem;">The core division of labour</h3>
+    <div class="layers" style="margin-top:16px;">
+      <div class="layer obs">
+        <span class="verb">Hooks &mdash; they observe</span>
+        <h3>6 lifecycle scripts</h3>
+        <p>Deterministic shell scripts the harness fires on session start / end / prompt. They pull fresh source, detect structural drift, and load memory. They <strong>notice and surface — they never decide.</strong></p>
+      </div>
+      <div class="layer judge">
+        <span class="verb">Policies &mdash; they judge</span>
+        <h3>23 decision rules</h3>
+        <p>Plain-language rules loaded <strong>only when their trigger fires</strong>. &ldquo;When a PR touches strategy, walk these six alignment signals.&rdquo; Judgement, encoded once, applied consistently.</p>
+      </div>
+      <div class="layer exec">
+        <span class="verb">Skills &mdash; they execute</span>
+        <h3>10 packaged workflows</h3>
+        <p>Reusable multi-step procedures invoked on demand. Turn an interview into a structured brief; critique a feature; audit strategy drift. Tools, not instructions.</p>
+      </div>
+    </div>
+
+    <!-- the full stack -->
+    <h3 style="margin-top:48px; font-family:var(--serif); font-size:1.5rem;">The full stack</h3>
+    <p class="muted" style="max-width:760px; margin-top:-6px;">The three primitives above (hooks, policies, skills) sit inside a fuller stack &mdash; bookended by the <em>anchors</em> that give every session its frame and the <em>memory</em> and <em>governance</em> that make it compound and stay honest.</p>
+    <div class="grid cols-3" style="margin-top:16px;">
+      <div class="card k-anchor ktag">
+        <div class="ico"><span class="kdot"></span>Anchors</div>
+        <h3>Every session frames itself</h3>
+        <p>Two documents &mdash; the target user and the core job &mdash; that every piece of work is checked against. If a suggestion can&rsquo;t trace to them, it&rsquo;s drift.</p>
+      </div>
+      <div class="card k-hook ktag">
+        <div class="ico"><span class="kdot"></span>Hooks</div>
+        <h3>Deterministic upkeep</h3>
+        <p>Fresh source every session, drift flagged automatically, cross-session memory loaded. Infrastructure, not documentation.</p>
+      </div>
+      <div class="card k-policy ktag">
+        <div class="ico"><span class="kdot"></span>Policies</div>
+        <h3>Situational judgement</h3>
+        <p>23 rules for how to judge a situation, trigger-loaded so context stays lean. The team&rsquo;s &ldquo;how we decide&rdquo; made explicit.</p>
+      </div>
+      <div class="card k-skill ktag">
+        <div class="ico"><span class="kdot"></span>Skills</div>
+        <h3>Reusable workflows</h3>
+        <p>10 packaged procedures. Each use adds to a compounding pattern library instead of being re-improvised.</p>
+      </div>
+      <div class="card k-memory ktag">
+        <div class="ico"><span class="kdot"></span>Compounding memory</div>
+        <h3>Nothing learned is lost</h3>
+        <p>A learnings log, a backlog with rationale, a cross-session episode index, a feedback loop. Structured memory, not a filing cabinet.</p>
+      </div>
+      <div class="card k-gov ktag">
+        <div class="ico"><span class="kdot"></span>Governance</div>
+        <h3>Drift-proof by design</h3>
+        <p>The system audits itself. (See below &mdash; this is the part I&rsquo;m proudest of.)</p>
+      </div>
+    </div>
+
+    <!-- governance highlight -->
+    <div class="card" style="margin-top:34px; border-left:4px solid var(--rust);">
+      <p class="eyebrow" style="margin-bottom:.5rem;">The idea I&rsquo;d put on a whiteboard in an interview</p>
+      <h3 style="font-family:var(--serif); font-size:1.6rem;">A system that can&rsquo;t silently drift from its own description.</h3>
+      <p class="muted" style="font-size:1rem; max-width:760px;">Every new primitive &mdash; a hook, a policy, a skill, a folder &mdash; must update every registry that references it, including the system&rsquo;s own visual self-portrait. Add a policy without registering it everywhere and the change fails its own audit: a structural-drift check flags it at session start, and a review gate blocks the merge. The map can never quietly fall out of sync with the territory. That&rsquo;s the difference between a project that decays the moment its author leaves and one that explains itself to the next person.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRIMITIVES TABLE ============ -->
+<section id="primitives">
+  <div class="wrap">
+    <p class="eyebrow">Why three kinds of primitive</p>
+    <h2>Hooks vs. policies vs. skills.</h2>
+    <p class="lead maxw-readable">Most &ldquo;AI workflow&rdquo; setups blur these together. Keeping them distinct is what makes the system legible &mdash; and what makes designing the human&harr;AI division of labour an actual, demonstrable skill.</p>
+    <div style="overflow-x:auto; margin-top:26px;">
+      <table class="tbl">
+        <thead><tr><th></th><th>Hooks</th><th>Policies</th><th>Skills</th></tr></thead>
+        <tbody>
+          <tr><td>What it is</td><td>A shell script</td><td>A markdown rule</td><td>A packaged workflow</td></tr>
+          <tr><td>Who runs it</td><td>The harness, automatically</td><td>The agent, when a trigger fires</td><td>A person, on demand</td></tr>
+          <tr><td>Its job</td><td>Observe &amp; surface</td><td>Judge a situation</td><td>Execute a procedure</td></tr>
+          <tr><td>Makes a decision?</td><td>Never</td><td>Guides one</td><td>Carries one out</td></tr>
+          <tr><td>When it loads</td><td>Session lifecycle</td><td>Only when relevant</td><td>When invoked</td></tr>
+          <tr><td>Example</td><td>&ldquo;Pull latest source &amp; flag if the structure changed.&rdquo;</td><td>&ldquo;If this touches strategy, check six alignment signals.&rdquo;</td><td>&ldquo;Turn this interview into a structured brief.&rdquo;</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section id="how">
+  <div class="wrap">
+    <p class="eyebrow">How it works &middot; three ways the team actually used it</p>
+    <h2>Ask a real question. Get a grounded answer.</h2>
+    <p class="lead maxw-readable">The same system answers across the whole product lifecycle &mdash; understanding the user, understanding the build, and driving the work. Three of the most common asks:</p>
+    <div class="note illus"><strong>Illustrative stand-in domain.</strong> The real product is under NDA, so every example below uses an invented neutral domain &mdash; a consumer <strong>habit-building app</strong> (helping someone keep a daily reading streak). The machinery is real; the domain is fabricated.</div>
+
+    <div class="examples">
+
+      <div class="example k-skill">
+        <div class="ex-tag">01 &middot; Customer research</div>
+        <h3>Transcripts &rarr; a problem brief</h3>
+        <ul class="ex-flow">
+          <li><span class="who">You ask</span>&ldquo;Here are six interview transcripts &mdash; what&rsquo;s the real problem?&rdquo;</li>
+          <li><span class="who">It does</span>A skill clusters the recurring pains, pulls the verbatim quote behind each, and checks them against the target user &mdash; dropping edge cases.</li>
+          <li><span class="who">You get</span>A structured problem brief: validated pain, <em>cited</em> evidence, a starting direction and the trade-off it accepts &mdash; in seconds, not a day of synthesis.</li>
+        </ul>
+      </div>
+
+      <div class="example k-anchor">
+        <div class="ex-tag">02 &middot; How the build works</div>
+        <h3>&ldquo;How does this feature actually work?&rdquo;</h3>
+        <ul class="ex-flow">
+          <li><span class="who">You ask</span>&ldquo;How does the streak counter work &mdash; what resets it, and what&rsquo;s it built on?&rdquo;</li>
+          <li><span class="who">It does</span>Reads the tech-spec knowledge base &mdash; derived from the live code at HEAD and kept fresh by hooks &mdash; instead of you opening the repo.</li>
+          <li><span class="who">You get</span>A plain-English answer a PM can use: what it does, how it&rsquo;s configured, the stack behind it, and where it lives &mdash; no code-diving.</li>
+        </ul>
+      </div>
+
+      <div class="example k-memory">
+        <div class="ex-tag">03 &middot; Driving the work<span class="forward-badge">forward-looking</span></div>
+        <h3>Brief &rarr; shipped work, always trackable</h3>
+        <ul class="ex-flow">
+          <li><span class="who">You ask</span>&ldquo;Spin up the work for the day-3 brief&rdquo; &mdash; then later, &ldquo;what&rsquo;s the status?&rdquo;</li>
+          <li><span class="who">It does</span>A skill scaffolds a project and its tickets in the team&rsquo;s tracker, scoped straight from the brief; the dev team executes against it.</li>
+          <li><span class="who">You get</span>Live status on demand &mdash; insight to execution to &ldquo;where is it?&rdquo; without leaving the conversation.</li>
+        </ul>
+      </div>
+
+    </div>
+    <p class="muted" style="font-size:.86rem; margin-top:16px;"><strong>On example 03:</strong> the tracker integration is designed but <em>not yet wired up</em> &mdash; it&rsquo;s where the system was headed: closing the loop from customer insight all the way to execution status. Examples 01 and 02 ran live.</p>
+  </div>
+</section>
+
+<!-- ============ OUTCOMES ============ -->
+<section id="outcomes">
+  <div class="wrap">
+    <p class="eyebrow">What changed</p>
+    <h2>The reconstruction tax goes to zero.</h2>
+    <div class="note illus"><strong>Qualitative, not measured.</strong> The real performance metrics are confidential, so the shifts below are described in direction, not numbers &mdash; deliberately. The hero counts (primitives, folders, PRs) are the real, verifiable figures.</div>
+
+    <div class="shift" style="max-width:820px; margin-top:20px;">
+      <div class="shift-row">
+        <div class="shift-label">Context-gathering per decision</div>
+        <div class="shift-pills"><span class="pill-before">was: hours</span><span class="arrow">&rarr;</span><span class="pill-after">now: minutes</span></div>
+      </div>
+      <div class="shift-row">
+        <div class="shift-label">Decisions stalled on &ldquo;let me check&rdquo;</div>
+        <div class="shift-pills"><span class="pill-before">was: routine</span><span class="arrow">&rarr;</span><span class="pill-after">now: rare</span></div>
+      </div>
+      <div class="shift-row">
+        <div class="shift-label">When drift gets caught</div>
+        <div class="shift-pills"><span class="pill-before">was: in review (or never)</span><span class="arrow">&rarr;</span><span class="pill-after">now: before merge</span></div>
+      </div>
+    </div>
+
+    <div class="grid cols-3" style="margin-top:40px;">
+      <div class="card"><div class="ico">Velocity</div><h3>Decide in the room</h3><p>The evidence is already loaded and cited. The answer is concrete and contextual &mdash; not folklore, not &ldquo;I&rsquo;ll get back to you.&rdquo;</p></div>
+      <div class="card"><div class="ico">Breadth</div><h3>One compounding surface</h3><p>Research, strategy, roadmap, execution and analytics share one source of truth that gets richer every session.</p></div>
+      <div class="card"><div class="ico">Durability</div><h3>It survives its author</h3><p>The system explains itself and audits itself. The value doesn&rsquo;t walk out the door with whoever built it.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WHAT IT DEMONSTRATES ============ -->
+<section id="about">
+  <div class="wrap">
+    <p class="eyebrow">What this is meant to show</p>
+    <h2>The skills behind the system.</h2>
+    <div class="grid cols-2" style="margin-top:24px;">
+      <div class="card"><h3>Systems &amp; infrastructure thinking</h3><p>Seeing a recurring people-problem (context loss) and solving it with durable infrastructure rather than another doc or another meeting.</p></div>
+      <div class="card"><h3>AI-native fluency</h3><p>Designing the human&harr;AI division of labour deliberately &mdash; what the machine should observe, judge, and execute &mdash; instead of bolting a chatbot onto a workflow.</p></div>
+      <div class="card"><h3>Operational governance</h3><p>Anti-drift discipline, ownership, and a maintenance cadence &mdash; the unglamorous rigor that keeps a system honest over time.</p></div>
+      <div class="card"><h3>Product methodology + craft</h3><p>Evidence &rarr; strategy &rarr; roadmap &rarr; execution, end to end &mdash; and the design sense to make the whole thing legible at a glance.</p></div>
+    </div>
+
+    <div class="card" style="margin-top:30px; border-left:4px solid var(--gold);">
+      <p class="eyebrow" style="margin-bottom:.5rem;">Honest trade-offs</p>
+      <h3 style="font-family:var(--serif); font-size:1.4rem;">What I&rsquo;d do differently</h3>
+      <p class="muted" style="font-size:1rem; max-width:760px;">23 policies is arguably over-governance for a project this young &mdash; for a smaller team I&rsquo;d start with five and let the rest earn their place. Some primitives were built ahead of need. The right lesson isn&rsquo;t &ldquo;build all of this&rdquo;; it&rsquo;s &ldquo;build the observe / judge / execute spine, then let the system tell you what it&rsquo;s missing.&rdquo;</p>
+    </div>
+
+    <h3 style="margin-top:44px; font-family:var(--serif); font-size:1.6rem;">Go deeper</h3>
+    <p class="muted" style="max-width:680px;">You&rsquo;ve got the whole picture. Two doors from here if you want the detail &mdash; the nav up top brings you back.</p>
+    <div class="gateway" style="grid-template-columns:repeat(2,1fr);">
+      <a href="docs/architecture.html"><span class="g-name">Architecture &rarr;</span><span class="g-blurb">Why each layer exists and how they interact &mdash; the observe / judge / execute design and the anti-drift loop, in depth, plus why an AI agent changes the calculus.</span></a>
+      <a href="appendix.html"><span class="g-name">Artifacts &amp; code &rarr;</span><span class="g-blurb">A real, generalized hook, policy, and skill &mdash; plus the worked anti-drift example. Read code, not adjectives.</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="wrap">
+    <p><strong>Product Cockpit</strong> &mdash; an anonymized portfolio case study.</p>
+    <p class="muted">Domain details are a neutral stand-in; the real product, data, and organisation are confidential and never identified here. Structural counts are real; outcome figures are illustrative. Go deeper &rarr; <a href="docs/architecture.html">architecture deep-dive</a> &middot; <a href="appendix.html">artifacts &amp; code</a></p>
+  </div>
+</footer>
+
+</body>
+</html>
