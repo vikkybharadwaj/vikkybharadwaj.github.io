@@ -168,6 +168,9 @@
   .hl.g { --accent: var(--green); } .hl.b { --accent: var(--blue); } .hl.p { --accent: var(--purple); } .hl.a { --accent: var(--amber); } .hl.c { --accent: var(--cyan); }
   .hl .pills { display: flex; flex-wrap: wrap; gap: 8px; }
   .hl .pill { font-size: 11.5px; font-weight: 600; color: var(--text-2); padding: 5px 11px; border-radius: 999px; border: 1px solid var(--border); background: rgba(255,255,255,0.02); }
+  .hl a.pill { transition: transform .12s ease, border-color .15s ease, color .15s ease, background .15s ease; }
+  .hl a.pill:hover { transform: translateY(-1px); border-color: var(--accent, var(--blue)); color: var(--text); background: rgba(255,255,255,0.05); }
+  .hl .pill .lk { opacity: .5; font-size: 10px; margin-left: 2px; }
 
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; margin-top: 22px; }
   .cap {
@@ -231,9 +234,9 @@
     <a class="logo" href="#top">Vik<span>.</span>Bharadwaj</a>
     <div class="links">
       <a href="#explore">Explore</a>
-      <a href="#about">About</a>
       <a href="#experience">Experience</a>
       <a href="#highlights">Highlights</a>
+      <a href="#ai-work">AI work</a>
       <a href="#contact">Contact</a>
     </div>
   </div>
@@ -323,26 +326,6 @@
   </div>
 </section>
 
-<section id="about" class="about">
-  <div class="wrap">
-    <div class="sec-label">About</div>
-    <h2 class="sec-title">Product and engineering, together.</h2>
-    <p>
-      I'm a product manager who works hands-on, and I keep one thing at the center: the <b>customer and the
-      outcome</b> we're trying to move for them. Over ~12 years I've built <b>0→1 products</b> and led platform
-      transformations across consumer shopping and fintech — and I've grown as a people leader, managing and
-      mentoring PMs across organizations along the way.
-    </p>
-    <p>
-      Today I build <b>AI-native products end-to-end</b> — shipping production code across the frontend and
-      backend, designing the AI pipeline and its evals, and building internal operating systems (like <b>Product
-      Cockpit</b>) that connect strategy, customer evidence, design, execution, and analytics with live read-access
-      to the code. I'm especially interested in making AI features <b>measurable</b> — so quality is something you
-      can track and improve rather than guess at.
-    </p>
-  </div>
-</section>
-
 <section id="experience">
   <div class="wrap">
     <div class="sec-label">Experience</div>
@@ -364,7 +347,7 @@
 
       <div class="xp-item b">
         <div class="xp-top">
-          <span class="xp-role">Sr. Product Manager, Core Shopping · <span class="xp-co">Zillow</span></span>
+          <span class="xp-role">Product Lead, Core Shopping · <span class="xp-co">Zillow</span></span>
           <span class="xp-date">2024 — 2026 · NEW YORK</span>
         </div>
         <ul>
@@ -430,8 +413,8 @@
 <section id="highlights">
   <div class="wrap">
     <div class="sec-label">Highlights &amp; achievements</div>
-    <h2 class="sec-title">Beyond the roadmap.</h2>
-    <p class="sec-sub">Awards, talks, the AI craft I keep sharpening, and the stuff outside work.</p>
+    <h2 class="sec-title">The fuller picture.</h2>
+    <p class="sec-sub">Awards, talks, the AI craft I keep sharpening, and the stuff outside work. Linked where it's public.</p>
 
     <div class="hl-grid">
       <div class="hl a">
@@ -442,12 +425,13 @@
         </div>
       </div>
       <div class="hl b">
-        <h3>🎤 Speaking</h3>
+        <h3>🎤 Talks, podcasts &amp; writing</h3>
         <div class="pills">
-          <span class="pill">Chicago E-Commerce Summit '24</span>
-          <span class="pill">Department of Product Podcast '24</span>
-          <span class="pill">An Hour of Innovation '24</span>
-          <span class="pill">Click &amp; Collect best practices '23</span>
+          <a class="pill" href="https://www.youtube.com/watch?v=_wLjUJJ2i80" target="_blank" rel="noopener">An Hour of Innovation '24 <span class="lk">↗</span></a>
+          <a class="pill" href="https://www.departmentofproduct.com/product-stacks/product-stacks-episode-8-vik-bharadwaj-at-wayfair/" target="_blank" rel="noopener">Department of Product Podcast <span class="lk">↗</span></a>
+          <a class="pill" href="https://app.qwoted.com/opportunities/event-ecommerce-summit-2024-chicago" target="_blank" rel="noopener">Chicago E-Commerce Summit '24 <span class="lk">↗</span></a>
+          <a class="pill" href="https://www.productledalliance.com/product-success-in-digital-consumer-marketplaces/" target="_blank" rel="noopener">Marketplace PM guide — article <span class="lk">↗</span></a>
+          <a class="pill" href="https://www.flybuy.com/transcript/the-rise-of-off-premise-in-grocery-transcribed-webinar" target="_blank" rel="noopener">Click &amp; Collect best practices <span class="lk">↗</span></a>
         </div>
       </div>
       <div class="hl g">
@@ -489,9 +473,9 @@
   </div>
 </section>
 
-<section id="work">
+<section id="ai-work">
   <div class="wrap">
-    <div class="sec-label">What I do</div>
+    <div class="sec-label">Explore my AI work</div>
     <h2 class="sec-title">Customer in, outcomes out.</h2>
     <p class="sec-sub">I run product as a loop, not a checklist: start from the customer, ship the smallest bet that moves a real outcome, measure it, and feed what I learn straight back into the roadmap. The AI craft below — pipelines, evals, the data flywheel — exists to serve that loop, not the other way around.</p>
 
