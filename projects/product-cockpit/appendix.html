@@ -3,11 +3,12 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#0a0f1a" />
 <title>Artifacts — Product Cockpit</title>
 <meta name="description" content="The actual shape of the machine: a generalized hook, policy, and skill, plus a worked end-to-end example. All examples use a fabricated stand-in domain." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/styles.css" />
 </head>
 <body>
@@ -34,7 +35,7 @@
 <!-- HOOK -->
 <section id="hook" style="padding-top:40px;">
   <div class="wrap">
-    <p class="eyebrow"><span class="kdot" style="background:#5c6b52;"></span>A hook &middot; it observes, it never decides</p>
+    <p class="eyebrow"><span class="kdot" style="background:var(--teal);"></span>A hook &middot; it observes, it never decides</p>
     <h2>Keep the picture fresh, flag drift.</h2>
     <p class="lead maxw-readable">Hooks are deterministic shell scripts the harness fires automatically. This one runs at session start: it refreshes the reference material and surfaces a warning if the structure changed &mdash; then gets out of the way.</p>
     <div class="artifact-label">hooks/session-start.sh &middot; generalized</div>
@@ -65,7 +66,7 @@ cat memory/episode-index.md
 <!-- POLICY -->
 <section id="policy">
   <div class="wrap">
-    <p class="eyebrow"><span class="kdot" style="background:#b4541f;"></span>A policy &middot; it judges a situation</p>
+    <p class="eyebrow"><span class="kdot" style="background:var(--green);"></span>A policy &middot; it judges a situation</p>
     <h2>Stop strategy drift before it ships.</h2>
     <p class="lead maxw-readable">Policies are plain-language rules, loaded only when their trigger fires. This is the one I leaned on most: whenever work touches strategy, walk a fixed set of alignment signals before it merges.</p>
     <div class="artifact-label">policies/strategy-alignment.md &middot; generalized</div>
@@ -95,7 +96,7 @@ target persona) and signal 5 (no stated trade-off). Flagged, not merged.
 <!-- SKILL -->
 <section id="skill">
   <div class="wrap">
-    <p class="eyebrow"><span class="kdot" style="background:#bd9540;"></span>A skill &middot; it executes a procedure</p>
+    <p class="eyebrow"><span class="kdot" style="background:var(--amber);"></span>A skill &middot; it executes a procedure</p>
     <h2>Interview &rarr; structured brief, every time.</h2>
     <p class="lead maxw-readable">Skills package a repeatable multi-step workflow you invoke on demand. The input is messy (raw research); the output is always the same disciplined shape, so briefs are comparable across the whole product.</p>
     <div class="artifact-label">skills/interview-to-brief &middot; generalized definition</div>
