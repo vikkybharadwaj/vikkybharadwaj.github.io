@@ -3,8 +3,10 @@
   "section": {
     "label": "By the numbers",
     "title": "How I operate.",
-    "sub": "A snapshot from across my repos (public + private), generated from real git history \u2014 the operating habits behind the work above."
+    "sub": "A snapshot from across my repos (public + private), generated from real git history \u2014 the operating habits behind the work above. Commit-history metrics cover 2026 to date."
   },
+  "since": "2026-01-01",
+  "_since_note": "Bounds commit-history metrics (commits, cadence, Conventional %, PR count, AI-assisted %) to this date. Point-in-time counts (files, docs, notes, evals, tools) are current snapshots, not windowed. All configured repos started in 2026, so today this is a no-op safeguard; it keeps the window honest if an older repo is ever added.",
   "repos": [
     "~/tide",
     "~/ai_knowledgecenter",

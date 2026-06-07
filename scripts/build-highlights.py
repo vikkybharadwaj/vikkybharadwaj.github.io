@@ -69,13 +69,20 @@ def count_matches(p: Path, needle: str) -> int:
         return 0
 
 
-def scan(repos):
-    """Compute the full aggregate metric bag across all repos. Numbers only."""
+def scan(repos, since=None):
+    """Compute the full aggregate metric bag across all repos. Numbers only.
+
+    `since` (ISO date, e.g. "2026-01-01") bounds all COMMIT-history metrics —
+    commits, cadence, Conventional %, PR count, AI-assisted % — to that window.
+    Point-in-time counts (tracked files, docs, notes, evals, tools…) are
+    current-state snapshots and are not date-bounded.
+    """
+    since_args = ["--since", since] if since else []
     m = dict(commits=0, conv=0, pr=0, ai=0, files=0, md=0, html=0, projects=0,
              notes=0, concepts=0, evals=0, learnings=0, changelog=0,
              skills=0, commands=0, agents=0, hooks=0)
     ext = {}            # extension -> count
-    dates = []          # all commit short-dates, for span + cadence
+    dates = []          # in-window commit short-dates, for span + cadence
 
     for raw in repos:
         repo = Path(os.path.expanduser(raw))
@@ -83,18 +90,18 @@ def scan(repos):
             continue
         m["projects"] += 1
 
-        n = git(repo, "rev-list", "--count", "HEAD").strip()
+        n = git(repo, "rev-list", "--count", *since_args, "HEAD").strip()
         m["commits"] += int(n) if n.isdigit() else 0
 
-        for d in git(repo, "log", "--format=%cd", "--date=short").split():
+        for d in git(repo, "log", *since_args, "--format=%cd", "--date=short").split():
             if re.match(r"\d{4}-\d{2}-\d{2}", d):
                 dates.append(d)
 
-        subjects = [s for s in git(repo, "log", "--format=%s").splitlines() if s.strip()]
+        subjects = [s for s in git(repo, "log", *since_args, "--format=%s").splitlines() if s.strip()]
         m["conv"] += sum(1 for s in subjects if CONV_RE.match(s))
         m["pr"] += sum(1 for s in subjects if PR_RE.search(s))
 
-        ai = git(repo, "log", "-i", "--grep=claude", "--format=%H").splitlines()
+        ai = git(repo, "log", *since_args, "-i", "--grep=claude", "--format=%H").splitlines()
         m["ai"] += sum(1 for x in ai if x.strip())
 
         files = [f for f in git(repo, "ls-files").splitlines() if f.strip()]
@@ -186,7 +193,7 @@ def make_insights(m):
         span_days = max((b - a).days, 1)
     cadence = m["commits"] / span_days if span_days else 0
     return {
-        "commits":         ("g", f'{m["commits"]:,}', "commits shipped", "across my projects in ~3 months"),
+        "commits":         ("g", f'{m["commits"]:,}', "commits shipped", f'across {m["projects"]} repos · 2026 to date'),
         "cadence":         ("g", f"{cadence:.1f}", "commits a day", "steady, iterative cadence"),
         "conventional":    ("b", pct(m["conv"], m["commits"]), "Conventional Commits", "structured, readable history"),
         "pr_driven":       ("b", f'{m["pr"]:,}', "changes shipped via PR", "reviewed — never straight to main"),
@@ -243,12 +250,16 @@ def render(cfg, m):
         )
         emitted.append({"key": key, "value": value, "label": label, "caption": caption, "accent": accent})
 
+    first = m["dates"][0] if m["dates"] else ""
     updated = m["dates"][-1] if m["dates"] else ""
+    window = (f'Counts 2026 to date · git activity {first} → {updated}'
+              if first else 'Counts 2026 to date')
     grid = ('    <div class="stat-grid">\n' + "\n".join(tiles) + "\n    </div>\n") if tiles else ""
-    meta = (f'    <p class="stat-meta">Updated {esc(updated)} · aggregate metrics only — no private code or '
-            f'content. <a href="https://github.com/vikkybharadwaj" target="_blank" rel="noopener">See the work →</a></p>')
+    meta = (f'    <p class="stat-meta">{esc(window)} · commit history only; file/tooling counts are a '
+            f'current snapshot · no private code or content. '
+            f'<a href="https://github.com/vikkybharadwaj" target="_blank" rel="noopener">See the work →</a></p>')
     block = grid + meta
-    return block, {"updated": updated, "insights": emitted}
+    return block, {"updated": updated, "first": first, "window": window, "insights": emitted}
 
 
 def render_stack(m):
@@ -283,7 +294,7 @@ def render_latest(ls):
 
 def main():
     cfg = json.load(open(CONFIG))
-    m = scan(cfg["repos"])
+    m = scan(cfg["repos"], cfg.get("since"))
     block, data = render(cfg, m)
 
     text = INDEX.read_text(encoding="utf-8")
