@@ -33,10 +33,9 @@ the `<!-- HIGHLIGHTS:START -->` / `<!-- HIGHLIGHTS:END -->` markers in `index.ht
 python3 scripts/build-highlights.py   # re-reads every configured repo, rewrites the strip
 ```
 
-- **It is NOT automatic.** The configured repos (Tide, ai_knowledgecenter, commandcenter, …) are
-  **private and local-only**, so no GitHub Action can see them — the numbers only refresh when you
-  run the script **on your machine** and commit the result. Run it whenever you want the page to
-  reflect recent work (e.g. after a batch of PRs).
+- **Why it can't run in CI.** The configured repos (Tide, ai_knowledgecenter, commandcenter, …) are
+  **private and local-only**, so no GitHub Action can see them — the numbers can only be computed on
+  your machine.
 - **Window:** commit-history metrics (commits, cadence, Conventional %, PR count, AI-assisted %) are
   bounded to `since` in the config (**2026-01-01**). Point-in-time counts (files, docs, notes, evals,
   tools) are current snapshots. The page states this; the `git activity <first> → <last>` line in the
@@ -44,6 +43,28 @@ python3 scripts/build-highlights.py   # re-reads every configured repo, rewrites
 - **Privacy:** the script only ever emits numbers, ratios, dates, and language tallies — never file
   contents, repo names, branch names, or secrets. Toggle any insight off in the config and it is
   never computed or emitted.
+
+### Automated weekly refresh (launchd)
+
+A local launchd agent keeps the page fresh hands-off:
+
+- **`scripts/refresh-highlights-pr.sh`** (in this repo) regenerates the strip in a throwaway git
+  worktree off the latest `origin/main`, and **only if a number changed** opens or updates a single
+  evergreen PR on branch `auto/highlights-refresh`. It never merges and never touches your working
+  copy — you just review and merge the PR to publish.
+- **`com.vikkybharadwaj.highlights`** (`~/Library/LaunchAgents/com.vikkybharadwaj.highlights.plist`,
+  machine-local, not in the repo) runs that script **weekly (Mon 9am)**. Logs to
+  `~/Library/Logs/highlights-refresh.log`.
+
+```bash
+# run it now by hand (opens/updates the PR if anything changed):
+bash scripts/refresh-highlights-pr.sh
+# dry run — regenerate + report, but never push or open a PR:
+HIGHLIGHTS_DRY_RUN=1 bash scripts/refresh-highlights-pr.sh
+# manage the schedule:
+launchctl unload ~/Library/LaunchAgents/com.vikkybharadwaj.highlights.plist   # pause
+launchctl load   ~/Library/LaunchAgents/com.vikkybharadwaj.highlights.plist   # resume
+```
 
 ## Adding a new project
 
