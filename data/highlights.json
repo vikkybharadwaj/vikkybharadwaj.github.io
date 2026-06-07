@@ -1,0 +1,137 @@
+{
+  "section": {
+    "label": "By the numbers",
+    "title": "How I operate.",
+    "sub": "A snapshot from across my repos (public + private), generated from real git history \u2014 the operating habits behind the work above."
+  },
+  "updated": "2026-06-07",
+  "insights": [
+    {
+      "key": "commits",
+      "value": "480",
+      "label": "commits shipped",
+      "caption": "across my projects in ~3 months",
+      "accent": "g"
+    },
+    {
+      "key": "cadence",
+      "value": "6.2",
+      "label": "commits a day",
+      "caption": "steady, iterative cadence",
+      "accent": "g"
+    },
+    {
+      "key": "conventional",
+      "value": "80%",
+      "label": "Conventional Commits",
+      "caption": "structured, readable history",
+      "accent": "b"
+    },
+    {
+      "key": "pr_driven",
+      "value": "132",
+      "label": "changes shipped via PR",
+      "caption": "reviewed \u2014 never straight to main",
+      "accent": "b"
+    },
+    {
+      "key": "ai_assisted",
+      "value": "84%",
+      "label": "AI-built commits",
+      "caption": "I build with AI, and keep the receipts",
+      "accent": "p"
+    },
+    {
+      "key": "tools_built",
+      "value": "13",
+      "label": "custom AI tools",
+      "caption": "skills & commands I built to extend my own workflow",
+      "accent": "p"
+    },
+    {
+      "key": "guardrails",
+      "value": "10",
+      "label": "automated guardrails",
+      "caption": "hooks that enforce my own discipline",
+      "accent": "a"
+    },
+    {
+      "key": "evals",
+      "value": "10",
+      "label": "eval fixtures",
+      "caption": "AI quality measured, not guessed",
+      "accent": "p"
+    },
+    {
+      "key": "knowledge_atoms",
+      "value": "62",
+      "label": "knowledge atoms",
+      "caption": "notes + concepts wired into one map",
+      "accent": "b"
+    },
+    {
+      "key": "learnings",
+      "value": "361",
+      "label": "lessons captured",
+      "caption": "institutional memory, written as I go",
+      "accent": "g"
+    },
+    {
+      "key": "changelog",
+      "value": "51",
+      "label": "documented changes",
+      "caption": "every ship explained in plain English",
+      "accent": "g"
+    },
+    {
+      "key": "docs",
+      "value": "187",
+      "label": "docs & diagrams",
+      "caption": "documentation as a living spec",
+      "accent": "a"
+    },
+    {
+      "key": "tracked_files",
+      "value": "735",
+      "label": "files under version control",
+      "caption": "full-stack breadth",
+      "accent": "t"
+    },
+    {
+      "key": "projects",
+      "value": "5",
+      "label": "active projects",
+      "caption": "public + private",
+      "accent": "t"
+    },
+    {
+      "key": "stack",
+      "languages": [
+        [
+          "TypeScript",
+          396
+        ],
+        [
+          "Markdown",
+          126
+        ],
+        [
+          "HTML",
+          61
+        ],
+        [
+          "JSON",
+          32
+        ],
+        [
+          "Shell",
+          16
+        ],
+        [
+          "JavaScript",
+          12
+        ]
+      ]
+    }
+  ]
+}

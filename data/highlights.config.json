@@ -1,0 +1,90 @@
+{
+  "_comment": "Toggle surface for the 'How I operate' highlights strip. Flip enabled:true/false and re-run `python3 scripts/build-highlights.py`. Disabled insights are NOT computed or emitted \u2014 they never reach the public page. Array order = display order. label/caption/accent are optional per-insight overrides.",
+  "section": {
+    "label": "By the numbers",
+    "title": "How I operate.",
+    "sub": "A snapshot from across my repos (public + private), generated from real git history \u2014 the operating habits behind the work above."
+  },
+  "repos": [
+    "~/tide",
+    "~/ai_knowledgecenter",
+    "~/github-repos/commandcenter",
+    "~/github-repos/vikkybharadwaj.github.io",
+    "~/github-repos/claude-code-telegram-mcp"
+  ],
+  "options": {
+    "latest_ship": {
+      "enabled": false,
+      "_note": "Opt-in only. Sources are 'repo_path::doc' for changelogs that are ALREADY publicly published. Emits one plain-English headline + date, never a repo name.",
+      "sources": [
+        "~/ai_knowledgecenter::docs/changelog.html"
+      ]
+    }
+  },
+  "insights": [
+    {
+      "key": "commits",
+      "enabled": true
+    },
+    {
+      "key": "cadence",
+      "enabled": true
+    },
+    {
+      "key": "conventional",
+      "enabled": true
+    },
+    {
+      "key": "pr_driven",
+      "enabled": true
+    },
+    {
+      "key": "ai_assisted",
+      "enabled": true
+    },
+    {
+      "key": "tools_built",
+      "enabled": true
+    },
+    {
+      "key": "guardrails",
+      "enabled": true
+    },
+    {
+      "key": "evals",
+      "enabled": true
+    },
+    {
+      "key": "knowledge_atoms",
+      "enabled": true
+    },
+    {
+      "key": "learnings",
+      "enabled": true
+    },
+    {
+      "key": "changelog",
+      "enabled": true
+    },
+    {
+      "key": "docs",
+      "enabled": true
+    },
+    {
+      "key": "tracked_files",
+      "enabled": true
+    },
+    {
+      "key": "projects",
+      "enabled": true
+    },
+    {
+      "key": "stack",
+      "enabled": true
+    },
+    {
+      "key": "latest_ship",
+      "enabled": false
+    }
+  ]
+}
