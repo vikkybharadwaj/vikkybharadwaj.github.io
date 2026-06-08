@@ -209,6 +209,7 @@
   .more a:hover { color: #7aa9ff; }
 
   .contact-card {
+    margin-top: 30px;
     border: 1px solid var(--border); border-radius: 18px; padding: 40px;
     background: var(--surface); backdrop-filter: blur(8px); text-align: center;
   }
@@ -693,8 +694,9 @@
 
 <section id="contact">
   <div class="wrap">
+    <div class="sec-label">Contact</div>
+    <h2 class="sec-title">Get in touch.</h2>
     <div class="contact-card">
-      <h2>Get in touch.</h2>
       <p>
         I'm open to <b>AI product</b> roles where product and engineering sit close together.
         If that sounds like something you're working on, I'd be glad to chat.
@@ -731,9 +733,18 @@
     if (spans.length < 2) return;
 
     function sync() {
-      var y = window.scrollY + window.innerHeight * 0.35;
-      var current = spans[0];
-      spans.forEach(function (s) { if (s.el.offsetTop <= y) current = s; });
+      // Pin the last link active once we're within a few px of the page bottom,
+      // so a short final section (Contact) still highlights at full scroll —
+      // its offsetTop never crosses the 35%-viewport line otherwise.
+      var atBottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 4;
+      var current;
+      if (atBottom) {
+        current = spans[spans.length - 1];
+      } else {
+        var y = window.scrollY + window.innerHeight * 0.35;
+        current = spans[0];
+        spans.forEach(function (s) { if (s.el.offsetTop <= y) current = s; });
+      }
       spans.forEach(function (s) { s.a.classList.toggle('active', s === current); });
     }
     window.addEventListener('scroll', sync, { passive: true });
