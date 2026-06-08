@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""build-highlights.py — generate the "How I operate" highlights strip on index.html.
+"""build-highlights.py — generate the "Git by the numbers" highlights strip on index.html.
 
 Scans a configured list of LOCAL repos (data/highlights.config.json) and computes a fixed allowlist
 of AGGREGATE, non-sensitive metrics from git history + file counts. Renders stat tiles + a stack bar
