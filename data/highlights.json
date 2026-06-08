@@ -9,15 +9,22 @@
   "window": "Counts 2026 to date \u00b7 git activity 2026-03-21 \u2192 2026-06-08",
   "insights": [
     {
+      "key": "github_contributions",
+      "value": "1,023",
+      "label": "GitHub contributions",
+      "caption": "commits, PRs & reviews \u00b7 public + private \u00b7 2026 to date",
+      "accent": "g"
+    },
+    {
       "key": "commits",
-      "value": "501",
+      "value": "510",
       "label": "commits shipped",
       "caption": "across 5 repos \u00b7 2026 to date",
       "accent": "g"
     },
     {
       "key": "cadence",
-      "value": "6.3",
+      "value": "6.5",
       "label": "commits a day",
       "caption": "steady, iterative cadence",
       "accent": "g"
@@ -31,7 +38,7 @@
     },
     {
       "key": "pr_driven",
-      "value": "146",
+      "value": "154",
       "label": "changes shipped via PR",
       "caption": "reviewed \u2014 never straight to main",
       "accent": "b"
@@ -80,7 +87,7 @@
     },
     {
       "key": "changelog",
-      "value": "58",
+      "value": "60",
       "label": "documented changes",
       "caption": "every ship explained in plain English",
       "accent": "g"

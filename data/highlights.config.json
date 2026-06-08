@@ -25,6 +25,11 @@
   },
   "insights": [
     {
+      "key": "github_contributions",
+      "enabled": true,
+      "_note": "GitHub contribution-calendar total (commits+PRs+issues+reviews, public+private) via `gh api graphql`, bounded by `since`. The one metric that can't come from local git — GitHub aggregates it server-side. Needs the gh CLI authenticated locally; if gh is missing/errors the tile is silently skipped."
+    },
+    {
       "key": "commits",
       "enabled": true
     },

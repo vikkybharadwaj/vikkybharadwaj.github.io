@@ -158,6 +158,32 @@ def scan(repos, since=None):
     return m
 
 
+def gh_contributions(since=None):
+    """Total GitHub contributions (commits + PRs + issues + reviews, public + private) from the
+    contribution calendar — the exact number GitHub shows as "N contributions in the last year".
+
+    Sourced from the GitHub GraphQL API via the authenticated `gh` CLI, bounded by the same
+    `since` date as the commit-history metrics so it stays consistent with the rest of the strip
+    (GraphQL defaults the `to` bound to now). Returns an int, or None if `gh` is unavailable /
+    unauthenticated / errors — in which case the tile is simply not emitted and the build never
+    breaks. This is the one metric that can't come from local git: GitHub aggregates it server-side.
+    """
+    frm = f"{since}T00:00:00Z" if since else "2026-01-01T00:00:00Z"
+    query = ("query($from:DateTime!){viewer{contributionsCollection(from:$from)"
+             "{contributionCalendar{totalContributions}}}}")
+    try:
+        out = subprocess.run(
+            ["gh", "api", "graphql", "-f", f"query={query}", "-f", f"from={frm}"],
+            capture_output=True, text=True, timeout=20)
+        if out.returncode != 0:
+            return None
+        n = json.loads(out.stdout)["data"]["viewer"]["contributionsCollection"][
+            "contributionCalendar"]["totalContributions"]
+        return int(n) if isinstance(n, int) else None
+    except Exception:
+        return None
+
+
 def latest_ship(repos, sources):
     """Only for the opt-in latest_ship card: newest published changelog headline + date.
     `sources` is an allowlist of 'repo_path::doc' the user marked public. Headline only."""
@@ -192,7 +218,7 @@ def make_insights(m):
         a = date.fromisoformat(m["dates"][0]); b = date.fromisoformat(m["dates"][-1])
         span_days = max((b - a).days, 1)
     cadence = m["commits"] / span_days if span_days else 0
-    return {
+    reg = {
         "commits":         ("g", f'{m["commits"]:,}', "commits shipped", f'across {m["projects"]} repos · 2026 to date'),
         "cadence":         ("g", f"{cadence:.1f}", "commits a day", "steady, iterative cadence"),
         "conventional":    ("b", pct(m["conv"], m["commits"]), "Conventional Commits", "structured, readable history"),
@@ -208,6 +234,12 @@ def make_insights(m):
         "tracked_files":   ("t", f'{m["files"]:,}', "files under version control", "full-stack breadth"),
         "projects":        ("t", str(m["projects"]), "active projects", "public + private"),
     }
+    # GitHub contributions: server-side aggregate, only present when `gh` resolved it.
+    if m.get("gh_contributions") is not None:
+        reg["github_contributions"] = (
+            "g", f'{m["gh_contributions"]:,}', "GitHub contributions",
+            "commits, PRs & reviews · public + private · 2026 to date")
+    return reg
 
 
 ACCENT_HEX = {"g": "#00D26A", "b": "#4F8CFF", "p": "#a855f7", "a": "#f59e0b", "t": "#94a3b8"}
@@ -295,6 +327,9 @@ def render_latest(ls):
 def main():
     cfg = json.load(open(CONFIG))
     m = scan(cfg["repos"], cfg.get("since"))
+    # Only hit the GitHub API when the tile is actually enabled (avoids a needless network call).
+    if any(i["key"] == "github_contributions" and i.get("enabled") for i in cfg["insights"]):
+        m["gh_contributions"] = gh_contributions(cfg.get("since"))
     block, data = render(cfg, m)
 
     text = INDEX.read_text(encoding="utf-8")
