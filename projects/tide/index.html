@@ -3,171 +3,308 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tide Visual Documentation Hub</title>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#0a0f1a">
+<title>Tide — AI-Native Personal Cash Flow</title>
+<meta name="description" content="Tide — a mobile-first personal finance app built around one question: what's actually safe to spend? An AI pipeline on Claude + AWS Bedrock, payday-aware Safe-to-Spend, a categorization engine that learns, and a living visual-docs site where every data flow doubles as the spec.">
+<meta property="og:title" content="Tide — AI-Native Personal Cash Flow">
+<meta property="og:description" content="A mobile-first personal finance app built around one question — what's actually safe to spend? Explore the interactive system docs: architecture, data flows, the AI pipeline, and the evals.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', monospace; background: #0a0f1a; color: #e2e8f0; }
+  :root {
+    --bg: #0a0f1a;
+    --surface: rgba(17,24,39,0.6);
+    --text: #e2e8f0;
+    --text-2: #94a3b8;
+    --text-3: #64748b;
+    --green: #00D26A;
+    --blue: #4F8CFF;
+    --purple: #a855f7;
+    --amber: #f59e0b;
+    --teal: #14b8a6;
+    --cyan: #00d4ff;
+    --border: rgba(255,255,255,0.08);
+    --border-2: rgba(255,255,255,0.18);
+    --grad: linear-gradient(100deg, var(--green), var(--blue));
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+  body {
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    background: var(--bg); color: var(--text);
+    line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
 
-.container { max-width: 1100px; margin: 0 auto; padding: 48px 24px; }
+  /* ambient glow */
+  .glow { position: fixed; inset: 0; z-index: -1; overflow: hidden; }
+  .glow::before, .glow::after {
+    content: ''; position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.18;
+  }
+  .glow::before { width: 520px; height: 520px; background: var(--green); top: -160px; left: -120px; }
+  .glow::after  { width: 560px; height: 560px; background: var(--blue);  top: 240px; right: -180px; }
 
-header { text-align: center; margin-bottom: 48px; }
-header h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
-header p { font-size: 13px; color: #64748b; max-width: 600px; margin: 0 auto; line-height: 1.6; }
-header .badge { display: inline-block; padding: 3px 10px; border-radius: 4px; font-size: 10px; font-weight: 700; background: rgba(59,130,246,0.15); color: #3b82f6; border: 1px solid #3b82f6; margin-top: 12px; letter-spacing: 0.5px; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
 
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+  /* sticky nav */
+  nav {
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: blur(12px); background: rgba(10,15,26,0.7);
+    border-bottom: 1px solid var(--border);
+  }
+  nav .wrap { display: flex; align-items: center; gap: 6px; height: 60px; }
+  nav .back { font-size: 12px; color: var(--text-2); padding: 6px 11px; border-radius: 8px; transition: color .15s, background .15s; }
+  nav .back:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+  nav .logo { font-weight: 800; font-size: 15px; letter-spacing: -0.5px; margin-right: auto; padding-left: 4px; }
+  nav .logo span { color: var(--green); }
+  nav .links { display: flex; gap: 4px; font-size: 12px; color: var(--text-2); }
+  nav .links a { padding: 6px 11px; border-radius: 8px; transition: color .15s, background .15s; }
+  nav .links a:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+  nav .links a.active { background: var(--grad); color: #06120c; font-weight: 700; }
+  @media (max-width: 760px) {
+    nav .wrap { overflow-x: auto; gap: 2px; -webkit-overflow-scrolling: touch; }
+    nav .wrap::-webkit-scrollbar { display: none; }
+    nav .links a { white-space: nowrap; padding: 6px 9px; }
+  }
+  @media (max-width: 560px) { nav .links { display: none; } }
 
-.card {
-  display: block; text-decoration: none; color: inherit;
-  border-radius: 12px; padding: 24px;
-  border: 1.5px solid rgba(255,255,255,0.08);
-  background: rgba(17,24,39,0.6);
-  backdrop-filter: blur(8px);
-  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-  cursor: pointer;
-}
-.card:hover { transform: translateY(-4px); }
-.card .icon { font-size: 32px; margin-bottom: 12px; display: block; }
-.card h2 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
-.card p { font-size: 11px; color: #94a3b8; line-height: 1.6; }
-.card .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 9px; font-weight: 700; margin-top: 12px; letter-spacing: 0.5px; }
+  /* hero */
+  header.hero { padding: 96px 0 56px; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; letter-spacing: 2px;
+    color: var(--green); padding: 6px 13px; border-radius: 999px;
+    background: rgba(0,210,106,0.10); border: 1px solid rgba(0,210,106,0.3); margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-size: clamp(38px, 7vw, 66px); font-weight: 800; letter-spacing: -2px;
+    line-height: 1.05; margin-bottom: 22px;
+  }
+  .hero h1 .grad {
+    background: var(--grad);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero .lede { font-size: clamp(15px, 2.4vw, 19px); color: var(--text-2); max-width: 720px; line-height: 1.7; }
+  .hero .lede b { color: var(--text); font-weight: 600; }
+  .cta-row { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 34px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; font-family: inherit; font-size: 13px; font-weight: 700;
+    cursor: pointer; padding: 13px 22px; border-radius: 10px; border: 1px solid transparent;
+    transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease;
+  }
+  .btn-primary { background: var(--grad); color: #06120c; }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,210,106,0.25); }
+  .btn-ghost { background: transparent; border-color: var(--border); color: var(--text); }
+  .btn-ghost:hover { transform: translateY(-2px); border-color: var(--border-2); }
+  .by { font-size: 12px; color: var(--text-3); margin-top: 26px; letter-spacing: .3px; }
 
-.card-arch { border-color: rgba(59,130,246,0.3); }
-.card-arch:hover { box-shadow: 0 8px 32px rgba(59,130,246,0.2); border-color: #3b82f6; }
-.card-arch .icon { color: #3b82f6; }
-.card-arch .tag { background: rgba(59,130,246,0.15); color: #3b82f6; }
+  /* hero stat strip */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 40px; }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px; backdrop-filter: blur(8px); transition: transform .15s ease, border-color .2s ease; }
+  .stat:hover { transform: translateY(-3px); border-color: var(--border-2); }
+  .stat .n { font-weight: 800; font-size: 2.4rem; line-height: 1; letter-spacing: -1.5px; background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .stat .l { font-size: .82rem; color: var(--text-2); margin-top: 10px; line-height: 1.55; }
+  .stat .tag { font-size: .6rem; letter-spacing: .12em; text-transform: uppercase; color: var(--teal); margin-top: 10px; display: block; font-weight: 700; }
+  @media (max-width: 760px) { .stats { grid-template-columns: repeat(2,1fr); } }
 
-.card-db { border-color: rgba(34,197,94,0.3); }
-.card-db:hover { box-shadow: 0 8px 32px rgba(34,197,94,0.2); border-color: #22c55e; }
-.card-db .icon { color: #22c55e; }
-.card-db .tag { background: rgba(34,197,94,0.15); color: #22c55e; }
+  /* sections */
+  section { padding: 58px 0; }
+  .sec-label { font-size: 11px; font-weight: 700; letter-spacing: 2px; color: var(--text-3); text-transform: uppercase; margin-bottom: 14px; }
+  .sec-title { font-size: clamp(22px, 3.4vw, 30px); font-weight: 800; letter-spacing: -1px; margin-bottom: 10px; }
+  .sec-sub { color: var(--text-2); font-size: 14px; max-width: 720px; line-height: 1.8; }
 
-.card-flow { border-color: rgba(168,85,247,0.3); }
-.card-flow:hover { box-shadow: 0 8px 32px rgba(168,85,247,0.2); border-color: #a855f7; }
-.card-flow .icon { color: #a855f7; }
-.card-flow .tag { background: rgba(168,85,247,0.15); color: #a855f7; }
+  /* doc cards */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; margin-top: 30px; }
+  .card {
+    display: block; text-decoration: none; color: inherit; border-radius: 14px; padding: 24px;
+    border: 1.5px solid var(--border); background: var(--surface); backdrop-filter: blur(8px);
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; cursor: pointer;
+  }
+  .card:hover { transform: translateY(-4px); }
+  .card .icon { font-size: 32px; margin-bottom: 12px; display: block; }
+  .card h2 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+  .card p { font-size: 11px; color: var(--text-2); line-height: 1.6; }
+  .card code { background: rgba(255,255,255,0.06); color: #8fe7b8; padding: 1px 5px; border-radius: 5px; font-size: 0.92em; }
+  .card .tag { display: inline-block; padding: 3px 9px; border-radius: 999px; font-size: 9px; font-weight: 700; margin-top: 14px; letter-spacing: 0.5px; }
 
-.card-sec { border-color: rgba(239,68,68,0.3); }
-.card-sec:hover { box-shadow: 0 8px 32px rgba(239,68,68,0.2); border-color: #ef4444; }
-.card-sec .icon { color: #ef4444; }
-.card-sec .tag { background: rgba(239,68,68,0.15); color: #ef4444; }
+  .card-arch { border-color: rgba(79,140,255,0.3); }
+  .card-arch:hover { box-shadow: 0 8px 32px rgba(79,140,255,0.2); border-color: var(--blue); }
+  .card-arch .icon { color: var(--blue); }
+  .card-arch .tag { background: rgba(79,140,255,0.15); color: var(--blue); }
 
-.card-cost { border-color: rgba(245,158,11,0.3); }
-.card-cost:hover { box-shadow: 0 8px 32px rgba(245,158,11,0.2); border-color: #f59e0b; }
-.card-cost .icon { color: #f59e0b; }
-.card-cost .tag { background: rgba(245,158,11,0.15); color: #f59e0b; }
+  .card-flow { border-color: rgba(168,85,247,0.3); }
+  .card-flow:hover { box-shadow: 0 8px 32px rgba(168,85,247,0.2); border-color: var(--purple); }
+  .card-flow .icon { color: var(--purple); }
+  .card-flow .tag { background: rgba(168,85,247,0.15); color: var(--purple); }
 
-.card-ai { border-color: rgba(0,212,255,0.3); }
-.card-ai:hover { box-shadow: 0 8px 32px rgba(0,212,255,0.2); border-color: #00d4ff; }
-.card-ai .icon { color: #00d4ff; }
-.card-ai .tag { background: rgba(0,212,255,0.15); color: #00d4ff; }
+  .card-ai { border-color: rgba(0,212,255,0.3); }
+  .card-ai:hover { box-shadow: 0 8px 32px rgba(0,212,255,0.2); border-color: var(--cyan); }
+  .card-ai .icon { color: var(--cyan); }
+  .card-ai .tag { background: rgba(0,212,255,0.15); color: var(--cyan); }
 
-.card-eval { border-color: rgba(0,210,106,0.3); }
-.card-eval:hover { box-shadow: 0 8px 32px rgba(0,210,106,0.2); border-color: #00D26A; }
-.card-eval .icon { color: #00D26A; }
-.card-eval .tag { background: rgba(0,210,106,0.15); color: #00D26A; }
+  .card-eval { border-color: rgba(0,210,106,0.3); }
+  .card-eval:hover { box-shadow: 0 8px 32px rgba(0,210,106,0.2); border-color: var(--green); }
+  .card-eval .icon { color: var(--green); }
+  .card-eval .tag { background: rgba(0,210,106,0.15); color: var(--green); }
 
-.card-dash { border-color: rgba(79,140,255,0.3); }
-.card-dash:hover { box-shadow: 0 8px 32px rgba(79,140,255,0.2); border-color: #4F8CFF; }
-.card-dash .icon { color: #4F8CFF; }
-.card-dash .tag { background: rgba(79,140,255,0.15); color: #4F8CFF; }
+  .card-ver { border-color: rgba(236,72,153,0.3); }
+  .card-ver:hover { box-shadow: 0 8px 32px rgba(236,72,153,0.2); border-color: #ec4899; }
+  .card-ver .icon { color: #ec4899; }
+  .card-ver .tag { background: rgba(236,72,153,0.15); color: #ec4899; }
 
-.card-ver { border-color: rgba(236,72,153,0.3); }
-.card-ver:hover { box-shadow: 0 8px 32px rgba(236,72,153,0.2); border-color: #ec4899; }
-.card-ver .icon { color: #ec4899; }
-.card-ver .tag { background: rgba(236,72,153,0.15); color: #ec4899; }
+  .card-math { border-color: rgba(245,158,11,0.3); }
+  .card-math:hover { box-shadow: 0 8px 32px rgba(245,158,11,0.2); border-color: var(--amber); }
+  .card-math .icon { color: var(--amber); }
+  .card-math .tag { background: rgba(245,158,11,0.15); color: var(--amber); }
 
-.card-math { border-color: rgba(251,191,36,0.3); }
-.card-math:hover { box-shadow: 0 8px 32px rgba(251,191,36,0.2); border-color: #fbbf24; }
-.card-math .icon { color: #fbbf24; }
-.card-math .tag { background: rgba(251,191,36,0.15); color: #fbbf24; }
+  .card-backlog { border-color: rgba(99,102,241,0.3); }
+  .card-backlog:hover { box-shadow: 0 8px 32px rgba(99,102,241,0.2); border-color: #818cf8; }
+  .card-backlog .icon { color: #818cf8; }
+  .card-backlog .tag { background: rgba(99,102,241,0.15); color: #818cf8; }
 
-.card-backlog { border-color: rgba(99,102,241,0.3); }
-.card-backlog:hover { box-shadow: 0 8px 32px rgba(99,102,241,0.2); border-color: #818cf8; }
-.card-backlog .icon { color: #818cf8; }
-.card-backlog .tag { background: rgba(99,102,241,0.15); color: #818cf8; }
+  .card-os { border-color: rgba(20,184,166,0.3); }
+  .card-os:hover { box-shadow: 0 8px 32px rgba(20,184,166,0.2); border-color: var(--teal); }
+  .card-os .icon { color: var(--teal); }
+  .card-os .tag { background: rgba(20,184,166,0.15); color: var(--teal); }
 
-.card-os { border-color: rgba(20,184,166,0.3); }
-.card-os:hover { box-shadow: 0 8px 32px rgba(20,184,166,0.2); border-color: #14b8a6; }
-.card-os .icon { color: #14b8a6; }
-.card-os .tag { background: rgba(20,184,166,0.15); color: #14b8a6; }
-
-footer { text-align: center; margin-top: 48px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.06); }
-footer p { font-size: 10px; color: #475569; }
+  footer { padding: 50px 0 60px; border-top: 1px solid var(--border); margin-top: 20px; text-align: center; }
+  footer p { font-size: 12px; color: var(--text-3); }
+  footer .built { margin-top: 8px; font-size: 11px; color: var(--text-3); }
+  footer .built b { color: var(--text-2); }
 </style>
 </head>
 <body>
-<div class="container">
-  <header>
-    <p style="margin-bottom:14px;"><a href="../../index.html" style="color:#4F8CFF;text-decoration:none;font-size:13px;font-weight:600;">&larr; Back to portfolio</a></p>
-    <h1>Tide Visual Docs</h1>
-    <p>Interactive architecture visualizations for the Tide cash flow app. Click any card to explore.</p>
-    <div class="badge">$46/MONTH AWS BUDGET</div>
-  </header>
+<div class="glow"></div>
 
-  <div class="grid">
-    <a class="card card-arch" href="architecture-map.html">
-      <span class="icon">&#9881;</span>
-      <h2>Architecture Map</h2>
-      <p>Interactive system topology showing all 12 components. Expo Dev Build with native modules, Native Plaid Link SDK, XHR-based SSE streaming. Click nodes for details.</p>
-      <span class="tag">12 NODES &middot; 17 EDGES</span>
-    </a>
-
-    <a class="card card-flow" href="data-flow-map.html">
-      <span class="icon">&#8644;</span>
-      <h2>Data Flows</h2>
-      <p>Step-by-step animated visualizations of 13 critical data flows: auth, Native Plaid Link bank connections, AI chat via XHR SSE, payday-aware SafeToSpend V2 (with credit card debt), Smart Pulse (real-time, regenerates on every app open), and more. Evening Reflection removed (MVP+).</p>
-      <span class="tag">13 FLOWS &middot; ANIMATED</span>
-    </a>
-
-    <a class="card card-ai" href="ai-pipeline-map.html">
-      <span class="icon">&#9672;</span>
-      <h2>AI Pipeline</h2>
-      <p>Multi-agent architecture: Haiku intent classifier, Sonnet Tide Coach (11 tools), Haiku merchant classifier (fills Plaid's Software &amp; Tech / Subscriptions gap, cached per-merchant on <code>merchants.ai_category_id</code>). Smart Pulse generation (real-time, date-aware). SafeToSpend V2 tool. Full chat persistence with sync DB fallback.</p>
-      <span class="tag">2 MODELS &middot; 11 TOOLS &middot; AI MERCHANT CLASSIFIER</span>
-    </a>
-
-    <a class="card card-eval" href="evals-map.html">
-      <span class="icon">&#9745;</span>
-      <h2>Evals &amp; AI Quality</h2>
-      <p>Comprehensive eval framework: 7 quality dimensions, 3 judge layers, full suite on every PR. Fixtures, thresholds, and the flywheel roadmap.</p>
-      <span class="tag">7 DIMENSIONS &middot; 50 FIXTURES</span>
-    </a>
-
-    <a class="card card-ver" href="feature-versions.html">
-      <span class="icon">&#9930;</span>
-      <h2>Feature Versions</h2>
-      <p>Documented iteration history for every major feature. Each version entry shows what changed, what motivated it, what we learned, and what we kept. Start with Safe to Spend &mdash; 16 versions across five weeks.</p>
-      <span class="tag">1 FEATURE &middot; 20 VERSIONS &middot; MORE SOON</span>
-    </a>
-
-    <a class="card card-math" href="safe-to-spend-math-explorer.html">
-      <span class="icon">&#931;</span>
-      <h2>Safe to Spend Math</h2>
-      <p>Click-to-expand component breakdown of the whole runway formula. Each component card shows source, time-window semantics, code reference, and a worked example. Pairs with the Typical Spending math spec for the forecast walkthrough.</p>
-      <span class="tag">7 COMPONENTS &middot; 4 TABS &middot; OPEN QUESTIONS LISTED</span>
-    </a>
-
-    <a class="card card-backlog" href="backlog.html">
-      <span class="icon">&#128203;</span>
-      <h2>Product Backlog</h2>
-      <p>Every deferred idea, scored and bucketed. 120 features across 22 epics, each forced into one of five categories (CX, Tech Debt, UI/UX, AI &amp; Data, Launch) so stabilization stays visible. Drag-to-reorder to explore prioritization trade-offs.</p>
-      <span class="tag">22 EPICS &middot; 120 FEATURES &middot; 5 CATEGORIES</span>
-    </a>
-
-    <a class="card card-os" href="operating-system.html">
-      <span class="icon">&#9881;</span>
-      <h2>The Operating System</h2>
-      <p>How the Tide repo runs as a Claude Code workspace: session lifecycle, monorepo map, the hooks vs conventions vs skills layers, MCP servers, and the self-maintenance loops (role detection, doc-sync, LEARNINGS, CI/evals).</p>
-      <span class="tag">5 SECTIONS &middot; HARNESS MAP</span>
-    </a>
-
+<nav>
+  <div class="wrap">
+    <a class="back" href="../../index.html">&larr; Portfolio</a>
+    <a class="logo" href="#top">Tide<span>.</span></a>
+    <div class="links">
+      <a class="active" href="#top">Overview</a>
+      <a href="#docs">System Docs</a>
+      <a href="architecture-map.html">Architecture</a>
+      <a href="ai-pipeline-map.html">AI Pipeline</a>
+      <a href="evals-map.html">Evals</a>
+    </div>
   </div>
+</nav>
 
-  <footer>
-    <p>Tide Cash Flow App &middot; Visual Documentation Plugin v1.2.0 &middot; Open any HTML file in a browser</p>
-  </footer>
-</div>
+<a id="top"></a>
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow">🌊 THE PRODUCT · AI-NATIVE CASH FLOW</span>
+    <h1>Know what's actually<br><span class="grad">safe to spend.</span></h1>
+    <p class="lede">
+      Tide is a mobile-first personal finance app built around one question — <b>what's actually safe to
+      spend today?</b> Behind it: an AI pipeline on <b>Claude + AWS Bedrock</b>, a payday-aware Safe-to-Spend
+      engine, a merchant categorizer that learns, and a living set of <b>interactive system docs</b> where
+      every data flow doubles as the spec. Explore the whole system below.
+    </p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="#docs">Explore the system docs <span>↓</span></a>
+      <a class="btn btn-ghost" href="../../index.html">← Back to portfolio</a>
+    </div>
+    <p class="by">A solo build · React Native · Expo · Claude · AWS Bedrock · AI evals · ~$46/mo AWS budget</p>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="n">12</div>
+        <div class="l">components mapped — Expo dev build, native Plaid Link, XHR-based SSE streaming</div>
+        <span class="tag">architecture · 17 edges</span>
+      </div>
+      <div class="stat">
+        <div class="n">13</div>
+        <div class="l">animated data flows — auth, bank connect, AI chat, payday-aware Safe-to-Spend</div>
+        <span class="tag">data · step-by-step</span>
+      </div>
+      <div class="stat">
+        <div class="n">2</div>
+        <div class="l">Claude models, 11 agent tools, plus a Haiku merchant classifier that learns</div>
+        <span class="tag">ai pipeline · on Bedrock</span>
+      </div>
+      <div class="stat">
+        <div class="n">7</div>
+        <div class="l">eval dimensions, 50 fixtures, 3 judge layers — the full suite runs on every PR</div>
+        <span class="tag">ai quality · gated</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="docs">
+  <div class="wrap">
+    <div class="sec-label">Explore the system docs</div>
+    <h2 class="sec-title">Every diagram doubles as the spec.</h2>
+    <p class="sec-sub">Eight interactive views into how Tide actually works — from the system topology down to the runway math. Click any card to explore.</p>
+
+    <div class="grid">
+      <a class="card card-arch" href="architecture-map.html">
+        <span class="icon">&#9881;</span>
+        <h2>Architecture Map</h2>
+        <p>Interactive system topology showing all 12 components. Expo Dev Build with native modules, Native Plaid Link SDK, XHR-based SSE streaming. Click nodes for details.</p>
+        <span class="tag">12 NODES &middot; 17 EDGES</span>
+      </a>
+
+      <a class="card card-flow" href="data-flow-map.html">
+        <span class="icon">&#8644;</span>
+        <h2>Data Flows</h2>
+        <p>Step-by-step animated visualizations of 13 critical data flows: auth, Native Plaid Link bank connections, AI chat via XHR SSE, payday-aware SafeToSpend V2 (with credit card debt), Smart Pulse (real-time, regenerates on every app open), and more. Evening Reflection removed (MVP+).</p>
+        <span class="tag">13 FLOWS &middot; ANIMATED</span>
+      </a>
+
+      <a class="card card-ai" href="ai-pipeline-map.html">
+        <span class="icon">&#9672;</span>
+        <h2>AI Pipeline</h2>
+        <p>Multi-agent architecture: Haiku intent classifier, Sonnet Tide Coach (11 tools), Haiku merchant classifier (fills Plaid's Software &amp; Tech / Subscriptions gap, cached per-merchant on <code>merchants.ai_category_id</code>). Smart Pulse generation (real-time, date-aware). SafeToSpend V2 tool. Full chat persistence with sync DB fallback.</p>
+        <span class="tag">2 MODELS &middot; 11 TOOLS &middot; AI MERCHANT CLASSIFIER</span>
+      </a>
+
+      <a class="card card-eval" href="evals-map.html">
+        <span class="icon">&#9745;</span>
+        <h2>Evals &amp; AI Quality</h2>
+        <p>Comprehensive eval framework: 7 quality dimensions, 3 judge layers, full suite on every PR. Fixtures, thresholds, and the flywheel roadmap.</p>
+        <span class="tag">7 DIMENSIONS &middot; 50 FIXTURES</span>
+      </a>
+
+      <a class="card card-ver" href="feature-versions.html">
+        <span class="icon">&#9930;</span>
+        <h2>Feature Versions</h2>
+        <p>Documented iteration history for every major feature. Each version entry shows what changed, what motivated it, what we learned, and what we kept. Start with Safe to Spend &mdash; 16 versions across five weeks.</p>
+        <span class="tag">1 FEATURE &middot; 20 VERSIONS &middot; MORE SOON</span>
+      </a>
+
+      <a class="card card-math" href="safe-to-spend-math-explorer.html">
+        <span class="icon">&#931;</span>
+        <h2>Safe to Spend Math</h2>
+        <p>Click-to-expand component breakdown of the whole runway formula. Each component card shows source, time-window semantics, code reference, and a worked example. Pairs with the Typical Spending math spec for the forecast walkthrough.</p>
+        <span class="tag">7 COMPONENTS &middot; 4 TABS &middot; OPEN QUESTIONS LISTED</span>
+      </a>
+
+      <a class="card card-backlog" href="backlog.html">
+        <span class="icon">&#128203;</span>
+        <h2>Product Backlog</h2>
+        <p>Every deferred idea, scored and bucketed. 120 features across 22 epics, each forced into one of five categories (CX, Tech Debt, UI/UX, AI &amp; Data, Launch) so stabilization stays visible. Drag-to-reorder to explore prioritization trade-offs.</p>
+        <span class="tag">22 EPICS &middot; 120 FEATURES &middot; 5 CATEGORIES</span>
+      </a>
+
+      <a class="card card-os" href="operating-system.html">
+        <span class="icon">&#9881;</span>
+        <h2>The Operating System</h2>
+        <p>How the Tide repo runs as a Claude Code workspace: session lifecycle, monorepo map, the hooks vs conventions vs skills layers, MCP servers, and the self-maintenance loops (role detection, doc-sync, LEARNINGS, CI/evals).</p>
+        <span class="tag">5 SECTIONS &middot; HARNESS MAP</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>Tide Cash Flow App · Visual Documentation v1.2.0 · part of <a href="../../index.html" style="color:var(--blue);border-bottom:1px solid rgba(79,140,255,0.4);">Vik Bharadwaj's portfolio</a></p>
+    <p class="built">Built &amp; hosted on <b>GitHub Pages</b>.</p>
+  </div>
+</footer>
+
 </body>
 </html>
