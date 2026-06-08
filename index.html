@@ -57,8 +57,10 @@
   nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
   nav .logo { font-weight: 800; font-size: 15px; letter-spacing: -0.5px; }
   nav .logo span { color: var(--green); }
-  nav .links { display: flex; gap: 30px; font-size: 12px; color: var(--text-2); }
-  nav .links a:hover { color: var(--text); }
+  nav .links { display: flex; gap: 4px; font-size: 12px; color: var(--text-2); }
+  nav .links a { padding: 6px 11px; border-radius: 8px; transition: color .15s, background .15s; }
+  nav .links a:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+  nav .links a.active { background: linear-gradient(100deg, var(--green), var(--blue)); color: #06120c; font-weight: 700; }
   @media (max-width: 680px) { nav .links { display: none; } }
 
   header.hero { padding: 104px 0 56px; }
@@ -705,6 +707,34 @@
     <p class="built">Built &amp; hosted on <b>GitHub Pages</b>.</p>
   </div>
 </footer>
+
+<script>
+  // Scroll-spy: move the .active pill to the nav link whose section is in view.
+  // The links are in-page anchors (#explore, #experience, …). #top is an empty
+  // anchor, so where a target has no height we observe its next sibling instead.
+  (function () {
+    var links = Array.prototype.slice.call(
+      document.querySelectorAll('nav .links a[href^="#"]')
+    );
+    var spans = links.map(function (a) {
+      var el = document.getElementById(a.getAttribute('href').slice(1));
+      if (el && el.offsetHeight === 0 && el.nextElementSibling) el = el.nextElementSibling;
+      return { a: a, el: el };
+    }).filter(function (s) { return s.el; });
+    if (spans.length < 2) return;
+
+    function sync() {
+      var y = window.scrollY + window.innerHeight * 0.35;
+      var current = spans[0];
+      spans.forEach(function (s) { if (s.el.offsetTop <= y) current = s; });
+      spans.forEach(function (s) { s.a.classList.toggle('active', s === current); });
+    }
+    window.addEventListener('scroll', sync, { passive: true });
+    window.addEventListener('resize', sync);
+    window.addEventListener('hashchange', sync);
+    sync();
+  })();
+</script>
 
 </body>
 </html>
