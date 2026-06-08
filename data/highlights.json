@@ -4,41 +4,41 @@
     "title": "How I operate.",
     "sub": "A snapshot from across my repos (public + private), generated from real git history \u2014 the operating habits behind the work above. Commit-history metrics cover 2026 to date."
   },
-  "updated": "2026-06-07",
+  "updated": "2026-06-08",
   "first": "2026-03-21",
-  "window": "Counts 2026 to date \u00b7 git activity 2026-03-21 \u2192 2026-06-07",
+  "window": "Counts 2026 to date \u00b7 git activity 2026-03-21 \u2192 2026-06-08",
   "insights": [
     {
       "key": "commits",
-      "value": "482",
+      "value": "501",
       "label": "commits shipped",
       "caption": "across 5 repos \u00b7 2026 to date",
       "accent": "g"
     },
     {
       "key": "cadence",
-      "value": "6.2",
+      "value": "6.3",
       "label": "commits a day",
       "caption": "steady, iterative cadence",
       "accent": "g"
     },
     {
       "key": "conventional",
-      "value": "80%",
+      "value": "81%",
       "label": "Conventional Commits",
       "caption": "structured, readable history",
       "accent": "b"
     },
     {
       "key": "pr_driven",
-      "value": "134",
+      "value": "146",
       "label": "changes shipped via PR",
       "caption": "reviewed \u2014 never straight to main",
       "accent": "b"
     },
     {
       "key": "ai_assisted",
-      "value": "84%",
+      "value": "82%",
       "label": "AI-built commits",
       "caption": "I build with AI, and keep the receipts",
       "accent": "p"
@@ -66,35 +66,35 @@
     },
     {
       "key": "knowledge_atoms",
-      "value": "61",
+      "value": "65",
       "label": "knowledge atoms",
       "caption": "notes + concepts wired into one map",
       "accent": "b"
     },
     {
       "key": "learnings",
-      "value": "372",
+      "value": "389",
       "label": "lessons captured",
       "caption": "institutional memory, written as I go",
       "accent": "g"
     },
     {
       "key": "changelog",
-      "value": "51",
+      "value": "58",
       "label": "documented changes",
       "caption": "every ship explained in plain English",
       "accent": "g"
     },
     {
       "key": "docs",
-      "value": "186",
+      "value": "190",
       "label": "docs & diagrams",
       "caption": "documentation as a living spec",
       "accent": "a"
     },
     {
       "key": "tracked_files",
-      "value": "737",
+      "value": "742",
       "label": "files under version control",
       "caption": "full-stack breadth",
       "accent": "t"
@@ -115,7 +115,7 @@
         ],
         [
           "Markdown",
-          125
+          129
         ],
         [
           "HTML",
@@ -127,7 +127,7 @@
         ],
         [
           "Shell",
-          16
+          17
         ],
         [
           "JavaScript",
