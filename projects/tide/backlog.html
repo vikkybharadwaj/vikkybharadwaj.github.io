@@ -223,6 +223,12 @@ details.epic .drag-handle:active { cursor: grabbing; }
 .mvp-panel th { text-align: left; color: #94a3b8; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; padding: 4px 8px; border-bottom: 1px solid rgba(255,255,255,0.12); }
 .mvp-panel td { padding: 5px 8px; color: #e2e8f0; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; line-height: 1.5; }
 .mvp-panel .muted { color: #64748b; font-size: 11px; }
+.mvp-panel td.track, .mvp-panel td.epic-cell { border-bottom: 1px solid rgba(255,255,255,0.16); }
+.mvp-panel td.track { color: #cbd5e1; font-weight: 600; }
+.mvp-panel tr.epic-end td { border-bottom: 1px solid rgba(255,255,255,0.16); }
+.mvp-panel td.phase2 { color: #94a3b8; font-size: 10.5px; font-style: italic; }
+.mvp-panel td.note { color: #94a3b8; }
+.mvp-panel td.none { color: #475569; }
 </style>
 </head>
 <body>
@@ -247,28 +253,96 @@ details.epic .drag-handle:active { cursor: grabbing; }
     <p><strong>The slice model:</strong> an epic being &ldquo;in MVP&rdquo; means its <em>highest-leverage slice</em> ships by June 21; its remaining children become that epic's Phase 2 at the top of the Roadmap (P1). Nothing is deleted; canonical IDs never change. <strong>MVP persona: the consistent-paycheck user</strong> (thin-history / multi-job robustness is deliberately Roadmap). Badges on every epic and feature below: <span class="badge scope-mvp">MVP</span> <span class="badge scope-stretch">STRETCH</span> <span class="badge scope-p1">→ P1</span> <span class="badge scope-shipped">✓ SHIPPED</span> <span class="badge scope-partial">PARTIAL</span></p>
     <h3>MVP — ship by June 21, demo-live June 23</h3>
     <table>
-      <tr><th>Track</th><th>Epic</th><th>June 21 slice</th></tr>
-      <tr><td>Trust / parity</td><td><span class="ref" data-ref="epic-0">Epic 0</span></td><td><span class="ref" data-ref="feat-0-1">F0.1</span> · <span class="ref" data-ref="feat-0-2">F0.2</span> · <span class="ref" data-ref="feat-0-4">F0.4</span> — ✓ all shipped 2026-06-10 (PR #173)</td></tr>
-      <tr><td>Feedback &amp; data quality loop</td><td><span class="ref" data-ref="epic-15">Epic 15</span></td><td><span class="ref" data-ref="feat-15-1">F15.1</span> outlier flagging · <span class="ref" data-ref="feat-15-2">F15.2</span> · <span class="ref" data-ref="feat-15-4">F15.4</span> Coach 👍/👎 · <span class="ref" data-ref="feat-15-6">F15.6</span> · <span class="ref" data-ref="feat-15-7">F15.7</span> Data Accuracy page</td></tr>
-      <tr><td>Design system (docs + app)</td><td><span class="ref" data-ref="epic-16">Epic 16</span></td><td><span class="ref" data-ref="feat-16-1">F16.1</span> audit · <span class="ref" data-ref="feat-16-2">F16.2</span> token lint · <span class="ref" data-ref="feat-16-4">F16.4</span> rewrite → single source of truth (two themes, one token architecture: Tide app brand + existing docs aesthetic codified)</td></tr>
-      <tr><td>Design elevation</td><td><span class="ref" data-ref="epic-17">Epic 17</span></td><td><span class="ref" data-ref="feat-17-1">F17.1</span> visual audit · <span class="ref" data-ref="feat-17-2">F17.2</span> motion/haptics (scoped) · <span class="ref" data-ref="feat-17-3">F17.3</span> states pass · <span class="ref" data-ref="feat-17-4">F17.4</span> onboarding redesign · <span class="ref" data-ref="feat-17-8">F17.8</span> component library</td></tr>
-      <tr><td>Smart Pulse upgrade</td><td><span class="ref" data-ref="epic-13">Epic 13</span></td><td><span class="ref" data-ref="feat-13-4">F13.4</span> tappable deep-link · <span class="ref" data-ref="feat-13-6">F13.6</span> &ldquo;why&rdquo; modal · <span class="ref" data-ref="feat-13-7">F13.7</span> Pulse evals · <span class="ref" data-ref="feat-13-8">F13.8</span> hybrid fallback</td></tr>
-      <tr><td>Spending categorization</td><td><span class="ref" data-ref="epic-5">Epic 5</span></td><td><span class="ref" data-ref="feat-5-1">F5.1</span> AI fallback · <span class="ref" data-ref="feat-5-3">F5.3</span> manual override UI</td></tr>
-      <tr><td>Credit card intelligence</td><td><span class="ref" data-ref="epic-1">Epic 1</span></td><td><span class="ref" data-ref="feat-1-1">F1.1</span> Plaid Liabilities · <span class="ref" data-ref="feat-1-2">F1.2</span> due-date split · <span class="ref" data-ref="feat-1-5">F1.5</span> APR warnings</td></tr>
-      <tr><td>Eval comprehensiveness</td><td><span class="ref" data-ref="epic-21">Epic 21</span></td><td><span class="ref" data-ref="feat-21-1">F21.1</span> finish · <span class="ref" data-ref="feat-21-2">F21.2</span> fixtures · <span class="ref" data-ref="feat-21-4">F21.4</span> multi-dim scoring · <span class="ref" data-ref="feat-21-6">F21.6</span> Pulse evals · <span class="ref" data-ref="feat-21-7">F21.7</span> per-PR publishing · slim <span class="ref" data-ref="feat-21-3">F21.3</span> (dev user's data + 2–3 personas)</td></tr>
-      <tr><td>AI Coach quality</td><td><span class="ref" data-ref="epic-4">Epic 4</span></td><td>Safety-failure triage · <span class="ref" data-ref="feat-4-3">F4.3</span> · <span class="ref" data-ref="feat-4-1">F4.1</span> scoped to ~85–90% on the <em>new honest</em> suite</td></tr>
-      <tr><td>Security</td><td><span class="ref" data-ref="epic-20">Epic 20</span></td><td><span class="ref" data-ref="feat-20-2">F20.2</span> threat-model doc · <span class="ref" data-ref="feat-20-5">F20.5</span> data hygiene · <em>start</em> <span class="ref" data-ref="feat-20-1">F20.1</span> specialist conversation (2–4 wk lead)</td></tr>
-      <tr><td>CI/CD</td><td><span class="ref" data-ref="epic-22">Epic 22</span></td><td><span class="ref" data-ref="feat-22-1">F22.1</span> CI green + re-enabled · <span class="ref" data-ref="feat-22-2">F22.2</span> evals nightly · <span class="ref" data-ref="feat-22-4">F22.4</span> branch protection</td></tr>
-      <tr><td>Demo &amp; portfolio</td><td><span class="ref" data-ref="epic-23">Epic 23</span> (new)</td><td><span class="ref" data-ref="feat-23-1">F23.1</span> feature videos · <span class="ref" data-ref="feat-23-2">F23.2</span> demo-data curation · <span class="ref" data-ref="feat-23-3">F23.3</span> portfolio gallery · <span class="ref" data-ref="feat-23-4">F23.4</span> docs-mirror sync</td></tr>
+      <tr><th>Track</th><th>Epic</th><th>June 21 slice — one feature per row</th><th>Scope note</th></tr>
+      <!-- Epic 0 -->
+      <tr><td class="track" rowspan="4">Trust / parity</td><td class="epic-cell" rowspan="4"><span class="ref" data-ref="epic-0">Epic 0</span></td><td><span class="ref" data-ref="feat-0-1">F0.1</span> Extend calculate_safe_to_spend tool output to full parity</td><td class="note"><span class="badge scope-shipped">✓ SHIPPED</span> 2026-06-10 (PR #173)</td></tr>
+      <tr><td><span class="ref" data-ref="feat-0-2">F0.2</span> Coach system prompt parity principle</td><td class="note"><span class="badge scope-shipped">✓ SHIPPED</span> 2026-06-10 (PR #173)</td></tr>
+      <tr><td><span class="ref" data-ref="feat-0-4">F0.4</span> Pre-launch parity test suite</td><td class="note"><span class="badge scope-shipped">✓ SHIPPED</span> 2026-06-10 (PR #173)</td></tr>
+      <tr class="epic-end"><td class="phase2" colspan="2">Phase 2 → P1: none — the full epic ships in MVP</td></tr>
+      <!-- Epic 15 -->
+      <tr><td class="track" rowspan="6">Feedback &amp; data quality loop</td><td class="epic-cell" rowspan="6"><span class="ref" data-ref="epic-15">Epic 15</span></td><td><span class="ref" data-ref="feat-15-1">F15.1</span> Outlier transaction flagging</td><td class="none">—</td></tr>
+      <tr><td><span class="ref" data-ref="feat-15-2">F15.2</span> Account-type override</td><td class="none">—</td></tr>
+      <tr><td><span class="ref" data-ref="feat-15-4">F15.4</span> Coach response feedback (👍/👎 + free-text)</td><td class="none">—</td></tr>
+      <tr><td><span class="ref" data-ref="feat-15-6">F15.6</span> Income amount override</td><td class="none">—</td></tr>
+      <tr><td><span class="ref" data-ref="feat-15-7">F15.7</span> Centralized &ldquo;Data Accuracy&rdquo; Settings page</td><td class="none">—</td></tr>
+      <tr class="epic-end"><td class="phase2" colspan="2">Phase 2 → P1: <span class="ref" data-ref="feat-15-3">F15.3</span> · <span class="ref" data-ref="feat-15-5">F15.5</span> · <span class="ref" data-ref="feat-15-8">F15.8</span></td></tr>
+      <!-- Epic 16 -->
+      <tr><td class="track" rowspan="4">Design system (docs + app)</td><td class="epic-cell" rowspan="4"><span class="ref" data-ref="epic-16">Epic 16</span></td><td><span class="ref" data-ref="feat-16-1">F16.1</span> Design system audit</td><td class="none">—</td></tr>
+      <tr><td><span class="ref" data-ref="feat-16-2">F16.2</span> Token coverage lint</td><td class="none">—</td></tr>
+      <tr><td><span class="ref" data-ref="feat-16-4">F16.4</span> DESIGN_SYSTEM.md comprehensive rewrite</td><td class="note">single source of truth — two themes, one token architecture (Tide app brand + existing docs aesthetic codified)</td></tr>
+      <tr class="epic-end"><td class="phase2" colspan="2">Phase 2 → P1: <span class="ref" data-ref="feat-16-3">F16.3</span></td></tr>
+      <!-- Epic 17 -->
+      <tr><td class="track" rowspan="6">Design elevation</td><td class="epic-cell" rowspan="6"><span class="ref" data-ref="epic-17">Epic 17</span></td><td><span class="ref" data-ref="feat-17-1">F17.1</span> Visual design audit (vision exercise)</td><td class="none">—</td></tr>
+      <tr><td><span class="ref" data-ref="feat-17-2">F17.2</span> Motion + haptics system</td><td class="note">scoped</td></tr>
+      <tr><td><span class="ref" data-ref="feat-17-3">F17.3</span> Empty / error / loading states design pass</td><td class="none">—</td></tr>
+      <tr><td><span class="ref" data-ref="feat-17-4">F17.4</span> Onboarding redesign</td><td class="none">—</td></tr>
+      <tr><td><span class="ref" data-ref="feat-17-8">F17.8</span> Component library expansion</td><td class="none">—</td></tr>
+      <tr class="epic-end"><td class="phase2" colspan="2">Phase 2 → P1: <span class="ref" data-ref="feat-17-5">F17.5</span> · <span class="ref" data-ref="feat-17-6">F17.6</span> · <span class="ref" data-ref="feat-17-7">F17.7</span></td></tr>
+      <!-- Epic 13 -->
+      <tr><td class="track" rowspan="5">Smart Pulse upgrade</td><td class="epic-cell" rowspan="5"><span class="ref" data-ref="epic-13">Epic 13</span></td><td><span class="ref" data-ref="feat-13-4">F13.4</span> Tappable Pulse → action deep-link</td><td class="none">—</td></tr>
+      <tr><td><span class="ref" data-ref="feat-13-6">F13.6</span> Pulse &ldquo;why&rdquo; modal</td><td class="none">—</td></tr>
+      <tr><td><span class="ref" data-ref="feat-13-7">F13.7</span> Pulse-specific eval suite</td><td class="none">—</td></tr>
+      <tr><td><span class="ref" data-ref="feat-13-8">F13.8</span> Hybrid rule-based + AI pulse</td><td class="note">fallback path</td></tr>
+      <tr class="epic-end"><td class="phase2" colspan="2">Phase 2 → P1: <span class="ref" data-ref="feat-13-1">F13.1</span> · <span class="ref" data-ref="feat-13-2">F13.2</span> · <span class="ref" data-ref="feat-13-3">F13.3</span> · <span class="ref" data-ref="feat-13-5">F13.5</span> · <span class="ref" data-ref="feat-13-9">F13.9</span></td></tr>
+      <!-- Epic 5 -->
+      <tr><td class="track" rowspan="3">Spending categorization</td><td class="epic-cell" rowspan="3"><span class="ref" data-ref="epic-5">Epic 5</span></td><td><span class="ref" data-ref="feat-5-1">F5.1</span> AI fallback (Bedrock Haiku) for Plaid-uncategorized</td><td class="none">—</td></tr>
+      <tr><td><span class="ref" data-ref="feat-5-3">F5.3</span> Manual category override mobile UI</td><td class="none">—</td></tr>
+      <tr class="epic-end"><td class="phase2" colspan="2">Phase 2 → P1: <span class="ref" data-ref="feat-5-2">F5.2</span> (merges into <span class="ref" data-ref="feat-15-8">F15.8</span>)</td></tr>
+      <!-- Epic 1 -->
+      <tr><td class="track" rowspan="4">Credit card intelligence</td><td class="epic-cell" rowspan="4"><span class="ref" data-ref="epic-1">Epic 1</span></td><td><span class="ref" data-ref="feat-1-1">F1.1</span> Plaid Liabilities integration</td><td class="none">—</td></tr>
+      <tr><td><span class="ref" data-ref="feat-1-2">F1.2</span> CC due-date splitting in Safe to Spend</td><td class="none">—</td></tr>
+      <tr><td><span class="ref" data-ref="feat-1-5">F1.5</span> APR-aware &ldquo;carrying balance&rdquo; warnings</td><td class="none">—</td></tr>
+      <tr class="epic-end"><td class="phase2" colspan="2">Phase 2 → P1: <span class="ref" data-ref="feat-1-3">F1.3</span> · <span class="ref" data-ref="feat-1-4">F1.4</span> · <span class="ref" data-ref="feat-1-6">F1.6</span> · <span class="ref" data-ref="feat-1-7">F1.7</span></td></tr>
+      <!-- Epic 21 -->
+      <tr><td class="track" rowspan="7">Eval comprehensiveness</td><td class="epic-cell" rowspan="7"><span class="ref" data-ref="epic-21">Epic 21</span></td><td><span class="ref" data-ref="feat-21-1">F21.1</span> Eval coverage audit</td><td class="note"><span class="badge scope-partial">PARTIAL</span> finish</td></tr>
+      <tr><td><span class="ref" data-ref="feat-21-2">F21.2</span> New fixtures for shipped features</td><td class="none">—</td></tr>
+      <tr><td><span class="ref" data-ref="feat-21-4">F21.4</span> Multi-dimensional scoring</td><td class="none">—</td></tr>
+      <tr><td><span class="ref" data-ref="feat-21-6">F21.6</span> Pulse-specific eval suite</td><td class="none">—</td></tr>
+      <tr><td><span class="ref" data-ref="feat-21-7">F21.7</span> Eval pass rate publishing</td><td class="note">per-PR</td></tr>
+      <tr><td><span class="ref" data-ref="feat-21-3">F21.3</span> Ground-truth dataset rebuild</td><td class="note">slim version only — dev user's data + 2–3 personas</td></tr>
+      <tr class="epic-end"><td class="phase2" colspan="2">Phase 2 → P1: <span class="ref" data-ref="feat-21-3">F21.3</span> full rebuild</td></tr>
+      <!-- Epic 4 -->
+      <tr><td class="track" rowspan="4">AI Coach quality</td><td class="epic-cell" rowspan="4"><span class="ref" data-ref="epic-4">Epic 4</span></td><td>Safety-failure triage</td><td class="note">unnumbered work item — triage failures surfaced by the honest suite</td></tr>
+      <tr><td><span class="ref" data-ref="feat-4-3">F4.3</span> New eval fixtures for typicalDiscretionary</td><td class="none">—</td></tr>
+      <tr><td><span class="ref" data-ref="feat-4-1">F4.1</span> Eval pass rate 70% → 90%+</td><td class="note">scoped to ~85–90% on the <em>new honest</em> suite</td></tr>
+      <tr class="epic-end"><td class="phase2" colspan="2">Phase 2 → P1: <span class="ref" data-ref="feat-4-2">F4.2</span> · <span class="ref" data-ref="feat-4-4">F4.4</span> · <span class="ref" data-ref="feat-4-5">F4.5</span></td></tr>
+      <!-- Epic 20 -->
+      <tr><td class="track" rowspan="4">Security</td><td class="epic-cell" rowspan="4"><span class="ref" data-ref="epic-20">Epic 20</span></td><td><span class="ref" data-ref="feat-20-2">F20.2</span> Threat model documentation</td><td class="none">—</td></tr>
+      <tr><td><span class="ref" data-ref="feat-20-5">F20.5</span> Local-machine data hygiene</td><td class="none">—</td></tr>
+      <tr><td><span class="ref" data-ref="feat-20-1">F20.1</span> Distinguished security specialist engagement</td><td class="note"><em>start</em> the conversation only (2–4 wk lead time); execution → P1</td></tr>
+      <tr class="epic-end"><td class="phase2" colspan="2">Phase 2 → P1: <span class="ref" data-ref="feat-20-1">F20.1</span> execution · <span class="ref" data-ref="feat-20-3">F20.3</span> · <span class="ref" data-ref="feat-20-4">F20.4</span> · <span class="ref" data-ref="feat-20-6">F20.6</span></td></tr>
+      <!-- Epic 22 -->
+      <tr><td class="track" rowspan="4">CI/CD</td><td class="epic-cell" rowspan="4"><span class="ref" data-ref="epic-22">Epic 22</span></td><td><span class="ref" data-ref="feat-22-1">F22.1</span> Fix + re-enable CI</td><td class="note">green + re-enabled</td></tr>
+      <tr><td><span class="ref" data-ref="feat-22-2">F22.2</span> Fix + re-enable AI Evals</td><td class="note">nightly</td></tr>
+      <tr><td><span class="ref" data-ref="feat-22-4">F22.4</span> Branch protection</td><td class="none">—</td></tr>
+      <tr class="epic-end"><td class="phase2" colspan="2">Phase 2 → P1: <span class="ref" data-ref="feat-22-3">F22.3</span></td></tr>
+      <!-- Epic 23 -->
+      <tr><td class="track" rowspan="5">Demo &amp; portfolio</td><td class="epic-cell" rowspan="5"><span class="ref" data-ref="epic-23">Epic 23</span> (new)</td><td><span class="ref" data-ref="feat-23-1">F23.1</span> Per-feature video production plan + recordings</td><td class="none">—</td></tr>
+      <tr><td><span class="ref" data-ref="feat-23-2">F23.2</span> Demo-data curation</td><td class="none">—</td></tr>
+      <tr><td><span class="ref" data-ref="feat-23-3">F23.3</span> Portfolio video gallery page</td><td class="none">—</td></tr>
+      <tr><td><span class="ref" data-ref="feat-23-4">F23.4</span> Docs-mirror sync</td><td class="note"><span class="badge scope-shipped">✓ SHIPPED</span> 2026-06-11 — scripts/sync-portfolio.sh + /ship step 6.6</td></tr>
+      <tr class="epic-end"><td class="phase2" colspan="2">Phase 2 → P1: none — the full epic ships in MVP</td></tr>
     </table>
     <p style="margin-top:10px;"><strong>Stretch (last in, first out):</strong> <span class="ref" data-ref="epic-14">Epic 14</span> scoped — <span class="ref" data-ref="feat-14-1">F14.1</span> shortfall detection + in-app banner/detail (<span class="ref" data-ref="feat-14-3">F14.3</span>-lite), <strong>no push</strong>. The most differentiated demo story in the app — but cut without discussion if the board isn't green by ~June 17.</p>
     <h3>Roadmap — everything else, prioritized</h3>
     <table>
-      <tr><th>Tier</th><th>Contents</th></tr>
-      <tr><td><strong>P1</strong></td><td>Phase-2 remainders of every MVP epic (badged <span class="badge scope-p1">→ P1</span> below) · <span class="ref" data-ref="epic-14">Epic 14</span> full version (push delivery, bill defer) · <span class="ref" data-ref="epic-2">Epic 2</span> Recurring Detection — <span class="ref" data-ref="feat-2-1">F2.1</span> first; cherry-pick early if rent-as-an-upcoming-bill matters for demo videos (<span class="ref" data-ref="feat-15-1">F15.1</span> already fixes the typical-spend distortion)</td></tr>
-      <tr><td><strong>P2</strong></td><td><span class="ref" data-ref="epic-7">Epic 7</span> Push · <span class="ref" data-ref="epic-6">Epic 6</span> remainder (F6.1 shipped) · <span class="ref" data-ref="epic-3">Epic 3</span> Real-Time Spend Pressure · <span class="ref" data-ref="epic-10">Epic 10</span> Bill tracking · <span class="ref" data-ref="epic-8">Epic 8</span> Evening Reflection</td></tr>
-      <tr><td><strong>P3</strong></td><td><span class="ref" data-ref="epic-9">Epic 9</span> Save More · <span class="ref" data-ref="epic-19">Epic 19</span> What-If Scenarios</td></tr>
-      <tr><td><strong>P4 (gated)</strong></td><td><span class="ref" data-ref="epic-18">Epic 18</span> Net Worth (gated on <span class="ref" data-ref="feat-20-1">F20.1</span> security sign-off) · <span class="ref" data-ref="epic-12">Epic 12</span> public-launch items (<span class="ref" data-ref="feat-12-4">F12.4</span> docs/repo audit absorbed into <span class="ref" data-ref="epic-23">Epic 23</span> + the design-system sweep)</td></tr>
+      <tr><th>Tier</th><th>Item — one per row</th><th>Notes</th></tr>
+      <!-- P1 -->
+      <tr><td class="track" rowspan="3"><strong>P1</strong></td><td>Phase-2 remainders of every MVP epic</td><td class="note">the &ldquo;Phase 2 → P1&rdquo; rows in the MVP table above; badged <span class="badge scope-p1">→ P1</span> in the epics below</td></tr>
+      <tr><td><span class="ref" data-ref="epic-14">Epic 14</span> full version</td><td class="note">push delivery (<span class="ref" data-ref="feat-14-2">F14.2</span>) + in-app bill defer (<span class="ref" data-ref="feat-14-4">F14.4</span>)</td></tr>
+      <tr class="epic-end"><td><span class="ref" data-ref="epic-2">Epic 2</span> Recurring Detection Coverage</td><td class="note"><span class="ref" data-ref="feat-2-1">F2.1</span> first; cherry-pick early if rent-as-an-upcoming-bill matters for demo videos (<span class="ref" data-ref="feat-15-1">F15.1</span> already fixes the typical-spend distortion)</td></tr>
+      <!-- P2 -->
+      <tr><td class="track" rowspan="5"><strong>P2</strong></td><td><span class="ref" data-ref="epic-7">Epic 7</span> Push notifications</td><td class="none">—</td></tr>
+      <tr><td><span class="ref" data-ref="epic-6">Epic 6</span> Onboarding &amp; auth remainder</td><td class="note">F6.2 · F6.3 · F6.4 (F6.1 <span class="badge scope-shipped">✓ SHIPPED</span>)</td></tr>
+      <tr><td><span class="ref" data-ref="epic-3">Epic 3</span> Real-Time Spend Pressure</td><td class="none">—</td></tr>
+      <tr><td><span class="ref" data-ref="epic-10">Epic 10</span> Bill payment tracking</td><td class="none">—</td></tr>
+      <tr class="epic-end"><td><span class="ref" data-ref="epic-8">Epic 8</span> Evening Reflection</td><td class="none">—</td></tr>
+      <!-- P3 -->
+      <tr><td class="track" rowspan="2"><strong>P3</strong></td><td><span class="ref" data-ref="epic-9">Epic 9</span> Save More</td><td class="note">goals / round-ups</td></tr>
+      <tr class="epic-end"><td><span class="ref" data-ref="epic-19">Epic 19</span> What-If Scenario Modeling</td><td class="none">—</td></tr>
+      <!-- P4 -->
+      <tr><td class="track" rowspan="2"><strong>P4 (gated)</strong></td><td><span class="ref" data-ref="epic-18">Epic 18</span> Net Worth</td><td class="note">gated on <span class="ref" data-ref="feat-20-1">F20.1</span> security sign-off</td></tr>
+      <tr class="epic-end"><td><span class="ref" data-ref="epic-12">Epic 12</span> Public-launch items</td><td class="note">F12.1 Plaid prod swap · F12.2 device matrix · F12.3 perf at 10K users; <span class="ref" data-ref="feat-12-4">F12.4</span> docs/repo audit absorbed into <span class="ref" data-ref="epic-23">Epic 23</span> + the design-system sweep</td></tr>
     </table>
     <p class="muted" style="margin-top:8px;">Status corrections verified against code 2026-06-10: F6.1 Cognito SMS OTP ✓ shipped · F0.3 Pulse → shared service ✓ shipped (PR #155) · F21.5 dashboard accuracy ✓ shipped (PR #156, honest 72% baseline) · F0.1/F0.2/F0.4 full Coach↔Home parity ✓ shipped (PR #173) · F21.1 partial. 2026-06-11: F23.4 docs-mirror sync ✓ shipped.</p>
   </div>
