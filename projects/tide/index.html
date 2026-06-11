@@ -207,12 +207,12 @@
 
     <div class="stats">
       <div class="stat">
-        <div class="n">12</div>
+        <div class="n">13</div>
         <div class="l">components mapped — Expo dev build, native Plaid Link, XHR-based SSE streaming</div>
         <span class="tag">architecture · 17 edges</span>
       </div>
       <div class="stat">
-        <div class="n">13</div>
+        <div class="n">12</div>
         <div class="l">animated data flows — auth, bank connect, AI chat, payday-aware Safe-to-Spend</div>
         <span class="tag">data · step-by-step</span>
       </div>
@@ -223,7 +223,7 @@
       </div>
       <div class="stat">
         <div class="n">7</div>
-        <div class="l">eval dimensions, 50 fixtures, 3 judge layers — the full suite runs on every PR</div>
+        <div class="l">eval dimensions, 86 fixtures, 3 judge layers — the full suite runs on every PR</div>
         <span class="tag">ai quality · gated</span>
       </div>
     </div>
@@ -234,27 +234,27 @@
   <div class="wrap">
     <div class="sec-label">Explore the system docs</div>
     <h2 class="sec-title">Every diagram doubles as the spec.</h2>
-    <p class="sec-sub">Eight interactive views into how Tide actually works — from the system topology down to the runway math. Click any card to explore.</p>
+    <p class="sec-sub">Nine interactive views into how Tide actually works — from the system topology down to the runway math. Click any card to explore.</p>
 
     <div class="grid">
       <a class="card card-arch" href="architecture-map.html">
         <span class="icon">&#9881;</span>
         <h2>Architecture Map</h2>
-        <p>Interactive system topology showing all 12 components. Expo Dev Build with native modules, Native Plaid Link SDK, XHR-based SSE streaming. Click nodes for details.</p>
-        <span class="tag">12 NODES &middot; 17 EDGES</span>
+        <p>Interactive system topology showing all 13 components. Expo Dev Build with native modules, Native Plaid Link SDK, XHR-based SSE streaming. Click nodes for details.</p>
+        <span class="tag">13 NODES &middot; 17 EDGES</span>
       </a>
 
       <a class="card card-flow" href="data-flow-map.html">
         <span class="icon">&#8644;</span>
         <h2>Data Flows</h2>
-        <p>Step-by-step animated visualizations of 13 critical data flows: auth, Native Plaid Link bank connections, AI chat via XHR SSE, payday-aware SafeToSpend V2 (with credit card debt), Smart Pulse (real-time, regenerates on every app open), and more. Evening Reflection removed (MVP+).</p>
-        <span class="tag">13 FLOWS &middot; ANIMATED</span>
+        <p>Step-by-step animated visualizations of 12 critical data flows: auth, Native Plaid Link bank connections, AI chat via XHR SSE, payday-aware SafeToSpend V2 (with credit card debt), Smart Pulse (real-time, regenerates on every app open), and more. Evening Reflection removed (MVP+); Spending Challenges removed 2026-06-10.</p>
+        <span class="tag">12 FLOWS &middot; ANIMATED</span>
       </a>
 
       <a class="card card-ai" href="ai-pipeline-map.html">
         <span class="icon">&#9672;</span>
         <h2>AI Pipeline</h2>
-        <p>Multi-agent architecture: Haiku intent classifier, Sonnet Tide Coach (11 tools), Haiku merchant classifier (fills Plaid's Software &amp; Tech / Subscriptions gap, cached per-merchant on <code>merchants.ai_category_id</code>). Smart Pulse generation (real-time, date-aware). SafeToSpend V2 tool. Full chat persistence with sync DB fallback.</p>
+        <p>Multi-agent architecture: Haiku intent classifier, Sonnet Tide Coach (11 tools), Haiku merchant classifier (fills Plaid's Software &amp; Tech / Subscriptions gap, cached per-merchant on <code>merchants.ai_category_id</code>). Smart Pulse generation (real-time, date-aware). Home-parity Safe to Spend tool. Full chat persistence with sync DB fallback.</p>
         <span class="tag">2 MODELS &middot; 11 TOOLS &middot; AI MERCHANT CLASSIFIER</span>
       </a>
 
@@ -262,13 +262,13 @@
         <span class="icon">&#9745;</span>
         <h2>Evals &amp; AI Quality</h2>
         <p>Comprehensive eval framework: 7 quality dimensions, 3 judge layers, full suite on every PR. Fixtures, thresholds, and the flywheel roadmap.</p>
-        <span class="tag">7 DIMENSIONS &middot; 50 FIXTURES</span>
+        <span class="tag">7 DIMENSIONS &middot; 86 FIXTURES</span>
       </a>
 
       <a class="card card-ver" href="feature-versions.html">
         <span class="icon">&#9930;</span>
         <h2>Feature Versions</h2>
-        <p>Documented iteration history for every major feature. Each version entry shows what changed, what motivated it, what we learned, and what we kept. Start with Safe to Spend &mdash; 16 versions across five weeks.</p>
+        <p>Documented iteration history for every major feature. Each version entry shows what changed, what motivated it, what we learned, and what we kept. Start with Safe to Spend &mdash; 20 versions across five weeks.</p>
         <span class="tag">1 FEATURE &middot; 20 VERSIONS &middot; MORE SOON</span>
       </a>
 
@@ -282,15 +282,22 @@
       <a class="card card-backlog" href="backlog.html">
         <span class="icon">&#128203;</span>
         <h2>Product Backlog</h2>
-        <p>Every deferred idea, scored and bucketed. 120 features across 22 epics, each forced into one of five categories (CX, Tech Debt, UI/UX, AI &amp; Data, Launch) so stabilization stays visible. Drag-to-reorder to explore prioritization trade-offs.</p>
-        <span class="tag">22 EPICS &middot; 120 FEATURES &middot; 5 CATEGORIES</span>
+        <p>Every idea, scored and bucketed. 122 features across 23 epics, split into the June 23 MVP demo slice and a prioritized P1&ndash;P4 roadmap, with shipped/partial status badges so progress stays visible. Drag-to-reorder to explore prioritization trade-offs.</p>
+        <span class="tag">23 EPICS &middot; 122 FEATURES &middot; MVP + ROADMAP</span>
       </a>
 
       <a class="card card-os" href="operating-system.html">
         <span class="icon">&#9881;</span>
         <h2>The Operating System</h2>
-        <p>How the Tide repo runs as a Claude Code workspace: session lifecycle, monorepo map, the hooks vs conventions vs skills layers, MCP servers, and the self-maintenance loops (role detection, doc-sync, LEARNINGS, CI/evals).</p>
+        <p>How the Tide repo runs as a Claude Code workspace: session lifecycle, monorepo map, the hooks vs conventions vs skills vs agents vs routines layers, MCP servers, and the self-maintenance loops (role detection, doc-sync, portfolio-mirror sync, LEARNINGS, nightly doc-drift, CI/evals).</p>
         <span class="tag">5 SECTIONS &middot; HARNESS MAP</span>
+      </a>
+
+      <a class="card card-os" href="harness-vs-context-engineering.html">
+        <span class="icon">&#9881;</span>
+        <h2>Harness vs. Context Engineering</h2>
+        <p>The two terms decoded: a <b>harness</b> is the runtime that drives an agent turn (Claude Code's job); <b>context</b> is what the model sees (Tide's leverage). Includes the "15 harness jobs" mapped onto who handles each for Tide. A reference card for the agent-engineering vocabulary.</p>
+        <span class="tag">REFERENCE &middot; 15 JOBS MAPPED</span>
       </a>
     </div>
   </div>

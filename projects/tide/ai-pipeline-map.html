@@ -73,6 +73,7 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
 
 /* Tools section */
 .tools-section { margin-top: 32px; }
+.tier-section { margin-top: 32px; }
 .tools-section h2 { font-size: 14px; margin-bottom: 16px; color: #a855f7; }
 .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
 .tool-card {
@@ -109,9 +110,6 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
 .tier-content { flex: 1; }
 .tier-content h3 { font-size: 11px; font-weight: 700; margin-bottom: 2px; }
 .tier-content p { font-size: 10px; color: #94a3b8; line-height: 1.5; }
-
-/* Plaid sync priority section */
-.tier-section { margin-top: 32px; }
 
 /* Models comparison */
 .models-section { margin-top: 32px; }
@@ -151,17 +149,17 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
     <div class="pipeline-connector"><div class="arrow"></div></div>
 
     <div class="stage-card stage-classifier">
-      <div class="stage-label">Stage 2 &mdash; Classification</div>
+      <div class="stage-label">Stage 2 &mdash; Classification (DISABLED)</div>
       <h3>Intent Classifier (Haiku 4.5)</h3>
-      <p>Lightweight, fast model classifies query intent and routes to the correct Tide Coach tool set. Runs on AWS Bedrock.</p>
-      <span class="latency">&lt;500ms target</span>
+      <p>Currently turned OFF &mdash; <code>chats_controller.ts</code> sets <code>const intentPromise = Promise.resolve('unknown')</code>. A per-message Haiku call competed with the chat stream for Bedrock quota and triggered throttling, so the stage is stubbed out (re-enable once AWS quota is raised). When live, it would classify query intent on AWS Bedrock; today every turn is routed to the Coach with all 11 tools regardless of intent.</p>
+      <span class="latency">disabled (was &lt;500ms target)</span>
     </div>
     <div class="pipeline-connector"><div class="arrow"></div></div>
 
     <div class="stage-card stage-coach">
       <div class="stage-label">Stage 3 &mdash; Agent</div>
       <h3>Tide Coach Agent (Sonnet 4)</h3>
-      <p>Primary AI financial coach. Selects from 11 tools based on classified intent. Generates personalized financial advice with full conversation context.</p>
+      <p>Primary AI financial coach. Has all 11 tools available every turn (intent routing is disabled &mdash; see Stage 2) and lets the model pick which to call. Generates personalized financial advice with full conversation context.</p>
       <span class="latency">First token &lt;2s</span>
     </div>
     <div class="pipeline-connector"><div class="arrow"></div></div>
@@ -227,7 +225,7 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
       <div class="tool-card">
         <div class="tool-num">TOOL 6</div>
         <div class="tool-name"><code>calculate_safe_to_spend</code></div>
-        <div class="tool-desc">SafeToSpend v4.9 — returns 4 windows: today (daily budget), thisWeek (ISO Mon–Sun in user tz), untilPayday, restOfMonth. Each window includes <code>amount</code>, <code>daysInWindow</code>, <code>perDayInWindow</code>. Bill threshold &ge; 0.3; income threshold &ge; 0.75 (scoped to this tool — narrative "confident" bar is still 0.85). <strong>In v4.7:</strong> <code>typicalDiscretionary.windows</code> — per-window non-recurring-spend forecasts for today / thisWeek / restOfMonth / untilPayday. Computed from BOTH checking + credit card outflows over up to 365 days, robust-mean-per-weekday capped at 90th percentile. Null when history is thin (&lt;60 days). Use matching window: "this weekend" → thisWeek; "by payday" → untilPayday. Timezone from <code>profiles.timezone</code>. Shared service + shared <code>resolvePayday()</code> so numbers match the Home dashboard byte-for-byte.</div>
+        <div class="tool-desc">SafeToSpend v4.9 — returns 4 windows: today (daily budget), thisWeek (ISO Mon–Sun in user tz), untilPayday, restOfMonth. Each window includes <code>amount</code>, <code>daysInWindow</code>, <code>perDayInWindow</code>, plus its own <code>bills[]</code> and <code>income[]</code> per-item arrays. Bill threshold &ge; 0.3; income threshold &ge; 0.75 (scoped to this tool — narrative "confident" bar is still 0.85). <strong>In v4.7:</strong> <code>typicalDiscretionary.windows</code> — per-window non-recurring-spend forecasts for today / thisWeek / restOfMonth / untilPayday, plus <code>perDayOfWeek</code> (median spend Mon–Sun). Computed from BOTH checking + credit card outflows over up to 365 days, robust-mean-per-weekday capped at 90th percentile. Null when history is thin (&lt;60 days). Use matching window: "this weekend" → thisWeek; "by payday" → untilPayday. Timezone from <code>profiles.timezone</code>. <strong>F0.1 / Epic 0 (2026-06):</strong> the tool result now carries every field the Home screen renders — the full <code>resolved</code> payday envelope, <code>accountsIncluded</code> / <code>setAsideAccounts</code> / <code>creditCards</code> / <code>loansExcluded</code> per-account arrays, and <code>lastSyncedAt</code> — so the Coach never needs a second tool call (or its own arithmetic) to match Home. Shaped by the pure <code>projectSafeToSpendForCoach()</code> projection, pinned by the F0.4 parity unit test. A "Home parity principle" rule in the system prompt (F0.2) forbids the Coach from re-computing these. Shared service + shared <code>resolvePayday()</code> so numbers match the Home dashboard byte-for-byte.</div>
         <span class="tool-tier tier-2">TIER 2 — FINANCIAL DATA</span>
       </div>
       <div class="tool-card">
@@ -250,14 +248,14 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
       </div>
       <div class="tool-card">
         <div class="tool-num">TOOL 10</div>
-        <div class="tool-name"><code>query_smart_pulse</code></div>
-        <div class="tool-desc">Get current Smart Pulse insight (real-time, regenerated on every app open). Date-aware bill references (actual dates, not "today"). Streak = app opens. "Dig deeper with AI Coach" link.</div>
+        <div class="tool-name"><code>query_morning_brief</code></div>
+        <div class="tool-desc">Get the user's Smart Pulse / morning cash-flow brief for today or a recent date — total balance, expected bills + income, AI insight, and acknowledgment status. ("Smart Pulse" is the product name for the morning brief; the Coach tool is <code>query_morning_brief</code>.)</div>
         <span class="tool-tier tier-2">TIER 2 — FINANCIAL DATA</span>
       </div>
       <div class="tool-card">
         <div class="tool-num">TOOL 11</div>
         <div class="tool-name"><code>query_reflection_stats</code></div>
-        <div class="tool-desc">Reflection session history, transaction tags (worth-it/regret), and streak progress. <strong>MVP+</strong> — backend intact, frontend removed entirely.</div>
+        <div class="tool-desc">Reflection session history and transaction tags (worth-it/regret). <strong>MVP+</strong> — backend intact, frontend removed entirely. (Streak progress dropped from the description 2026-06-11 with the streak feature removal — the tool never returned it.)</div>
         <span class="tool-tier tier-2">TIER 2 — FINANCIAL DATA</span>
       </div>
     </div>
@@ -296,8 +294,8 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
     <div class="model-grid">
       <div class="model-card model-haiku">
         <h3>Claude Haiku 4.5</h3>
-        <div class="model-row"><span class="label">Role</span><span class="value">Intent Classifier</span></div>
-        <div class="model-row"><span class="label">Latency</span><span class="value">&lt;500ms</span></div>
+        <div class="model-row"><span class="label">Role</span><span class="value">Intent Classifier (DISABLED)</span></div>
+        <div class="model-row"><span class="label">Latency</span><span class="value">&lt;500ms (stubbed: Promise.resolve('unknown'))</span></div>
         <div class="model-row"><span class="label">Purpose</span><span class="value">Fast query routing</span></div>
         <div class="model-row"><span class="label">Platform</span><span class="value">AWS Bedrock</span></div>
         <div class="model-row"><span class="label">Cost</span><span class="value">~$2/mo at 1K req</span></div>
