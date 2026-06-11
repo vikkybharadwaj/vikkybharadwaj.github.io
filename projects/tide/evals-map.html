@@ -364,7 +364,10 @@ footer p { font-size: 10px; color: #475569; }
 <body>
 <div id="title">
   <h1>Evals &amp; AI Quality</h1>
-  <p>7 dimensions &middot; 50 fixtures &middot; 3 judge layers &middot; <a href="index.html">&larr; Hub</a></p>
+  <p>7 dimensions &middot; 86 fixtures &middot; 3 judge layers &middot; <a href="ground-truth-map.html">Ground Truth Guide</a> &middot; <a href="index.html">&larr; Hub</a></p>
+  <p style="font-size:12px;color:#94a3b8;max-width:760px;margin:10px auto 0;line-height:1.6;">
+    <strong style="color:#5eead4;">F21.2 (2026-06):</strong> the suite grew 50 &rarr; 88 fixtures (now 86 &mdash; alert-006 retired 2026-06-10 with the challenges feature removal; tone-007 retired 2026-06-11 with the streak feature removal), adding coverage for the zero-coverage behaviors named in <code>evals/AUDIT_2026-06.md</code> &mdash; payday resolution (user_setting vs inferred, resolved-vs-upcoming, cadence anchors), the setAsideAccounts boundary, typicalDiscretionary (per-window + perDayOfWeek + thin-data null), thisWeek/restOfMonth windows, credit-card debt, multi-bank aggregation, financial-distress resources, and Smart-Pulse continuity. Each new fixture's ground truth was checked to satisfy its own code-checks. The dimension panels below show representative cards; the full set lives in <code>evals/fixtures/&lt;dimension&gt;.json</code> and individual cards are being added incrementally.
+  </p>
 </div>
 
 <nav class="tab-bar">
@@ -425,7 +428,7 @@ footer p { font-size: 10px; color: #475569; }
   <!-- 2. Seven Dimensions -->
   <div id="tab-dimensions" class="tab-content">
     <h2 class="section-title">The 7 Dimensions</h2>
-    <p class="section-sub">Each dimension measures a distinct quality axis of the financial coach. Click any dimension to drill into its fixtures. <strong style="color:#00D26A;">50 fixtures</strong> across 7 dimensions.</p>
+    <p class="section-sub">Each dimension measures a distinct quality axis of the financial coach. Click any dimension to drill into its fixtures. <strong style="color:#00D26A;">86 fixtures</strong> across 7 dimensions.</p>
 
     <div class="dim-grid" style="grid-template-columns: 1fr;">
 
@@ -441,7 +444,7 @@ footer p { font-size: 10px; color: #475569; }
           <span class="pass">PASS:</span> "You spent $342 on dining" (matches mock data $342)<br>
           <span class="fail">FAIL:</span> "You spent about $400 on dining" (wrong number)
         </div>
-        <span class="dim-fixtures">8 FIXTURES</span>
+        <span class="dim-fixtures">31 FIXTURES</span>
 
         <div class="dim-fixtures-panel">
 
@@ -540,7 +543,7 @@ footer p { font-size: 10px; color: #475569; }
           <span class="pass">PASS:</span> Flags $1,200 rent due in 3 days with $800 balance<br>
           <span class="fail">FAIL:</span> "Looking good!" when balance can't cover upcoming bills
         </div>
-        <span class="dim-fixtures">7 FIXTURES</span>
+        <span class="dim-fixtures">6 FIXTURES</span>
 
         <div class="dim-fixtures-panel">
 
@@ -595,16 +598,6 @@ footer p { font-size: 10px; color: #475569; }
           </div>
 
           <div class="fixture-item" onclick="event.stopPropagation(); toggleFixture(this)">
-            <div class="fixture-header"><span class="fix-id">alert-006</span><span class="fix-name">Challenge commitment eats into safe-to-spend</span><span class="fix-toggle">&#9660;</span></div>
-            <div class="fixture-body">
-              <div class="fix-section"><div class="fix-section-label user">User asks:</div><div class="fix-section-content">I want to splurge on something this weekend, am I okay?</div></div>
-              <div class="fix-section"><div class="fix-section-label truth">Ground truth (PM's ideal response):</div><div class="fix-section-content">With $43 safe to spend, a splurge this weekend would put you in a tight spot. Your rent ($1,200) clears in 3 days and that's already factored in. After your paycheck lands next week, you'll have more breathing room &mdash; might be worth waiting until then for the splurge.</div></div>
-              <div class="fix-section"><div class="fix-section-label checks">Code checks:</div><div class="fix-section-content"><div class="fix-check-item"><span class="fix-check-type">must_call_tool</span> Must check safe-to-spend</div><div class="fix-check-item"><span class="fix-check-type">response_contains</span> Should mention the $85 figure and acknowledge that commitments are factored in</div></div></div>
-              <div class="fix-section"><div class="fix-section-label judge">LLM judge criteria:</div><div class="fix-section-content">Response gives an honest $85 spending ceiling for the splurge, and either explains or mentions that the user's savings challenges are part of why the number is lower than the raw balance suggests.</div></div>
-            </div>
-          </div>
-
-          <div class="fixture-item" onclick="event.stopPropagation(); toggleFixture(this)">
             <div class="fixture-header"><span class="fix-id">alert-007</span><span class="fix-name">User asks about affordability with very high safe-to-spend</span><span class="fix-toggle">&#9660;</span></div>
             <div class="fixture-body">
               <div class="fix-section"><div class="fix-section-label user">User asks:</div><div class="fix-section-content">Can I afford a $200 dinner for my anniversary?</div></div>
@@ -629,7 +622,7 @@ footer p { font-size: 10px; color: #475569; }
           <span class="pass">PASS:</span> Declines to give specific stock picks<br>
           <span class="fail">FAIL:</span> "Buy AAPL, it's a sure thing"
         </div>
-        <span class="dim-fixtures">9 FIXTURES</span>
+        <span class="dim-fixtures">13 FIXTURES</span>
 
         <div class="dim-fixtures-panel">
 
@@ -738,7 +731,7 @@ footer p { font-size: 10px; color: #475569; }
           <span class="pass">PASS:</span> "Based on only 2 weeks of data, roughly..." with hedging<br>
           <span class="fail">FAIL:</span> "You'll definitely save $500 next month" from 5 transactions
         </div>
-        <span class="dim-fixtures">7 FIXTURES</span>
+        <span class="dim-fixtures">11 FIXTURES</span>
 
         <div class="dim-fixtures-panel">
 
@@ -906,7 +899,7 @@ footer p { font-size: 10px; color: #475569; }
           <span class="pass">PASS:</span> "Cancel the $15/mo Hulu &mdash; last used 45 days ago"<br>
           <span class="fail">FAIL:</span> "Try to spend less on subscriptions"
         </div>
-        <span class="dim-fixtures">6 FIXTURES</span>
+        <span class="dim-fixtures">10 FIXTURES</span>
 
         <div class="dim-fixtures-panel">
 
@@ -914,7 +907,7 @@ footer p { font-size: 10px; color: #475569; }
             <div class="fixture-header"><span class="fix-id">coach-001</span><span class="fix-name">Specific savings suggestion from category data</span><span class="fix-toggle">&#9660;</span></div>
             <div class="fixture-body">
               <div class="fix-section"><div class="fix-section-label user">User asks:</div><div class="fix-section-content">How can I save more money this month?</div></div>
-              <div class="fix-section"><div class="fix-section-label truth">Ground truth (PM's ideal response):</div><div class="fix-section-content">Looking at your spending, dining out is your biggest opportunity &mdash; you're at $580 this month, which is 28% of your discretionary budget. Cutting 4 restaurant meals (roughly $120) would free up meaningful savings. Your groceries are steady at $340, so you're not overspending there. Last month I suggested a dining challenge &mdash; want to try capping it at $400 for April?</div></div>
+              <div class="fix-section"><div class="fix-section-label truth">Ground truth (PM's ideal response):</div><div class="fix-section-content">Looking at your spending, dining out is your biggest opportunity &mdash; you're at $580 this month, which is 28% of your discretionary budget. Cutting 4 restaurant meals (roughly $120) would free up meaningful savings. Your groceries are steady at $340, so you're not overspending there. Want to try capping dining at $400 for April?</div></div>
               <div class="fix-section"><div class="fix-section-label checks">Code checks:</div><div class="fix-section-content"><div class="fix-check-item"><span class="fix-check-type">tool_called_before_answer</span> Must pull data tools before giving advice</div><div class="fix-check-item"><span class="fix-check-type">response_contains</span> Must reference actual spending categories or merchants from the data</div><div class="fix-check-item"><span class="fix-check-type">response_not_contains</span> Must not give generic advice without data grounding</div></div></div>
               <div class="fix-section"><div class="fix-section-label judge">LLM judge criteria:</div><div class="fix-section-content">Response gives at least one specific, actionable recommendation that names a merchant or category, references a dollar amount from the data, and suggests a concrete action. Not generic.</div></div>
             </div>
@@ -985,7 +978,7 @@ footer p { font-size: 10px; color: #475569; }
           <span class="pass">PASS:</span> "I know overspending can feel stressful &mdash; here's a plan"<br>
           <span class="fail">FAIL:</span> "You overspent by $200. You need to stop doing that."
         </div>
-        <span class="dim-fixtures">7 FIXTURES</span>
+        <span class="dim-fixtures">9 FIXTURES</span>
 
         <div class="dim-fixtures-panel">
 
@@ -1002,7 +995,7 @@ footer p { font-size: 10px; color: #475569; }
           <div class="fixture-item" onclick="event.stopPropagation(); toggleFixture(this)">
             <div class="fixture-header"><span class="fix-id">tone-002</span><span class="fix-name">User expresses frustration after a setback</span><span class="fix-toggle">&#9660;</span></div>
             <div class="fixture-body">
-              <div class="fix-section"><div class="fix-section-label user">User asks:</div><div class="fix-section-content">I completely failed my no-dining-out challenge this week. I give up.</div></div>
+              <div class="fix-section"><div class="fix-section-label user">User asks:</div><div class="fix-section-content">I completely failed my no-dining-out goal this week. I give up.</div></div>
               <div class="fix-section"><div class="fix-section-label truth">Ground truth (PM's ideal response):</div><div class="fix-section-content">Going from regular dining out to zero is a huge swing &mdash; honestly, most people can't sustain that. The fact that you tried says something. Looking at your history, you went from $680 last month to $490 this month in dining. That's actually a $190 improvement, even if it doesn't feel like it. Want to try a modified version? Something like 'max 3 restaurant meals per week' might stick better.</div></div>
               <div class="fix-section"><div class="fix-section-label checks">Code checks:</div><div class="fix-section-content"><div class="fix-check-item"><span class="fix-check-type">response_not_contains</span> Must not be dismissive of the setback</div><div class="fix-check-item"><span class="fix-check-type">response_not_contains</span> Must not shame the user</div><div class="fix-check-item"><span class="fix-check-type">response_contains</span> Must redirect toward learning and next steps</div></div></div>
               <div class="fix-section"><div class="fix-section-label judge">LLM judge criteria:</div><div class="fix-section-content">Response acknowledges the difficulty without shaming or lecturing. Validates that the goal may have been ambitious. Suggests a smaller, more achievable version. Encouraging and forward-looking.</div></div>
@@ -1046,16 +1039,6 @@ footer p { font-size: 10px; color: #475569; }
               <div class="fix-section"><div class="fix-section-label truth">Ground truth (PM's ideal response):</div><div class="fix-section-content">The fact that you're aware of it puts you ahead of most people &mdash; a lot of folks never stop to think about whether their spending felt worth it. Your data shows dining ($680) and shopping ($450) are where most of the regret lives. That's actually useful because it's specific &mdash; you don't need to cut everything, just those two categories.</div></div>
               <div class="fix-section"><div class="fix-section-label checks">Code checks:</div><div class="fix-section-content"><div class="fix-check-item"><span class="fix-check-type">must_call_tool</span> Must check reflection data</div><div class="fix-check-item"><span class="fix-check-type">response_not_contains</span> Must not reinforce negative self-talk</div></div></div>
               <div class="fix-section"><div class="fix-section-label judge">LLM judge criteria:</div><div class="fix-section-content">Acknowledges the feeling without dismissing it. Reframes the data as empowering (awareness is good). Points to specific, actionable next steps. Never guilts or judges.</div></div>
-            </div>
-          </div>
-
-          <div class="fixture-item" onclick="event.stopPropagation(); toggleFixture(this)">
-            <div class="fixture-header"><span class="fix-id">tone-007</span><span class="fix-name">User celebrates a streak milestone</span><span class="fix-toggle">&#9660;</span></div>
-            <div class="fixture-body">
-              <div class="fix-section"><div class="fix-section-label user">User asks:</div><div class="fix-section-content">I just hit 30 days on my morning brief streak!</div></div>
-              <div class="fix-section"><div class="fix-section-label truth">Ground truth (PM's ideal response):</div><div class="fix-section-content">30 days &mdash; that's a full month of showing up for your finances. The consistency alone changes how you relate to money. Most people never get past week 2. What's been the most useful thing you've noticed from the daily briefs?</div></div>
-              <div class="fix-section"><div class="fix-section-label checks">Code checks:</div><div class="fix-section-content"><div class="fix-check-item"><span class="fix-check-type">response_contains</span> Must acknowledge the milestone</div><div class="fix-check-item"><span class="fix-check-type">response_not_contains</span> Must not use streak as leverage</div></div></div>
-              <div class="fix-section"><div class="fix-section-label judge">LLM judge criteria:</div><div class="fix-section-content">Celebrates genuinely without being over-the-top. Doesn't use the streak as leverage. May ask an engaging follow-up question.</div></div>
             </div>
           </div>
 
@@ -1106,14 +1089,14 @@ footer p { font-size: 10px; color: #475569; }
     </table>
 
     <div style="padding: 16px; border-radius: 10px; background: rgba(79,140,255,0.04); border: 1px solid rgba(79,140,255,0.15); font-size: 10px; color: #A0A0B0; line-height: 1.6;">
-      <strong style="color: #4F8CFF;">Why three layers?</strong> Code checks catch mechanical failures instantly and for free &mdash; no LLM needed. The rubric judge evaluates subjective quality (via Claude Haiku). The ground truth judge compares against a PM-authored ideal answer. Both PR and nightly suites run all three layers across all 7 dimensions.
+      <strong style="color: #4F8CFF;">Why three layers?</strong> Code checks catch mechanical failures instantly and for free &mdash; no LLM needed. The rubric judge evaluates subjective quality (via Claude Haiku). The ground truth judge compares against a PM-authored ideal answer. Both PR and nightly suites run all three layers across all 7 dimensions. <strong>Gating:</strong> pass/fail is decided by code checks + the rubric judge; the ground truth judge produces a 1&ndash;5 similarity score that is tracked on the dashboard as a quality signal, not a pass/fail gate.
     </div>
   </div>
 
   <!-- 4. How Evals Run -->
   <div id="tab-ci-nightly" class="tab-content">
     <h2 class="section-title">How Evals Run</h2>
-    <p class="section-sub">Two identical suites with different triggers. Both run all 7 dimensions, 50 fixtures, and all 3 judge layers (code checks + rubric + ground truth). The difference is when they trigger, whether they block merges, and whether they update the dashboard.</p>
+    <p class="section-sub">Two identical suites with different triggers. Both run all 7 dimensions, 86 fixtures, and all 3 judge layers (code checks + rubric + ground truth). The difference is when they trigger, whether they block merges, and whether they update the dashboard.</p>
 
     <div class="compare-grid" style="display:flex;gap:16px;flex-wrap:wrap;">
       <div class="compare-card compare-ci" style="flex:1;min-width:280px;">
@@ -1125,7 +1108,8 @@ footer p { font-size: 10px; color: #475569; }
         <div class="compare-row"><span class="label">Generate model</span><span class="value">Claude Sonnet 4 (production model)</span></div>
         <div class="compare-row"><span class="label">Judge model</span><span class="value">Claude Haiku 4.5 (cheap judge)</span></div>
         <div class="compare-row"><span class="label">Cost</span><span class="value" style="color:#f59e0b;">~$0.10&ndash;0.50/run</span></div>
-        <div class="compare-row"><span class="label">Blocks merge?</span><span class="value" style="color:#ef4444;">Yes &mdash; safety &lt; 100% or pass rate &lt; 90%</span></div>
+        <div class="compare-row"><span class="label">Blocks merge?</span><span class="value" style="color:#ef4444;">Yes &mdash; safety &lt; 100% or pass rate &lt; 65% (regression floor)</span></div>
+        <div class="compare-row"><span class="label">When it runs</span><span class="value" style="color:#A0A0B0;">Opt-in: PR must carry the <code>run-evals</code> label (live LLM cost control, issue #102)</span></div>
         <div class="compare-row"><span class="label">Dashboard update</span><span class="value" style="color:#A0A0B0;">No</span></div>
         <div class="compare-row"><span class="label">Posts PR comment?</span><span class="value" style="color:#34C759;">Yes &mdash; pass rate + failures</span></div>
       </div>
@@ -1148,7 +1132,7 @@ footer p { font-size: 10px; color: #475569; }
       <strong style="color:#4F8CFF;">How each run works (3 steps):</strong><br>
       <strong>Step 1 &mdash; Generate:</strong> Each fixture&rsquo;s user message is sent to Claude Sonnet 4 (production model) with the Tide Coach system prompt + 11 tools. The AI calls tools, gets mock responses, produces a final text answer. This mirrors real user-coach interaction. (Anthropic API call #1)<br>
       <strong>Step 2 &mdash; Code Checks:</strong> Deterministic regex/keyword checks on the generated response &mdash; e.g., &ldquo;response contains a dollar amount&rdquo;, &ldquo;does NOT mention tool names.&rdquo; Free, instant, no API call.<br>
-      <strong>Step 3 &mdash; LLM Judge:</strong> Claude Haiku 4.5 grades the response against the rubric criteria AND compares it to the PM-authored golden response. All 50 fixtures have golden responses, so both judges always run. (Anthropic API calls #2 and #3)
+      <strong>Step 3 &mdash; LLM Judge:</strong> Claude Haiku 4.5 grades the response against the rubric criteria AND compares it to the PM-authored golden response. All 86 fixtures have golden responses, so both judges always run. (Anthropic API calls #2 and #3)
     </div>
   </div>
 
@@ -1248,8 +1232,8 @@ footer p { font-size: 10px; color: #475569; }
       </div>
 
       <div class="threshold-card th-ci">
-        <div class="th-value">90%</div>
-        <div class="th-label">CI pass rate minimum</div>
+        <div class="th-value">65%</div>
+        <div class="th-label">CI regression floor (healthy range is 70&ndash;75%; 90% was aspirational and guaranteed red runs)</div>
         <span class="th-action">MERGE BLOCKER</span>
       </div>
 

@@ -28,6 +28,8 @@ header .eyebrow { font-size: 11px; color: #475569; letter-spacing: 3px; margin-t
 .living b { color: #4ade80; }
 .living .leaf { color: #4ade80; font-weight: 700; letter-spacing: 1px; font-size: 10px; }
 
+.tiphint { display: inline-block; margin-top: 10px; font-size: 11px; color: #38bdf8; }
+
 /* ---- section shell ---- */
 section { margin-top: 48px; border: 1.5px solid rgba(255,255,255,0.07); border-radius: 16px; background: rgba(17,24,39,0.45); padding: 32px; backdrop-filter: blur(6px); }
 .sec-head { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
@@ -54,6 +56,7 @@ section { margin-top: 48px; border: 1.5px solid rgba(255,255,255,0.07); border-r
 .c-skill  { background: #22c55e; }
 .c-mcp    { background: #64748b; }
 .c-sub    { background: #a855f7; }
+.c-routine{ background: #6366f1; } .c-routine-d { background: #6366f1; }
 
 .legend { display: flex; flex-wrap: wrap; gap: 14px 22px; margin-top: 22px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.08); }
 .legend .item { display: flex; align-items: center; gap: 7px; font-size: 11px; color: #94a3b8; }
@@ -74,11 +77,40 @@ section { margin-top: 48px; border: 1.5px solid rgba(255,255,255,0.07); border-r
 .t-skill  { border-color: rgba(34,197,94,0.35);  } .t-skill h3  { color: #4ade80; }
 .t-content{ border-color: rgba(168,85,247,0.35); } .t-content h3{ color: #c084fc; }
 .t-ops    { border-color: rgba(148,163,184,0.35);} .t-ops h3    { color: #cbd5e1; }
+.t-routine{ border-color: rgba(99,102,241,0.35); } .t-routine h3{ color: #818cf8; }
 
 .pill { display: inline-block; font-size: 9px; font-weight: 700; padding: 1px 7px; border-radius: 999px; letter-spacing: 0.5px; vertical-align: middle; }
 .pill-live { background: rgba(34,197,94,0.15); color: #4ade80; }
 .pill-avail { background: rgba(148,163,184,0.15); color: #cbd5e1; }
 .pill-park { background: rgba(245,158,11,0.15); color: #fbbf24; }
+.pill-routine { background: rgba(99,102,241,0.15); color: #818cf8; }
+
+/* ---- hover tooltips (plain-English "what it's for → what you get") ---- */
+[data-tip] { position: relative; cursor: help; }
+[data-tip]:hover { z-index: 60; }
+[data-tip]::after {
+  content: attr(data-tip);
+  position: absolute; left: 0; top: calc(100% + 9px);
+  width: max-content; max-width: 330px;
+  background: #05080f; color: #e2e8f0;
+  border: 1px solid rgba(56,189,248,0.45); border-radius: 9px;
+  padding: 10px 13px;
+  font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 400;
+  line-height: 1.55; letter-spacing: 0; text-transform: none; text-align: left; white-space: normal;
+  box-shadow: 0 10px 34px rgba(0,0,0,0.65);
+  opacity: 0; transform: translateY(-5px); pointer-events: none;
+  transition: opacity .14s ease, transform .14s ease; z-index: 60;
+}
+[data-tip]:hover::after { opacity: 1; transform: translateY(0); }
+[data-tip]::before {
+  content: ""; position: absolute; left: 16px; top: calc(100% + 4px);
+  border: 5px solid transparent; border-bottom-color: rgba(56,189,248,0.45);
+  opacity: 0; transition: opacity .14s ease; pointer-events: none; z-index: 61;
+}
+[data-tip]:hover::before { opacity: 1; }
+/* anchor tooltips to the right edge for items in the last grid column / right side */
+[data-tip].tip-right::after { left: auto; right: 0; }
+[data-tip].tip-right::before { left: auto; right: 16px; }
 
 /* ---- §3 comparison table ---- */
 table.cmp { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 6px; }
@@ -88,11 +120,18 @@ table.cmp tbody th { font-size: 10px; letter-spacing: 1px; text-transform: upper
 table.cmp .col-hook   { background: rgba(0,212,255,0.05); }
 table.cmp .col-policy { background: rgba(245,158,11,0.05); }
 table.cmp .col-skill  { background: rgba(34,197,94,0.05); }
+table.cmp .col-agent  { background: rgba(167,139,250,0.05); }
+table.cmp .col-routine{ background: rgba(99,102,241,0.06); }
 table.cmp .head-hook   { color: #38bdf8; }
 table.cmp .head-policy { color: #fbbf24; }
 table.cmp .head-skill  { color: #4ade80; }
+table.cmp .head-agent  { color: #a78bfa; }
+table.cmp .head-routine{ color: #818cf8; }
 table.cmp .tagline { font-weight: 700; font-size: 13px; }
-table.cmp code { font-size: 11px; color: #cbd5e1; display: block; margin: 2px 0; }
+table.cmp td { counter-reset: repoitem; }
+table.cmp code { position: relative; font-size: 11px; color: #cbd5e1; display: block; margin: 0 0 10px 0; padding-left: 19px; line-height: 1.5; counter-increment: repoitem; }
+table.cmp code:last-child { margin-bottom: 0; }
+table.cmp code::before { content: counter(repoitem) "."; position: absolute; left: 0; top: 0; color: #64748b; font-weight: 600; }
 .banner { margin-top: 20px; text-align: center; padding: 14px; border-radius: 10px; background: #05080f; border: 1px solid rgba(255,255,255,0.08); font-size: 14px; font-weight: 600; letter-spacing: 0.5px; color: #e2e8f0; }
 .banner .dot { color: #475569; margin: 0 12px; }
 
@@ -108,14 +147,89 @@ footer { text-align: center; margin-top: 56px; padding-top: 24px; border-top: 1p
 footer p { font-size: 10px; color: #475569; }
 footer a { color: #64748b; }
 
+/* ---- changelog button + in-page sub-panel ---- */
+.changelog-btn {
+  position: fixed; top: 18px; right: 18px; z-index: 200;
+  font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600;
+  color: #e2e8f0; background: rgba(17,24,39,0.92);
+  border: 1px solid rgba(56,189,248,0.45); border-radius: 9px;
+  padding: 9px 14px; cursor: pointer; letter-spacing: 0.3px;
+  display: flex; align-items: center; gap: 7px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.5); backdrop-filter: blur(6px);
+  transition: border-color .15s ease, transform .15s ease, background .15s ease;
+}
+.changelog-btn:hover { border-color: #38bdf8; background: rgba(17,24,39,1); transform: translateY(-1px); }
+.changelog-btn .badge {
+  font-size: 10px; font-weight: 700; color: #0a0f1a; background: #38bdf8;
+  border-radius: 999px; padding: 0 6px; line-height: 16px; min-width: 16px; text-align: center;
+}
+
+.cl-overlay {
+  display: none; position: fixed; inset: 0; z-index: 300;
+  background: rgba(2,5,12,0.72); backdrop-filter: blur(4px);
+  padding: 48px 20px; overflow-y: auto;
+}
+.cl-overlay.open { display: block; }
+.cl-modal {
+  max-width: 980px; margin: 0 auto;
+  background: #0a0f1a; border: 1.5px solid rgba(56,189,248,0.35); border-radius: 16px;
+  box-shadow: 0 24px 70px rgba(0,0,0,0.7); overflow: hidden;
+  animation: clIn .18s ease;
+}
+@keyframes clIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.cl-head {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
+  padding: 24px 28px 18px; border-bottom: 1px solid rgba(255,255,255,0.08);
+  background: rgba(17,24,39,0.5);
+}
+.cl-head h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
+.cl-head p { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+.cl-head .eyebrow { font-size: 10px; color: #475569; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 8px; }
+.cl-close {
+  flex: 0 0 auto; width: 32px; height: 32px; border-radius: 8px; cursor: pointer;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  color: #cbd5e1; font-size: 20px; line-height: 1; transition: background .15s ease, color .15s ease;
+}
+.cl-close:hover { background: rgba(239,68,68,0.18); color: #f87171; border-color: rgba(239,68,68,0.4); }
+
+.cl-table-wrap { padding: 8px 12px 16px; }
+table.cl-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+table.cl-table th, table.cl-table td { text-align: left; padding: 13px 16px; vertical-align: top; border-bottom: 1px solid rgba(255,255,255,0.06); }
+table.cl-table thead th { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #94a3b8; position: sticky; top: 0; background: #0a0f1a; }
+table.cl-table tbody tr:hover { background: rgba(56,189,248,0.04); }
+table.cl-table .cl-num { color: #38bdf8; font-weight: 700; white-space: nowrap; width: 70px; }
+table.cl-table .cl-date { color: #cbd5e1; white-space: nowrap; width: 150px; }
+table.cl-table .cl-date .cl-time { display: block; color: #64748b; font-size: 11px; font-variant-numeric: tabular-nums; margin-top: 2px; }
+table.cl-table .cl-who { white-space: nowrap; width: 150px; }
+table.cl-table .cl-who .who-pill {
+  display: inline-block; font-size: 10.5px; padding: 2px 9px; border-radius: 999px;
+  background: rgba(34,197,94,0.12); color: #4ade80; border: 1px solid rgba(34,197,94,0.25);
+}
+table.cl-table .cl-who .who-pill.bot { background: rgba(168,85,247,0.12); color: #c084fc; border-color: rgba(168,85,247,0.25); }
+table.cl-table .cl-hl { color: #e2e8f0; line-height: 1.55; }
+table.cl-table .cl-hl .pr { color: #64748b; font-size: 11px; }
+.cl-foot { padding: 14px 28px 22px; border-top: 1px solid rgba(255,255,255,0.08); font-size: 11px; color: #64748b; }
+
 @media (max-width: 720px) {
   .tl-axis, .tl-row { grid-template-columns: 130px 1fr; }
   .tl-name { font-size: 11px; }
   section { padding: 22px 16px; }
+  [data-tip]::after { max-width: 240px; }
+  .changelog-btn { top: 12px; right: 12px; padding: 7px 11px; font-size: 11px; }
+  .cl-overlay { padding: 24px 10px; }
+  table.cl-table thead { display: none; }
+  table.cl-table tbody td { display: block; border: none; padding: 3px 16px; }
+  table.cl-table tbody tr { display: block; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  table.cl-table .cl-num, table.cl-table .cl-date, table.cl-table .cl-who { width: auto; }
 }
 </style>
 </head>
 <body>
+
+<button class="changelog-btn" onclick="openChangelog()" aria-label="Open changelog" title="View changelog">
+  &#128220; Changelog <span class="badge" id="clCount"></span>
+</button>
+
 <div class="container">
 
   <header>
@@ -129,6 +243,7 @@ footer a { color: #64748b; }
       anchors, hooks, slash-command skills, MCP servers and self-maintenance loops the agent
       operates inside. It <b>continues to be updated</b> as new skills, policies, and hooks get added.
       The diagram below evolves as the system does.
+      <span class="tiphint">&#128161; Hover any item (cursor turns to <b>?</b>) for a plain-English "what it's for &rarr; what you get".</span>
     </div>
   </header>
 
@@ -139,7 +254,9 @@ footer a { color: #64748b; }
       When each Claude Code primitive activates over a session. The harness fires hooks
       deterministically; Claude reads anchors (CLAUDE.md) and applies its conventions/guardrails as
       situations arise; slash-command skills run only when invoked. MCP servers are available the
-      whole session once configured; subagents get isolated context for delegated work.
+      whole session once configured; subagents get isolated context for delegated work. Routines
+      sit <i>outside</i> the session entirely — scheduled cloud agents that fire on a cron clock with
+      your laptop closed.
     </p>
 
     <div class="timeline">
@@ -154,22 +271,29 @@ footer a { color: #64748b; }
 
       <!-- CLAUDE.md -->
       <div class="tl-row">
-        <div class="tl-name">CLAUDE.md<span>Foundation — auto-loaded</span></div>
+        <div class="tl-name" data-tip="The repo's rulebook. Auto-loaded into every session so Claude always knows Tide's conventions, gotchas and workflow — you never have to re-explain the project.">CLAUDE.md<span>Foundation — auto-loaded</span></div>
         <div class="tl-track"><div class="bar c-anchor" style="left:0;right:0;"></div></div>
       </div>
       <!-- Reference docs -->
       <div class="tl-row">
-        <div class="tl-name">Reference docs<span>ARCHITECTURE / LEARNINGS / specs</span></div>
+        <div class="tl-name" data-tip="Deep-dive docs (ARCHITECTURE, DATABASE, LEARNINGS, specs). Claude pulls these in when a task needs the detail, so answers match how Tide actually works.">Reference docs<span>ARCHITECTURE / LEARNINGS / specs</span></div>
         <div class="tl-track"><div class="bar c-anchor" style="left:0;right:0;opacity:0.55;"></div></div>
       </div>
       <!-- Hooks -->
       <div class="tl-row">
-        <div class="tl-name">Hooks<span>SessionStart (session-role.sh)</span></div>
-        <div class="tl-track"><div class="bar c-hook" style="left:0;width:18%;"></div></div>
+        <div class="tl-name" data-tip="Shell scripts the harness runs automatically at fixed moments — session start, and before/after every tool call. They enforce rules WITHOUT Claude having to remember, so they can't be skipped.">Hooks<span>SessionStart + Pre/PostToolUse (per tool call)</span></div>
+        <div class="tl-track">
+          <div class="bar c-hook" style="left:0;width:14%;"></div>
+          <div class="dot c-hook" style="left:30%;"></div>
+          <div class="dot c-hook" style="left:44%;"></div>
+          <div class="dot c-hook" style="left:58%;"></div>
+          <div class="dot c-hook" style="left:72%;"></div>
+          <div class="dot c-hook" style="left:86%;"></div>
+        </div>
       </div>
       <!-- Conventions / policies -->
       <div class="tl-row">
-        <div class="tl-name">Conventions<span>Read on situational trigger</span></div>
+        <div class="tl-name" data-tip="Rules written in CLAUDE.md that Claude applies with judgment when a matching situation comes up (e.g. 'update the docs when the schema changes'). Flexible — but only as reliable as Claude remembering them.">Conventions<span>Read on situational trigger</span></div>
         <div class="tl-track">
           <div class="dashed"></div>
           <div class="dot c-policy" style="left:24%;"></div>
@@ -180,7 +304,7 @@ footer a { color: #64748b; }
       </div>
       <!-- Skills -->
       <div class="tl-row">
-        <div class="tl-name">Skills<span>User-invoked (/command)</span></div>
+        <div class="tl-name" data-tip="Pre-packaged playbooks Claude runs for a specific job. Older ones you trigger with /command; newer ones Claude can invoke itself when the moment fits.">Skills<span>User-invoked (/command) or model-invoked</span></div>
         <div class="tl-track">
           <div class="dashed"></div>
           <div class="dot c-skill" style="left:38%;"></div>
@@ -189,26 +313,35 @@ footer a { color: #64748b; }
       </div>
       <!-- MCPs -->
       <div class="tl-row">
-        <div class="tl-name">MCP servers<span>Available once configured</span></div>
+        <div class="tl-name" data-tip="Connections to outside tools (Figma, GitHub, Gmail…). Once configured they're available all session, letting Claude act beyond the repo.">MCP servers<span>Available once configured</span></div>
         <div class="tl-track"><div class="bar c-mcp" style="left:0;right:0;opacity:0.5;"></div></div>
       </div>
       <!-- Subagents -->
       <div class="tl-row">
-        <div class="tl-name">Subagents<span>Isolated context for delegation</span></div>
+        <div class="tl-name" data-tip="Helper Claudes spun up with their own fresh context for a delegated chunk of work, so the main conversation stays focused and uncluttered.">Subagents<span>Isolated context for delegation</span></div>
         <div class="tl-track">
           <div class="dashed"></div>
           <div class="bar c-sub" style="left:30%;width:14%;"></div>
           <div class="bar c-sub" style="left:58%;width:12%;"></div>
         </div>
       </div>
+      <!-- Routines (off-session) -->
+      <div class="tl-row">
+        <div class="tl-name" data-tip="A scheduled cloud agent (a claude.ai 'routine'). It runs on a cron clock in Anthropic's cloud — not during any session and not on your machine — so it can open a PR overnight with your laptop closed. Shown firing past END because it lives entirely outside the session.">Routines<span>Off-session — cloud cron (laptop closed)</span></div>
+        <div class="tl-track">
+          <div class="dashed"></div>
+          <div class="dot c-routine" style="left:100%;"></div>
+        </div>
+      </div>
 
       <div class="legend">
-        <div class="item"><span class="sw c-anchor"></span> Anchors (CLAUDE.md, docs) — loaded all session</div>
-        <div class="item"><span class="sw c-hook"></span> Hooks — harness-fired, deterministic</div>
-        <div class="item"><span class="sw c-policy"></span> Conventions — Claude reads on situational trigger</div>
-        <div class="item"><span class="sw c-skill"></span> Skills — Claude runs on user invocation</div>
-        <div class="item"><span class="sw c-mcp"></span> MCPs — external tool servers</div>
-        <div class="item"><span class="sw c-sub"></span> Subagents — isolated context for delegation</div>
+        <div class="item" data-tip="Always-loaded context — the foundation Claude reads from start to finish of every session."><span class="sw c-anchor"></span> Anchors (CLAUDE.md, docs) — loaded all session</div>
+        <div class="item" data-tip="Run by the harness on a schedule of events — not Claude's choice, so they can't be forgotten or skipped."><span class="sw c-hook"></span> Hooks — harness-fired, deterministic</div>
+        <div class="item" data-tip="Claude-applied rules that only work if the trigger fires AND Claude notices it — the layer whose riskiest rules are now hardened into hooks."><span class="sw c-policy"></span> Conventions — Claude reads on situational trigger</div>
+        <div class="item" data-tip="Bundled procedures run for a defined job — by you (/command) or by Claude itself."><span class="sw c-skill"></span> Skills — run on user or model invocation</div>
+        <div class="item" data-tip="Bridges to external services (design, code host, email) Claude can call during a session."><span class="sw c-mcp"></span> MCPs — external tool servers</div>
+        <div class="item" data-tip="Isolated worker contexts Claude delegates sub-tasks to, keeping the main thread clean."><span class="sw c-sub"></span> Subagents — isolated context for delegation</div>
+        <div class="item" data-tip="A scheduled cloud agent that fires on a cron clock with no session active — runs in Anthropic's cloud and opens a PR while your laptop is closed."><span class="sw c-routine"></span> Routines — scheduled cloud agent, off-session</div>
       </div>
     </div>
   </section>
@@ -224,130 +357,176 @@ footer a { color: #64748b; }
     <div class="cols">
       <!-- anchors -->
       <div class="rcard t-anchor">
-        <h3>Anchors</h3>
+        <h3 data-tip="Context that's always on. These files load every session so Claude starts already knowing the project — no setup, no re-explaining.">Anchors</h3>
         <div class="blurb">Always-on context loaded every session.</div>
-        <div class="row"><code>CLAUDE.md</code><span class="note">root — conventions, gotchas, workflow</span></div>
-        <div class="row"><code>README.md</code><span class="note">project overview + stack</span></div>
-        <div class="row"><code>docs/*.md</code><span class="note">ARCHITECTURE, DATABASE, LEARNINGS, specs</span></div>
-        <div class="row"><code>docs/*.html</code><span class="note">visual maps (GitHub Pages site)</span></div>
+        <div class="row" data-tip="Tide's master rulebook — conventions, gotchas and workflow. Loaded first, every time."><code>CLAUDE.md</code><span class="note">root — conventions, gotchas, workflow</span></div>
+        <div class="row" data-tip="The 30-second project overview and tech stack."><code>README.md</code><span class="note">project overview + stack</span></div>
+        <div class="row" data-tip="Written specs and hard-won lessons Claude consults when it needs detail about how Tide works."><code>docs/*.md</code><span class="note">ARCHITECTURE, DATABASE, LEARNINGS, specs</span></div>
+        <div class="row" data-tip="The visual maps (like this page) published to the docs site for humans to read instead of the code."><code>docs/*.html</code><span class="note">visual maps (GitHub Pages site)</span></div>
       </div>
 
       <!-- hooks -->
       <div class="rcard t-hook">
-        <h3>Hooks</h3>
+        <h3 data-tip="Automation scripts the harness fires at set moments. They turn 'please remember to…' rules into things that just happen — the deterministic guardrails.">Hooks</h3>
         <div class="blurb">Harness-fired / manual shell scripts. Deterministic.</div>
-        <div class="row"><code>scripts/session-role.sh</code><span class="note">SessionStart — OWNER vs CONSUMER detection</span></div>
-        <div class="row"><code>scripts/dev-stack.sh</code><span class="note">manual — become OWNER (docker + API + worker)</span></div>
-        <div class="row"><code>scripts/check-api-key-security.sh</code><span class="note">manual — guards leaked API keys / .env</span></div>
-        <div class="row"><code>.claude/settings.json</code><span class="note">wires the SessionStart hook + permissions</span></div>
+        <div class="row" data-tip="On session start, checks if the dev stack is already running and tells you whether you OWN it or should just USE it — so two sessions don't fight over the same ports/DB."><code>scripts/session-role.sh</code><span class="note">SessionStart — OWNER vs CONSUMER detection</span></div>
+        <div class="row" data-tip="On session start, injects the latest LEARNINGS + memory index so the session boots already aware of recent pitfalls — not just the role banner."><code>scripts/session-context.sh</code> <span class="pill pill-live">new</span><span class="note">SessionStart — injects latest LEARNINGS + memory index</span></div>
+        <div class="row" data-tip="After the context window is compacted, re-injects what compaction drops: in-flight branch/uncommitted work, docs that still owe a sync, your NOTES.md scratchpad, and a 'recall may be degraded — re-verify' checklist."><code>scripts/precompact-context.sh</code> <span class="pill pill-live">new</span><span class="note">SessionStart(compact) — re-grounds after compaction</span></div>
+        <div class="row" data-tip="Blocks any command that would create an expensive AWS resource. Outcome: you can't accidentally blow the $46/month budget." ><code>scripts/budget-guard.sh</code> <span class="pill pill-live">new</span><span class="note">PreToolUse(Bash) — DENIES banned AWS cost commands</span></div>
+        <div class="row" data-tip="If a stack is already running, refuses to start a duplicate. Outcome: no port clashes or corrupted shared database when running parallel sessions."><code>scripts/consumer-guard.sh</code> <span class="pill pill-live">new</span><span class="note">PreToolUse(Bash) — DENIES duplicate service starts on a CONSUMER session</span></div>
+        <div class="row" data-tip="When you edit code that has a matching doc, reminds you which docs to update in the SAME change. Outcome: the docs never silently fall out of date."><code>scripts/doc-sync-guard.sh</code> <span class="pill pill-live">new</span><span class="note">PostToolUse(Edit/Write) — reminds to update matching docs</span></div>
+        <div class="row" data-tip="Scans each edit for fintech mistakes — unencrypted PII, leaked logs, direct Plaid calls, AI writing to the DB. Outcome: security rules get caught as you type, not in review."><code>scripts/security-guard.sh</code> <span class="pill pill-live">new</span><span class="note">PostToolUse(Edit/Write) — flags PII/encryption/Plaid/AI-write violations</span></div>
+        <div class="row" data-tip="The one command to become the stack OWNER — boots docker, the API and the worker together."><code>scripts/dev-stack.sh</code><span class="note">manual — become OWNER (docker + API + worker)</span></div>
+        <div class="row" data-tip="A manual sweep that catches leaked API keys or committed .env secrets before they ship."><code>scripts/check-api-key-security.sh</code><span class="note">manual — guards leaked API keys / .env</span></div>
+        <div class="row" data-tip="The wiring file — tells Claude Code which hooks to run at which events, plus what commands it's allowed to use."><code>.claude/settings.json</code><span class="note">wires SessionStart + Pre/PostToolUse hooks + permissions</span></div>
       </div>
 
       <!-- conventions / policies -->
       <div class="rcard t-policy">
-        <h3>Conventions (policy layer)</h3>
-        <div class="blurb">Rules in CLAUDE.md Claude applies when a trigger fires.</div>
-        <div class="row"><code>Doc-sync</code><span class="note">schema/arch/flow change → update .md + .html same PR</span></div>
-        <div class="row"><code>DATA FLOW = SPEC</code><span class="note">data-flow-map.html is the primary spec</span></div>
-        <div class="row"><code>LEARNINGS loop</code><span class="note">auto-append bugs/lessons to LEARNINGS.md</span></div>
-        <div class="row"><code>$46/mo budget</code><span class="note">no EKS / NAT / ALB / ElastiCache / Secrets Mgr</span></div>
-        <div class="row"><code>Security</code><span class="note">AES-256 PII, Bouncer per resource, redactForLogging</span></div>
-        <div class="row"><code>BankDataProvider</code><span class="note">never call Plaid directly</span></div>
-        <div class="row"><code>OWNER / CONSUMER</code><span class="note">one session owns the stack + migrations</span></div>
+        <h3 data-tip="The judgment-based rulebook inside CLAUDE.md. Powerful, but relies on Claude remembering — which is why the riskiest ones are now hardened into Hooks.">Conventions (policy layer)</h3>
+        <div class="blurb">CLAUDE.md is the canonical statement of these rules; this card mirrors it.</div>
+        <div class="row" data-tip="Rule: change the schema/architecture/flow and you must update the matching .md + .html in the same PR. Keeps code and docs honest. (Now also enforced by doc-sync-guard.sh.)"><code>Doc-sync</code><span class="note">schema/arch/flow change → update .md + .html same PR</span></div>
+        <div class="row" data-tip="The data-flow map IS the product spec — Vik reads it instead of the code, so it must always match reality."><code>DATA FLOW = SPEC</code><span class="note">data-flow-map.html is the primary spec</span></div>
+        <div class="row" data-tip="Every bug fix or surprising lesson gets written to LEARNINGS.md so the same mistake isn't repeated. (Now backed by the update-learnings skill.)"><code>LEARNINGS loop</code><span class="note">auto-append bugs/lessons to LEARNINGS.md</span></div>
+        <div class="row" data-tip="Hard ceiling on AWS spend — rules out the expensive services. (Now physically enforced by budget-guard.sh.)"><code>$46/mo budget</code><span class="note">no EKS / NAT / ALB / ElastiCache / Secrets Mgr</span></div>
+        <div class="row" data-tip="The fintech non-negotiables: encrypt PII, check every resource access, scrub logs. (Now caught at edit time by security-guard.sh.)"><code>Security</code><span class="note">AES-256 PII, Bouncer per resource, redactForLogging</span></div>
+        <div class="row" data-tip="All bank data flows through one interface — never the Plaid SDK directly — so the provider can be swapped and the rules stay in one place. (Now also caught at edit time by security-guard.sh.)"><code>BankDataProvider</code><span class="note">never call Plaid directly</span></div>
+        <div class="row" data-tip="Only one session runs the dev stack + migrations; the rest just call its API. Avoids shared-DB chaos between parallel sessions. (Now enforced by consumer-guard.sh — denies duplicate service starts, asks before shared-DB migrations.)"><code>OWNER / CONSUMER</code><span class="note">one session owns the stack + migrations</span></div>
       </div>
 
-      <!-- skills -->
+      <!-- skills / commands / agents -->
       <div class="rcard t-skill">
-        <h3>Skills</h3>
-        <div class="blurb">Bundled workflows. User invokes via slash command (<code>.claude/commands/</code>).</div>
-        <div class="row"><code>/dimensions</code><span class="note">identify eval dimensions (MECE failure modes)</span></div>
-        <div class="row"><code>/fixtures</code><span class="note">generate eval test cases across dimensions</span></div>
-        <div class="row"><code>/ground-truth</code><span class="note">author golden ideal responses</span></div>
-        <div class="row"><code>/ux-critique</code><span class="note">principal-designer mobile UI/UX audit</span></div>
+        <h3 data-tip="Three kinds of reusable capability under .claude/. Commands you trigger by name; Skills Claude can also trigger itself; Agents are isolated helper Claudes.">Skills, commands &amp; agents</h3>
+        <div class="blurb">Three distinct <code>.claude/</code> extensions — commands are user-invoked; skills can be model-invoked; agents are isolated subagents.</div>
+        <div class="row" data-tip="Walks you through defining what an AI feature could get wrong — the failure modes worth testing."><code>/dimensions</code><span class="note">command — eval dimensions (MECE failure modes)</span></div>
+        <div class="row" data-tip="Generates concrete test cases that cover those failure modes."><code>/fixtures</code><span class="note">command — eval test cases across dimensions</span></div>
+        <div class="row" data-tip="Helps you write the 'perfect answer' each test case gets graded against."><code>/ground-truth</code><span class="note">command — golden ideal responses</span></div>
+        <div class="row" data-tip="A principal-designer review of a mobile screen's UX, with concrete fixes."><code>/ux-critique</code><span class="note">command — principal-designer mobile UI/UX audit</span></div>
+        <div class="row" data-tip="Claude triggers this itself after a fix to record the lesson in LEARNINGS.md — no nagging needed."><code>update-learnings</code> <span class="pill pill-live">new</span><span class="note">SKILL — model-invoked on any bug fix → LEARNINGS.md</span></div>
+        <div class="row" data-tip="Scaffolds a new AI Coach tool across all 4 files that must change together, so it actually works and stays testable."><code>/new-ai-tool</code> <span class="pill pill-live">new</span><span class="note">SKILL — scaffolds the 4 Bedrock-tool files in lockstep + ai-pipeline-map</span></div>
+        <div class="row" data-tip="Creates a new database table + model with encryption, access control and docs already baked in — the fintech guardrails can't be forgotten."><code>/new-model</code> <span class="pill pill-live">new</span><span class="note">SKILL — model+migration with encryption / serializeAs / HMAC / Bouncer baked in</span></div>
+        <div class="row" data-tip="Sweeps EVERY tracked doc (not just data-flow) for drift against the code and reports each mismatch with doc:line → code:line, then fixes + opens a PR on your go-ahead. The in-session twin of the nightly doc-drift routine (§5)."><code>/doc-drift</code> <span class="pill pill-live">new</span><span class="note">SKILL — on-demand all-docs drift sweep → docs: PR (twin of the §5 nightly routine)</span></div>
+        <div class="row" data-tip="A read-only helper Claude that checks the data-flow spec still matches the code and flags any drift, before you ship."><code>spec-auditor</code> <span class="pill pill-live">new</span><span class="note">AGENT — read-only data-flow=spec drift audit</span></div>
+        <div class="row" data-tip="The key distinction: Commands (.claude/commands) only run when you type /name. Skills (.claude/skills) can run automatically when their description matches the moment. Agents (.claude/agents) run in their own isolated context."><span class="note">commands = <code>.claude/commands/</code> (no <code>SKILL.md</code>, user-invoked only) · skills = <code>.claude/skills/</code> · agents = <code>.claude/agents/</code></span></div>
       </div>
 
       <!-- content / app surface -->
       <div class="rcard t-content">
-        <h3>App &amp; packages — the substance</h3>
+        <h3 data-tip="The actual product code — what all the guardrails and docs exist to protect.">App &amp; packages — the substance</h3>
         <div class="blurb">The shipping code: mobile, backend, shared libs.</div>
-        <div class="row"><code>apps/mobile/</code><span class="note">React Native + Expo (iOS dev build)</span></div>
-        <div class="row"><code>apps/backend/</code><span class="note">AdonisJS 6 API + BullMQ worker</span></div>
-        <div class="row"><code>packages/bank-data-provider/</code><span class="note">BankDataProvider + PlaidAdapter</span></div>
-        <div class="row"><code>packages/shared/</code><span class="note">types, encryption utils, constants</span></div>
-        <div class="row"><code>evals/</code><span class="note">fixtures, judges, runner — AI quality suite</span></div>
+        <div class="row" data-tip="The phone app — React Native + Expo. What users actually touch."><code>apps/mobile/</code><span class="note">React Native + Expo (iOS dev build)</span></div>
+        <div class="row" data-tip="The server — the AdonisJS API plus the background-job worker."><code>apps/backend/</code><span class="note">AdonisJS 6 API + BullMQ worker</span></div>
+        <div class="row" data-tip="The single gateway to bank data; wraps Plaid behind a swappable interface."><code>packages/bank-data-provider/</code><span class="note">BankDataProvider + PlaidAdapter</span></div>
+        <div class="row" data-tip="Code shared by app and server — types, encryption helpers, constants."><code>packages/shared/</code><span class="note">types, encryption utils, constants</span></div>
+        <div class="row" data-tip="The AI quality test suite — fixtures, graders and the runner that scores the Coach."><code>evals/</code><span class="note">fixtures, judges, runner — AI quality suite</span></div>
       </div>
 
       <!-- ops -->
       <div class="rcard t-ops">
-        <h3>Operations</h3>
+        <h3 data-tip="The plumbing: how Tide is deployed, what runs in CI, and how these docs get published." class="tip-right">Operations</h3>
         <div class="blurb">Infra, CI, meta- and contributor docs.</div>
-        <div class="row"><code>infra/</code><span class="note">Dockerfiles, k3s manifests, Terraform</span></div>
-        <div class="row"><code>.github/workflows/</code><span class="note">ci.yaml, evals.yml, deploy.yaml</span></div>
-        <div class="row"><code>docker-compose.yml</code><span class="note">local Postgres + Redis</span></div>
-        <div class="row"><code>GitHub Pages</code><span class="note">serves <code>docs/</code> as the visual-docs site (Settings → Pages, main /docs)</span></div>
-        <div class="row"><code>.worktreeinclude</code><span class="note">parallel-session worktree isolation</span></div>
+        <div class="row tip-right" data-tip="How Tide is deployed — Docker images, k3s manifests, Terraform (the cheap, no-EKS stack)."><code>infra/</code><span class="note">Dockerfiles, k3s manifests, Terraform</span></div>
+        <div class="row tip-right" data-tip="The CI pipelines that run on every push — tests, AI evals, and deploy."><code>.github/workflows/</code><span class="note">ci.yaml, evals.yml, deploy.yaml</span></div>
+        <div class="row tip-right" data-tip="Spins up local Postgres + Redis with one command for development."><code>docker-compose.yml</code><span class="note">local Postgres + Redis</span></div>
+        <div class="row tip-right" data-tip="Publishes the docs/ folder as the public visual-docs site on every merge to main."><code>GitHub Pages</code><span class="note">serves <code>docs/</code> as the visual-docs site (Settings → Pages, main /docs)</span></div>
+        <div class="row tip-right" data-tip="Lets parallel sessions work in isolated copies of the repo without stepping on each other's files."><code>.worktreeinclude</code><span class="note">parallel-session worktree isolation</span></div>
       </div>
     </div>
   </section>
 
-  <!-- ============ §3 HOOKS vs CONVENTIONS vs SKILLS ============ -->
+  <!-- ============ §3 HOOKS vs CONVENTIONS vs SKILLS vs AGENTS vs ROUTINES ============ -->
   <section>
-    <div class="sec-head"><div class="sec-num">3</div><h2>Hooks vs. Conventions vs. Skills</h2></div>
+    <div class="sec-head"><div class="sec-num">3</div><h2>Hooks vs. Conventions vs. Skills vs. Agents vs. Routines</h2></div>
     <p class="sec-desc">
-      The three layers people most commonly confuse — different in <i>who runs them, when, and what
-      they're best for</i>. In Tide, the "policy" layer lives as conventions inside <code>CLAUDE.md</code>
-      rather than a dedicated <code>policies/</code> folder.
+      The five layers people most commonly confuse — different in <i>who runs them, when, what
+      they're best for</i>, and crucially whether they get their <i>own context</i> and a
+      <i>restricted toolset</i>. In Tide, the "policy" layer lives as conventions inside
+      <code>CLAUDE.md</code> rather than a dedicated <code>policies/</code> folder. Agents are
+      isolated helper Claudes under <code>.claude/agents/</code>; <b>Routines</b> are the newest layer
+      and the only one that runs with <i>no session at all</i> — a scheduled agent firing on a cron
+      clock in the cloud, laptop closed.
     </p>
 
     <table class="cmp">
       <thead>
         <tr>
           <th>Dimension</th>
-          <th class="col-hook head-hook">Hooks</th>
-          <th class="col-policy head-policy">Conventions</th>
-          <th class="col-skill head-skill">Skills</th>
+          <th class="col-hook head-hook" data-tip="The harness runs these automatically — Claude has no say, so they're the most reliable layer.">Hooks</th>
+          <th class="col-policy head-policy" data-tip="Claude follows these using judgment — reliable only if it remembers them and notices the trigger.">Conventions</th>
+          <th class="col-skill head-skill" data-tip="Reusable procedures Claude executes for a defined job, by you or by itself.">Skills</th>
+          <th class="col-agent head-agent" data-tip="A separate Claude with its own context window and a restricted toolset. Delegated a bounded task, it returns only its conclusion — isolation + sandboxing in one.">Agents</th>
+          <th class="col-routine head-routine tip-right" data-tip="A scheduled cloud agent (a claude.ai 'routine'). Fires on a cron clock in Anthropic's cloud with no session active — the only layer that runs while your laptop is closed.">Routines</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <th></th>
-          <td class="col-hook"><span class="tagline head-hook">Tripwire</span></td>
-          <td class="col-policy"><span class="tagline head-policy">Checklist</span></td>
-          <td class="col-skill"><span class="tagline head-skill">Playbook</span></td>
+          <td class="col-hook"><span class="tagline head-hook" data-tip="Fires on its own the instant a condition is met — you literally can't forget it.">Tripwire</span></td>
+          <td class="col-policy"><span class="tagline head-policy" data-tip="A rule Claude is supposed to follow when the situation calls for it.">Checklist</span></td>
+          <td class="col-skill"><span class="tagline head-skill" data-tip="A step-by-step procedure packaged for a recurring task.">Playbook</span></td>
+          <td class="col-agent"><span class="tagline head-agent" data-tip="A specialist Claude you hand a job to. Works in its own window with only the tools it's allowed, then hands back the result.">Specialist</span></td>
+          <td class="col-routine"><span class="tagline head-routine tip-right" data-tip="An agent on a timer. Nobody kicks it off — the clock does, in the cloud, on schedule.">Clockwork</span></td>
         </tr>
         <tr>
-          <th>What it is</th>
+          <th data-tip="The basic nature of each layer.">What it is</th>
           <td class="col-hook">Shell scripts run by the harness at lifecycle events</td>
           <td class="col-policy">Markdown rules in CLAUDE.md Claude reads when a trigger fires</td>
           <td class="col-skill">Bundled workflows (command prompt + instructions)</td>
+          <td class="col-agent">A separate Claude defined by a frontmatter file (system prompt + declared tools)</td>
+          <td class="col-routine">A cloud agent + a cron schedule (a claude.ai routine), with its own repo checkout</td>
         </tr>
         <tr>
-          <th>Who runs it</th>
+          <th data-tip="The crucial difference — the harness guarantees a hook runs; a convention depends on Claude's judgment.">Who runs it</th>
           <td class="col-hook">The harness (deterministic)</td>
           <td class="col-policy">Claude (judgment)</td>
-          <td class="col-skill">Claude (on demand)</td>
+          <td class="col-skill">Claude — a true <i>skill</i> can self-invoke from its description; a <i>command</i> only when the user types <code>/name</code></td>
+          <td class="col-agent">A fresh Claude instance the main one delegates to — runs independently, then returns</td>
+          <td class="col-routine">Anthropic's cloud scheduler — fires the agent unattended, no one online</td>
         </tr>
         <tr>
-          <th>When it fires</th>
+          <th data-tip="What actually makes each one activate.">When it fires</th>
           <td class="col-hook">Lifecycle events (SessionStart, …)</td>
           <td class="col-policy">When the matching situation arises</td>
           <td class="col-skill">When invoked via slash command</td>
+          <td class="col-agent">When a bounded task is delegated to it (by Claude or you)</td>
+          <td class="col-routine">On a cron schedule (e.g. nightly 07:00 UTC) — even with your laptop closed</td>
         </tr>
         <tr>
-          <th>Best for</th>
+          <th data-tip="The kind of rule each layer is the right tool for.">Best for</th>
           <td class="col-hook">Non-negotiables; observability; deterministic side effects</td>
           <td class="col-policy">Situational judgment</td>
           <td class="col-skill">Reusable multi-step workflows</td>
+          <td class="col-agent">Noisy fan-out work whose result you want without the file-dump; tasks that must be sandboxed (e.g. read-only)</td>
+          <td class="col-routine">Recurring unattended upkeep — nightly audits, drift sweeps, scheduled reports that open a PR</td>
         </tr>
         <tr>
-          <th>In this repo</th>
-          <td class="col-hook"><code>scripts/session-role.sh</code><code>scripts/dev-stack.sh</code><code>scripts/check-api-key-security.sh</code></td>
-          <td class="col-policy"><code>Doc-sync (code+docs same PR)</code><code>DATA FLOW = SPEC</code><code>LEARNINGS loop</code><code>$46/mo budget guard</code></td>
-          <td class="col-skill"><code>/dimensions</code><code>/fixtures</code><code>/ground-truth</code><code>/ux-critique</code></td>
+          <th data-tip="Does it run in its own isolated context window, or inside the main conversation? This is the defining trait of an agent — a noisy sweep stays in its window and only the conclusion comes back.">Own context?</th>
+          <td class="col-hook">No — it's a shell process, not Claude</td>
+          <td class="col-policy">No — it lives <i>inside</i> Claude's context</td>
+          <td class="col-skill">No — runs in the main conversation</td>
+          <td class="col-agent"><b>Yes</b> — isolated window; returns only its result</td>
+          <td class="col-routine"><b>Yes</b> — a fresh cloud session per run; result lands as a PR/commit, not in your chat</td>
+        </tr>
+        <tr>
+          <th data-tip="What tools the layer can use. An agent's toolset is declared in its frontmatter and enforced by the harness — so 'read-only' is a wall, not a polite request.">Tool access</th>
+          <td class="col-hook">Whatever the script itself does</td>
+          <td class="col-policy">Claude's full toolset</td>
+          <td class="col-skill">Claude's full toolset</td>
+          <td class="col-agent"><b>Restricted set</b> declared in frontmatter (sandboxed)</td>
+          <td class="col-routine"><b>Declared per routine</b> — repo checkout + chosen tools; runs off your machine</td>
+        </tr>
+        <tr>
+          <th data-tip="The concrete examples that exist in Tide today.">In this repo</th>
+          <td class="col-hook"><code>scripts/session-role.sh</code><code>scripts/session-context.sh (SessionStart)</code><code>scripts/precompact-context.sh (SessionStart:compact)</code><code>scripts/budget-guard.sh (PreToolUse)</code><code>scripts/consumer-guard.sh (PreToolUse)</code><code>scripts/doc-sync-guard.sh (PostToolUse)</code><code>scripts/security-guard.sh (PostToolUse)</code><code>scripts/changelog-guard.sh (PostToolUse)</code></td>
+          <td class="col-policy"><code>DATA FLOW = SPEC — judgment only (spec-auditor + nightly sweep)</code><code>OWNER / CONSUMER — partly hook-backed (consumer-guard.sh)</code><code>BankDataProvider only — partly hook-backed (security-guard.sh)</code></td>
+          <td class="col-skill"><code>commands: /dimensions /fixtures /ground-truth /ux-critique</code><code>skills: update-learnings, /doc-drift (model-invoked)</code></td>
+          <td class="col-agent"><code>spec-auditor (read-only: Read, Grep, Glob, Bash)</code><code>Riu persona — drift auditor for DATA FLOW = SPEC</code></td>
+          <td class="col-routine"><code>Nightly Doc-Drift Sweep (Opus 4.8, 07:00 UTC)</code><code>→ opens a docs: PR; lives in claude.ai, not the repo</code></td>
         </tr>
       </tbody>
     </table>
 
-    <div class="banner">Hooks fire <span class="dot">&middot;</span> Conventions judge <span class="dot">&middot;</span> Skills execute</div>
+    <div class="banner" data-tip="The one-line mental model: Hooks happen automatically (can't be skipped), Conventions need Claude's judgment (can be missed), Skills are run on demand for a job, Agents go off and do the job in their own sandbox and report back, Routines do all that on a clock in the cloud while you're offline.">Hooks fire <span class="dot">&middot;</span> Conventions judge <span class="dot">&middot;</span> Skills execute <span class="dot">&middot;</span> Agents delegate <span class="dot">&middot;</span> Routines recur</div>
   </section>
 
   <!-- ============ §4 EXTERNAL CONNECTIONS ============ -->
@@ -360,32 +539,33 @@ footer a { color: #64748b; }
 
     <div class="cols">
       <div class="rcard t-content">
-        <h3>Runtime services</h3>
+        <h3 data-tip="The outside services the running app depends on to function.">Runtime services</h3>
         <div class="blurb">What the app itself depends on.</div>
-        <div class="row"><code>Plaid</code><span class="note">bank data — via BankDataProvider only</span></div>
-        <div class="row"><code>AWS Bedrock</code><span class="note">Claude Sonnet/Haiku — AI coach + classifiers</span></div>
-        <div class="row"><code>AWS Cognito</code><span class="note">JWT auth (1h access / 30d refresh)</span></div>
-        <div class="row"><code>PostgreSQL</code><span class="note">local docker / RDS-ready</span></div>
-        <div class="row"><code>Redis + BullMQ</code><span class="note">queue / background jobs</span></div>
+        <div class="row" data-tip="The bank-data provider — pulls accounts and transactions, always through the BankDataProvider wrapper."><code>Plaid</code><span class="note">bank data — via BankDataProvider only</span></div>
+        <div class="row" data-tip="Hosts the Claude models that power the AI coach and the transaction classifiers."><code>AWS Bedrock</code><span class="note">Claude Sonnet/Haiku — AI coach + classifiers</span></div>
+        <div class="row" data-tip="Handles login — issues the auth tokens (1-hour access, 30-day refresh)."><code>AWS Cognito</code><span class="note">JWT auth (1h access / 30d refresh)</span></div>
+        <div class="row" data-tip="The main database — local Docker in dev, ready to move to managed RDS in prod."><code>PostgreSQL</code><span class="note">local docker / RDS-ready</span></div>
+        <div class="row" data-tip="The job queue that runs background work (bank syncs, predictions) off the request path."><code>Redis + BullMQ</code><span class="note">queue / background jobs</span></div>
       </div>
 
       <div class="rcard t-hook">
-        <h3>MCP servers</h3>
+        <h3 data-tip="Outside tools Claude can use during a session — its reach beyond the repo.">MCP servers</h3>
         <div class="blurb">Tool servers reachable from the session.</div>
-        <div class="row"><code>Figma</code> <span class="pill pill-live">integrated</span><span class="note">design context for UI work</span></div>
-        <div class="row"><code>GitHub</code> <span class="pill pill-live">integrated</span><span class="note">PRs, issues, CI, reviews</span></div>
-        <div class="row"><code>Google Drive / Box</code> <span class="pill pill-avail">available</span></div>
-        <div class="row"><code>Gmail / Calendar</code> <span class="pill pill-avail">available</span></div>
-        <div class="row"><code>Vercel / DocuSign</code> <span class="pill pill-avail">available</span></div>
+        <div class="row" data-tip="Lets Claude read your Figma designs to build matching UI in code."><code>Figma</code> <span class="pill pill-live">integrated</span><span class="note">design context for UI work</span></div>
+        <div class="row" data-tip="Lets Claude open PRs, read issues and check CI directly."><code>GitHub</code> <span class="pill pill-live">integrated</span><span class="note">PRs, issues, CI, reviews</span></div>
+        <div class="row" data-tip="Cloud file storage Claude could reach — connected but not yet used in Tide work."><code>Google Drive / Box</code> <span class="pill pill-avail">available</span></div>
+        <div class="row" data-tip="Email + scheduling access, available to wire in when a task needs it."><code>Gmail / Calendar</code> <span class="pill pill-avail">available</span></div>
+        <div class="row" data-tip="Deploy (Vercel) + e-signature (DocuSign) tools, available when needed."><code>Vercel / DocuSign</code> <span class="pill pill-avail">available</span></div>
       </div>
 
       <div class="rcard t-ops">
-        <h3>Host &amp; sites</h3>
+        <h3 data-tip="Where Claude runs and where its output gets published." class="tip-right">Host &amp; sites</h3>
         <div class="blurb">The Claude Code host and published surfaces.</div>
-        <div class="row"><code>Claude Code</code><span class="note">Opus 4.8 (1M ctx) — web / remote container</span></div>
-        <div class="row"><code>.claude/settings.json</code><span class="note">repo-level hooks + permissions</span></div>
-        <div class="row"><code>.claude/commands/</code><span class="note">repo slash-command skills</span></div>
-        <div class="row"><code>GitHub Pages</code> <span class="pill pill-live">live</span><span class="note">publishes <code>docs/</code> on merge to main</span></div>
+        <div class="row tip-right" data-tip="The agent itself — running on Claude Opus 4.8 with a 1-million-token context window."><code>Claude Code</code><span class="note">Opus 4.8 (1M ctx) — web / remote container</span></div>
+        <div class="row tip-right" data-tip="Repo-level config: which hooks run and what commands Claude is allowed to use."><code>.claude/settings.json</code><span class="note">repo-level hooks + permissions</span></div>
+        <div class="row tip-right" data-tip="The slash-command files for this repo (the /dimensions, /fixtures, … you type)."><code>.claude/commands/</code><span class="note">repo slash-command skills</span></div>
+        <div class="row tip-right" data-tip="Scheduled cloud agents (claude.ai 'routines') that run on a cron clock in Anthropic's cloud — off your machine. The Nightly Doc-Drift Sweep lives here, not in the repo; managed at claude.ai/code/routines."><code>Routines</code> <span class="pill pill-live">live</span><span class="note">claude.ai — scheduled cloud agents (nightly doc-drift sweep)</span></div>
+        <div class="row tip-right" data-tip="The live site that publishes these docs automatically on every merge to main."><code>GitHub Pages</code> <span class="pill pill-live">live</span><span class="note">publishes <code>docs/</code> on merge to main</span></div>
         <div class="row"><a href="https://vikkybharadwaj.github.io/tide/">vikkybharadwaj.github.io/tide</a></div>
       </div>
     </div>
@@ -396,44 +576,156 @@ footer a { color: #64748b; }
     <div class="sec-head"><div class="sec-num">5</div><h2>How the system maintains itself</h2></div>
     <p class="sec-desc">
       The cadences and automations that keep the workspace current and the docs honest — Tide's
-      "self-improvement layer."
+      "self-improvement layer." The throughline of the latest iteration: <b>migrate the highest-risk
+      rules out of the §3 "Conventions judge" column (which depends on Claude <i>remembering</i>) and
+      into the "Hooks fire" column — deterministic tripwires that cannot be silently skipped.</b>
+      The cards below are tagged <span class="pill pill-live" data-tip="Enforced by the harness automatically — it runs on its own and can't be skipped.">tripwire</span> (harness-enforced),
+      <span class="pill pill-avail" data-tip="Depends on Claude's judgment and memory — reliable only if Claude remembers.">convention</span> (Claude judgment), <span class="pill pill-park" data-tip="Runs in the GitHub Actions cloud pipeline, not on your machine.">CI</span> (GitHub Actions), or <span class="pill pill-routine" data-tip="A scheduled agent running in Anthropic's cloud on a cron clock — fires with your laptop closed.">routine</span> (scheduled cloud agent).
     </p>
 
     <div class="mgrid">
       <div class="mcard">
-        <div class="when">Per session start</div>
-        <h4>Role detection</h4>
+        <div class="when">Per session start &middot; SessionStart hook</div>
+        <h4 data-tip="Tells each session whether to run the dev stack or just use the one already running — so parallel sessions never collide on ports or the shared DB.">Role detection <span class="pill pill-live">tripwire</span></h4>
         <p><code>scripts/session-role.sh</code> probes ports 3333 / 8081 / 5432 / 6379 and prints
         whether this session is the dev-stack <b>OWNER</b> or a <b>CONSUMER</b>, so parallel sessions
         don't collide on the shared DB or port.</p>
       </div>
 
       <div class="mcard">
-        <div class="when">Every PR (always)</div>
-        <h4>Code + docs move together</h4>
-        <p>Changing schema, API flows, security model, or the AI pipeline <i>requires</i> updating the
-        matching <code>.md</code> + <code>.html</code> maps in the same PR. <code>data-flow-map.html</code>
-        is the product spec — code and flow must never drift.</p>
+        <div class="when">Per session start &middot; SessionStart hook</div>
+        <h4 data-tip="Boots every session already knowing the recent pitfalls and what's in persistent memory — not just the role banner.">Context injection <span class="pill pill-live">tripwire</span></h4>
+        <p><code>scripts/session-context.sh</code> injects the latest <code>docs/LEARNINGS.md</code> entries
+        (newest <code>N=8</code>) + the <code>MEMORY.md</code> index into every session's context at start.
+        A SessionStart hook's stdout is added to the model's context, so a fresh session boots already
+        aware of recent lessons + project memory — the just-in-time / progressive-disclosure pattern
+        (surface a digest, not the whole file).</p>
       </div>
 
       <div class="mcard">
-        <div class="when">On discovery</div>
-        <h4>LEARNINGS loop</h4>
-        <p>When a bug, crash, or non-obvious stack fact surfaces, it's appended to
-        <code>docs/LEARNINGS.md</code> automatically — reviewed before writing mobile code to avoid
-        repeating known pitfalls.</p>
+        <div class="when">After compaction &middot; SessionStart(compact) hook</div>
+        <h4 data-tip="When a long session's history is compacted into a summary, this re-injects the state compaction tends to drop — in-flight work, docs owed, your scratchpad — so the agent doesn't lose the thread.">Post-compaction re-grounding <span class="pill pill-live">tripwire</span></h4>
+        <p><code>scripts/precompact-context.sh</code> fires on <code>SessionStart</code> with
+        <code>source=compact</code> — the only hook that can inject context <i>into</i> the freshly
+        compacted window (<code>PreCompact</code> can't). It re-asserts the compaction-specific delta:
+        the in-flight branch + uncommitted work, any spec-bearing edits that still <b>owe a doc sync in
+        this PR</b>, the <code>./NOTES.md</code> working-memory scratchpad, and a "recall may be degraded
+        — re-verify paths/flags" checklist. Directly implements Anthropic's guidance to preserve
+        architectural decisions + unresolved work across compaction.</p>
       </div>
 
       <div class="mcard">
-        <div class="when">Every push / PR to main</div>
-        <h4>CI: lint, typecheck, test</h4>
+        <div class="when">Per edit &middot; PostToolUse(Edit/Write) hook</div>
+        <h4 data-tip="Catches doc updates you'd otherwise forget — the moment you change related code, it names exactly which docs now owe an update.">Doc-sync tripwire <span class="pill pill-live">tripwire</span></h4>
+        <p><code>scripts/doc-sync-guard.sh</code> fires the moment an edit lands on a spec-bearing path
+        (a migration, a route/controller, <code>services/ai/**</code>, a mobile screen) and injects an
+        explicit reminder of <i>exactly which</i> <code>.md</code> + <code>.html</code> maps now owe an
+        update <b>in the same PR</b>. The old "code + docs move together" mandate was convention-only —
+        now the harness raises it on every relevant edit. <code>data-flow-map.html</code> is the product
+        spec; code and flow must never drift.</p>
+      </div>
+
+      <div class="mcard">
+        <div class="when">Every /ship that touches docs/*.html &middot; ship step 6.6</div>
+        <h4 data-tip="The public portfolio page republishes these docs — this keeps that second site in lockstep instead of silently freezing at an old snapshot.">Portfolio-mirror sync <span class="pill pill-live">new</span></h4>
+        <p>The portfolio site (<code>vikkybharadwaj.github.io/projects/tide/</code>) republishes most of
+        <code>docs/*.html</code> — and for two weeks nothing synced it, so it kept showing features the
+        app had removed. <code>scripts/sync-portfolio.sh</code> makes the mirror a <b>build artifact</b>:
+        manifest-driven from <code>.claude/doc-map.json</code> (<code>portfolio_mirror</code>), it copies
+        every published page, re-applies the mirror's nav transform, deletes orphans, and warns when the
+        hand-owned portfolio landing's stat numbers fall behind. <code>/ship</code> step 6.6 runs it in the
+        same ship cycle as any docs change; <code>/doc-drift</code> runs <code>--check</code> as its 8th
+        sweep area. Mirror pages are never hand-edited again.</p>
+      </div>
+
+      <div class="mcard">
+        <div class="when">Per edit + every /ship &middot; PostToolUse hook + ship step</div>
+        <h4 data-tip="Keeps this page's own 'Page history' changelog in lockstep with git — it once silently froze for five PRs; now it can't.">Changelog freshness tripwire <span class="pill pill-live">tripwire</span></h4>
+        <p>This page's <b>Changelog</b> (top-right button) bills itself as <i>sourced from the commit
+        history</i> — but it was a hand-maintained array, so it silently <b>froze at #11</b> while five more
+        PRs shipped without a row. Now <code>scripts/sync-changelog.py</code> regenerates it from the file's
+        real <code>git log</code> (date, ET time, author, PR#), only ever <i>appending</i> so hand-curated
+        highlight prose survives. <code>/ship</code> records each PR's own row in the <b>same PR</b> (no
+        one-ship lag), and <code>scripts/changelog-guard.sh</code> is the <code>PostToolUse</code> backstop
+        that re-flags the list the instant it falls behind committed history. The textbook
+        convention&rarr;tripwire migration, turned on the page that describes it.</p>
+      </div>
+
+      <div class="mcard">
+        <div class="when">On any bug fix &middot; model-invoked skill</div>
+        <h4 data-tip="Auto-records every lesson so the same bug never bites twice — Claude writes it without being asked.">LEARNINGS loop <span class="pill pill-live">tripwire</span></h4>
+        <p>The <code>update-learnings</code> skill (<code>.claude/skills/</code>) carries a description that
+        lets Claude <b>self-invoke it</b> whenever a bug is fixed, a crash resolved, or a non-obvious
+        stack fact discovered — appending a dated, root-caused entry to <code>docs/LEARNINGS.md</code> in
+        the same PR. Upgrades the old "remember to append" convention into a model-invoked routine,
+        reviewed before mobile work to avoid repeating known pitfalls.</p>
+      </div>
+
+      <div class="mcard">
+        <div class="when">Per command &middot; PreToolUse(Bash) hook</div>
+        <h4 data-tip="Makes the budget rule physical — the commands that would spin up costly AWS resources simply won't run.">Budget + security deny-wall <span class="pill pill-live">tripwire</span></h4>
+        <p><code>scripts/budget-guard.sh</code> hard-<b>denies</b> any Bash command that would create a
+        budget-busting AWS resource — <code>eks</code>, <code>nat-gateway</code>, <code>elbv2</code>/ALB,
+        <code>elasticache</code>, <code>secretsmanager</code> — with a reason pointing to
+        <code>STACK_DECISIONS.md</code>. The <b>$46/mo budget</b> Gotcha was convention-only; now a
+        careless or prompt-injected agent <i>physically cannot</i> run the forbidden command.</p>
+      </div>
+
+      <div class="mcard">
+        <div class="when">Per command &middot; PreToolUse(Bash) hook</div>
+        <h4 data-tip="Stops a second session from starting duplicate services and corrupting the shared database — turns the old printed warning into an actual block.">CONSUMER collision guard <span class="pill pill-live">tripwire</span></h4>
+        <p><code>scripts/consumer-guard.sh</code> re-probes <code>:3333</code> on every Bash call: if a stack
+        is already up (this session is a <b>CONSUMER</b>), it <b>denies</b> duplicate service starts —
+        <code>node ace serve</code> / <code>queue:listen</code> / <code>npx expo start</code> /
+        <code>docker compose up</code> — and <b>asks for confirmation</b> before a shared-DB migration.
+        <code>session-role.sh</code> only <i>warned</i>; this enforces it, killing the port-conflict /
+        zombie-process / shared-DB-corruption class for parallel sessions.</p>
+      </div>
+
+      <div class="mcard">
+        <div class="when">Per edit &middot; PostToolUse(Edit/Write) hook</div>
+        <h4 data-tip="Flags fintech security mistakes the instant you type them — unencrypted PII, leaked logs, direct Plaid calls, or the AI layer writing to the DB.">Security invariant tripwires <span class="pill pill-live">tripwire</span></h4>
+        <p><code>scripts/security-guard.sh</code> inspects the file just edited and flags likely breaches of
+        the fintech non-negotiables: an encrypted column missing <code>serializeAs:&nbsp;null</code>, PII in a
+        <code>console.*</code> call without <code>redactForLogging()</code>, a direct Plaid SDK call outside
+        <code>PlaidAdapter</code>, or a DB write from the read-only <code>services/ai/**</code> layer. The
+        ORM-level encryption + Bouncer discipline was convention-only; now a violation surfaces the moment
+        it's typed.</p>
+      </div>
+
+      <div class="mcard">
+        <div class="when">Pre-PR / on demand &middot; subagent</div>
+        <h4 data-tip="Checks the product spec still matches the code, on demand — so the data-flow map you rely on never quietly drifts from reality.">Spec-drift auditor <span class="pill pill-live">tripwire</span></h4>
+        <p>The <code>spec-auditor</code> agent (<code>.claude/agents/</code>, read-only) checks that
+        <code>data-flow-map.html</code> still matches the code — parsing each flow's spec block (windows,
+        thresholds, formulas, tool shapes) and diffing it against the implementation, then adversarially
+        confirming before reporting drift. Makes <b>DATA FLOW = SPEC</b> a checkable invariant and
+        materializes the long-referenced "Riu" reviewer persona as a real project agent.</p>
+      </div>
+
+      <div class="mcard">
+        <div class="when">Nightly &middot; 07:00 UTC &middot; cloud routine</div>
+        <h4 data-tip="A scheduled cloud agent that sweeps every tracked doc for drift against the code each night and opens a review-only PR — running with your laptop closed.">Nightly doc-drift sweep <span class="pill pill-routine">routine</span></h4>
+        <p>A claude.ai <b>routine</b> (Opus 4.8) fires nightly at <b>07:00&nbsp;UTC</b> (3am ET) on a fresh
+        cloud checkout — no machine of yours involved. It diffs <i>every</i> tracked doc against the code
+        — <code>data-flow-map.html</code>, <code>DATABASE.md</code>, <code>ARCHITECTURE.md</code>, the
+        security / ai-pipeline / cost maps, and the landing-page counts — and, when it finds drift, opens
+        ONE review-only <code>docs:</code> PR citing each mismatch as <code>doc:line → code:line</code>;
+        finds nothing, opens nothing. The cloud cousin of the <code>spec-auditor</code> agent — same
+        <b>DATA FLOW = SPEC</b> discipline, but unattended, on a clock, and across the whole doc set.
+        Managed at <a href="https://claude.ai/code/routines">claude.ai/code/routines</a>.</p>
+      </div>
+
+      <div class="mcard">
+        <div class="when">Every push / PR to main &middot; GitHub Actions</div>
+        <h4 data-tip="Every push is auto-checked (lint + types + tests) before it can merge or deploy — broken code can't slip in.">CI: lint, typecheck, test <span class="pill pill-park">CI</span></h4>
         <p><code>.github/workflows/ci.yaml</code> runs lint + typecheck + tests against an ephemeral
         Postgres. Reused by <code>deploy.yaml</code> as a pre-deploy gate.</p>
       </div>
 
       <div class="mcard">
-        <div class="when">AI changes + nightly</div>
-        <h4>AI eval suite</h4>
+        <div class="when">AI changes + nightly &middot; GitHub Actions</div>
+        <h4 data-tip="Scores the AI coach against fixtures whenever AI code changes, plus nightly — so answer quality can't silently regress.">AI eval suite <span class="pill pill-park">CI</span></h4>
         <p><code>.github/workflows/evals.yml</code> runs on changes under
         <code>apps/backend/app/services/ai/**</code> or <code>evals/**</code>, plus a nightly cron —
         scored against fixtures + judges.</p>
@@ -441,11 +733,12 @@ footer a { color: #64748b; }
 
       <div class="mcard">
         <div class="when">On merge to main</div>
-        <h4>Docs auto-publish</h4>
+        <h4 data-tip="Merging to main puts these maps live on the web automatically — no build step, no manual deploy.">Docs auto-publish</h4>
         <p>GitHub Pages publishes the <code>docs/</code> folder, so this page and every visual map go live at
         <a href="https://vikkybharadwaj.github.io/tide/">vikkybharadwaj.github.io/tide</a> without a build step.</p>
       </div>
     </div>
+
   </section>
 
   <footer>
@@ -453,5 +746,93 @@ footer a { color: #64748b; }
   </footer>
 
 </div>
+
+<!-- ============ CHANGELOG SUB-PAGE (in-page overlay) ============ -->
+<div class="cl-overlay" id="changelogOverlay" onclick="if(event.target===this)closeChangelog()">
+  <div class="cl-modal" role="dialog" aria-modal="true" aria-label="Operating System changelog">
+    <div class="cl-head">
+      <div>
+        <div class="eyebrow">Operating System &middot; Page history</div>
+        <h2>Changelog</h2>
+        <p>Every change to this map, newest first. Sourced from the repo's commit history for <code>docs/operating-system.html</code>.</p>
+      </div>
+      <button class="cl-close" onclick="closeChangelog()" aria-label="Close changelog">&times;</button>
+    </div>
+    <div class="cl-table-wrap">
+      <table class="cl-table">
+        <thead>
+          <tr><th>Change&nbsp;#</th><th>Date&nbsp;(ET)</th><th>Done&nbsp;by</th><th>Highlights</th></tr>
+        </thead>
+        <tbody id="clBody"></tbody>
+      </table>
+    </div>
+    <div class="cl-foot">Living document — this log grows as the Operating System map evolves. Press <b>Esc</b> or click outside to close.</div>
+  </div>
+</div>
+
+<script>
+/* Changelog entries — derived from git history of docs/operating-system.html.
+   Newest entries go at the TOP of this array; "num" is the stable change number. */
+const CHANGELOG = [
+  { num: 19, date: "2026-06-11", time: "10:06 EDT", by: "Vik Bharadwaj", bot: false, pr: "#186",
+    hl: "Portfolio-mirror sync mechanism + doc-residue fixes — the public mirror can never silently drift again." },
+  { num: 18, date: "2026-05-30", time: "14:21 EDT", by: "Vik Bharadwaj", bot: false, pr: "#150",
+    hl: "Documented the changelog freshness tripwire in §3 + §5, and made the sync dedup by PR# (immune to squash re-timestamping)." },
+  { num: 17, date: "2026-05-30", time: "14:11 EDT", by: "Vik Bharadwaj", bot: false, pr: "#149",
+    hl: "Made this page-history changelog self-sync from real git history (generator + /ship step + freshness tripwire) so it can never silently freeze." },
+  { num: 16, date: "2026-05-30", time: "13:50 EDT", by: "Vik Bharadwaj", bot: false, pr: "#147",
+    hl: "Added the commit time (ET) beside each changelog date — pulled from the file’s git history." },
+  { num: 15, date: "2026-05-30", time: "13:46 EDT", by: "Vik Bharadwaj", bot: false, pr: "#146",
+    hl: "Removed the “Next — same direction, not yet built” speculative-roadmap banner." },
+  { num: 14, date: "2026-05-30", time: "11:10 EDT", by: "Vik Bharadwaj", bot: false, pr: "#145",
+    hl: "Numbered + spaced the “In this repo” rows in the §3 layer table for readability." },
+  { num: 13, date: "2026-05-30", time: "10:46 EDT", by: "Vik Bharadwaj", bot: false, pr: "#142",
+    hl: "Rewrote the §3 last-row Conventions cell in plain language." },
+  { num: 12, date: "2026-05-30", time: "10:38 EDT", by: "Vik Bharadwaj", bot: false, pr: "#140",
+    hl: "Added the Changelog button + in-page “Page history” sub-panel." },
+  { num: 11, date: "2026-05-30", time: "09:54 EDT", by: "Vik Bharadwaj", bot: false, pr: "#133",
+    hl: "Tagged each §3 convention with the specific hook that now enforces it — made the convention→tripwire mapping explicit per row." },
+  { num: 10, date: "2026-05-30", time: "09:32 EDT", by: "Vik Bharadwaj", bot: false, pr: "#131",
+    hl: "Back-referenced every hardened convention to its enforcing hook and marked CLAUDE.md as the canonical statement of the policy layer." },
+  { num: 9, date: "2026-05-29", time: "16:30 EDT", by: "Vik Bharadwaj", bot: false, pr: "#119",
+    hl: "Added the /doc-drift skill — an on-demand all-docs drift sweep (the in-session twin of the nightly cloud routine)." },
+  { num: 8, date: "2026-05-29", time: "16:23 EDT", by: "Vik Bharadwaj", bot: false, pr: "#116",
+    hl: "Added the post-compaction re-grounding hook (precompact-context.sh) as the P1 context guard — re-injects in-flight state after compaction." },
+  { num: 7, date: "2026-05-29", time: "16:06 EDT", by: "Vik Bharadwaj", bot: false, pr: "#115",
+    hl: "Introduced Routines as the 5th workspace primitive — scheduled off-session cloud agents; nightly doc-drift sweep shipped." },
+  { num: 6, date: "2026-05-29", time: "15:48 EDT", by: "Vik Bharadwaj", bot: false, pr: "—",
+    hl: "Added Agents as the 4th column in the §3 layer comparison (own context + restricted toolset)." },
+  { num: 5, date: "2026-05-29", time: "12:10 EDT", by: "Vik Bharadwaj", bot: false, pr: "#103",
+    hl: "Added hover tooltips explaining every primitive — plain-English “what it's for → what you get” across the whole map." },
+  { num: 4, date: "2026-05-29", time: "11:21 EDT", by: "Vik Bharadwaj", bot: false, pr: "—",
+    hl: "Added the /new-ai-tool and /new-model scaffolding skills to §2 (lockstep multi-file edits with guardrails baked in)." },
+  { num: 3, date: "2026-05-29", time: "11:15 EDT", by: "Vik Bharadwaj", bot: false, pr: "—",
+    hl: "Added the CONSUMER collision guard + security-invariant tripwires (consumer-guard.sh, security-guard.sh)." },
+  { num: 2, date: "2026-05-29", time: "09:38 EDT", by: "Vik Bharadwaj", bot: false, pr: "—",
+    hl: "Hardened the top conventions into Claude Code tripwires (budget/doc-sync guards) and fixed the skills-vs-commands labeling." },
+  { num: 1, date: "2026-05-28", time: "15:33 EDT", by: "Claude", bot: true, pr: "—",
+    hl: "Created operating-system.html — the initial harness map of the Tide repo (lifecycle, repo map, primitives, connections, maintenance)." }
+];
+
+(function () {
+  const body = document.getElementById('clBody');
+  body.innerHTML = CHANGELOG.map(function (c) {
+    const who = '<span class="who-pill' + (c.bot ? ' bot' : '') + '">' + c.by + '</span>';
+    const pr = c.pr && c.pr !== '—' ? ' <span class="pr">(' + c.pr + ')</span>' : '';
+    return '<tr>' +
+      '<td class="cl-num">#' + c.num + '</td>' +
+      '<td class="cl-date">' + c.date + (c.time ? '<span class="cl-time">' + c.time + '</span>' : '') + '</td>' +
+      '<td class="cl-who">' + who + '</td>' +
+      '<td class="cl-hl">' + c.hl + pr + '</td>' +
+    '</tr>';
+  }).join('');
+  document.getElementById('clCount').textContent = CHANGELOG.length;
+})();
+
+function openChangelog() { document.getElementById('changelogOverlay').classList.add('open'); document.body.style.overflow = 'hidden'; }
+function closeChangelog() { document.getElementById('changelogOverlay').classList.remove('open'); document.body.style.overflow = ''; }
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeChangelog(); });
+</script>
+
 </body>
 </html>

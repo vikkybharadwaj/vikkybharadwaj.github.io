@@ -164,6 +164,7 @@ const nodes = [
         "Token storage: Expo SecureStore (Keychain iOS / Keystore Android)",
         "Biometric unlock: Face ID / Touch ID via expo-local-authentication (service exists)",
         "Home render order: SafeToSpend → Smart Pulse → Recent Transactions → Upcoming Bills",
+        "Bottom nav: 4 tabs (Home, Coach, Spending, Profile) via custom FloatingTabBar (icon whitelist in TAB_ICONS, not href:null). Accounts, Settings (payday) and Confirm Paycheck are Stack screens under the Profile tab — Profile screen rows: Accounts, Connect New Bank (Plaid), Settings. Re-tapping the active tab pops its nested stack to root",
         "SafeToSpend v4.9: 4 always-visible tabs (Until Payday default), uniform $dailyBudget × daysInWindow, accordion rows tap-to-expand with horizontal-scroll card strips (Checking → per-account; Bills → per-merchant with dates; CC balances → per-card; Typical spending → per-weekday averages). Chevron affordance. Projection block on EVERY tab (Today/This Week/This Month/Until Payday) using per-window forecasts. typical-discretionary forecast spans BOTH checking and credit card outflows, robust-mean-per-weekday capped at 90th percentile. Methodology modal shows histogram + all 4 window projections. Payday helper: 2 cases (user_setting | inferred). 'Confirm your paycheck' UX bypasses confidence bar for anchor, not amount inclusion",
         "Smart Pulse: regenerates on every app open / pull-to-refresh — real-time, not daily",
         "Pull-to-refresh triggers Plaid sync on Home; SyncStatus shows last sync time",
@@ -176,9 +177,9 @@ const nodes = [
     detail:{
       desc:"REST API on AdonisJS 6 with JWT auth. One binary per pod. Read-only DB connection used by the AI ToolExecutor; primary connection for everything else.",
       bullets:[
-        "103 REST endpoints (up from 102 — public root added)",
+        "90 REST endpoints (9 challenge endpoints removed 2026-06-10 with the challenges feature; morning-brief list/show removed 2026-06-11 with Pulse History; GET /streaks + /streaks/milestones removed 2026-06-11 with the streak feature)",
         "JWT validation via aws-jwt-verify — signature / expiry / audience / issuer / token_use",
-        "17 Bouncer policies (13 exported in main.ts; 3 defined-but-inline: MorningBrief, Reflection, Streak). BillsPrediction + PaydayPrediction policies dropped 2026-04-22 with their legacy tables.",
+        "14 Bouncer policy files (12 registered in main.ts; 2 unregistered files: MorningBrief, Reflection — controllers use inline userId checks). BillsPrediction + PaydayPrediction policies dropped 2026-04-22 with their legacy tables; ChallengePolicy dropped 2026-06-10 with the challenges feature; StreakPolicy dropped 2026-06-11 with the streak feature.",
         "Lucid ORM for every DB access — never raw SQL",
         "Circuit breaker + exponential backoff retry on all external calls",
         "SSE streaming endpoint: POST /api/v1/chats/:id/messages (event: token / tool-use / done / error)",
@@ -189,7 +190,7 @@ const nodes = [
     }},
   { id:"worker", label:"Worker", sub:"BullMQ + AdonisJS", type:"worker", mvp:"mvp", x:440, y:420,
     detail:{
-      desc:"Background job processor. Runs 12 BullMQ queues (up from 11 — morning-briefs / evening-reflections / chat-cleanup added). Separate process from API but shares the same codebase.",
+      desc:"Background job processor. Runs 10 BullMQ queues (challenge-transactions + challenges queues removed 2026-06-10 with the challenges feature). Separate process from API but shares the same codebase.",
       bullets:[
         "transactions-sync — daily 2 AM CST cron, concurrency 5, 3 retries (2s/4s/8s backoff)",
         "predictions — runs RecurrenceDetectionService after each sync",
@@ -198,11 +199,10 @@ const nodes = [
         "transactions-refresh — on-demand manual sync endpoint",
         "morning-briefs — Smart Pulse generation job",
         "evening-reflections (MVP+) — reminder push, backend intact, mobile UI removed",
-        "challenge-transactions + challenges (MVP+) — match + evaluate challenges",
         "staging-txn-pool + transaction-import (MVP+) — CSV import via Haiku categorizer",
         "chat-cleanup — archive chats >30 days idle"
       ],
-      tech:"AdonisJS 6, BullMQ, 12 queues, Redis as queue backend"
+      tech:"AdonisJS 6, BullMQ, 10 queues, Redis as queue backend"
     }},
   { id:"classifier", label:"Intent Classifier", sub:"Haiku 4.5 — DISABLED", type:"ai-disabled", mvp:"mvp-plus", x:750, y:120,
     detail:{
@@ -233,11 +233,11 @@ const nodes = [
     }},
   { id:"postgres", label:"PostgreSQL", sub:"RDS db.t4g.micro", type:"data", mvp:"mvp", x:440, y:600,
     detail:{
-      desc:"Primary data store. 38 tables across 10 domain groups. See the Database Schema Map for the full table-by-table breakdown.",
+      desc:"Primary data store. 30 tables across 9 domain groups. See the Database Schema Map for the full table-by-table breakdown.",
       bullets:[
-        "38 tables total (dropped legacy transaction_locations, payment_providers, bills_predictions, payday_predictions 2026-04-22 — recurring_streams is now the sole prediction table)",
-        "Domain groups: Core Identity (2) / Banking (6) / Predictions (4) / Challenges (5) / AI Chat (3) / Engagement (7) / Notifications (3) / Subscriptions & Overdraft (3) / System (3) / Observability (1)",
-        "18 fields AES-256-GCM encrypted at rest + 4 HMAC-SHA256 hash indexes for searchable PII",
+        "30 tables total (dropped legacy access_tokens, transaction_locations, payment_providers, bills_predictions, payday_predictions; the 5 challenge tables removed 2026-06-10 with the challenges feature; user_streaks + streak_milestones dropped 2026-06-11 with the streak feature)",
+        "Domain groups: Core Identity (2) / Banking (6) / Predictions (4) / AI Chat (3) / Engagement (5) / Notifications (3) / Subscriptions & Overdraft (3) / System (3) / Observability (1)",
+        "20 fields AES-256-GCM encrypted at rest + 4 HMAC-SHA256 hash indexes for searchable PII",
         "serializeAs:null prevents encrypted + sensitive fields from leaking to JSON",
         "Read-only connection pool (connection name 'readonly') used by AI ToolExecutor",
         "Encryption-at-rest via AWS-managed KMS key (storage_encrypted=true)",
@@ -249,7 +249,7 @@ const nodes = [
     detail:{
       desc:"In-memory store. Hosts all BullMQ queues + caching + rate limiting. Self-hosted in a k3s pod — no ElastiCache (saves ~$15/mo).",
       bullets:[
-        "BullMQ job queues — all 12 queues",
+        "BullMQ job queues — all 10 queues",
         "Response caching (controller-level)",
         "Rate limiting",
         "$0/month — runs inside the k3s cluster"
@@ -307,7 +307,7 @@ const nodes = [
         "Backend: NotificationService wraps FCM send",
         "In-app inbox: GET /api/v1/notifications, PATCH /notifications/:id/read",
         "Per-type preferences: notification_preferences table",
-        "Reserved for Smart Pulse daily push, bill reminders, streak milestones"
+        "Reserved for Smart Pulse daily push and bill reminders"
       ],
       tech:"Firebase Cloud Messaging"
     }},
@@ -324,6 +324,19 @@ const nodes = [
         "No ALB (saves $22/mo), no ElastiCache (saves ~$15/mo), no NAT Gateway"
       ],
       tech:"k3s on EC2 t4g.small, 30GB gp3 EBS, Nginx Ingress Controller"
+    }},
+  { id:"posthog", label:"PostHog", sub:"Product Analytics", type:"external", mvp:"mvp", x:1000, y:325,
+    detail:{
+      desc:"Product analytics from both sides of the stack. Mobile sends client events directly; backend captures server-side events from model lifecycle hooks. Events join on the Cognito sub as distinct_id — never PII.",
+      bullets:[
+        "Mobile: posthog-react-native → us.i.posthog.com (flushAt 20, 30s interval; no-ops without EXPO_PUBLIC_POSTHOG_API_KEY)",
+        "Backend: posthog-node behind a PostHogStrategy interface (real strategy in prod, mock logger strategy in dev)",
+        "Server events fired from model hooks: user, profile, bank_connection, subscription_account",
+        "identify() keyed on cognitoSub so client + server events merge into one person",
+        "Typed event names: AnalyticsEventName union in @tide/shared — no stringly-typed events",
+        "Fire-and-forget capture — analytics can never block or fail a request"
+      ],
+      tech:"posthog-node (backend), posthog-react-native (mobile), @tide/shared typed events"
     }},
 ];
 
@@ -346,6 +359,8 @@ const edges = [
   { from:"bedrock", to:"coach", color:"#00d4ff", label:"Sonnet 4 inference", type:"ai" },
   { from:"cognito", to:"backend", color:"#ef4444", label:"JWKS validation", type:"auth" },
   { from:"plaid", to:"backend", color:"#f59e0b", label:"Webhooks", type:"external" },
+  { from:"mobile", to:"posthog", color:"#f59e0b", label:"Client events", type:"external" },
+  { from:"backend", to:"posthog", color:"#f59e0b", label:"Server events (model hooks)", type:"external" },
 ];
 
 // RENDER
