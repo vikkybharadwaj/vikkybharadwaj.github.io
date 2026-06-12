@@ -151,7 +151,7 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
     <div class="stage-card stage-classifier">
       <div class="stage-label">Stage 2 &mdash; Classification (DISABLED)</div>
       <h3>Intent Classifier (Haiku 4.5)</h3>
-      <p>Currently turned OFF &mdash; <code>chats_controller.ts</code> sets <code>const intentPromise = Promise.resolve('unknown')</code>. A per-message Haiku call competed with the chat stream for Bedrock quota and triggered throttling, so the stage is stubbed out (re-enable once AWS quota is raised). When live, it would classify query intent on AWS Bedrock; today every turn is routed to the Coach with all 11 tools regardless of intent.</p>
+      <p>Currently turned OFF &mdash; <code>chats_controller.ts</code> sets <code>const intentPromise = Promise.resolve('unknown')</code>. A per-message Haiku call competed with the chat stream for Bedrock quota and triggered throttling, so the stage is stubbed out (re-enable once AWS quota is raised). When live, it would classify query intent on AWS Bedrock; today every turn is routed to the Coach with all 10 tools regardless of intent.</p>
       <span class="latency">disabled (was &lt;500ms target)</span>
     </div>
     <div class="pipeline-connector"><div class="arrow"></div></div>
@@ -159,7 +159,7 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
     <div class="stage-card stage-coach">
       <div class="stage-label">Stage 3 &mdash; Agent</div>
       <h3>Tide Coach Agent (Sonnet 4)</h3>
-      <p>Primary AI financial coach. Has all 11 tools available every turn (intent routing is disabled &mdash; see Stage 2) and lets the model pick which to call. Generates personalized financial advice with full conversation context.</p>
+      <p>Primary AI financial coach. Has all 10 tools available every turn (intent routing is disabled &mdash; see Stage 2) and lets the model pick which to call. Generates personalized financial advice with full conversation context.</p>
       <span class="latency">First token &lt;2s</span>
     </div>
     <div class="pipeline-connector"><div class="arrow"></div></div>
@@ -190,7 +190,7 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
 
   <!-- Tools -->
   <div class="tools-section">
-    <h2>Tide Coach Tools (11)</h2>
+    <h2>Tide Coach Tools (10)</h2>
     <div class="tools-grid">
       <div class="tool-card">
         <div class="tool-num">TOOL 1</div>
@@ -248,12 +248,6 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
       </div>
       <div class="tool-card">
         <div class="tool-num">TOOL 10</div>
-        <div class="tool-name"><code>query_morning_brief</code></div>
-        <div class="tool-desc">Get the user's Smart Pulse / morning cash-flow brief for today or a recent date — total balance, expected bills + income, AI insight, and acknowledgment status. ("Smart Pulse" is the product name for the morning brief; the Coach tool is <code>query_morning_brief</code>.)</div>
-        <span class="tool-tier tier-2">TIER 2 — FINANCIAL DATA</span>
-      </div>
-      <div class="tool-card">
-        <div class="tool-num">TOOL 11</div>
         <div class="tool-name"><code>query_reflection_stats</code></div>
         <div class="tool-desc">Reflection session history and transaction tags (worth-it/regret). <strong>MVP+</strong> — backend intact, frontend removed entirely. (Streak progress dropped from the description 2026-06-11 with the streak feature removal — the tool never returned it.)</div>
         <span class="tool-tier tier-2">TIER 2 — FINANCIAL DATA</span>
@@ -276,7 +270,7 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
       <div class="tier-badge t2">TIER 2</div>
       <div class="tier-content">
         <h3>Financial Data</h3>
-        <p>Accounts, transactions, predictions, spending, Smart Pulse (real-time, date-aware), reflections (MVP+). Agent pulls on demand via tools 1-8, 10-11. Data lives in Postgres, fetched only when relevant.</p>
+        <p>Accounts, transactions, predictions, spending, reflections (MVP+). Agent pulls on demand via tools 1-8, 10. Data lives in Postgres, fetched only when relevant.</p>
       </div>
     </div>
     <div class="tier-row">
@@ -306,7 +300,7 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
         <div class="model-row"><span class="label">Latency</span><span class="value">First token &lt;2s</span></div>
         <div class="model-row"><span class="label">Purpose</span><span class="value">Financial coaching + tools</span></div>
         <div class="model-row"><span class="label">Platform</span><span class="value">AWS Bedrock</span></div>
-        <div class="model-row"><span class="label">Tools</span><span class="value">11 tools available</span></div>
+        <div class="model-row"><span class="label">Tools</span><span class="value">10 tools available</span></div>
       </div>
       <div class="model-card model-haiku">
         <h3>Claude Haiku 4.5 &mdash; Merchant Classifier</h3>

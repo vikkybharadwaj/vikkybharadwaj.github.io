@@ -163,10 +163,9 @@ const nodes = [
         "SSE streaming via XMLHttpRequest (RN fetch lacks response.body as ReadableStream)",
         "Token storage: Expo SecureStore (Keychain iOS / Keystore Android)",
         "Biometric unlock: Face ID / Touch ID via expo-local-authentication (service exists)",
-        "Home render order: SafeToSpend → Smart Pulse → Recent Transactions → Upcoming Bills",
+        "Home render order: SafeToSpend → Recent Transactions → Upcoming Bills",
         "Bottom nav: 4 tabs (Home, Coach, Spending, Profile) via custom FloatingTabBar (icon whitelist in TAB_ICONS, not href:null). Accounts, Settings (payday) and Confirm Paycheck are Stack screens under the Profile tab — Profile screen rows: Accounts, Connect New Bank (Plaid), Settings. Re-tapping the active tab pops its nested stack to root",
         "SafeToSpend v4.9: 4 always-visible tabs (Until Payday default), uniform $dailyBudget × daysInWindow, accordion rows tap-to-expand with horizontal-scroll card strips (Checking → per-account; Bills → per-merchant with dates; CC balances → per-card; Typical spending → per-weekday averages). Chevron affordance. Projection block on EVERY tab (Today/This Week/This Month/Until Payday) using per-window forecasts. typical-discretionary forecast spans BOTH checking and credit card outflows, robust-mean-per-weekday capped at 90th percentile. Methodology modal shows histogram + all 4 window projections. Payday helper: 2 cases (user_setting | inferred). 'Confirm your paycheck' UX bypasses confidence bar for anchor, not amount inclusion",
-        "Smart Pulse: regenerates on every app open / pull-to-refresh — real-time, not daily",
         "Pull-to-refresh triggers Plaid sync on Home; SyncStatus shows last sync time",
         "Dev bypass: SKIP_AUTH=true in app/_layout.tsx routes direct to (tabs)/home as user 53",
         "React Query for server state (60s staleTime on dashboard)"
@@ -177,9 +176,9 @@ const nodes = [
     detail:{
       desc:"REST API on AdonisJS 6 with JWT auth. One binary per pod. Read-only DB connection used by the AI ToolExecutor; primary connection for everything else.",
       bullets:[
-        "90 REST endpoints (9 challenge endpoints removed 2026-06-10 with the challenges feature; morning-brief list/show removed 2026-06-11 with Pulse History; GET /streaks + /streaks/milestones removed 2026-06-11 with the streak feature)",
+        "86 REST endpoints (9 challenge endpoints removed 2026-06-10 with the challenges feature; morning-brief list/show removed 2026-06-11 with Pulse History; GET /streaks + /streaks/milestones removed 2026-06-11 with the streak feature; the 4 remaining morning-brief endpoints removed 2026-06-12 with the Smart Pulse feature)",
         "JWT validation via aws-jwt-verify — signature / expiry / audience / issuer / token_use",
-        "14 Bouncer policy files (12 registered in main.ts; 2 unregistered files: MorningBrief, Reflection — controllers use inline userId checks). BillsPrediction + PaydayPrediction policies dropped 2026-04-22 with their legacy tables; ChallengePolicy dropped 2026-06-10 with the challenges feature; StreakPolicy dropped 2026-06-11 with the streak feature.",
+        "14 Bouncer policy files (13 registered in main.ts; 1 unregistered file: Reflection — controller uses inline userId checks). BillsPrediction + PaydayPrediction policies dropped 2026-04-22 with their legacy tables; ChallengePolicy dropped 2026-06-10 with the challenges feature; StreakPolicy dropped 2026-06-11 with the streak feature; MorningBriefPolicy dropped 2026-06-12 with the Smart Pulse feature.",
         "Lucid ORM for every DB access — never raw SQL",
         "Circuit breaker + exponential backoff retry on all external calls",
         "SSE streaming endpoint: POST /api/v1/chats/:id/messages (event: token / tool-use / done / error)",
@@ -190,19 +189,18 @@ const nodes = [
     }},
   { id:"worker", label:"Worker", sub:"BullMQ + AdonisJS", type:"worker", mvp:"mvp", x:440, y:420,
     detail:{
-      desc:"Background job processor. Runs 10 BullMQ queues (challenge-transactions + challenges queues removed 2026-06-10 with the challenges feature). Separate process from API but shares the same codebase.",
+      desc:"Background job processor. Runs 9 BullMQ queues (challenge-transactions + challenges queues removed 2026-06-10 with the challenges feature; morning-briefs queue removed 2026-06-12 with Smart Pulse). Separate process from API but shares the same codebase.",
       bullets:[
         "transactions-sync — daily 2 AM CST cron, concurrency 5, 3 retries (2s/4s/8s backoff)",
         "predictions — runs RecurrenceDetectionService after each sync",
         "chat-messages — async persist AI responses; 30-day failure retention (never reduce)",
         "webhook-events — consumes Plaid webhooks, fans out targeted syncs",
         "transactions-refresh — on-demand manual sync endpoint",
-        "morning-briefs — Smart Pulse generation job",
         "evening-reflections (MVP+) — reminder push, backend intact, mobile UI removed",
         "staging-txn-pool + transaction-import (MVP+) — CSV import via Haiku categorizer",
         "chat-cleanup — archive chats >30 days idle"
       ],
-      tech:"AdonisJS 6, BullMQ, 10 queues, Redis as queue backend"
+      tech:"AdonisJS 6, BullMQ, 9 queues, Redis as queue backend"
     }},
   { id:"classifier", label:"Intent Classifier", sub:"Haiku 4.5 — DISABLED", type:"ai-disabled", mvp:"mvp-plus", x:750, y:120,
     detail:{
@@ -218,25 +216,25 @@ const nodes = [
     }},
   { id:"coach", label:"Tide Coach Agent", sub:"Claude Sonnet 4", type:"ai", mvp:"mvp", x:750, y:280,
     detail:{
-      desc:"User-facing AI financial coach. Streaming tool-use loop (max 10 iterations). 11 tools registered; 9 are MVP-active, 2 are MVP+.",
+      desc:"User-facing AI financial coach. Streaming tool-use loop (max 10 iterations). 10 tools registered; 8 are MVP-active, 2 are MVP+.",
       bullets:[
         "Model ID: us.anthropic.claude-sonnet-4-20250514-v1:0",
         "Max 10 tool iterations per turn; first token <2s target",
-        "MVP tools: query_user_profile, query_bank_accounts, query_transactions, query_bills_predictions, query_payday_predictions, calculate_safe_to_spend (shares service with Home card), get_spending_by_category, query_coaching_history, query_morning_brief",
+        "MVP tools: query_user_profile, query_bank_accounts, query_transactions, query_bills_predictions, query_payday_predictions, calculate_safe_to_spend (shares service with Home card), get_spending_by_category, query_coaching_history",
         "MVP+ tools: get_financial_insights (anomaly/trend analysis), query_reflection_stats (backend-only, UI removed)",
         "All tools run on read-only DB connection (RO if DB_READONLY_HOST set)",
         "Bouncer policy enforcement: ChatPolicy on the controller; tool queries filter by user.id",
         "Throttle retry: 1s/2s/4s exponential backoff on ThrottlingException",
         "ConverseStream API; 20-message context window (chatConfig.maxContextMessages)"
       ],
-      tech:"Claude Sonnet 4 via AWS Bedrock, 11 tools, SSE streaming via XMLHttpRequest"
+      tech:"Claude Sonnet 4 via AWS Bedrock, 10 tools, SSE streaming via XMLHttpRequest"
     }},
   { id:"postgres", label:"PostgreSQL", sub:"RDS db.t4g.micro", type:"data", mvp:"mvp", x:440, y:600,
     detail:{
-      desc:"Primary data store. 30 tables across 9 domain groups. See the Database Schema Map for the full table-by-table breakdown.",
+      desc:"Primary data store. 29 tables across 9 domain groups. See the Database Schema Map for the full table-by-table breakdown.",
       bullets:[
-        "30 tables total (dropped legacy access_tokens, transaction_locations, payment_providers, bills_predictions, payday_predictions; the 5 challenge tables removed 2026-06-10 with the challenges feature; user_streaks + streak_milestones dropped 2026-06-11 with the streak feature)",
-        "Domain groups: Core Identity (2) / Banking (6) / Predictions (4) / AI Chat (3) / Engagement (5) / Notifications (3) / Subscriptions & Overdraft (3) / System (3) / Observability (1)",
+        "29 tables total (dropped legacy access_tokens, transaction_locations, payment_providers, bills_predictions, payday_predictions; the 5 challenge tables removed 2026-06-10 with the challenges feature; user_streaks + streak_milestones dropped 2026-06-11 with the streak feature; morning_briefs + morning_brief_settings dropped 2026-06-12 with the Smart Pulse feature)",
+        "Domain groups: Core Identity (2) / Banking (7, incl. credit_card_liabilities) / Predictions (4) / AI Chat (3) / Engagement (3) / Notifications (3) / Subscriptions & Overdraft (3) / System (3) / Observability (1)",
         "20 fields AES-256-GCM encrypted at rest + 4 HMAC-SHA256 hash indexes for searchable PII",
         "serializeAs:null prevents encrypted + sensitive fields from leaking to JSON",
         "Read-only connection pool (connection name 'readonly') used by AI ToolExecutor",
@@ -249,7 +247,7 @@ const nodes = [
     detail:{
       desc:"In-memory store. Hosts all BullMQ queues + caching + rate limiting. Self-hosted in a k3s pod — no ElastiCache (saves ~$15/mo).",
       bullets:[
-        "BullMQ job queues — all 10 queues",
+        "BullMQ job queues — all 9 queues",
         "Response caching (controller-level)",
         "Rate limiting",
         "$0/month — runs inside the k3s cluster"
@@ -307,7 +305,7 @@ const nodes = [
         "Backend: NotificationService wraps FCM send",
         "In-app inbox: GET /api/v1/notifications, PATCH /notifications/:id/read",
         "Per-type preferences: notification_preferences table",
-        "Reserved for Smart Pulse daily push and bill reminders"
+        "Reserved for bill reminders"
       ],
       tech:"Firebase Cloud Messaging"
     }},
