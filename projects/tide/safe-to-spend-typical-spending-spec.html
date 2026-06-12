@@ -99,20 +99,20 @@ footer p { font-size: 10px; color: #475569; }
     <p style="font-size: 11px; color: #64748b; margin-top: 6px;">
       Markdown companion: <a href="https://github.com/vikkybharadwaj/Tide_Vik-s-Version/blob/main/docs/SAFE_TO_SPEND_TYPICAL_SPENDING_SPEC.md" style="color: #fbbf24;"><code style="background:rgba(0,0,0,0.3); padding:1px 6px; border-radius:3px;">docs/SAFE_TO_SPEND_TYPICAL_SPENDING_SPEC.md</code></a>
     </p>
-    <p class="tagline">How we compute the per-tab "you&rsquo;d likely have $X left by {date}" number on Home&rsquo;s Safe to Spend card. Walks the actual algorithm, the actual filters, and a worked example from user 53&rsquo;s real transaction history.</p>
+    <p class="tagline">How we compute the <strong>Spending habits</strong> Money Out term on Home&rsquo;s Safe to Spend card (v5.4: subtracted from the runway, tagged &ldquo;estimated&rdquo; &mdash; formerly the context-only &ldquo;if your habits repeat&rdquo; projection). Walks the actual algorithm, the actual filters, and a worked example from user 53&rsquo;s real transaction history.</p>
     <div class="badges">
-      <span class="badge">SAFE TO SPEND v4.8</span>
+      <span class="badge">SAFE TO SPEND v5.4</span>
       <span class="badge">SERVICE: typical_discretionary_service.ts</span>
-      <span class="badge">MVP &middot; CONTEXT-ONLY</span>
+      <span class="badge">MVP &middot; MONEY OUT TERM (v5.4)</span>
     </div>
   </header>
 
   <section>
     <h2>What this number represents</h2>
     <p>SafeToSpend&rsquo;s Runway line tells you <em>how much cash is available</em> today after settling all committed liabilities (known bills, CC balances) and adding expected income up to your next payday. Runway answers: "if nothing non-recurring happens, where do I land?"</p>
-    <p>Real life isn&rsquo;t that clean. Users swipe cards at restaurants, hit Target, grab Ubers. Those outflows don&rsquo;t show up in Runway because they aren&rsquo;t recurring bills. The <strong>Typical Spending Forecast</strong> projects that unplanned spending from the user&rsquo;s actual history &mdash; across both checking and credit card accounts &mdash; so the accordion can show &ldquo;you&rsquo;d likely have $X left by {date}&rdquo; as a realistic projection.</p>
+    <p>Real life isn&rsquo;t that clean. Users swipe cards at restaurants, hit Target, grab Ubers. Those outflows don&rsquo;t show up in Runway because they aren&rsquo;t recurring bills. The <strong>Typical Spending Forecast</strong> projects that unplanned spending from the user&rsquo;s actual history &mdash; checking/debit accounts only since v5.4 &mdash; so the accordion can show &ldquo;you&rsquo;d likely have $X left by {date}&rdquo; as a realistic projection.</p>
     <div class="callout">
-      <strong>This is context, not a Runway input.</strong> The Runway formula (<code>spendableBalance &minus; upcomingBills &minus; creditCardDebt + expectedIncome</code>) is unchanged. Typical Spending is shown as a separate line; users can see Runway, then Runway minus Typical, and decide what they trust.
+      <strong>v5.4 — this IS a formula term.</strong> The habits forecast is subtracted inside Money Out (<code>moneyOut.habits</code>), exactly like the essentials term: Safe to Spend is what&rsquo;s truly free <em>even if your habits repeat</em>. Two scope rules changed with the promotion: the sample is <strong>checking/debit-funded only</strong>, like essentials (the v4.7 credit-card broadening below is historical — a card swipe never leaves checking before payday; the ccDue repayment ladder already carries it) and it <strong>excludes the essentials whitelist</strong> (groceries/gas belong to the essentials term; the old sample double-counted them, which made the retired projection line overly pessimistic). The worked example below predates v5.4 &mdash; the robust-mean mechanics it illustrates are unchanged, but its sample includes credit-card and essentials transactions a v5.4 sample would exclude.
     </div>
   </section>
 
@@ -124,7 +124,8 @@ footer p { font-size: 10px; color: #475569; }
       <li><code>transaction_type = 'debit'</code> (outflow from the account)</li>
       <li><code>recurring_stream_id IS NULL</code> &mdash; not part of a detected recurring stream (so Netflix, rent, Amazon Prime are <em>excluded</em>; that stuff is already in the Runway&rsquo;s &ldquo;Bills before payday&rdquo; line)</li>
       <li><code>is_pending = false</code> (cleared only)</li>
-      <li><code>bank_accounts.account_type IN ('depository', 'credit')</code> &mdash; checking, savings, AND credit cards. Loans are out (mortgage payments aren&rsquo;t discretionary)</li>
+      <li><code>bank_accounts.account_type = 'depository' AND account_subtype = 'checking'</code> (v5.4) &mdash; checking/debit only, like essentials and the runway itself. Credit cards are out (the ccDue ladder carries them); savings/prepaid/PayPal subtypes are out (set-aside, never draw on the runway); loans are out</li>
+      <li><code>plaid_category_detailed NOT LIKE</code> any <code>ESSENTIALS_PFC_PREFIXES</code> prefix (v5.4, NULL categories kept) &mdash; necessities belong to the essentials term; counting them here double-subtracts</li>
       <li>Not already superseded by a posted version (via <code>excludeSupersededPending</code>)</li>
       <li><code>categories.parent_code NOT IN ('INCOME','TRANSFER_IN','TRANSFER_OUT','LOAN_PAYMENTS','BANK_FEES')</code> &mdash; these are never discretionary spending</li>
       <li>Not the CC-account side of a CC bill payment (via <code>excludeCreditCardSideOfCcPayment</code>)</li>
@@ -150,7 +151,7 @@ footer p { font-size: 10px; color: #475569; }
         <strong>Robust-mean per weekday.</strong> For each weekday&rsquo;s samples: sort ascending, find the 90th-percentile index via <code>floor(n &times; 0.9)</code>, take that value as the <em>cap</em>, replace any observation above the cap with the cap value, then take the plain mean. Below 4 samples for a weekday &rarr; return 0 (refuse to publish noise).
       </div>
       <div class="step">
-        <strong>Per-tab window forecasts.</strong> Each SafeToSpend tab has its own <code>windowEnd</code> (Today = today; This Week = end-of-ISO-week-in-user-tz; This Month = end-of-month; Until Payday = nextPayday). For each tab: walk today through <code>windowEnd</code> inclusive, sum the <code>perDayOfWeek[weekday]</code> value for each day in the walk. That sum is <code>forecastAmount</code>.
+        <strong>Per-tab window forecasts.</strong> Each SafeToSpend tab has its own <code>windowEnd</code> (Today = today; This Week = end-of-ISO-week-in-user-tz; This Month = end-of-month; Until Payday = nextPayday &minus; 1 day, clamped to today &mdash; v5.4: matches the STS untilPayday tab so the metadata window covers exactly the days the ledger subtracts). For each tab: walk today through <code>windowEnd</code> inclusive, sum the <code>perDayOfWeek[weekday]</code> value for each day in the walk. That sum is <code>forecastAmount</code>.
       </div>
     </div>
   </section>

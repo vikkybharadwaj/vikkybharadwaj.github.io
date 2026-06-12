@@ -184,7 +184,7 @@ footer p { font-size: 10px; color: #475569; }
     <p style="font-size: 11px; color: #64748b; margin-top: 6px;">
       Markdown companion: <a href="https://github.com/vikkybharadwaj/Tide_Vik-s-Version/blob/main/docs/SAFE_TO_SPEND_MATH.md" style="color: #fbbf24;"><code style="background:rgba(0,0,0,0.3); padding:1px 6px; border-radius:3px;">docs/SAFE_TO_SPEND_MATH.md</code></a>
     </p>
-    <p class="tagline">v5.1 (2026-06-12, global floor): one primitive &mdash; a projected daily cash-flow ledger &mdash; drives every number on the card, and one invariant bounds every tab: no window ever promises money a longer window proves you need. Click into any component to see exactly how it&rsquo;s calculated, what window it covers, and how each tab reads the same curve.</p>
+    <p class="tagline">v5.4 (2026-06-12, global floor + habits in Money Out): one primitive &mdash; a projected daily cash-flow ledger &mdash; drives every number on the card, and one invariant bounds every tab: no window ever promises money a longer window proves you need. Click into any component to see exactly how it&rsquo;s calculated, what window it covers, and how each tab reads the same curve.</p>
   </header>
 
   <div class="intro">
@@ -212,7 +212,7 @@ footer p { font-size: 10px; color: #475569; }
       <div class="arrow">&darr;</div>
       <div class="step"><code><span class="tag-sub">Shortfalls are NEVER clamped</span></code><span class="label">negative floor ships as first-class shortfall fields {isShortfall, shortfallAmount, earliestShortfallDate, bindingConstraint} &mdash; Home and Coach render it identically</span></div>
     </div>
-    <p style="font-size:11px; color:#94a3b8;">Outflows are a MECE partition (bills/utils/subs &middot; loans &middot; planned savings &middot; CC due-this-cycle &middot; essentials); inflows are band-gated income occurrences. Everything recurring is <strong style="color:#fbbf24;">occurrence-expanded</strong>: a 3-paycheck month counts 3 paychecks; a weekly bill counts every week. <code>typicalDiscretionary</code> stays context-only, never subtracted.</p>
+    <p style="font-size:11px; color:#94a3b8;">Outflows are a MECE partition (bills/utils/subs &middot; loans &middot; planned savings &middot; CC due-this-cycle &middot; essentials &middot; habits &mdash; v5.4); inflows are band-gated income occurrences. Everything recurring is <strong style="color:#fbbf24;">occurrence-expanded</strong>: a 3-paycheck month counts 3 paychecks; a weekly bill counts every week. <strong>v5.4:</strong> the habits forecast (<code>moneyOut.habits</code>) is SUBTRACTED &mdash; the hero is what&rsquo;s free even if your habits repeat; the old context-only projection line is retired.</p>
   </div>
 
   <!-- ===================== COMPONENT CARDS ===================== -->
@@ -336,7 +336,7 @@ safe_to_spend_service.ts:CcObligation</pre>
           <p>Projected daily NECESSARY non-recurring spend, spread per-weekday across every ledger day &mdash; the term that stops the hero from saying &ldquo;spend $200&rdquo; when $90 of it is groceries you will definitely buy.</p>
           <h4>Deliberately narrower than typical-discretionary</h4>
           <ul>
-            <li><strong>Category whitelist</strong> (<code>ESSENTIALS_PFC_PREFIXES</code>, v1): groceries, gas, public transit, pharmacy, primary care, childcare. Subtracting ALL typical spend would make the hero circular.</li>
+            <li><strong>Category whitelist</strong> (<code>ESSENTIALS_PFC_PREFIXES</code>, v1): groceries, gas, public transit, pharmacy, primary care, childcare. The non-essential remainder is its own subtracted term since v5.4 (Spending habits, below) &mdash; the two stay separately labeled and learnable.</li>
             <li><strong>Checking/debit-funded only:</strong> card-swiped groceries exit checking when the STATEMENT is paid &mdash; they&rsquo;re already in the CC-due term. Counting them here too is the double-count.</li>
           </ul>
           <h4>Methodology (essentials_whitelist_robust_mean_dow_p90)</h4>
@@ -427,15 +427,15 @@ arithmetic tests for two major versions; never again)</pre>
         <summary>
           <div class="icon-circle color-context">~</div>
           <div class="meta">
-            <span class="title">Typical Discretionary</span>
-            <span class="subtitle">CONTEXT &mdash; still never subtracted</span>
+            <span class="title">Spending Habits (typicalDiscretionary)</span>
+            <span class="subtitle">&minus; MONEY OUT 6 &mdash; subtracted since v5.4</span>
           </div>
         </summary>
         <div class="body">
           <h4>What it is</h4>
-          <p>Forecast of ALL non-recurring spend (checking AND credit card) between today and each tab&rsquo;s windowEnd &mdash; robust per-weekday mean, p90-capped, up to a year of lookback. Surfaced as the &ldquo;you&rsquo;d likely have $X left&rdquo; projection line.</p>
+          <p>Projected daily non-recurring, NON-ESSENTIAL discretionary spend (dining, shopping, entertainment) &mdash; robust per-weekday mean, p90-capped, zero-spend days included, up to a year of lookback; &lt;60d history &rarr; term omitted. Spread across every ledger day like essentials; rendered as the &ldquo;Spending habits&rdquo; Money Out row tagged &ldquo;estimated.&rdquo; v5.4 scope: checking/debit-funded only, like essentials (the ccDue ladder carries card swipes; set-aside depository subtypes never draw on the runway) and the sample excludes <code>ESSENTIALS_PFC_PREFIXES</code> (no double-count with essentials).</p>
           <h4>Don&rsquo;t confuse it with essentials</h4>
-          <p><strong>Essentials</strong> is the <em>narrower</em> whitelist term (necessary categories only, checking-funded only) that DOES enter the ledger. <strong>Typical discretionary</strong> is the <em>full</em> projection that does NOT &mdash; subtracting it would make the hero circular (&ldquo;safe to spend&rdquo; minus the discretionary you&rsquo;ll spend anyway).</p>
+          <p><strong>Essentials</strong> = the necessities whitelist (can&rsquo;t-skip categories). <strong>Spending habits</strong> = everything non-recurring OUTSIDE that whitelist. Both are subtracted since v5.4, and they are MECE by construction (the habits sample excludes the essentials prefixes). The v4.x &ldquo;circularity&rdquo; rationale for keeping habits out was re-decided 2026-06-12: the hero now answers &ldquo;what&rsquo;s truly free even if your habits repeat.&rdquo;</p>
           <h4>Full math spec</h4>
           <p style="margin-top: 6px;"><a href="safe-to-spend-typical-spending-spec.html" style="color: #fbbf24; text-decoration: underline; font-weight: 600;">&rarr; Typical Spending Forecast spec (worked example)</a></p>
           <h4>Code reference</h4>
@@ -501,8 +501,8 @@ arithmetic tests for two major versions; never again)</pre>
           <td>floor (= shortfallAmount)</td>
         </tr>
         <tr>
-          <td class="row-label">Typical Discretionary (context)</td>
-          <td colspan="4" style="text-align:center; color:#94a3b8;">per-window forecast &mdash; projection line only, never subtracted</td>
+          <td class="row-label">Spending habits (moneyOut.habits)</td>
+          <td colspan="4" style="text-align:center; color:#94a3b8;">sum of habitsByDay inside each window &mdash; SUBTRACTED like essentials (v5.4); term omitted &lt;60d history</td>
         </tr>
       </tbody>
     </table>
@@ -563,7 +563,7 @@ shortfall = { isShortfall: true, shortfallAmount: −500,
   </div>
 
   <footer>
-    <p>Safe to Spend Math Explorer &middot; v5.1 (daily cash-flow ledger + global floor, 2026-06-12) &middot; Pair this with the <a href="safe-to-spend-typical-spending-spec.html" style="color:#94a3b8;">Typical Spending math spec</a> for the context-only forecast walkthrough.</p>
+    <p>Safe to Spend Math Explorer &middot; v5.4 (daily cash-flow ledger + global floor + habits in Money Out, 2026-06-12) &middot; Pair this with the <a href="safe-to-spend-typical-spending-spec.html" style="color:#94a3b8;">Spending Habits math spec</a> for the moneyOut.habits walkthrough.</p>
   </footer>
 </div>
 
