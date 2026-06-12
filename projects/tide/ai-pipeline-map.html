@@ -326,8 +326,8 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
     <div class="tier-row">
       <div class="tier-badge t1">TIER 1</div>
       <div class="tier-content">
-        <h3>User Override</h3>
-        <p>merchant_category_overrides row &mdash; hand-set by the user on a prior transaction. Never clobbered on re-sync (invariant: categorySource='user' is immutable).</p>
+        <h3>User Merchant Rule</h3>
+        <p>merchant_category_overrides row &mdash; written when the user recategorizes a transaction and picks "Always for &lt;merchant&gt;" (PATCH /transactions/:id with applyToMerchant: true). categorySource='rule'. Direct per-transaction edits set categorySource='user' on the row itself, which sync never clobbers (the guard above all tiers).</p>
       </div>
     </div>
     <div class="tier-row">
