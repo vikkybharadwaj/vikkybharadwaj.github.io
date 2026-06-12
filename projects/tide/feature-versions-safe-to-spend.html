@@ -106,7 +106,7 @@ footer p { font-size: 10px; color: #475569; }
     <p style="font-size: 11px; color: #64748b; margin-top: 6px;">
       Markdown companion: <a href="https://github.com/vikkybharadwaj/Tide_Vik-s-Version/blob/main/docs/FEATURE_VERSIONS_SAFE_TO_SPEND.md" style="color: #ec4899;"><code style="background:rgba(0,0,0,0.3); padding:1px 6px; border-radius:3px;">docs/FEATURE_VERSIONS_SAFE_TO_SPEND.md</code></a>
     </p>
-    <p class="subtitle">Twenty iterations from a single hero number to a behaviorally-tuned runway with savings deliberately set aside, drill-downs on every aggregate, and per-tab projections. Each version shipped on real user data, each change was earned.</p>
+    <p class="subtitle">Twenty-one documented iterations from a single hero number to a behaviorally-tuned runway with savings deliberately set aside, drill-downs on every aggregate, and per-tab projections. Each version shipped on real user data, each change was earned.</p>
     <p style="margin-top: 12px; font-size: 12px; display:flex; flex-direction:column; gap:6px;">
       <a href="safe-to-spend-math-explorer.html" style="color: #fbbf24; text-decoration: underline; font-weight: 600;">
         &rarr; Safe to Spend math explorer &mdash; click-to-expand component breakdown of the whole formula
@@ -805,13 +805,13 @@ footer p { font-size: 10px; color: #475569; }
     </div>
 
     <!-- v4.9 -->
-    <div class="version-card v-current">
+    <div class="version-card">
       <div class="version-header">
         <div>
           <div class="version-label">v4.9</div>
           <div class="version-date">2026-04-25</div>
         </div>
-        <span class="version-tag">CURRENT</span>
+        <span class="version-tag">EVOLVE</span>
       </div>
       <div class="version-title">Savings exclusion as a behavioral choice + open-question dump from on-device review</div>
 
@@ -867,10 +867,55 @@ footer p { font-size: 10px; color: #475569; }
       </div>
     </div>
 
+    <!-- v5.0/v5.1 gap note -->
+    <p style="font-size: 12px; color: #94a3b8; margin: 18px 0; padding: 10px 14px; border: 1px dashed rgba(255,255,255,0.15); border-radius: 8px;"><strong style="color:#cbd5e1;">Timeline gap:</strong> v5.0&ndash;v5.1 (2026-06-10 &rarr; 06-12, PRs #188&ndash;#193) were the daily cash-flow ledger rework &mdash; MECE Money Out, the Plaid Liabilities CC due ladder, payday/income v2, the global-floor invariant, and the ledger UI. Full current-state spec: <a href="safe-to-spend-math-explorer.html" style="color:#fbbf24;">the math explorer</a> / <code>SAFE_TO_SPEND_MATH.md</code> (includes the v4.9 &rarr; v5 deltas table). Detailed timeline entries for v5.0/v5.1 are pending.</p>
+
+    <!-- v5.2 -->
+    <div class="version-card v-current">
+      <div class="version-header">
+        <div>
+          <div class="version-label">v5.2</div>
+          <div class="version-date">2026-06-12</div>
+        </div>
+        <span class="version-tag">CURRENT</span>
+      </div>
+      <div class="version-title">Depository stream scoping &mdash; detection stays account-agnostic, the money math becomes account-scoped</div>
+
+      <div class="version-section">
+        <h4>What changed (code)</h4>
+        <ul>
+          <li>New exported pure <code>partitionStreams()</code> in <code>safe_to_spend_service.ts</code> (DB-free unit-testable, the <code>deriveLedgerTabs</code> precedent): outflow, income, and cc_payment streams enter the ledger ONLY when sourced from a depository account, or legacy rows with no account linkage &mdash; dropping an unlinked paycheck would be a worse trust failure than the bugs this fixes.</li>
+          <li><strong>Bug 1 &mdash; CC-sub double-count:</strong> a subscription billed to a credit card (claude.ai on the card) was also subtracted from checking, while it already lived inside the card&rsquo;s ccDue statement repayment &mdash; a double charge. Card-billed subscriptions/bills are now display-only (Recurring Expenses credit view).</li>
+          <li><strong>Bug 2 &mdash; card-credit income leak:</strong> the card&rsquo;s &ldquo;Automatic Payment - Thank You&rdquo; credit mirror was classified as income and entered Expected income at p25 &mdash; the user-visible $260.51. Credit-side payment-received mirrors are never income; that credit is money LEAVING checking, not arriving.</li>
+          <li>Excluded streams go to <code>excludedNonDepository</code> and deliberately do NOT feed <code>possibleBills</code> &mdash; a card-billed subscription must never resurface as a checking &ldquo;possible bill.&rdquo;</li>
+        </ul>
+      </div>
+
+      <div class="version-section">
+        <h4>User triggers</h4>
+        <ul>
+          <li>Expected income showed a $260.51 &ldquo;paycheck&rdquo; that was actually the card&rsquo;s own autopay confirmation.</li>
+          <li>A card-billed subscription was charged against the checking runway twice &mdash; once directly, once inside the card payment.</li>
+        </ul>
+      </div>
+
+      <div class="version-section">
+        <h4>Lessons</h4>
+        <ul>
+          <li><strong>Detection can be account-agnostic; money math must be account-scoped.</strong> A detector that fans out into multiple consumers (STS ledger, Recurring Expenses, Coach) needs an explicit eligibility contract per consumer, or the consumers inherit each other&rsquo;s bugs silently.</li>
+        </ul>
+      </div>
+
+      <div class="version-footer">
+        <code>PR pending</code>
+        <span>feat(safe-to-spend): v5.2 &mdash; depository stream scoping (branch feat/sts-stream-scoping)</span>
+      </div>
+    </div>
+
   </div>
 
   <footer>
-    <p>Twenty versions. Every one earned by a real user interaction or a real bug hitting real data. Next iteration, same process.</p>
+    <p>Twenty-one versions. Every one earned by a real user interaction or a real bug hitting real data. Next iteration, same process.</p>
   </footer>
 </div>
 </body>
