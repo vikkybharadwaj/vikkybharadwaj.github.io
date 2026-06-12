@@ -364,9 +364,9 @@ footer p { font-size: 10px; color: #475569; }
 <body>
 <div id="title">
   <h1>Evals &amp; AI Quality</h1>
-  <p>7 dimensions &middot; 86 fixtures &middot; 3 judge layers &middot; <a href="ground-truth-map.html">Ground Truth Guide</a> &middot; <a href="index.html">&larr; Hub</a></p>
+  <p>7 dimensions &middot; 81 fixtures &middot; 3 judge layers &middot; <a href="ground-truth-map.html">Ground Truth Guide</a> &middot; <a href="index.html">&larr; Hub</a></p>
   <p style="font-size:12px;color:#94a3b8;max-width:760px;margin:10px auto 0;line-height:1.6;">
-    <strong style="color:#5eead4;">F21.2 (2026-06):</strong> the suite grew 50 &rarr; 88 fixtures (now 86 &mdash; alert-006 retired 2026-06-10 with the challenges feature removal; tone-007 retired 2026-06-11 with the streak feature removal), adding coverage for the zero-coverage behaviors named in <code>evals/AUDIT_2026-06.md</code> &mdash; payday resolution (user_setting vs inferred, resolved-vs-upcoming, cadence anchors), the setAsideAccounts boundary, typicalDiscretionary (per-window + perDayOfWeek + thin-data null), thisWeek/restOfMonth windows, credit-card debt, multi-bank aggregation, financial-distress resources, and Smart-Pulse continuity. Each new fixture's ground truth was checked to satisfy its own code-checks. The dimension panels below show representative cards; the full set lives in <code>evals/fixtures/&lt;dimension&gt;.json</code> and individual cards are being added incrementally.
+    <strong style="color:#5eead4;">F21.2 (2026-06):</strong> the suite grew 50 &rarr; 88 fixtures (now 81 &mdash; alert-006 retired 2026-06-10 with the challenges feature removal; tone-007 retired 2026-06-11 with the streak feature removal; the 5 Smart Pulse fixtures &mdash; coach-006, proj-acc-007, pulse_no_regenerate-001/002/003 &mdash; retired 2026-06-12 with the Smart Pulse feature removal), adding coverage for the zero-coverage behaviors named in <code>evals/AUDIT_2026-06.md</code> &mdash; payday resolution (user_setting vs inferred, resolved-vs-upcoming, cadence anchors), the setAsideAccounts boundary, typicalDiscretionary (per-window + perDayOfWeek + thin-data null), thisWeek/restOfMonth windows, credit-card debt, multi-bank aggregation, and financial-distress resources. Each new fixture's ground truth was checked to satisfy its own code-checks. The dimension panels below show representative cards; the full set lives in <code>evals/fixtures/&lt;dimension&gt;.json</code> and individual cards are being added incrementally.
   </p>
 </div>
 
@@ -428,7 +428,7 @@ footer p { font-size: 10px; color: #475569; }
   <!-- 2. Seven Dimensions -->
   <div id="tab-dimensions" class="tab-content">
     <h2 class="section-title">The 7 Dimensions</h2>
-    <p class="section-sub">Each dimension measures a distinct quality axis of the financial coach. Click any dimension to drill into its fixtures. <strong style="color:#00D26A;">86 fixtures</strong> across 7 dimensions.</p>
+    <p class="section-sub">Each dimension measures a distinct quality axis of the financial coach. Click any dimension to drill into its fixtures. <strong style="color:#00D26A;">81 fixtures</strong> across 7 dimensions.</p>
 
     <div class="dim-grid" style="grid-template-columns: 1fr;">
 
@@ -444,7 +444,7 @@ footer p { font-size: 10px; color: #475569; }
           <span class="pass">PASS:</span> "You spent $342 on dining" (matches mock data $342)<br>
           <span class="fail">FAIL:</span> "You spent about $400 on dining" (wrong number)
         </div>
-        <span class="dim-fixtures">31 FIXTURES</span>
+        <span class="dim-fixtures">30 FIXTURES</span>
 
         <div class="dim-fixtures-panel">
 
@@ -505,16 +505,6 @@ footer p { font-size: 10px; color: #475569; }
               <div class="fix-section"><div class="fix-section-label truth">Ground truth (PM's ideal response):</div><div class="fix-section-content">Right now you have $247.50 safe to spend. That's your $2,450 available balance minus $2,202.50 in upcoming bills, with no expected income factored in yet. Keep discretionary spending light until your next deposit.</div></div>
               <div class="fix-section"><div class="fix-section-label checks">Code checks:</div><div class="fix-section-content"><div class="fix-check-item"><span class="fix-check-type">must_call_tool</span> Must call safe-to-spend calculator</div><div class="fix-check-item"><span class="fix-check-type">response_contains</span> Must report the $247.50 safe-to-spend figure</div></div></div>
               <div class="fix-section"><div class="fix-section-label judge">LLM judge criteria:</div><div class="fix-section-content">Response correctly reports the safe-to-spend amount ($247.50) and contextualizes it (mentions upcoming bills are factored in). Does not report a different figure.</div></div>
-            </div>
-          </div>
-
-          <div class="fixture-item" onclick="event.stopPropagation(); toggleFixture(this)">
-            <div class="fixture-header"><span class="fix-id">proj-acc-007</span><span class="fix-name">Morning brief data accuracy</span><span class="fix-toggle">&#9660;</span></div>
-            <div class="fixture-body">
-              <div class="fix-section"><div class="fix-section-label user">User asks:</div><div class="fix-section-content">What did my morning brief say today?</div></div>
-              <div class="fix-section"><div class="fix-section-label truth">Ground truth (PM's ideal response):</div><div class="fix-section-content">Your brief this morning showed $4,231.50 across your accounts with Netflix ($15.99) hitting tomorrow. The 7-day forecast looks stable &mdash; safe-to-spend is $3,815.51. The insight flagged that your grocery spending dropped 18% this week, which is a positive trend.</div></div>
-              <div class="fix-section"><div class="fix-section-label checks">Code checks:</div><div class="fix-section-content"><div class="fix-check-item"><span class="fix-check-type">must_call_tool</span> Must call morning brief tool</div><div class="fix-check-item"><span class="fix-check-type">response_contains</span> Must report balance</div><div class="fix-check-item"><span class="fix-check-type">response_contains</span> Must mention Netflix bill</div></div></div>
-              <div class="fix-section"><div class="fix-section-label judge">LLM judge criteria:</div><div class="fix-section-content">Accurately reflects the morning brief data including balance, upcoming bills, and the AI insight about grocery spending.</div></div>
             </div>
           </div>
 
@@ -899,7 +889,7 @@ footer p { font-size: 10px; color: #475569; }
           <span class="pass">PASS:</span> "Cancel the $15/mo Hulu &mdash; last used 45 days ago"<br>
           <span class="fail">FAIL:</span> "Try to spend less on subscriptions"
         </div>
-        <span class="dim-fixtures">10 FIXTURES</span>
+        <span class="dim-fixtures">9 FIXTURES</span>
 
         <div class="dim-fixtures-panel">
 
@@ -953,16 +943,6 @@ footer p { font-size: 10px; color: #475569; }
             </div>
           </div>
 
-          <div class="fixture-item" onclick="event.stopPropagation(); toggleFixture(this)">
-            <div class="fixture-header"><span class="fix-id">coach-006</span><span class="fix-name">Coaching informed by morning brief data</span><span class="fix-toggle">&#9660;</span></div>
-            <div class="fixture-body">
-              <div class="fix-section"><div class="fix-section-label user">User asks:</div><div class="fix-section-content">What should I focus on today financially?</div></div>
-              <div class="fix-section"><div class="fix-section-label truth">Ground truth (PM's ideal response):</div><div class="fix-section-content">Your brief this morning flagged that dining is running 15% above last month. With $1,898 safe to spend this week and your paycheck ($2,100) landing Friday, you're in a solid position overall. The one thing to watch: your electric bill ($142) hits Saturday. If you're looking for one action today, skipping the lunch delivery would chip away at that dining trend.</div></div>
-              <div class="fix-section"><div class="fix-section-label checks">Code checks:</div><div class="fix-section-content"><div class="fix-check-item"><span class="fix-check-type">must_call_tool</span> Must check morning brief for today's context</div><div class="fix-check-item"><span class="fix-check-type">response_contains</span> Must reference the dining insight from the brief</div></div></div>
-              <div class="fix-section"><div class="fix-section-label judge">LLM judge criteria:</div><div class="fix-section-content">References the morning brief data naturally. Gives a specific, actionable recommendation for today. Connects the brief insight to a concrete next step.</div></div>
-            </div>
-          </div>
-
         </div>
       </div>
 
@@ -978,7 +958,7 @@ footer p { font-size: 10px; color: #475569; }
           <span class="pass">PASS:</span> "I know overspending can feel stressful &mdash; here's a plan"<br>
           <span class="fail">FAIL:</span> "You overspent by $200. You need to stop doing that."
         </div>
-        <span class="dim-fixtures">9 FIXTURES</span>
+        <span class="dim-fixtures">6 FIXTURES</span>
 
         <div class="dim-fixtures-panel">
 
@@ -1096,7 +1076,7 @@ footer p { font-size: 10px; color: #475569; }
   <!-- 4. How Evals Run -->
   <div id="tab-ci-nightly" class="tab-content">
     <h2 class="section-title">How Evals Run</h2>
-    <p class="section-sub">Two identical suites with different triggers. Both run all 7 dimensions, 86 fixtures, and all 3 judge layers (code checks + rubric + ground truth). The difference is when they trigger, whether they block merges, and whether they update the dashboard.</p>
+    <p class="section-sub">Two identical suites with different triggers. Both run all 7 dimensions, 81 fixtures, and all 3 judge layers (code checks + rubric + ground truth). The difference is when they trigger, whether they block merges, and whether they update the dashboard.</p>
 
     <div class="compare-grid" style="display:flex;gap:16px;flex-wrap:wrap;">
       <div class="compare-card compare-ci" style="flex:1;min-width:280px;">
@@ -1130,9 +1110,9 @@ footer p { font-size: 10px; color: #475569; }
 
     <div style="margin-top:16px;padding:16px;border-radius:10px;background:rgba(79,140,255,0.04);border:1px solid rgba(79,140,255,0.15);font-size:10px;color:#A0A0B0;line-height:1.6;">
       <strong style="color:#4F8CFF;">How each run works (3 steps):</strong><br>
-      <strong>Step 1 &mdash; Generate:</strong> Each fixture&rsquo;s user message is sent to Claude Sonnet 4 (production model) with the Tide Coach system prompt + 11 tools. The AI calls tools, gets mock responses, produces a final text answer. This mirrors real user-coach interaction. (Anthropic API call #1)<br>
+      <strong>Step 1 &mdash; Generate:</strong> Each fixture&rsquo;s user message is sent to Claude Sonnet 4 (production model) with the Tide Coach system prompt + 10 tools. The AI calls tools, gets mock responses, produces a final text answer. This mirrors real user-coach interaction. (Anthropic API call #1)<br>
       <strong>Step 2 &mdash; Code Checks:</strong> Deterministic regex/keyword checks on the generated response &mdash; e.g., &ldquo;response contains a dollar amount&rdquo;, &ldquo;does NOT mention tool names.&rdquo; Free, instant, no API call.<br>
-      <strong>Step 3 &mdash; LLM Judge:</strong> Claude Haiku 4.5 grades the response against the rubric criteria AND compares it to the PM-authored golden response. All 86 fixtures have golden responses, so both judges always run. (Anthropic API calls #2 and #3)
+      <strong>Step 3 &mdash; LLM Judge:</strong> Claude Haiku 4.5 grades the response against the rubric criteria AND compares it to the PM-authored golden response. All 81 fixtures have golden responses, so both judges always run. (Anthropic API calls #2 and #3)
     </div>
   </div>
 
