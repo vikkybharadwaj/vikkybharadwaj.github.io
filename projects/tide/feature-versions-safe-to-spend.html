@@ -871,13 +871,13 @@ footer p { font-size: 10px; color: #475569; }
     <p style="font-size: 12px; color: #94a3b8; margin: 18px 0; padding: 10px 14px; border: 1px dashed rgba(255,255,255,0.15); border-radius: 8px;"><strong style="color:#cbd5e1;">Timeline gap:</strong> v5.0&ndash;v5.1 (2026-06-10 &rarr; 06-12, PRs #188&ndash;#193) were the daily cash-flow ledger rework &mdash; MECE Money Out, the Plaid Liabilities CC due ladder, payday/income v2, the global-floor invariant, and the ledger UI. Full current-state spec: <a href="safe-to-spend-math-explorer.html" style="color:#fbbf24;">the math explorer</a> / <code>SAFE_TO_SPEND_MATH.md</code> (includes the v4.9 &rarr; v5 deltas table). Detailed timeline entries for v5.0/v5.1 are pending.</p>
 
     <!-- v5.2 -->
-    <div class="version-card v-current">
+    <div class="version-card">
       <div class="version-header">
         <div>
           <div class="version-label">v5.2</div>
           <div class="version-date">2026-06-12</div>
         </div>
-        <span class="version-tag">CURRENT</span>
+        <span class="version-tag">EVOLVE</span>
       </div>
       <div class="version-title">Depository stream scoping &mdash; detection stays account-agnostic, the money math becomes account-scoped</div>
 
@@ -909,6 +909,50 @@ footer p { font-size: 10px; color: #475569; }
       <div class="version-footer">
         <code>PR pending</code>
         <span>feat(safe-to-spend): v5.2 &mdash; depository stream scoping (branch feat/sts-stream-scoping)</span>
+      </div>
+    </div>
+
+    <p style="font-size: 12px; color: #94a3b8; margin: 18px 0; padding: 10px 14px; border: 1px dashed rgba(255,255,255,0.15); border-radius: 8px;"><strong style="color:#cbd5e1;">Timeline gap:</strong> v5.3 (2026-06-12, PRs #207&ndash;#211) was the paycheck/detection hardening wave &mdash; multi-account direct-deposit splits, semimonthly two-anchor expansion, confirmed-stream ownership contract, 30-day sync lookback, poison-row hardening. Detailed entry pending.</p>
+
+    <!-- v5.4 -->
+    <div class="version-card v-current">
+      <div class="version-header">
+        <div>
+          <div class="version-label">v5.4</div>
+          <div class="version-date">2026-06-12</div>
+        </div>
+        <span class="version-tag">CURRENT</span>
+      </div>
+      <div class="version-title">Spending habits become a Money Out term &mdash; the hero is what&rsquo;s free even if your habits repeat</div>
+
+      <div class="version-section">
+        <h4>What changed (code)</h4>
+        <ul>
+          <li>The typical-discretionary forecast (&ldquo;if your habits repeat&rdquo;) is PROMOTED from context-only projection to a subtracted Money Out bucket: <code>moneyOut.habits</code>, spread per-weekday across every ledger day exactly like essentials. New &ldquo;Spending habits&rdquo; SubRowCard tagged &ldquo;estimated&rdquo;; the projection line + methodology sheet are retired &mdash; the hero already IS the habits-repeat number.</li>
+          <li><strong>Scope flip 1 &mdash; checking/debit-funded only:</strong> reverses the v4.7 credit-card broadening AND tightens to the checking subtype like essentials &mdash; a card swipe never leaves checking before payday (the ccDue ladder carries the statement), and set-aside depository subtypes (savings/prepaid/PayPal) never draw on the runway either. The subtype gate was a pre-ship adversarial-review finding: the first cut stopped at <code>account_type = 'depository'</code>.</li>
+          <li><strong>Scope flip 2 &mdash; essentials-whitelist exclusion (bug fix):</strong> the old sample included groceries/gas, so the retired projection line subtracted essentials AGAIN after the runway already had. The habits sample now excludes <code>ESSENTIALS_PFC_PREFIXES</code> (NULL categories kept &mdash; real purchases), making essentials + habits MECE by construction. Methodology: <code>habits_excl_essentials_robust_mean_dow_p90</code>.</li>
+          <li>Cold start: &lt;60d history &rarr; term omitted (<code>typicalDiscretionary = null</code>, row hidden, &ldquo;doesn&rsquo;t include your spending habits yet&rdquo; footnote; the still-learning footnote now covers whichever estimated terms are inactive). Coach tool description + system prompt flipped; projection_accuracy eval ground truths flipped both directions.</li>
+          <li><strong>Pre-ship adversarial review (5 dimensions &rarr; refute-verify, 29 confirmed findings)</strong> also caught: the untilPayday metadata window included payday itself while the subtracted term stops at payday&minus;1 (fixed &mdash; metadata windows now share the tab&rsquo;s exact bounds); stale pre-habits <code>floor.value</code>s in three rewritten eval mocks; doc drift across six spec surfaces. Locked conventions (SAFE_TO_SPEND_MATH.md): the day-60 cliff and the full-day-today charge.</li>
+        </ul>
+      </div>
+
+      <div class="version-section">
+        <h4>User trigger</h4>
+        <ul>
+          <li>Vik&rsquo;s product call (2026-06-12): &ldquo;if your habits repeat should come under money out&hellip; and this should be accounted for the safe2spend calculation&rdquo; &mdash; the headline should be what&rsquo;s truly free assuming usual behavior, not a budget ceiling with a side projection.</li>
+        </ul>
+      </div>
+
+      <div class="version-section">
+        <h4>Lessons</h4>
+        <ul>
+          <li><strong>Promoting a CONTEXT metric into MONEY MATH is never just &ldquo;subtract it.&rdquo;</strong> The account scope (net-position vs single-account runway) and the MECE boundary against existing formula terms both have to be re-derived, or the promotion imports double-counts that were harmless as context.</li>
+        </ul>
+      </div>
+
+      <div class="version-footer">
+        <code>PR pending</code>
+        <span>feat(safe-to-spend): v5.4 &mdash; habits as a subtracted Money Out term</span>
       </div>
     </div>
 
