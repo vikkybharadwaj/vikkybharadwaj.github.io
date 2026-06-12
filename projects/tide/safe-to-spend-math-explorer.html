@@ -184,32 +184,35 @@ footer p { font-size: 10px; color: #475569; }
     <p style="font-size: 11px; color: #64748b; margin-top: 6px;">
       Markdown companion: <a href="https://github.com/vikkybharadwaj/Tide_Vik-s-Version/blob/main/docs/SAFE_TO_SPEND_MATH.md" style="color: #fbbf24;"><code style="background:rgba(0,0,0,0.3); padding:1px 6px; border-radius:3px;">docs/SAFE_TO_SPEND_MATH.md</code></a>
     </p>
-    <p class="tagline">Click into any component to see exactly how it&rsquo;s calculated, what time period it covers, what data it pulls from, and how the math changes per tab. The whole runway equation broken open.</p>
+    <p class="tagline">v5 (2026-06-11): one primitive &mdash; a projected daily cash-flow ledger &mdash; drives every number on the card. Click into any component to see exactly how it&rsquo;s calculated, what window it covers, and how each tab reads the same curve.</p>
   </header>
 
   <div class="intro">
     <p><strong>How this page is structured:</strong></p>
     <ul style="margin-left: 18px; margin-top: 8px;">
-      <li><strong>The hero formula</strong> &mdash; the equation as it lives in the code, end-to-end.</li>
-      <li><strong>Each component card</strong> below it &mdash; expand to see source, time-window semantics, code reference, and worked example.</li>
-      <li><strong>Per-tab matrix</strong> &mdash; how Today / This Week / This Month / Until Payday differ.</li>
-      <li><strong>Open questions</strong> &mdash; the simplifications we made that are worth revisiting.</li>
+      <li><strong>The ledger</strong> &mdash; the v5 primitive, end-to-end: every tab is a <em>read</em> of one projected curve.</li>
+      <li><strong>Each component card</strong> below it &mdash; expand to see source, window semantics, code reference, and worked math.</li>
+      <li><strong>Per-tab matrix</strong> &mdash; how Today / This Week / This Month / Until Payday read the curve differently.</li>
+      <li><strong>Two worked examples</strong> &mdash; the canonical $800-rent rate example and the never-clamped shortfall example.</li>
+      <li><strong>Open questions</strong> &mdash; the simplifications we kept, deliberately.</li>
     </ul>
+    <p style="margin-top: 10px;">Engine: <code>safe_to_spend_service.ts:computeSafeToSpend</code> &middot; pure tab math: <code>safe_to_spend_service.ts:deriveLedgerTabs</code> (exported, DB-free, unit-tested).</p>
   </div>
 
   <!-- ===================== HERO FORMULA ===================== -->
   <div class="hub-section">
-    <h2>The end-to-end formula</h2>
+    <h2>The end-to-end model &mdash; the daily ledger</h2>
     <div class="formula-block">
-      <div class="step"><code><span class="tag-add">Spendable Balance</span> <span class="tag-sub">−</span> <span style="color:#f59e0b;">Upcoming Bills</span> <span class="tag-sub">−</span> <span style="color:#f59e0b;">Credit Card Debt</span> <span class="tag-add">+</span> <span style="color:#22c55e;">Expected Income</span></code><span class="label">scoped to the until-payday window</span></div>
-      <div class="arrow">↓ <span class="tag-eq">=</span> <strong>Runway</strong></div>
-      <div class="step"><code>Runway <span class="tag-div">÷</span> daysUntilPayday</code><span class="label">how many days until your next paycheck lands</span></div>
-      <div class="arrow">↓ <span class="tag-eq">=</span> <strong>Daily Budget</strong></div>
-      <div class="step"><code>Daily Budget <span class="tag-mul">×</span> daysInWindow[tab]</code><span class="label">where daysInWindow varies per tab (Today=1, Week=N, Month=M, Payday=daysUntilPayday)</span></div>
-      <div class="arrow">↓ <span class="tag-eq">=</span> <strong>Tab amount</strong></div>
-      <div class="step"><code>Runway <span class="tag-sub">−</span> Typical Discretionary[tab]</code><span class="label">CONTEXT: not part of the runway formula. Surfaced as projection-at-windowEnd.</span></div>
-      <div class="arrow">↓ <span class="tag-eq">=</span> <strong>You&rsquo;d likely have $X left by {windowEnd}</strong></div>
+      <div class="step"><code><span class="tag-eq">L(d)</span> <span class="tag-eq">=</span> <span class="tag-add">spendableBalance</span> <span class="tag-add">+</span> <span style="color:#22c55e;">&Sigma; inflows(&le;d)</span> <span class="tag-sub">&minus;</span> <span style="color:#f59e0b;">&Sigma; outflows(&le;d)</span></code><span class="label">projected day-by-day, today &rarr; max(month end, payday&minus;1), user&rsquo;s timezone</span></div>
+      <div class="arrow">&darr; every tab is a read of this one curve</div>
+      <div class="step"><code><strong>Until Payday</strong> <span class="tag-eq">=</span> the FLOOR: min L(d), d &isin; [today, payday&minus;1]</code><span class="label">the most you can spend right now and still cover everything before the next paycheck &mdash; the hero number</span></div>
+      <div class="step"><code><strong>Today</strong> <span class="tag-eq">=</span> dailyBudget <span class="tag-eq">=</span> the sustainable RATE: min over d of L(d) <span class="tag-div">/</span> daysUntil(d)</code><span class="label">spending this rate never drives ANY pre-payday day below zero</span></div>
+      <div class="step"><code><strong>This Week</strong> <span class="tag-eq">=</span> min(rate <span class="tag-mul">&times;</span> daysInWindow, floor)</code><span class="label">allocation view, capped &mdash; a shorter tab never exceeds a longer one pre-payday</span></div>
+      <div class="step"><code><strong>This Month</strong> <span class="tag-eq">=</span> same allocation when month-end &le; payday&minus;1; full-curve floor when the month crosses payday</code><span class="label">paychecks land on their dates &mdash; income is never flat-added before it arrives</span></div>
+      <div class="arrow">&darr;</div>
+      <div class="step"><code><span class="tag-sub">Shortfalls are NEVER clamped</span></code><span class="label">negative floor ships as first-class shortfall fields {isShortfall, shortfallAmount, earliestShortfallDate, bindingConstraint} &mdash; Home and Coach render it identically</span></div>
     </div>
+    <p style="font-size:11px; color:#94a3b8;">Outflows are a MECE partition (bills/utils/subs &middot; loans &middot; planned savings &middot; CC due-this-cycle &middot; essentials); inflows are band-gated income occurrences. Everything recurring is <strong style="color:#fbbf24;">occurrence-expanded</strong>: a 3-paycheck month counts 3 paychecks; a weekly bill counts every week. <code>typicalDiscretionary</code> stays context-only, never subtracted.</p>
   </div>
 
   <!-- ===================== COMPONENT CARDS ===================== -->
@@ -224,109 +227,128 @@ footer p { font-size: 10px; color: #475569; }
           <div class="icon-circle color-add">+</div>
           <div class="meta">
             <span class="title">Spendable Balance</span>
-            <span class="subtitle">Cash in checking + savings, right now</span>
+            <span class="subtitle">The ledger&rsquo;s starting point &mdash; checking cash now</span>
           </div>
         </summary>
         <div class="body">
           <h4>What it is</h4>
-          <p>Sum of your active <strong>checking</strong> accounts only, using <code>availableBalance</code> when Plaid provides it (subtracts pending debits automatically) and falling back to <code>currentBalance</code> when not. <strong>Savings, money-market, HSA, and CD balances are deliberately excluded</strong> from runway and surfaced separately in the &ldquo;Set aside in savings&rdquo; row (v4.9 behavioral choice — money you've moved to savings shouldn't feel spendable).</p>
+          <p>Sum of your active <strong>checking</strong> accounts only, using <code>availableBalance</code> when Plaid provides it (nets pending debits automatically) and falling back to <code>currentBalance</code>. This seeds the entire curve. <strong>Savings, money-market, HSA, and CD balances stay excluded</strong> and surface as <code>setAsideAccounts[]</code> &mdash; money you&rsquo;ve moved to savings shouldn&rsquo;t feel spendable.</p>
           <h4>Filters</h4>
           <ul>
             <li><code>account_type = 'depository'</code> AND <code>account_subtype = 'checking'</code></li>
             <li><code>is_active = true</code></li>
-            <li>Other depository subtypes (savings, money market, HSA, CD) → surfaced as <code>setAsideAccounts[]</code> for transparency, but NOT included in runway</li>
           </ul>
-          <h4>Time semantics</h4>
-          <p><strong>Snapshot — same value across all tabs.</strong> Spendable balance doesn&rsquo;t change based on which timeframe you&rsquo;re looking at. It&rsquo;s &ldquo;cash you have right now.&rdquo;</p>
+          <h4>Load-bearing detail</h4>
+          <p>Because <code>availableBalance</code> already nets <em>pending</em> debits, the &plusmn;4-day paid/pending dedupe (see Ledger Mechanics) must drop any projected occurrence matched to a pending transaction &mdash; otherwise the same bill hits the curve twice.</p>
           <h4>Code reference</h4>
-          <pre>safe_to_spend_service.ts (v4.9)
-const checkingAccounts = allAccounts.filter(
-  a =&gt; a.accountType === 'depository' &amp;&amp; a.accountSubtype === 'checking'
-)
-const setAsideDepositoryAccounts = allAccounts.filter(
-  a =&gt; a.accountType === 'depository' &amp;&amp; a.accountSubtype !== 'checking'
-)
+          <pre>safe_to_spend_service.ts:computeSafeToSpend
 const spendableBalance = checkingAccounts.reduce(
   (sum, a) =&gt; sum + (Number(a.availableBalance) || Number(a.currentBalance) || 0),
   0
 )</pre>
-          <h4>User 53 example</h4>
-          <p>3 checking accounts, 0 savings. Total checking: BofA $7,316.47 (availableBalance after $4K pending debit) + Adv Plus $0.01 + Wells Fargo Everyday $2,514.68 = <code>$9,831.16</code>. <code>setAsideAccounts</code> = []. If you opened a $5K savings, it would surface in the &ldquo;Set aside&rdquo; row but NOT add $5K to your spendable balance.</p>
         </div>
       </details>
 
-      <!-- UPCOMING BILLS -->
+      <!-- BILLS / UTILS / SUBS -->
       <details class="component">
         <summary>
-          <div class="icon-circle color-sub">−</div>
+          <div class="icon-circle color-sub">&minus;</div>
           <div class="meta">
-            <span class="title">Upcoming Bills</span>
-            <span class="subtitle">Recurring outflows due in the window</span>
+            <span class="title">Bills / Utils / Subs</span>
+            <span class="subtitle">Money Out 1 &mdash; recurring outflows, conf &ge; 0.3</span>
           </div>
         </summary>
         <div class="body">
           <h4>What it is</h4>
-          <p>Sum of <code>predictedNextAmount</code> for every <code>recurring_streams</code> row of type <code>bill</code> or <code>subscription</code> with confidence ≥ 0.3 whose <code>predictedNextDate</code> falls inside the current tab&rsquo;s window.</p>
+          <p>Occurrence-expanded outflows for streams with effective category <code>bill</code>, <code>utility</code>, or <code>subscription</code> and <code>confidence_score &ge; 0.3</code> (<code>BILLS_MIN_CONFIDENCE</code>). Each occurrence lands on its predicted date in the ledger; each window&rsquo;s <code>moneyOut.billsUtilsSubs</code> sums what falls inside it.</p>
           <h4>Filters</h4>
           <ul>
-            <li><code>stream_type IN ('bill', 'subscription')</code></li>
-            <li><code>is_active = true</code></li>
-            <li><code>confidence_score &ge; 0.3</code> (anything below is shown as <code>possibleBills</code> but NOT subtracted from runway)</li>
-            <li><code>predicted_next_date</code> ≤ tab&rsquo;s windowEnd</li>
+            <li>effective category &isin; (<code>bill</code>, <code>utility</code>, <code>subscription</code>); legacy <code>category NULL</code> rows map via <code>stream_type</code></li>
+            <li><code>is_active = true</code>, confidence &ge; 0.3 (below &rarr; <code>possibleBills[]</code>, NOT in the math)</li>
+            <li>not stale, occurrence not already paid/pending (see Ledger Mechanics)</li>
           </ul>
-          <h4>Time semantics</h4>
-          <p><strong>Window-scoped per tab.</strong> The set of bills shrinks/grows depending on which tab you&rsquo;re on. The <em>runway</em> uses the until-payday-scoped bills (because runway is anchored to payday). Other tabs use their own window for the &ldquo;Also coming up in this window&rdquo; context section.</p>
-          <h4>User 53 example (until-payday window, payday May 1)</h4>
-          <p>LA Fitness $10.66 (Apr 24) + Amazon Prime $3.19 (Apr 26) = <code>$13.85</code> total. Mortgage $3,339.92 (May 2) is OUTSIDE the until-payday window (May 1 is payday, May 2 is the day after) so it doesn&rsquo;t count.</p>
           <h4>Code reference</h4>
-          <pre>safe_to_spend_service.ts (computeWindow)
-const windowBills = billStreams.filter(
-  (s) =&gt; isInWindow(s.predictedNextDate, windowEnd)
-)
-// then sum predicted_next_amount for confidence ≥ 0.3</pre>
+          <pre>safe_to_spend_service.ts:computeSafeToSpend (outflow partition)
+recurrence_detection_service.ts:expandOccurrences</pre>
         </div>
       </details>
 
-      <!-- CREDIT CARD DEBT -->
+      <!-- LOANS + PLANNED SAVINGS -->
       <details class="component">
         <summary>
-          <div class="icon-circle color-sub">−</div>
+          <div class="icon-circle color-sub">&minus;</div>
           <div class="meta">
-            <span class="title">Credit Card Debt</span>
-            <span class="subtitle">Total owed across all CC accounts</span>
+            <span class="title">Loans &amp; Planned Savings</span>
+            <span class="subtitle">Money Out 2+3 &mdash; obligations with their own labels</span>
+          </div>
+        </summary>
+        <div class="body">
+          <h4>Loans (category <code>loan</code>)</h4>
+          <p>Loan <em>payment</em> streams &mdash; car payment, student-loan autopay. Included regardless of confidence score (a detected loan payment is a real obligation); still subject to stale suppression and dedupe. Loan <em>account balances</em> stay out of the math entirely (<code>loansExcluded[]</code> &mdash; your mortgage principal isn&rsquo;t due this month).</p>
+          <h4>Planned savings (category <code>planned_savings</code>)</h4>
+          <p>Recurring checking&rarr;savings transfers. They reduce Safe to Spend &mdash; the money does leave checking &mdash; but carry their own <code>moneyOut.plannedSavings</code> label, never lumped into &ldquo;bills.&rdquo; &ldquo;You can&rsquo;t spend this because you&rsquo;re SAVING it&rdquo; is a different story from &ldquo;Comcast takes it.&rdquo;</p>
+          <h4>Code reference</h4>
+          <pre>safe_to_spend_service.ts:computeSafeToSpend
+('loan' / 'planned_savings' branches; totals in MoneyOutBreakdown)</pre>
+        </div>
+      </details>
+
+      <!-- CC DUE THIS CYCLE -->
+      <details class="component">
+        <summary>
+          <div class="icon-circle color-sub">&minus;</div>
+          <div class="meta">
+            <span class="title">CC Due This Cycle</span>
+            <span class="subtitle">Money Out 4 &mdash; statement net of payments, on the due date</span>
           </div>
         </summary>
         <div class="body">
           <h4>What it is</h4>
-          <p>Sum of <code>|currentBalance|</code> across every active credit card account. <strong>This is the full outstanding debt</strong>, not just the statement balance or minimum payment.</p>
-          <h4>Filters</h4>
+          <p>Per card, the amount actually due this cycle, landing on the card&rsquo;s <strong>due date</strong> in the ledger &mdash; <strong>never the total revolving balance</strong> (v4&rsquo;s &ldquo;acknowledged semantic weirdness,&rdquo; now fixed). <code>creditCardDebt</code> (total owed) is still returned but is <strong>display-only</strong>; it is never subtracted anywhere in v5.</p>
+          <h4>The per-card fallback ladder (<code>ccObligations[].basis</code>)</h4>
           <ul>
-            <li><code>account_type = 'credit'</code></li>
-            <li><code>is_active = true</code></li>
+            <li><strong><code>statement</code></strong> &mdash; <code>max(0, last_statement_balance &minus; payments since issue)</code> on <code>next_payment_due_date</code>. Due date passed + overdue &rarr; due NOW (lands today); passed + not overdue &rarr; cycle settled &rarr; $0.</li>
+            <li><strong><code>stream_estimate</code></strong> &mdash; no statement data: a detected checking&rarr;card autopay stream&rsquo;s <code>predictedNextAmount</code> on its date, labeled &ldquo;estimated.&rdquo;</li>
+            <li><strong><code>minimum</code></strong> &mdash; no stream either: <code>minimum_payment_amount</code> on the due date.</li>
+            <li><strong><code>unknown</code></strong> &mdash; none of the above with a balance &gt; 0 &rarr; $0 enters the math and <code>ccDueUnknown = true</code> so the UI says &ldquo;we can&rsquo;t see what&rsquo;s due&rdquo; instead of silently pretending.</li>
           </ul>
-          <h4>What it includes (important)</h4>
-          <ul>
-            <li>Last cycle&rsquo;s statement balance (the amount due by your next statement date)</li>
-            <li>This cycle&rsquo;s spending so far (will appear on next month&rsquo;s statement)</li>
-            <li>Any pending charges that have already posted to the card</li>
-          </ul>
-          <p>Plaid&rsquo;s <code>currentBalance</code> updates within minutes of every swipe.</p>
-          <h4>Why we treat the full balance as immediately due</h4>
-          <p>Most conservative interpretation. Treating only the minimum payable (~2-3% of balance) would balloon runway and structurally encourage carrying balances + paying interest. Treating only the current statement balance would require Plaid&rsquo;s Liabilities product (we don&rsquo;t use it yet) or detecting statement cycles from transaction history.</p>
-          <h4>Behavioral effect</h4>
-          <p>When you swipe $50 on CC at lunch, your CC balance goes up $50 → next API refresh shows runway $50 lower. <strong>You see the cost today even though you won&rsquo;t physically pay until next month</strong>. That&rsquo;s the intended discipline — you can&rsquo;t escape the math by switching from debit to credit.</p>
-          <h4>Time semantics</h4>
-          <p><strong>Snapshot — same value across all tabs.</strong> Like Spendable Balance, this is &ldquo;debt right now,&rdquo; not anchored to any window.</p>
-          <h4>User 53 example</h4>
-          <p>Ultimate Rewards $4,435.68 + Prime Visa $2,128.85 + United Explorer $0 + Free Spirit $0 + WF Active Cash $456.98 = <code>$7,021.51</code></p>
-          <h4>Open question</h4>
-          <p>For users whose CC due date falls between paydays (biweekly, semi-monthly), the &ldquo;all CC debt is immediately due&rdquo; assumption is too conservative. See <em>Open Questions</em> section below.</p>
+          <h4>Single-card payment-netting caveat</h4>
+          <p>&ldquo;Payments since issue&rdquo; comes from checking debits matching <code>LOAN_PAYMENTS_CREDIT_CARD%</code> &mdash; which carry <strong>no per-card mapping</strong>. Netting therefore only applies with exactly ONE card; multi-card users get the raw statement per card (conservative).</p>
+          <h4>ccNextCycleWarning</h4>
+          <p>Per card, <code>nextCycleAccruing = max(0, totalBalance &minus; statement)</code>; the sum ships as <code>ccNextCycleWarning {amount, monthLabel, escalate}</code> &mdash; &ldquo;$X building toward your next statement,&rdquo; escalating to a Home banner when it exceeds <strong>50% of the expected paycheck</strong> (<code>CC_WARNING_PAYCHECK_RATIO</code>). Server-computed so the Coach narrates the identical rule.</p>
           <h4>Code reference</h4>
-          <pre>safe_to_spend_service.ts
-const creditCardDebt = creditAccounts.reduce(
-  (sum, a) =&gt; sum + Math.abs(Number(a.currentBalance) || 0),
-  0
-)</pre>
+          <pre>safe_to_spend_service.ts:computeSafeToSpend (CC ladder loop)
+safe_to_spend_service.ts:CcObligation</pre>
+        </div>
+      </details>
+
+      <!-- ESSENTIALS FORECAST -->
+      <details class="component">
+        <summary>
+          <div class="icon-circle color-sub">&minus;</div>
+          <div class="meta">
+            <span class="title">Essentials Forecast</span>
+            <span class="subtitle">Money Out 5 &mdash; necessary daily spend, whitelist-scoped</span>
+          </div>
+        </summary>
+        <div class="body">
+          <h4>What it is</h4>
+          <p>Projected daily NECESSARY non-recurring spend, spread per-weekday across every ledger day &mdash; the term that stops the hero from saying &ldquo;spend $200&rdquo; when $90 of it is groceries you will definitely buy.</p>
+          <h4>Deliberately narrower than typical-discretionary</h4>
+          <ul>
+            <li><strong>Category whitelist</strong> (<code>ESSENTIALS_PFC_PREFIXES</code>, v1): groceries, gas, public transit, pharmacy, primary care, childcare. Subtracting ALL typical spend would make the hero circular.</li>
+            <li><strong>Checking/debit-funded only:</strong> card-swiped groceries exit checking when the STATEMENT is paid &mdash; they&rsquo;re already in the CC-due term. Counting them here too is the double-count.</li>
+          </ul>
+          <h4>Methodology (essentials_whitelist_robust_mean_dow_p90)</h4>
+          <ul>
+            <li>Per-weekday robust mean, p90-capped; <strong>zero-spend days included</strong> (&ldquo;typical daily essentials,&rdquo; not &ldquo;how much when you shop&rdquo;)</li>
+            <li>A weekday needs &ge; 4 observations or contributes $0</li>
+            <li><strong>Cold start:</strong> &lt; 14 observed days &rarr; term omitted (<code>essentials.active = false</code>, hero labeled &ldquo;still learning&rdquo;)</li>
+            <li><strong>Blend phase-in:</strong> <code>blendFactor = min(1, lookbackDays / 60)</code> &mdash; no day-60 cliff where the hero suddenly drops by hundreds overnight</li>
+          </ul>
+          <h4>Code reference</h4>
+          <pre>essentials_forecast_service.ts:computeEssentialsForecast
+essentials_forecast_service.ts:ESSENTIALS_PFC_PREFIXES</pre>
         </div>
       </details>
 
@@ -336,75 +358,67 @@ const creditCardDebt = creditAccounts.reduce(
           <div class="icon-circle color-add">+</div>
           <div class="meta">
             <span class="title">Expected Income</span>
-            <span class="subtitle">Recurring inflows in the window</span>
+            <span class="subtitle">Band-gated occurrences with floor semantics</span>
           </div>
         </summary>
         <div class="body">
           <h4>What it is</h4>
-          <p>Sum of <code>predictedNextAmount</code> for income streams with confidence ≥ 0.75 whose <code>predictedNextDate</code> falls inside the window.</p>
-          <h4>Filters</h4>
+          <p>Income stream occurrences, with the amount admitted per the app-wide confidence taxonomy (<code>confidence_bands.ts:confidenceBand</code> &mdash; a user declaration is ALWAYS high):</p>
           <ul>
-            <li><code>stream_type = 'income'</code></li>
-            <li><code>is_active = true</code></li>
-            <li><code>confidence_score &ge; 0.75</code> &mdash; <strong>stricter than the bill bar</strong>. The 0.85 narrative bar (used in Smart Pulse / Morning Brief copy) stays at 0.85 to avoid describing gig income as guaranteed; the 0.75 math bar is scoped to SafeToSpend so the runway formula counts it.</li>
-            <li><code>predicted_next_date</code> ≤ tab&rsquo;s windowEnd</li>
+            <li><strong>high</strong> (confirmed/declared or score &ge; 0.85) &rarr; full predicted amount; the declared Settings <code>payday_amount</code> substitutes on the confirmed stream (<code>amountBasis: 'declared'</code>)</li>
+            <li><strong>medium</strong> (0.5&ndash;0.85) &rarr; <strong>p25 of observed deposits</strong> (&ldquo;estimated&rdquo;) &mdash; a $700&ndash;$1,300 gig earner gets ~$800, not $0 and not the optimistic mean</li>
+            <li><strong>low</strong> (&lt; 0.5) &rarr; excluded entirely; <code>transfer_in</code> never counts</li>
           </ul>
-          <h4>Time semantics</h4>
-          <p><strong>Window-scoped per tab</strong>, like Upcoming Bills. The runway uses the until-payday window.</p>
-          <h4>Threshold philosophy</h4>
-          <p>Income confidence is gated harder than bill confidence because over-counting income is more dangerous than under-counting bills. If we add phantom income to runway, the user spends more aggressively than they should.</p>
-          <h4>User 53 example</h4>
-          <p>primary employer payroll confirmed via &ldquo;Confirm your paycheck&rdquo; UX → flagged with <code>user_confirmed=true</code>. Single observation though, so confidence stays low → <code>predictedAmount</code> is null. Net expected income for the window: <code>$0</code>.</p>
+          <h4>Floor semantics &mdash; the v5 income rule</h4>
+          <p>Income is <strong>never flat-added</strong> to a window. Each paycheck occurrence lands on its <em>date</em>, lifting <code>L(d)</code> only for days at/after arrival &mdash; a paycheck 5 days out cannot rescue rent due in 2 days (see the shortfall example). Occurrence expansion applies: a 3-paycheck month counts all 3.</p>
+          <h4>Code reference</h4>
+          <pre>safe_to_spend_service.ts:computeSafeToSpend (income loop)
+confidence_bands.ts:confidenceBand / p25
+payday_service.ts:resolvePayday (declared override)</pre>
         </div>
       </details>
 
-      <!-- DAILY BUDGET -->
+      <!-- LEDGER MECHANICS -->
       <details class="component">
         <summary>
-          <div class="icon-circle color-div">÷</div>
+          <div class="icon-circle color-mul">&times;</div>
           <div class="meta">
-            <span class="title">Daily Budget</span>
-            <span class="subtitle">Runway divided by days until payday</span>
+            <span class="title">Ledger Mechanics</span>
+            <span class="subtitle">Expansion &middot; stale suppression &middot; &plusmn;4-day dedupe</span>
           </div>
         </summary>
         <div class="body">
-          <h4>What it is</h4>
-          <p>The pay-cycle daily-rate. <code>dailyBudget = runway / daysUntilPayday</code>. On payday-today (<code>daysUntilPayday = 0</code>), it collapses to runway itself (one-day window).</p>
-          <h4>Why this is a thing</h4>
-          <p>Earlier versions tried to compute per-tab amounts as <code>spendable + scopedIncome − scopedBills − ccDebt</code>. Side effect: in mid-week with no bills, &ldquo;This Week&rdquo; collapsed to the same number as &ldquo;Until Payday.&rdquo; Switching to <code>dailyBudget × daysInWindow</code> gave a uniform daily rate everywhere. (See SafeToSpend v4.1 / v4.2 in the version history.)</p>
-          <h4>Time semantics</h4>
-          <p><strong>Anchored to payday — single value across all tabs.</strong> The daily rate is the same whether you&rsquo;re on Today or This Month; what changes per tab is how many days you multiply it by.</p>
-          <h4>User 53 example (payday May 1, daysUntilPayday=8)</h4>
-          <p>runway $6,795.80 ÷ 8 days = <code>$849.48/day</code></p>
+          <h4>1. Occurrence expansion</h4>
+          <p>Every included stream is expanded over [today, range end] via <code>recurrence_detection_service.ts:expandOccurrences</code> (period/anchor-day aware). v4 counted only the single <code>predictedNextDate</code>; v5 counts every occurrence in the range &mdash; weekly bills count every week.</p>
+          <h4>2. Stale suppression</h4>
+          <p>A stream whose <code>predictedNextDate</code> is <strong>&gt; 0.75&times; its detected period overdue</strong> with no matching transaction is treated as likely-cancelled: demoted to <code>possibleBills[]</code>, out of the math (<code>isStreamStale</code>). Applies to all outflow categories, including loans and planned savings.</p>
+          <h4>3. Paid/pending dedupe (&plusmn;4 days)</h4>
+          <p>A projected occurrence is DROPPED when a member transaction (posted OR pending) exists within <code>DEDUPE_TOLERANCE_DAYS = 4</code> days of it &mdash; the balance already reflects it (<code>availableBalance</code> nets pending debits). Applies to outflows AND income.</p>
         </div>
       </details>
 
-      <!-- TAB AMOUNT -->
+      <!-- THE FLOOR & THE RATE -->
       <details class="component">
         <summary>
-          <div class="icon-circle color-mul">×</div>
+          <div class="icon-circle color-div">=</div>
           <div class="meta">
-            <span class="title">Tab Amount</span>
-            <span class="subtitle">Daily budget × days in this tab&rsquo;s window</span>
+            <span class="title">The Floor &amp; The Rate</span>
+            <span class="subtitle">deriveLedgerTabs &mdash; how the four tabs read the curve</span>
           </div>
         </summary>
         <div class="body">
-          <h4>What it is</h4>
-          <p>The big number on the SafeToSpend hero card. <code>amount = dailyBudget × daysInWindow</code> for all four tabs (with the until-payday tab equaling runway by construction).</p>
-          <h4>Per-tab daysInWindow</h4>
-          <ul>
-            <li><strong>Today:</strong> 1 day</li>
-            <li><strong>This Week:</strong> from today through end of ISO week (Mon-Sun) in user&rsquo;s timezone</li>
-            <li><strong>This Month:</strong> from today through end of calendar month in user&rsquo;s timezone</li>
-            <li><strong>Until Payday:</strong> from today through resolved nextPayday in user&rsquo;s timezone</li>
-          </ul>
-          <h4>Note</h4>
-          <p>When This Month extends past next payday (e.g., 9-day window when payday is 8 days away), a footnote appears: <em>&ldquo;Extends N days past your next payday — this projection assumes the same daily rate continues.&rdquo;</em></p>
-          <h4>User 53 example</h4>
-          <pre>Today        = $849.48 × 1   = $849.48
-This Week    = $849.48 × 4   = $3,397.92  (today through Sun Apr 26)
-This Month   = $849.48 × 8   = $6,795.84  (today through Wed Apr 30 — same as runway)
-Until Payday = $849.48 × 8   = $6,795.84  (today through Fri May 1 — same as runway by construction)</pre>
+          <h4>Until Payday &mdash; the floor (hero)</h4>
+          <p><code>min L(d), d &isin; [today, payday&minus;1]</code>. The window ends <strong>payday&minus;1</strong>: the awaited paycheck is never inside its own runway; the number jumps when the deposit actually posts.</p>
+          <h4>Today &mdash; dailyBudget, the sustainable rate</h4>
+          <p><code>x = min over d of L(d)/daysUntil(d)</code>. Spending x/day never drives ANY pre-payday day below zero. Deliberately NOT <code>floor &divide; daysUntilPayday</code> and NOT <code>floor-day balance &divide; days-to-floor-day</code> &mdash; see the worked example for why $25/day is right where $66/day digs &minus;$300.</p>
+          <h4>This Week / This Month</h4>
+          <p>Week: <code>min(x &times; daysInWindow, floor)</code> &mdash; a shorter tab never exceeds a longer one pre-payday. Month (field still named <code>thisMonth</code> until the mobile v5 PR): same allocation when month-end &le; payday&minus;1; when the month <strong>crosses payday</strong>, the TRUE full-curve floor through month end &mdash; paychecks land on their dates.</p>
+          <h4>Shortfall &mdash; never clamped</h4>
+          <p>Negative floor &rarr; allocations collapse to the floor (a negative rate &times; more days would read &ldquo;deeper in the hole the longer you wait&rdquo;) and the response carries <code>shortfall {isShortfall, shortfallAmount, earliestShortfallDate, bindingConstraint {date, label}}</code>. Home renders it; the Coach quotes the identical projection. v4 clamped negatives to $0 in the Coach; v5 never clamps anywhere.</p>
+          <h4>Code reference</h4>
+          <pre>safe_to_spend_service.ts:deriveLedgerTabs
+(pure, exported, DB-free &mdash; the formula shipped with zero
+arithmetic tests for two major versions; never again)</pre>
         </div>
       </details>
 
@@ -414,18 +428,18 @@ Until Payday = $849.48 × 8   = $6,795.84  (today through Fri May 1 — same as 
           <div class="icon-circle color-context">~</div>
           <div class="meta">
             <span class="title">Typical Discretionary</span>
-            <span class="subtitle">CONTEXT — projection of future non-recurring spend</span>
+            <span class="subtitle">CONTEXT &mdash; still never subtracted</span>
           </div>
         </summary>
         <div class="body">
           <h4>What it is</h4>
-          <p>Forecast of how much you&rsquo;ll spend on NON-RECURRING purchases (across both checking and credit card outflows) between today and each tab&rsquo;s windowEnd, based on your last year of transaction history. Robust mean per day-of-week capped at the 90th percentile.</p>
-          <h4>Why it&rsquo;s context, not a runway input</h4>
-          <p>Future impulse spending is genuinely volatile per-week. Subtracting a guess from runway would create a confusing &ldquo;the app is eating my runway&rdquo; feeling. So we surface it separately as &ldquo;Projection at {windowEnd}&rdquo; — a projection, not a commitment.</p>
-          <h4>Per-tab</h4>
-          <p>The forecast SUM differs per tab (different windowEnds), but the underlying weekday averages are user-level (computed once over the full lookback).</p>
+          <p>Forecast of ALL non-recurring spend (checking AND credit card) between today and each tab&rsquo;s windowEnd &mdash; robust per-weekday mean, p90-capped, up to a year of lookback. Surfaced as the &ldquo;you&rsquo;d likely have $X left&rdquo; projection line.</p>
+          <h4>Don&rsquo;t confuse it with essentials</h4>
+          <p><strong>Essentials</strong> is the <em>narrower</em> whitelist term (necessary categories only, checking-funded only) that DOES enter the ledger. <strong>Typical discretionary</strong> is the <em>full</em> projection that does NOT &mdash; subtracting it would make the hero circular (&ldquo;safe to spend&rdquo; minus the discretionary you&rsquo;ll spend anyway).</p>
           <h4>Full math spec</h4>
-          <p style="margin-top: 6px;"><a href="safe-to-spend-typical-spending-spec.html" style="color: #fbbf24; text-decoration: underline; font-weight: 600;">→ Typical Spending Forecast spec (worked example)</a></p>
+          <p style="margin-top: 6px;"><a href="safe-to-spend-typical-spending-spec.html" style="color: #fbbf24; text-decoration: underline; font-weight: 600;">&rarr; Typical Spending Forecast spec (worked example)</a></p>
+          <h4>Code reference</h4>
+          <pre>typical_discretionary_service.ts:computeTypicalDiscretionary</pre>
         </div>
       </details>
 
@@ -434,12 +448,12 @@ Until Payday = $849.48 × 8   = $6,795.84  (today through Fri May 1 — same as 
 
   <!-- ===================== TAB MATRIX ===================== -->
   <div class="tab-matrix-section">
-    <h2>How the math changes per tab</h2>
-    <p>Same underlying components — different window scopes. Spendable balance, credit card debt, and daily budget are tab-invariant; bills, income, and typical-discretionary all re-scope to the tab&rsquo;s window.</p>
+    <h2>How the four tabs read the same curve</h2>
+    <p>One ledger, four reads. The curve <code>L(d)</code> is tab-invariant; what changes is the window end and whether the tab is a floor, a rate, or a capped allocation.</p>
     <table class="tab-matrix">
       <thead>
         <tr>
-          <th>Component</th>
+          <th>Aspect</th>
           <th>Today</th>
           <th>This Week</th>
           <th>This Month</th>
@@ -448,105 +462,108 @@ Until Payday = $849.48 × 8   = $6,795.84  (today through Fri May 1 — same as 
       </thead>
       <tbody>
         <tr>
-          <td class="row-label">Spendable Balance</td>
-          <td colspan="4" style="text-align:center; color:#94a3b8;">Same value — snapshot of cash right now</td>
+          <td class="row-label">Ledger curve L(d)</td>
+          <td colspan="4" style="text-align:center; color:#94a3b8;">Same one curve &mdash; every tab is a read of it</td>
         </tr>
         <tr>
-          <td class="row-label">Credit Card Debt</td>
-          <td colspan="4" style="text-align:center; color:#94a3b8;">Same value — snapshot of total CC owed right now</td>
+          <td class="row-label">Window end</td>
+          <td>today</td>
+          <td>end of ISO week (user tz)</td>
+          <td>end of calendar month</td>
+          <td><strong>payday&minus;1</strong> (paycheck never inside its own runway)</td>
         </tr>
         <tr>
-          <td class="row-label">Upcoming Bills (in &ldquo;Also coming up&rdquo;)</td>
-          <td>Bills due today only</td>
-          <td>Through end of ISO week</td>
-          <td>Through end of month</td>
-          <td>Through nextPayday</td>
+          <td class="row-label">Tab amount</td>
+          <td>rate <code>x = min(L(d)/daysUntil(d))</code></td>
+          <td><code>min(x &times; days, floor)</code></td>
+          <td>allocation, or full-curve floor when crossing payday</td>
+          <td><strong>floor <code>min L(d)</code></strong></td>
         </tr>
         <tr>
-          <td class="row-label">Expected Income (in &ldquo;Also coming up&rdquo;)</td>
-          <td>Income today only</td>
-          <td>Through end of ISO week</td>
-          <td>Through end of month</td>
-          <td>Through nextPayday</td>
+          <td class="row-label">moneyOut breakdown</td>
+          <td>events &le; today</td>
+          <td>events &le; week end</td>
+          <td>events &le; month end</td>
+          <td>events &le; payday&minus;1</td>
         </tr>
         <tr>
-          <td class="row-label">Daily Budget</td>
-          <td colspan="4" style="text-align:center; color:#94a3b8;">Same value — runway ÷ daysUntilPayday</td>
+          <td class="row-label">Essentials term</td>
+          <td>today&rsquo;s weekday value</td>
+          <td>&Sigma; daily values in window</td>
+          <td>&Sigma; in window</td>
+          <td>&Sigma; in window</td>
         </tr>
         <tr>
-          <td class="row-label">daysInWindow</td>
-          <td>1</td>
-          <td>today → Sun</td>
-          <td>today → end of month</td>
-          <td>today → nextPayday</td>
+          <td class="row-label">In shortfall</td>
+          <td>rate (negative)</td>
+          <td>floor</td>
+          <td>floor</td>
+          <td>floor (= shortfallAmount)</td>
         </tr>
         <tr>
-          <td class="row-label">Hero amount</td>
-          <td>dailyBudget × 1</td>
-          <td>dailyBudget × N</td>
-          <td>dailyBudget × M</td>
-          <td>= runway (by construction)</td>
-        </tr>
-        <tr>
-          <td class="row-label">Typical Discretionary forecast</td>
-          <td>Today&rsquo;s weekday avg</td>
-          <td>Sum across week-end days</td>
-          <td>Sum across month-end days</td>
-          <td>Sum across payday days</td>
-        </tr>
-        <tr>
-          <td class="row-label">Projection at windowEnd</td>
-          <td colspan="4" style="text-align:center; color:#94a3b8;"><code>runway − typicalDiscretionary[tab].forecastAmount</code></td>
+          <td class="row-label">Typical Discretionary (context)</td>
+          <td colspan="4" style="text-align:center; color:#94a3b8;">per-window forecast &mdash; projection line only, never subtracted</td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <!-- ===================== LIVE EXAMPLE ===================== -->
+  <!-- ===================== WORKED EXAMPLES ===================== -->
   <div class="live-example">
-    <h2>Worked example — user 53, apr 23 2026</h2>
-    <p>Setting: payday May 1 (semimonthly variant 1st & 15th, 8 days away), 3 checking accounts, 5 CC accounts, 1 confirmed primary employer paycheck (low confidence).</p>
+    <h2>Worked example 1 &mdash; why the rate is $25/day, not $66/day</h2>
+    <p>$1,000 in checking. $800 rent due day 3. Payday day 9 &rarr; pre-payday window is days 1&ndash;8. No other events.</p>
     <pre style="background:rgba(0,0,0,0.35); padding:12px; border-radius:6px; font-size:11px; overflow-x:auto; color:#cbd5e1; border-left:2px solid #a855f7;">
-spendableBalance = $13,831.16     (Bank of America + Adv Plus + Wells Fargo Everyday)
-upcomingBills    = $13.85         (LA Fitness Apr 24 + Amazon Prime Apr 26)
-creditCardDebt   = $7,021.51      (Ultimate Rewards + Prime Visa + WF Active Cash; United and Free Spirit are $0)
-expectedIncome   = $0             (primary income stream too low conf to count amount yet)
+Day d:      1      2      3      4      5      6      7      8    | 9 (payday)
+Event:      —      —    −800     —      —      —      —      —    | +paycheck
+L(d):     1000   1000    200    200    200    200    200    200   |
+L(d)/d:   1000    500   66.67    50     40   33.33  28.57  25.00  |
 
-runway          = 13,831.16 − 13.85 − 7,021.51 + 0 = <span class="num">$6,795.80</span>
-dailyBudget     = 6,795.80 ÷ 8 days                = <span class="num">$849.48/day</span>
-
-Today      = 849.48 × 1 = <span class="num">$849.48</span>     (Apr 23, 1 day)
-This Week  = 849.48 × 4 = <span class="num">$3,397.92</span>   (Apr 23 → Apr 26, 4 days)
-This Month = 849.48 × 8 = <span class="num">$6,795.84</span>   (Apr 23 → Apr 30, 8 days)
-Until Pay  = 849.48 × 8 = <span class="num">$6,795.84</span>   (Apr 23 → May 1, 8 days; equals runway)
-
-Typical (window forecasts):
-  Today      = <span class="num">$666.61</span>     →  projection $6,129.19
-  This Week  = <span class="num">$1,274.40</span>   →  projection $5,521.40
-  This Month = <span class="num">$2,193.68</span>   →  projection $4,602.12
-  Until Pay  = <span class="num">$2,655.17</span>   →  projection $4,140.63
+Until Payday (floor)    = min L(d)         = <span class="num">$200</span>
+Today (rate)            = min L(d)/d = 200/8 = <span class="num">$25.00/day</span>
+This Week (ends day 7)  = min(25 × 7, 200)  = <span class="num">$175</span>
+This Month (ends day 8) = min(25 × 8, 200)  = <span class="num">$200</span>
     </pre>
+    <p><strong>Why NOT $66/day:</strong> $66.67 is <code>200/3</code> &mdash; it merely clears the <em>rent-day</em> dip. Keep spending $66.67/day through day 8 and you&rsquo;ve spent ~$533 against $200 of post-rent headroom: <code>1000 &minus; 800 &minus; 533 &asymp; &minus;$333</code> by payday. The min runs over <em>every</em> pre-payday day, so the binding ratio is <code>200/8</code> and $25/day keeps every day &ge; $0.</p>
+    <p>If the month crossed payday (month-end day 20, $3,000 paycheck day 9), This Month becomes the full-curve floor over days 1&ndash;20 &mdash; the paycheck lifts L(d) only from day 9 onward, so the floor stays $200. Income is never flat-added into earlier days.</p>
+  </div>
+
+  <div class="live-example">
+    <h2>Worked example 2 &mdash; shortfall: income can&rsquo;t mask an earlier dip</h2>
+    <p>$500 in checking. $1,000 rent due day 2. $2,000 paycheck lands day 5 (payday) &rarr; pre-payday window is days 1&ndash;4.</p>
+    <pre style="background:rgba(0,0,0,0.35); padding:12px; border-radius:6px; font-size:11px; overflow-x:auto; color:#cbd5e1; border-left:2px solid #a855f7;">
+Day d:      1      2      3      4    | 5 (payday)
+Event:      —    −1000    —      —    | +2000
+L(d):      500   −500   −500   −500   | +1500
+L(d)/d:    500   −250  −166.67 −125   |
+
+Until Payday (floor) = <span class="num">−$500</span>   ← NOT clamped
+Today (rate)         = <span class="num">−$250</span>
+This Week / Month    = floor (allocation collapses in shortfall) = <span class="num">−$500</span>
+
+shortfall = { isShortfall: true, shortfallAmount: −500,
+              earliestShortfallDate: day 2,
+              bindingConstraint: { date: day 2, label: "rent" } }
+    </pre>
+    <p>The $2,000 paycheck makes the <em>post</em>-payday curve healthy (+$1,500) but <strong>cannot mask the day-2 dip</strong> &mdash; floor semantics means income only helps days at/after it arrives. v4 flat-added window income and the Coach clamped negatives to $0; v5 tells the truth: you are $500 short, starting day 2, because of rent.</p>
   </div>
 
   <!-- ===================== OPEN QUESTIONS ===================== -->
   <div class="open-questions">
-    <h2>Open questions / known simplifications / planned features</h2>
+    <h2>Open questions / known simplifications</h2>
     <ul>
-      <li><strong>Plaid Liabilities for CC due-date splitting.</strong> Today we treat <em>all</em> CC debt as immediately payable, which over-tanks runway right after a statement closes (you just got a $5K bill — runway drops $5K — even though due date is 25 days away). With Plaid Liabilities (separate product, we have production access) we'd get <code>last_statement_balance</code> + <code>next_payment_due_date</code> per card, and could split the CC line into <strong>"Due [date]"</strong> + <strong>"Accumulating for next cycle"</strong>. Total subtracted stays the same; clarity goes way up. Same product unlocks: per-card due-date alerts, minimum-payment safety nudges, APR-aware "you're carrying balance at 24%" warnings, missed-payment detection.</li>
-      <li><strong>Apple Card-style payment simulator.</strong> Future feature concept (paired with Liabilities) — slider/wheel UX showing how 25% / 50% / 75% / 100% CC payment translates to interest charged. Apple Card's wheel is the reference design.</li>
-      <li><strong>Plaid Signal for live spend pressure.</strong> Today's runway drop after a swipe is delayed by the Plaid sync chain (bank → Plaid → us → mobile). Pending charges appear within minutes-to-hours typically; posted charges lag 1–3 days. Plaid Signal is a separate product that targets near-real-time spend tracking. Worth investigating once we want to close the "user could overspend before runway updates" gap.</li>
-      <li><strong>Detector coverage gap on recurring streams.</strong> The recurrence detector typically needs ≥3 occurrences to confidently classify a pattern. Side effect: <em>real recurring stuff with thin history gets misclassified as discretionary</em>. User 53's <strong>BILT CARD HOUSING (rent, ~$4,200/mo) has only 2 occurrences in 102 days of data — so it's not detected as a recurring bill, and its $4,200 lands in &ldquo;typical discretionary&rdquo; instead, inflating the Thursday weekday average from ~$15 to $666</strong>. Fix: a parallel "Confirm a recurring bill" UX (mirror of the existing "Confirm your paycheck" pattern) — user taps a transaction → flagged with <code>user_confirmed=true</code> on a recurring_streams row → bypasses the detector's occurrence-count threshold. Also covers: new users (&lt;3 months data), irregular cadence (quarterly insurance), first-occurrence bills (just-started gym).</li>
-      <li><strong>Lookback bump from 365 → 730 days.</strong> Plaid gives us 2 years; we currently cap at 365 conservatively. Once users approach 1 year of history, bump <code>LOOKBACK_DAYS_MAX = 730</code>. One-line change. Note: month-of-year seasonality (December holiday, summer travel) needs 3+ years to denoise reliably — not solvable yet even with 2-year lookback.</li>
-      <li><strong>Today's typical-discretionary doesn't subtract today's already-completed swipes.</strong> If your Thursday typical is $666 and you've already spent $50 by lunch, the projection still treats today as a fresh $666 day. Errs conservative. Could be tightened to project "remaining today" instead.</li>
-      <li><strong>Statement balance vs total balance for CC subtraction.</strong> We use total <code>currentBalance</code>, which over-counts current-cycle swipes (those have grace before they're owed). Most cashflow apps default to this conservative read. Resolved by the Liabilities-based split above.</li>
-      <li><strong>Minimum payment vs full balance.</strong> We treat full balance as "owed." Showing only the min payable would balloon runway by ~97% and structurally encourage carrying balances + paying interest. Deliberate behavioral choice — we don't want to be that app.</li>
-      <li><strong>Savings deliberately excluded from spendable balance.</strong> v4.9 — savings, money-market, HSA, CD subtypes don't count toward Safe to Spend. Surfaced as <code>setAsideAccounts</code> in a separate row labeled "Set aside in savings." Encourages users to keep savings savings.</li>
-      <li><strong>Loan accounts are excluded from runway entirely.</strong> Plaid doesn't reliably surface loan transactions; mortgage isn't the kind of debt you pay off next month anyway. Surfaced as <code>loansExcluded[]</code> for transparency.</li>
+      <li><strong>Multi-card payment netting.</strong> Checking&rarr;card payment transactions (<code>LOAN_PAYMENTS_CREDIT_CARD%</code>) carry no per-card mapping, so statement netting only applies to single-card users; multi-card users get the conservative raw statement per card. Needs per-card payment attribution.</li>
+      <li><strong>Detector coverage gap on recurring streams.</strong> Real recurring stuff with &lt;3 occurrences gets misclassified as discretionary (User 53&rsquo;s BILT rent is the canonical example). Fix: &ldquo;Confirm a recurring bill&rdquo; UX (E2.1) &mdash; <code>user_confirmed=true</code> bypasses the occurrence-count threshold.</li>
+      <li><strong>Essentials whitelist is v1.</strong> <code>ESSENTIALS_PFC_PREFIXES</code> covers groceries, fuel/transit, pharmacy, primary care, childcare. Extend deliberately &mdash; in the spec and the code together.</li>
+      <li><strong>Today&rsquo;s essentials don&rsquo;t net today&rsquo;s completed swipes.</strong> Fresh-day estimate; could be tightened to &ldquo;remaining today.&rdquo;</li>
+      <li><strong>Lookback bump from 365 &rarr; 730 days.</strong> Plaid gives 2 years; we cap at 365 conservatively. Bump once users approach 1y of history (E2.2).</li>
+      <li><strong>Plaid Signal for live spend pressure.</strong> The swipe-to-ledger latency gap (bank &rarr; Plaid &rarr; us &rarr; mobile) remains; Signal targets near-real-time spend tracking (E3.1).</li>
+      <li><strong>Savings deliberately excluded from spendable balance.</strong> Kept from v4.9 &mdash; surfaced as <code>setAsideAccounts[]</code> (&ldquo;Set aside in savings&rdquo;). Encourages users to keep savings savings.</li>
+      <li><strong>Loan accounts excluded.</strong> Loan <em>payments</em> are in the math (category <code>loan</code>); loan <em>balances</em> surface as <code>loansExcluded[]</code> only.</li>
     </ul>
   </div>
 
   <footer>
-    <p>Safe to Spend Math Explorer &middot; v4.8 &middot; Pair this with the <a href="safe-to-spend-typical-spending-spec.html" style="color:#94a3b8;">Typical Spending math spec</a> for the day-by-day forecast walkthrough.</p>
+    <p>Safe to Spend Math Explorer &middot; v5 (daily cash-flow ledger, 2026-06-11) &middot; Pair this with the <a href="safe-to-spend-typical-spending-spec.html" style="color:#94a3b8;">Typical Spending math spec</a> for the context-only forecast walkthrough.</p>
   </footer>
 </div>
 
