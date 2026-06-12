@@ -184,7 +184,7 @@ footer p { font-size: 10px; color: #475569; }
     <p style="font-size: 11px; color: #64748b; margin-top: 6px;">
       Markdown companion: <a href="https://github.com/vikkybharadwaj/Tide_Vik-s-Version/blob/main/docs/SAFE_TO_SPEND_MATH.md" style="color: #fbbf24;"><code style="background:rgba(0,0,0,0.3); padding:1px 6px; border-radius:3px;">docs/SAFE_TO_SPEND_MATH.md</code></a>
     </p>
-    <p class="tagline">v5 (2026-06-11): one primitive &mdash; a projected daily cash-flow ledger &mdash; drives every number on the card. Click into any component to see exactly how it&rsquo;s calculated, what window it covers, and how each tab reads the same curve.</p>
+    <p class="tagline">v5.1 (2026-06-12, global floor): one primitive &mdash; a projected daily cash-flow ledger &mdash; drives every number on the card, and one invariant bounds every tab: no window ever promises money a longer window proves you need. Click into any component to see exactly how it&rsquo;s calculated, what window it covers, and how each tab reads the same curve.</p>
   </header>
 
   <div class="intro">
@@ -205,10 +205,10 @@ footer p { font-size: 10px; color: #475569; }
     <div class="formula-block">
       <div class="step"><code><span class="tag-eq">L(d)</span> <span class="tag-eq">=</span> <span class="tag-add">spendableBalance</span> <span class="tag-add">+</span> <span style="color:#22c55e;">&Sigma; inflows(&le;d)</span> <span class="tag-sub">&minus;</span> <span style="color:#f59e0b;">&Sigma; outflows(&le;d)</span></code><span class="label">projected day-by-day, today &rarr; max(month end, payday&minus;1), user&rsquo;s timezone</span></div>
       <div class="arrow">&darr; every tab is a read of this one curve</div>
-      <div class="step"><code><strong>Until Payday</strong> <span class="tag-eq">=</span> the FLOOR: min L(d), d &isin; [today, payday&minus;1]</code><span class="label">the most you can spend right now and still cover everything before the next paycheck &mdash; the hero number</span></div>
-      <div class="step"><code><strong>Today</strong> <span class="tag-eq">=</span> dailyBudget <span class="tag-eq">=</span> the sustainable RATE: min over d of L(d) <span class="tag-div">/</span> daysUntil(d)</code><span class="label">spending this rate never drives ANY pre-payday day below zero</span></div>
-      <div class="step"><code><strong>This Week</strong> <span class="tag-eq">=</span> min(rate <span class="tag-mul">&times;</span> daysInWindow, floor)</code><span class="label">allocation view, capped &mdash; a shorter tab never exceeds a longer one pre-payday</span></div>
-      <div class="step"><code><strong>This Month</strong> <span class="tag-eq">=</span> same allocation when month-end &le; payday&minus;1; full-curve floor when the month crosses payday</code><span class="label">paychecks land on their dates &mdash; income is never flat-added before it arrives</span></div>
+      <div class="step"><code><strong>Until Payday</strong> <span class="tag-eq">=</span> the GLOBAL FLOOR: min L(d), d &isin; [today, max(payday&minus;1, month end)]</code><span class="label">v5.1 &mdash; the most you can spend right now and still cover every projected obligation; the hero number. The one invariant: no window ever promises money a longer window proves you need</span></div>
+      <div class="step"><code><strong>Today</strong> <span class="tag-eq">=</span> dailyBudget <span class="tag-eq">=</span> the sustainable RATE: min over d of L(d) <span class="tag-div">/</span> daysUntil(d)</code><span class="label">same global horizon &mdash; spending this rate never drives ANY projected day below zero</span></div>
+      <div class="step"><code><strong>This Week</strong> <span class="tag-eq">=</span> min(rate <span class="tag-mul">&times;</span> daysInWindow, global floor)</code><span class="label">allocation view, capped &mdash; a shorter tab can never exceed what the full curve proves spendable (v5.0's week capped only pre-payday; a post-payday bill made This Week &gt; This Month &mdash; the cross-horizon seam, dead in v5.1)</span></div>
+      <div class="step"><code><strong>This Month</strong> <span class="tag-eq">=</span> same allocation when month-end &le; payday&minus;1; the global floor itself when the month crosses payday</code><span class="label">paychecks land on their dates &mdash; income is never flat-added before it arrives</span></div>
       <div class="arrow">&darr;</div>
       <div class="step"><code><span class="tag-sub">Shortfalls are NEVER clamped</span></code><span class="label">negative floor ships as first-class shortfall fields {isShortfall, shortfallAmount, earliestShortfallDate, bindingConstraint} &mdash; Home and Coach render it identically</span></div>
     </div>
@@ -407,14 +407,14 @@ payday_service.ts:resolvePayday (declared override)</pre>
           </div>
         </summary>
         <div class="body">
-          <h4>Until Payday &mdash; the floor (hero)</h4>
-          <p><code>min L(d), d &isin; [today, payday&minus;1]</code>. The window ends <strong>payday&minus;1</strong>: the awaited paycheck is never inside its own runway; the number jumps when the deposit actually posts.</p>
+          <h4>Until Payday &mdash; the global floor (hero)</h4>
+          <p><code>min L(d), d &isin; [today, max(payday&minus;1, month end)]</code> (v5.1). The display window still ends <strong>payday&minus;1</strong> &mdash; the awaited paycheck is never inside its own runway &mdash; but the CAP looks through the full displayed horizon, so a post-payday bill that no trusted income covers caps the hero too. When the paycheck IS confidently detected it lifts the post-payday curve and the global floor collapses to the old pre-payday floor. The response names the binding dip: <code>floor {date, value, crossesPayday, bindingBill {label, amount, date}}</code>.</p>
           <h4>Today &mdash; dailyBudget, the sustainable rate</h4>
-          <p><code>x = min over d of L(d)/daysUntil(d)</code>. Spending x/day never drives ANY pre-payday day below zero. Deliberately NOT <code>floor &divide; daysUntilPayday</code> and NOT <code>floor-day balance &divide; days-to-floor-day</code> &mdash; see the worked example for why $25/day is right where $66/day digs &minus;$300.</p>
+          <p><code>x = min over d of L(d)/daysUntil(d)</code>. Spending x/day never drives ANY projected day below zero (global horizon, v5.1). Deliberately NOT <code>floor &divide; daysUntilPayday</code> and NOT <code>floor-day balance &divide; days-to-floor-day</code> &mdash; see the worked example for why $25/day is right where $66/day digs &minus;$300.</p>
           <h4>This Week / This Month</h4>
-          <p>Week: <code>min(x &times; daysInWindow, floor)</code> &mdash; a shorter tab never exceeds a longer one pre-payday. Month (field still named <code>thisMonth</code> until the mobile v5 PR): same allocation when month-end &le; payday&minus;1; when the month <strong>crosses payday</strong>, the TRUE full-curve floor through month end &mdash; paychecks land on their dates.</p>
+          <p>Week: <code>min(x &times; daysInWindow, global floor)</code> &mdash; a shorter tab can never exceed what the full curve proves spendable. Month: same allocation when month-end &le; payday&minus;1; when the month <strong>crosses payday</strong>, the global floor itself &mdash; paychecks land on their dates. (v5.0 capped the week at the pre-payday floor only; one uncovered post-payday bill produced This Week &gt; This Month in the field on 2026-06-12 &mdash; the v5.1 global floor is the fix.)</p>
           <h4>Shortfall &mdash; never clamped</h4>
-          <p>Negative floor &rarr; allocations collapse to the floor (a negative rate &times; more days would read &ldquo;deeper in the hole the longer you wait&rdquo;) and the response carries <code>shortfall {isShortfall, shortfallAmount, earliestShortfallDate, bindingConstraint {date, label}}</code>. Home renders it; the Coach quotes the identical projection. v4 clamped negatives to $0 in the Coach; v5 never clamps anywhere.</p>
+          <p>Negative floor &rarr; EVERY window collapses to the floor, Today included (a negative rate &times; more days would read &ldquo;deeper in the hole the longer you wait&rdquo;, and a raw per-day rate next to a deeper weekly floor reads as a smaller hole on a shorter tab — v5.1) and the response carries <code>shortfall {isShortfall, shortfallAmount, earliestShortfallDate, bindingConstraint {date, label}}</code>. Home renders it; the Coach quotes the identical projection. v4 clamped negatives to $0 in the Coach; v5 never clamps anywhere.</p>
           <h4>Code reference</h4>
           <pre>safe_to_spend_service.ts:deriveLedgerTabs
 (pure, exported, DB-free &mdash; the formula shipped with zero
@@ -475,9 +475,9 @@ arithmetic tests for two major versions; never again)</pre>
         <tr>
           <td class="row-label">Tab amount</td>
           <td>rate <code>x = min(L(d)/daysUntil(d))</code></td>
-          <td><code>min(x &times; days, floor)</code></td>
-          <td>allocation, or full-curve floor when crossing payday</td>
-          <td><strong>floor <code>min L(d)</code></strong></td>
+          <td><code>min(x &times; days, global floor)</code></td>
+          <td>allocation, or the global floor when crossing payday</td>
+          <td><strong>global floor <code>min L(d)</code> through max(payday&minus;1, month end)</strong></td>
         </tr>
         <tr>
           <td class="row-label">moneyOut breakdown</td>
@@ -495,7 +495,7 @@ arithmetic tests for two major versions; never again)</pre>
         </tr>
         <tr>
           <td class="row-label">In shortfall</td>
-          <td>rate (negative)</td>
+          <td>floor (v5.1 — was the raw negative rate)</td>
           <td>floor</td>
           <td>floor</td>
           <td>floor (= shortfallAmount)</td>
@@ -523,8 +523,8 @@ Today (rate)            = min L(d)/d = 200/8 = <span class="num">$25.00/day</spa
 This Week (ends day 7)  = min(25 × 7, 200)  = <span class="num">$175</span>
 This Month (ends day 8) = min(25 × 8, 200)  = <span class="num">$200</span>
     </pre>
-    <p><strong>Why NOT $66/day:</strong> $66.67 is <code>200/3</code> &mdash; it merely clears the <em>rent-day</em> dip. Keep spending $66.67/day through day 8 and you&rsquo;ve spent ~$533 against $200 of post-rent headroom: <code>1000 &minus; 800 &minus; 533 &asymp; &minus;$333</code> by payday. The min runs over <em>every</em> pre-payday day, so the binding ratio is <code>200/8</code> and $25/day keeps every day &ge; $0.</p>
-    <p>If the month crossed payday (month-end day 20, $3,000 paycheck day 9), This Month becomes the full-curve floor over days 1&ndash;20 &mdash; the paycheck lifts L(d) only from day 9 onward, so the floor stays $200. Income is never flat-added into earlier days.</p>
+    <p><strong>Why NOT $66/day:</strong> $66.67 is <code>200/3</code> &mdash; it merely clears the <em>rent-day</em> dip. Keep spending $66.67/day through day 8 and you&rsquo;ve spent ~$533 against $200 of post-rent headroom: <code>1000 &minus; 800 &minus; 533 &asymp; &minus;$333</code> by payday. The min runs over <em>every</em> projected day, so the binding ratio is <code>200/8</code> and $25/day keeps every day &ge; $0.</p>
+    <p>If the month crossed payday (month-end day 20, $3,000 paycheck day 9), the global floor runs over days 1&ndash;20 &mdash; the paycheck lifts L(d) only from day 9 onward, so the floor stays $200 and every tab is unchanged. Income is never flat-added into earlier days. Now remove the paycheck from the projection (income the engine can't trust is excluded) and add a $250 bill on day 12: L(12) = 200 &minus; 250 = <span class="num">&minus;$50</span>, so the global floor is &minus;$50 and EVERY tab reports the shortfall. v5.0 would have said &ldquo;$200 safe until payday&rdquo; while the month tab alone knew about day 12 &mdash; that cross-horizon seam (This Week &gt; This Month, observed in the field 2026-06-12) is exactly what the v5.1 global floor kills.</p>
   </div>
 
   <div class="live-example">
@@ -537,8 +537,8 @@ L(d):      500   −500   −500   −500   | +1500
 L(d)/d:    500   −250  −166.67 −125   |
 
 Until Payday (floor) = <span class="num">−$500</span>   ← NOT clamped
-Today (rate)         = <span class="num">−$250</span>
-This Week / Month    = floor (allocation collapses in shortfall) = <span class="num">−$500</span>
+Today                = floor (every window collapses in shortfall) = <span class="num">−$500</span>
+This Week / Month    = floor = <span class="num">−$500</span>
 
 shortfall = { isShortfall: true, shortfallAmount: −500,
               earliestShortfallDate: day 2,
@@ -563,7 +563,7 @@ shortfall = { isShortfall: true, shortfallAmount: −500,
   </div>
 
   <footer>
-    <p>Safe to Spend Math Explorer &middot; v5 (daily cash-flow ledger, 2026-06-11) &middot; Pair this with the <a href="safe-to-spend-typical-spending-spec.html" style="color:#94a3b8;">Typical Spending math spec</a> for the context-only forecast walkthrough.</p>
+    <p>Safe to Spend Math Explorer &middot; v5.1 (daily cash-flow ledger + global floor, 2026-06-12) &middot; Pair this with the <a href="safe-to-spend-typical-spending-spec.html" style="color:#94a3b8;">Typical Spending math spec</a> for the context-only forecast walkthrough.</p>
   </footer>
 </div>
 
