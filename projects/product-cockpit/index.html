@@ -97,11 +97,13 @@
     <p class="muted" style="max-width:680px;">Read straight down, or click into whatever you care about. The nav up top (Architecture &middot; Artifacts) and your back button bring you home any time.</p>
     <ol class="tour">
       <li><a href="#problem"><span class="tour-n">01</span><span><span class="tour-t">The problem</span> <span class="tour-d">&mdash; why decisions quietly stall</span></span></a></li>
-      <li><a href="#bet"><span class="tour-n">02</span><span><span class="tour-t">The bet</span> <span class="tour-d">&mdash; treat knowledge as a system</span></span></a></li>
-      <li><a href="#architecture"><span class="tour-n">03</span><span><span class="tour-t">The architecture</span> <span class="tour-d">&mdash; the six layers + the anti-drift idea</span></span></a></li>
-      <li><a href="#how"><span class="tour-n">04</span><span><span class="tour-t">How we used it</span> <span class="tour-d">&mdash; three concrete examples</span></span></a></li>
-      <li><a href="#outcomes"><span class="tour-n">05</span><span><span class="tour-t">Outcomes</span> <span class="tour-d">&mdash; what changed (and what&rsquo;s illustrative)</span></span></a></li>
-      <li><a href="#about"><span class="tour-n">06</span><span><span class="tour-t">What it demonstrates</span> <span class="tour-d">&mdash; and what I&rsquo;d do differently</span></span></a></li>
+      <li><a href="#who"><span class="tour-n">02</span><span><span class="tour-t">Who it&rsquo;s for</span> <span class="tour-d">&mdash; the segment, on purpose</span></span></a></li>
+      <li><a href="#bet"><span class="tour-n">03</span><span><span class="tour-t">The bet</span> <span class="tour-d">&mdash; treat knowledge as a system</span></span></a></li>
+      <li><a href="#fits"><span class="tour-n">04</span><span><span class="tour-t">Where it fits</span> <span class="tour-d">&mdash; why not just a wiki</span></span></a></li>
+      <li><a href="#architecture"><span class="tour-n">05</span><span><span class="tour-t">The architecture</span> <span class="tour-d">&mdash; the six layers + the anti-drift idea</span></span></a></li>
+      <li><a href="#how"><span class="tour-n">06</span><span><span class="tour-t">How we used it</span> <span class="tour-d">&mdash; three concrete examples</span></span></a></li>
+      <li><a href="#outcomes"><span class="tour-n">07</span><span><span class="tour-t">Outcomes</span> <span class="tour-d">&mdash; what changed (and what&rsquo;s illustrative)</span></span></a></li>
+      <li><a href="#about"><span class="tour-n">08</span><span><span class="tour-t">What it demonstrates</span> <span class="tour-d">&mdash; and what I&rsquo;d do differently</span></span></a></li>
     </ol>
   </div>
 </section>
@@ -133,6 +135,37 @@
   </div>
 </section>
 
+<!-- ============ WHO IT'S FOR ============ -->
+<section id="who">
+  <div class="wrap">
+    <p class="eyebrow">Who it&rsquo;s for</p>
+    <h2>Built for teams that decide together &mdash; not every team, on purpose.</h2>
+    <p class="lead maxw-readable">A system like this earns its keep in a specific situation. Naming who it&rsquo;s <em>for</em> &mdash; and who it isn&rsquo;t, yet &mdash; is what kept it from sprawling into a tool that does everything and decides nothing.</p>
+
+    <div class="ba" style="margin-top:30px;">
+      <div class="col after">
+        <h3>Squarely for</h3>
+        <ul>
+          <li>Product teams &mdash; PM, design, eng, leadership &mdash; who decide <em>together</em> and keep losing the thread between them</li>
+          <li>Orgs where customer evidence, strategy, code reality and analytics live in different tools and drift apart</li>
+          <li>Teams already working with an AI agent in the loop, who want it reading the same context they do</li>
+          <li>People willing to spend a little upkeep to stop paying the reconstruction tax every week</li>
+        </ul>
+      </div>
+      <div class="col before">
+        <h3>Deliberately not (yet)</h3>
+        <ul>
+          <li>Solo side-projects with no shared context to lose</li>
+          <li>Teams that won&rsquo;t maintain it &mdash; an operating system you don&rsquo;t feed becomes a docs folder again</li>
+          <li>Anyone wanting a passive wiki to read, not a system that acts</li>
+          <li>A drop-in replacement for the tracker, the design tool, or the warehouse &mdash; it sits alongside them</li>
+        </ul>
+      </div>
+    </div>
+    <p class="muted" style="font-size:.86rem; margin-top:18px; max-width:760px;">The honest version: this was built around one real team&rsquo;s way of deciding, then generalized to the teams that share its shape. It isn&rsquo;t trying to serve every org, every process, every tool &mdash; that focus is the point.</p>
+  </div>
+</section>
+
 <!-- ============ THE BET ============ -->
 <section id="bet">
   <div class="wrap">
@@ -161,6 +194,42 @@
           <li>Answers in seconds &mdash; evidence-backed</li>
         </ul>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WHERE IT FITS ============ -->
+<section id="fits">
+  <div class="wrap">
+    <p class="eyebrow">Where it fits</p>
+    <h2>&ldquo;Isn&rsquo;t this just a wiki?&rdquo; &mdash; no, and here&rsquo;s the line.</h2>
+    <p class="lead maxw-readable">The obvious reaction to &ldquo;treat knowledge as a system&rdquo; is &ldquo;we already have tools for that.&rdquo; We do &mdash; and this doesn&rsquo;t replace them. It occupies the gap they leave: the connective tissue that keeps decisions grounded while everything else drifts.</p>
+
+    <div class="grid cols-3" style="margin-top:30px;">
+      <div class="card">
+        <div class="ico">The wiki</div>
+        <h3>Notion / Confluence</h3>
+        <p>Great at storing what someone wrote down. But a page is read once and rots &mdash; it can&rsquo;t notice when it&rsquo;s gone stale or pull fresh source on its own.</p>
+        <p style="font-size:.92rem; color:var(--text-2); margin-top:10px;"><strong>The line:</strong> this <em>maintains</em> the knowledge instead of just holding it.</p>
+      </div>
+      <div class="card">
+        <div class="ico">The point tool</div>
+        <h3>Productboard / Linear</h3>
+        <p>Excellent at their slice &mdash; feedback, or tickets. But each owns one stage, so the thread from customer evidence to shipped work still breaks at the seams.</p>
+        <p style="font-size:.92rem; color:var(--text-2); margin-top:10px;"><strong>The line:</strong> this is the connective layer <em>across</em> them, not another silo.</p>
+      </div>
+      <div class="card">
+        <div class="ico">The bolt-on bot</div>
+        <h3>A chatbot on your docs</h3>
+        <p>Answers from whatever it&rsquo;s pointed at &mdash; including the stale and the contradictory, with no sense of what should govern a decision.</p>
+        <p style="font-size:.92rem; color:var(--text-2); margin-top:10px;"><strong>The line:</strong> observe / judge / execute stay distinct, and answers are cited and governed.</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:30px; border-left:4px solid var(--rust);">
+      <p class="eyebrow" style="margin-bottom:.5rem;">The wedge in one line</p>
+      <h3 style="font-family:var(--serif); font-size:1.5rem;">Not a place to store knowledge, or a tool for one stage &mdash; the system that keeps every decision grounded in current, cited evidence.</h3>
+      <p class="muted" style="font-size:1rem; max-width:760px;">It deliberately sits <em>alongside</em> the wiki, the tracker and the warehouse &mdash; reading from them, keeping them honest, and closing the loop from customer insight to execution that no single one of them owns.</p>
     </div>
   </div>
 </section>

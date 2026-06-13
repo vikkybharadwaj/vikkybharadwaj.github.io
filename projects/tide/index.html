@@ -168,6 +168,68 @@
   .card-os .icon { color: var(--teal); }
   .card-os .tag { background: rgba(20,184,166,0.15); color: var(--teal); }
 
+  /* ---------- narrative sections ---------- */
+  /* problem tiles */
+  .prob-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 30px; }
+  @media (max-width: 820px) { .prob-grid { grid-template-columns: 1fr; } }
+  .prob { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px; backdrop-filter: blur(8px); transition: transform .15s ease, border-color .2s ease; }
+  .prob:hover { transform: translateY(-3px); border-color: var(--border-2); }
+  .prob .pic { font-size: 24px; }
+  .prob h3 { font-size: 14px; font-weight: 700; margin: 12px 0 8px; }
+  .prob p { font-size: 12.5px; color: var(--text-2); line-height: 1.7; }
+  .prob p em { color: var(--text); font-style: normal; }
+
+  /* honest-origin note */
+  .origin { margin-top: 30px; border-left: 2px solid rgba(0,210,106,0.45); padding: 4px 0 4px 18px; color: var(--text-2); font-size: 13.5px; line-height: 1.85; max-width: 800px; }
+  .origin b { color: var(--text); font-weight: 600; }
+
+  /* who it's for: in / out columns */
+  .fit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 30px; }
+  @media (max-width: 760px) { .fit-grid { grid-template-columns: 1fr; } }
+  .fit { border-radius: 14px; padding: 24px; border: 1.5px solid var(--border); background: var(--surface); backdrop-filter: blur(8px); }
+  .fit.in { border-color: rgba(0,210,106,0.3); }
+  .fit h3 { font-size: 12px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; margin-bottom: 14px; }
+  .fit.in h3 { color: var(--green); }
+  .fit.out h3 { color: var(--text-3); }
+  .fit .who { font-size: 13px; color: var(--text); line-height: 1.7; margin-bottom: 16px; }
+  .fit ul { list-style: none; display: grid; gap: 10px; }
+  .fit li { font-size: 12.5px; color: var(--text-2); line-height: 1.6; padding-left: 22px; position: relative; }
+  .fit.in li::before { content: '\2713'; position: absolute; left: 0; color: var(--green); font-weight: 700; }
+  .fit.out li::before { content: '\2014'; position: absolute; left: 0; color: var(--text-3); }
+  .fit-note { font-size: 12px; color: var(--text-3); margin-top: 18px; line-height: 1.7; max-width: 800px; }
+  .fit-note b { color: var(--text-2); font-weight: 600; }
+
+  /* jobs to be done */
+  .jtbd-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 30px; }
+  @media (max-width: 760px) { .jtbd-grid { grid-template-columns: 1fr; } }
+  .jtbd { border-radius: 14px; padding: 22px; border: 1px solid var(--border); background: var(--surface); backdrop-filter: blur(8px); }
+  .jtbd .q { font-size: 13.5px; color: var(--text); line-height: 1.75; font-weight: 600; }
+  .jtbd .q .hl { color: var(--green); }
+  .jtbd .o { font-size: 12px; color: var(--text-2); margin-top: 14px; line-height: 1.6; }
+  .jtbd .o b { color: var(--blue); font-weight: 700; text-transform: uppercase; font-size: 9.5px; letter-spacing: 1px; display: block; margin-bottom: 5px; }
+
+  /* working backwards chain */
+  .wb { margin-top: 30px; display: grid; gap: 14px; }
+  .wb-step { display: flex; gap: 18px; align-items: flex-start; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; backdrop-filter: blur(8px); }
+  .wb-step .k { font-weight: 800; font-size: 12.5px; color: var(--blue); min-width: 120px; letter-spacing: .3px; flex-shrink: 0; }
+  .wb-step .v { font-size: 12.5px; color: var(--text-2); line-height: 1.75; }
+  .wb-step .v b { color: var(--text); font-weight: 600; }
+  @media (max-width: 640px) { .wb-step { flex-direction: column; gap: 6px; } .wb-step .k { min-width: 0; } }
+
+  /* competitive landscape */
+  .comp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 30px; }
+  @media (max-width: 820px) { .comp-grid { grid-template-columns: 1fr; } }
+  .comp { border-radius: 14px; padding: 22px; border: 1px solid var(--border); background: var(--surface); backdrop-filter: blur(8px); }
+  .comp h3 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .comp .arch { font-size: 10px; color: var(--text-3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: block; }
+  .comp .nail { font-size: 12px; color: var(--text-2); line-height: 1.65; }
+  .comp .diff { font-size: 12px; color: var(--text); line-height: 1.65; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .comp .diff b { color: var(--green); font-weight: 700; }
+  .wedge { margin-top: 22px; border-radius: 14px; padding: 26px; border: 1.5px solid rgba(0,210,106,0.35); background: rgba(0,210,106,0.06); }
+  .wedge h3 { font-size: 12px; color: var(--green); margin-bottom: 10px; text-transform: uppercase; letter-spacing: .6px; }
+  .wedge p { font-size: 14px; color: var(--text); line-height: 1.85; }
+  .wedge p b { color: var(--green); font-weight: 700; }
+
   footer { padding: 50px 0 60px; border-top: 1px solid var(--border); margin-top: 20px; text-align: center; }
   footer p { font-size: 12px; color: var(--text-3); }
   footer .built { margin-top: 8px; font-size: 11px; color: var(--text-3); }
@@ -183,7 +245,12 @@
     <a class="logo" href="#top">Tide<span>.</span></a>
     <div class="links">
       <a class="active" href="#top">Overview</a>
-      <a href="#docs">Explore system docs</a>
+      <a href="#problem">Problem</a>
+      <a href="#who">Who it's for</a>
+      <a href="#jobs">Jobs</a>
+      <a href="#how">Approach</a>
+      <a href="#fits">Landscape</a>
+      <a href="#docs">System docs</a>
     </div>
   </div>
 </nav>
@@ -194,16 +261,18 @@
     <span class="eyebrow">🌊 THE PRODUCT · AI-NATIVE CASH FLOW</span>
     <h1>Know what's actually<br><span class="grad">safe to spend.</span></h1>
     <p class="lede">
-      Tide is a mobile-first personal finance app built around one question — <b>what's actually safe to
-      spend today?</b> Behind it: an AI pipeline on <b>Claude + AWS Bedrock</b>, a payday-aware Safe-to-Spend
-      engine, a merchant categorizer that learns, and a living set of <b>interactive system docs</b> where
-      every data flow doubles as the spec. Explore the whole system below.
+      Your bank shows a balance. Rent, a credit-card statement, three subscriptions and four days until
+      payday show something very different. <b>Tide answers the one question that actually matters in the
+      moment — what's safe to spend today?</b> It pulls every checking account, savings account and credit
+      card into a single daily view, learns where the money really goes, and keeps a <b>payday-aware
+      runway</b> you can trust — with an AI coach, grounded in your real accounts, for the questions a
+      dashboard can't answer.
     </p>
     <div class="cta-row">
-      <a class="btn btn-primary" href="#docs">Explore the system docs <span>↓</span></a>
-      <a class="btn btn-ghost" href="../../index.html">← Back to portfolio</a>
+      <a class="btn btn-primary" href="#problem">Start with the problem <span>↓</span></a>
+      <a class="btn btn-ghost" href="#docs">Jump to the system docs</a>
     </div>
-    <p class="by">A solo build · React Native · Expo · Claude · AWS Bedrock · AI evals · ~$46/mo AWS budget</p>
+    <p class="by">A solo build — sparked by my own too-many-apps, what's-left-till-payday problem · React Native · Expo · Claude · AWS Bedrock · AI evals · ~$46/mo AWS budget</p>
 
     <div class="stats">
       <div class="stat">
@@ -230,11 +299,169 @@
   </div>
 </header>
 
+<section id="problem">
+  <div class="wrap">
+    <div class="sec-label">The problem</div>
+    <h2 class="sec-title">Your balance isn't the answer.</h2>
+    <p class="sec-sub">Three frustrations kept colliding for me every single day — and no single app solved all three at once.</p>
+
+    <div class="prob-grid">
+      <div class="prob">
+        <span class="pic">🗂️</span>
+        <h3>Money scattered across apps</h3>
+        <p>A few checking and savings accounts. A couple of credit cards. Each living in its own app, behind its own login. Just seeing where I <em>actually</em> stood meant opening five apps every morning — and I'm someone who likes to check daily.</p>
+      </div>
+      <div class="prob">
+        <span class="pic">🌊</span>
+        <h3>Balance ≠ safe to spend</h3>
+        <p>The number in the account already belongs to rent, pending bills and that card balance. <em>"What can I spend?"</em> is a different — and usually smaller — number than <em>"what's my balance?"</em>, and it moves with the paycheck cycle, not the calendar week.</p>
+      </div>
+      <div class="prob">
+        <span class="pic">🏷️</span>
+        <h3>No honest view of where it went</h3>
+        <p>Every app categorizes differently, so spending never added up across accounts. With money flowing through several places at once, <em>"where did it actually go?"</em> simply had no trustworthy answer.</p>
+      </div>
+    </div>
+
+    <p class="origin">
+      <b>The honest origin:</b> this began as my own problem — too many accounts to track, a balance that
+      lied about what was really mine to spend, and spending I couldn't see clearly. The more I dug in, the
+      clearer it got that plenty of people on a steady paycheck live the exact same gap. So I built it to
+      solve that well for one person first, then opened up the use cases that travel — to everyone in the
+      same situation.
+    </p>
+  </div>
+</section>
+
+<section id="who">
+  <div class="wrap">
+    <div class="sec-label">Who it's for</div>
+    <h2 class="sec-title">Built for the steady-paycheck earner who still isn't sure what's safe to spend.</h2>
+    <p class="sec-sub">Sharp focus beats broad coverage. Tide goes deep for one segment instead of shallow for everyone — and is just as deliberate about who it's <em>not</em> for yet.</p>
+
+    <div class="fit-grid">
+      <div class="fit in">
+        <h3>✓ Squarely for</h3>
+        <p class="who">Salaried professionals on a regular paycheck who juggle a few accounts and cards, carry the odd balance and subscription, and still feel a low-grade uncertainty every time they tap a card. Not broke — just never quite sure what's truly safe to spend before the next paycheck lands.</p>
+        <ul>
+          <li>A predictable W-2 paycheck on a known cadence</li>
+          <li>Several checking / savings accounts and a couple of credit cards</li>
+          <li>Recurring bills and subscriptions, sometimes a rolling card balance</li>
+          <li>Wants a daily glance — not a spreadsheet or a budgeting chore</li>
+        </ul>
+      </div>
+      <div class="fit out">
+        <h3>— Deliberately not (yet)</h3>
+        <ul>
+          <li>Gig, irregular or multi-job income — the paycheck rhythm is the whole engine</li>
+          <li>Thin bank history with too little signal to forecast a runway</li>
+          <li>Debt-crisis, budgeting-from-zero turnarounds</li>
+          <li>Investing, net-worth growth and wealth management</li>
+          <li>Every persona, every pain, every way money moves</li>
+        </ul>
+      </div>
+    </div>
+    <p class="fit-note"><b>Some of these are on the roadmap</b> — thin-history and multi-job robustness especially. But naming what Tide deliberately is <em>not</em> doing is exactly what lets it be genuinely good at the one thing it is.</p>
+  </div>
+</section>
+
+<section id="jobs">
+  <div class="wrap">
+    <div class="sec-label">Jobs to be done</div>
+    <h2 class="sec-title">What people are actually hiring Tide to do.</h2>
+    <p class="sec-sub">The customer's words, not the feature list — each tied to the outcome it has to deliver.</p>
+
+    <div class="jtbd-grid">
+      <div class="jtbd">
+        <p class="q">"When my money's spread across <span class="hl">five accounts and three cards</span>, I want one place that shows me where I stand — every morning, in a single glance."</p>
+        <p class="o"><b>Outcome</b> Every account and card aggregated into one daily view. No more app-hopping just to see the truth.</p>
+      </div>
+      <div class="jtbd">
+        <p class="q">"When I'm about to <span class="hl">tap my card</span>, I want to know I won't wreck rent or a bill before payday — so I can spend without the quiet dread."</p>
+        <p class="o"><b>Outcome</b> A payday-aware Safe-to-Spend number that already nets out upcoming bills and credit-card debt.</p>
+      </div>
+      <div class="jtbd">
+        <p class="q">"When I look back at the month, I want to <span class="hl">actually understand where my money went</span> — consistently, across every account."</p>
+        <p class="o"><b>Outcome</b> One categorization engine that learns, instead of five apps disagreeing with each other.</p>
+      </div>
+      <div class="jtbd">
+        <p class="q">"When I have a money question a <span class="hl">chart can't answer</span>, I want to just ask — and get a straight answer grounded in my real accounts."</p>
+        <p class="o"><b>Outcome</b> An AI coach that reasons over your actual data with a defined tool-set — not generic tips.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <div class="sec-label">How I built it — customer-in, outcomes-out</div>
+    <h2 class="sec-title">Start from the honest number. Work backwards to the system.</h2>
+    <p class="sec-sub">Each job above only holds up if something underneath earns it. I designed from the outcome the customer wants and built back toward the plumbing — never the other way around.</p>
+
+    <div class="wb">
+      <div class="wb-step">
+        <span class="k">One daily view</span>
+        <span class="v">Aggregate every checking account, savings account and card through a single secure bank connection — <b>native Plaid Link</b> — with balances and transactions normalized into one model, so the morning glance is one screen, not five apps.</span>
+      </div>
+      <div class="wb-step">
+        <span class="k">An honest number</span>
+        <span class="v"><b>Payday-aware Safe-to-Spend</b>: detect the paycheck cadence, predict upcoming bills, subtract real credit-card obligations, and project typical spending from your own history. The balance minus what's already spoken for — measured against your next paycheck, not the calendar.</span>
+      </div>
+      <div class="wb-step">
+        <span class="k">Clear spending</span>
+        <span class="v">A <b>merchant categorizer that learns</b> — it fills the gaps generic bank categories leave behind, caches its answer per merchant so it sharpens over time, and stays consistent across every account, so "where did it go" finally adds up.</span>
+      </div>
+      <div class="wb-step">
+        <span class="k">Answers on demand</span>
+        <span class="v">Some views simply can't keep being built deterministically forever. Rather than hard-code an answer for every possible question, a <b>grounded AI coach</b> reasons over your real accounts through a defined tool-set — picking up the open-ended questions a fixed dashboard never could.</span>
+      </div>
+      <div class="wb-step">
+        <span class="k">Trust, measured</span>
+        <span class="v">An AI coach is only worth shipping if it's safe and accurate — so it sits behind an <b>evals harness</b> (quality dimensions, fixtures, judge layers, gated on every change). And honestly: building that trustworthy-AI muscle was a deliberate goal. As a PM who builds, I wanted to learn first-hand how to ship AI that's safe, accurate and healthy — not bolt AI on because it's the trend.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="fits">
+  <div class="wrap">
+    <div class="sec-label">Where it fits</div>
+    <h2 class="sec-title">Not another dashboard, tracker, or chatbot.</h2>
+    <p class="sec-sub">The category is full of genuinely good apps. Tide deliberately doesn't try to be any of them — it occupies the gap between them.</p>
+
+    <div class="comp-grid">
+      <div class="comp">
+        <h3>Monarch</h3>
+        <span class="arch">The household net-worth dashboard</span>
+        <p class="nail">Comprehensive budgets, net-worth tracking and investment aggregation built for couples and whole households.</p>
+        <p class="diff"><b>Tide's wedge:</b> not a net-worth tracker — a daily, in-the-moment "what's safe to spend before payday" for one earner.</p>
+      </div>
+      <div class="comp">
+        <h3>Copilot Money</h3>
+        <span class="arch">The beautiful spending tracker</span>
+        <p class="nail">Gorgeous design and strong categorization of where your money has already gone.</p>
+        <p class="diff"><b>Tide's wedge:</b> forward-looking runway, not a backward-looking report — it answers what's <em>left</em>, not just what was spent.</p>
+      </div>
+      <div class="comp">
+        <h3>Cleo</h3>
+        <span class="arch">The AI chat sidekick</span>
+        <p class="nail">A chatty, gamified AI persona for a younger audience, with nudges and cash advances.</p>
+        <p class="diff"><b>Tide's wedge:</b> a coach grounded in your actual accounts and gated by evals — accuracy and trust over personality.</p>
+      </div>
+    </div>
+
+    <div class="wedge">
+      <h3>Tide's one-line position</h3>
+      <p>For <b>salaried earners juggling several accounts and cards</b>, Tide is the one daily view that turns scattered balances into a single honest number — <b>what's safe to spend before your next paycheck</b> — and lets you ask why, with AI you can actually trust.</p>
+    </div>
+  </div>
+</section>
+
 <section id="docs">
   <div class="wrap">
-    <div class="sec-label">Explore the system docs</div>
+    <div class="sec-label">How it actually works</div>
     <h2 class="sec-title">Every diagram doubles as the spec.</h2>
-    <p class="sec-sub">Nine interactive views into how Tide actually works — from the system topology down to the runway math. Click any card to explore.</p>
+    <p class="sec-sub">The story above is the why. These eight interactive views are the how — the system topology, the data flows, the AI pipeline, the evals, and the runway math behind every claim. Click any card to explore.</p>
 
     <div class="grid">
       <a class="card card-arch" href="architecture-map.html">
@@ -293,12 +520,6 @@
         <span class="tag">5 SECTIONS &middot; HARNESS MAP</span>
       </a>
 
-      <a class="card card-os" href="harness-vs-context-engineering.html">
-        <span class="icon">&#9881;</span>
-        <h2>Harness vs. Context Engineering</h2>
-        <p>The two terms decoded: a <b>harness</b> is the runtime that drives an agent turn (Claude Code's job); <b>context</b> is what the model sees (Tide's leverage). Includes the "15 harness jobs" mapped onto who handles each for Tide. A reference card for the agent-engineering vocabulary.</p>
-        <span class="tag">REFERENCE &middot; 15 JOBS MAPPED</span>
-      </a>
     </div>
   </div>
 </section>
