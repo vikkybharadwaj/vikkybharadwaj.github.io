@@ -231,13 +231,13 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
       <div class="tool-card">
         <div class="tool-num">TOOL 7</div>
         <div class="tool-name"><code>get_spending_by_category</code></div>
-        <div class="tool-desc">Category-level spending breakdown for any time period</div>
+        <div class="tool-desc">TRUE spending by category &mdash; <strong>2026-06-12 parity rebuild:</strong> composes the SAME shared spending-math core as the Spending tab donut (<code>spending_query.ts</code> SQL predicates + <code>spending_insights_math.ts</code> pure partition/positive-only aggregation), so Coach numbers match the Spending tab number-for-number. Previously it summed <code>transaction_type='debit'</code> rows with pending included, no superseded-pending dedupe, no income/transfer/CC-payment partitions, server-local windows, grouped by detailed category &mdash; and contradicted the app. Input: <code>timeframe</code> (day = today / week = last-7-days rolling / month = calendar month-to-date; default month) resolved in the user's timezone from <code>profiles.timezone</code> (the Coach has no HTTP context &mdash; same source as calculate_safe_to_spend), or a custom <code>startDate</code>/<code>endDate</code> range. Result (shaped by pure <code>projectSpendingForCoach()</code> in <code>coach_spending_projection.ts</code>, parity pinned by <code>coach_spending_projection.spec.ts</code>): <code>window</code>, <code>totalSpent</code> (= &Sigma; max(primaryNet, 0) &mdash; the donut-center number), <code>transactionCount</code>, <code>categories[]</code> (primary groups with <code>total</code> net of refunds &mdash; can be negative "money back" &mdash; <code>pctOfTotal</code>, <code>subcategories[]</code>), <code>excluded</code> {income, transfersIn, transfersOut, ccPayments &mdash; NOT spending}, <code>uncategorized</code>. Pending excluded; posted rows supersede their pending twins; CC bill payments excluded on BOTH sides (swipes already counted); ATM withdrawals count (Cash). Read-only DB connection.</div>
         <span class="tool-tier tier-2">TIER 2 — FINANCIAL DATA</span>
       </div>
       <div class="tool-card">
         <div class="tool-num">TOOL 8</div>
         <div class="tool-name"><code>get_financial_insights</code></div>
-        <div class="tool-desc">Complex analytics via Backend API aggregation endpoints</div>
+        <div class="tool-desc">Complex analytics: <code>spending_trends</code> (2026-06-12: same TRUE-spending monthly series as the Home-tab Spending chart &mdash; shared <code>fetchMonthlySpendingRows()</code> + <code>aggregateMonthlySpending()</code>, user-timezone calendar months, zero-filled), <code>largest_expenses</code>, <code>recurring_charges</code> (recurring_streams), <code>anomalies</code> (&gt;2&sigma; above category mean). Queries the read-only DB directly &mdash; not the REST endpoints (the legacy unfiltered <code>/insights/*</code> analytics endpoints were deleted 2026-06-12).</div>
         <span class="tool-tier tier-2">TIER 2 — FINANCIAL DATA</span>
       </div>
       <div class="tool-card">
