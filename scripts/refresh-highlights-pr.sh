@@ -1,13 +1,13 @@
 #!/bin/bash
 #
-# refresh-highlights-pr.sh — hands-off weekly refresh of the "Git by the numbers" stats strip.
+# refresh-highlights-pr.sh — hands-off daily refresh of the "Git by the numbers" stats strip.
 #
 # Regenerates the strip from local git history (scripts/build-highlights.py). If any number
 # changed, it opens — or updates — a single evergreen PR (branch: auto/highlights-refresh) for
 # review. It NEVER merges; you stay in control of what goes live. Numbers can only be computed
 # locally (the source repos are private), which is why this runs on your machine, not in CI.
 #
-# Run by the launchd agent `com.vikkybharadwaj.highlights` (weekly), or by hand:
+# Run by the launchd agent `com.vikkybharadwaj.highlights` (daily, 5pm local), or by hand:
 #     bash scripts/refresh-highlights-pr.sh
 # Dry run (regenerate + report, but never push or open a PR):
 #     HIGHLIGHTS_DRY_RUN=1 bash scripts/refresh-highlights-pr.sh
@@ -52,7 +52,7 @@ if [ "$DRY_RUN" = "1" ]; then
 fi
 
 git add -A
-git commit -m "chore(highlights): weekly refresh of Git by the numbers" --quiet
+git commit -m "chore(highlights): daily refresh of Git by the numbers" --quiet
 git push -f -u origin "$BRANCH" --quiet
 
 # One evergreen PR: if it's already open, the force-push above just updated it; otherwise open it.
@@ -60,8 +60,8 @@ if gh pr view "$BRANCH" --json state --jq '.state' 2>/dev/null | grep -qx OPEN; 
   log "updated existing PR on $BRANCH"
 else
   gh pr create --base main --head "$BRANCH" \
-    --title "chore(highlights): weekly refresh of Git by the numbers" \
-    --body "Automated weekly refresh of the **Git by the numbers** stats strip from local git history (\`scripts/build-highlights.py\`). One or more numbers changed since the last refresh — review and merge to publish.
+    --title "chore(highlights): daily refresh of Git by the numbers" \
+    --body "Automated daily refresh of the **Git by the numbers** stats strip from local git history (\`scripts/build-highlights.py\`). One or more numbers changed since the last refresh — review and merge to publish.
 
 Counts are 2026-to-date; the section footer shows the exact span. Opened by the \`com.vikkybharadwaj.highlights\` launchd agent."
   log "opened PR on $BRANCH"

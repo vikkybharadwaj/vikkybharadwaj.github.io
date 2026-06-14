@@ -44,7 +44,7 @@ python3 scripts/build-highlights.py   # re-reads every configured repo, rewrites
   contents, repo names, branch names, or secrets. Toggle any insight off in the config and it is
   never computed or emitted.
 
-### Automated weekly refresh (launchd)
+### Automated daily refresh (launchd)
 
 A local launchd agent keeps the page fresh hands-off:
 
@@ -52,16 +52,24 @@ A local launchd agent keeps the page fresh hands-off:
   worktree off the latest `origin/main`, and **only if a number changed** opens or updates a single
   evergreen PR on branch `auto/highlights-refresh`. It never merges and never touches your working
   copy — you just review and merge the PR to publish.
-- **`com.vikkybharadwaj.highlights`** (`~/Library/LaunchAgents/com.vikkybharadwaj.highlights.plist`,
-  machine-local, not in the repo) runs that script **weekly (Mon 9am)**. Logs to
+- **`com.vikkybharadwaj.highlights`** runs that script **daily at 5pm local time** (= 5pm EST/EDT
+  when the Mac is set to US Eastern — launchd follows the wall clock, so it auto-tracks daylight
+  saving). The schedule lives in **`scripts/com.vikkybharadwaj.highlights.plist`** (now versioned
+  here); the *active* copy is the one you install at
+  `~/Library/LaunchAgents/com.vikkybharadwaj.highlights.plist`. Logs to
   `~/Library/Logs/highlights-refresh.log`.
 
 ```bash
+# install / update the schedule (run after pulling a change to the plist):
+cp scripts/com.vikkybharadwaj.highlights.plist ~/Library/LaunchAgents/
+launchctl unload ~/Library/LaunchAgents/com.vikkybharadwaj.highlights.plist 2>/dev/null
+launchctl load   ~/Library/LaunchAgents/com.vikkybharadwaj.highlights.plist
+
 # run it now by hand (opens/updates the PR if anything changed):
 bash scripts/refresh-highlights-pr.sh
 # dry run — regenerate + report, but never push or open a PR:
 HIGHLIGHTS_DRY_RUN=1 bash scripts/refresh-highlights-pr.sh
-# manage the schedule:
+# pause / resume the schedule:
 launchctl unload ~/Library/LaunchAgents/com.vikkybharadwaj.highlights.plist   # pause
 launchctl load   ~/Library/LaunchAgents/com.vikkybharadwaj.highlights.plist   # resume
 ```
