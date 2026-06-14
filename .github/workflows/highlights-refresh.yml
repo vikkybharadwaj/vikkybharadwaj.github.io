@@ -1,0 +1,99 @@
+name: Refresh "Git by the numbers"
+
+# Cloud replacement for the local launchd agent: computes the "Git by the numbers"
+# strip from the private source repos and publishes it STRAIGHT TO main (GitHub Pages
+# then redeploys). Runs entirely on GitHub — no Mac required.
+#
+# ── One-time setup ────────────────────────────────────────────────────────────
+# Add a repository secret named HIGHLIGHTS_PAT — a *classic* Personal Access Token
+# owned by @vikkybharadwaj with these scopes:
+#   • repo       → clone the private source repos + push the refresh to main
+#   • read:user  → read the contribution-calendar total (the "GitHub contributions"
+#                  tile) via the GraphQL API
+# Settings → Secrets and variables → Actions → New repository secret.
+# (A fine-grained PAT scoped to just the 5 repos also works for cloning/pushing, but
+#  the contributions tile may not populate — classic is the reliable choice.)
+#
+# Note: this clones your private repos onto GitHub-hosted (ephemeral) runners. Only
+# aggregate numbers are ever emitted to the public page — same as the local script.
+
+on:
+  schedule:
+    # GitHub cron is UTC and has no DST handling. To land at 17:00 America/New_York
+    # every day year-round, fire at BOTH 21:00 and 22:00 UTC and gate on the real
+    # Eastern hour below: 21:00Z = 17:00 EDT (summer); 22:00Z = 17:00 EST (winter).
+    - cron: "0 21 * * *"
+    - cron: "0 22 * * *"
+  workflow_dispatch: {}        # manual "Run workflow" button (runs regardless of hour)
+
+concurrency:
+  group: highlights-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Gate to 17:00 America/New_York
+        id: gate
+        run: |
+          hour=$(TZ=America/New_York date +%H)
+          echo "Eastern hour is $hour (event: ${{ github.event_name }})"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "$hour" = "17" ]; then
+            echo "run=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=no" >> "$GITHUB_OUTPUT"
+            echo "Not 17:00 Eastern — this trigger is the off-by-DST one; skipping."
+          fi
+
+      - name: Clone source repos, build, publish to main
+        if: steps.gate.outputs.run == 'yes'
+        env:
+          GH_TOKEN: ${{ secrets.HIGHLIGHTS_PAT }}   # used by the `gh` CLI for the contributions query
+          PAT: ${{ secrets.HIGHLIGHTS_PAT }}
+        run: |
+          set -euo pipefail
+          if [ -z "${PAT:-}" ]; then
+            echo "::error::HIGHLIGHTS_PAT secret is not set — see the comment at the top of this workflow."
+            exit 1
+          fi
+          OWNER=vikkybharadwaj
+          base="https://x-access-token:${PAT}@github.com/${OWNER}"
+
+          # Clone each private source repo to the exact path highlights.config.json expects
+          # (paths use ~, which build-highlights.py expands against $HOME). Full history so
+          # commit-since-2026 counts are correct. If a repo is named differently on GitHub
+          # than its local folder, edit the repo name (right-hand side) here.
+          mkdir -p "$HOME/github-repos"
+          git clone --quiet "$base/tide.git"                      "$HOME/tide"
+          git clone --quiet "$base/ai_knowledgecenter.git"        "$HOME/ai_knowledgecenter"
+          git clone --quiet "$base/commandcenter.git"             "$HOME/github-repos/commandcenter"
+          git clone --quiet "$base/claude-code-telegram-mcp.git"  "$HOME/github-repos/claude-code-telegram-mcp"
+          git clone --quiet "$base/vikkybharadwaj.github.io.git"  "$HOME/github-repos/vikkybharadwaj.github.io"
+
+          cd "$HOME/github-repos/vikkybharadwaj.github.io"
+          git config user.name  "highlights-bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          python3 scripts/build-highlights.py
+
+          if git diff --quiet; then
+            echo "No change — numbers already current, nothing to publish."
+            exit 0
+          fi
+          git --no-pager diff --stat
+          git add -A
+          git commit -m "chore(highlights): daily refresh of Git by the numbers"
+
+          # Publish straight to main; rebase-retry if main advanced under us. Never force-pushes.
+          for attempt in 1 2 3; do
+            if git push origin HEAD:main; then
+              echo "Published refresh to main (attempt $attempt) — Pages will redeploy."
+              exit 0
+            fi
+            echo "Push rejected — main advanced; rebasing onto latest origin/main (attempt $attempt)."
+            git fetch origin main
+            git rebase origin/main
+          done
+          echo "::error::Could not publish to main after 3 attempts."
+          exit 1

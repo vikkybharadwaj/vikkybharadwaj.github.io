@@ -33,9 +33,10 @@ the `<!-- HIGHLIGHTS:START -->` / `<!-- HIGHLIGHTS:END -->` markers in `index.ht
 python3 scripts/build-highlights.py   # re-reads every configured repo, rewrites the strip
 ```
 
-- **Why it can't run in CI.** The configured repos (Tide, ai_knowledgecenter, commandcenter, …) are
-  **private and local-only**, so no GitHub Action can see them — the numbers can only be computed on
-  your machine.
+- **Where it runs.** The configured repos (Tide, ai_knowledgecenter, commandcenter, …) are
+  **private**. Two refresh paths exist: a **scheduled GitHub Action** (recommended — fully in the
+  cloud, no machine needed; see below) or a **local launchd agent** (computes on your Mac). Pick one
+  — don't run both, or they'll race to publish the same numbers.
 - **Window:** commit-history metrics (commits, cadence, Conventional %, PR count, AI-assisted %) are
   bounded to `since` in the config (**2026-01-01**). Point-in-time counts (files, docs, notes, evals,
   tools) are current snapshots. The page states this; the `git activity <first> → <last>` line in the
@@ -44,7 +45,36 @@ python3 scripts/build-highlights.py   # re-reads every configured repo, rewrites
   contents, repo names, branch names, or secrets. Toggle any insight off in the config and it is
   never computed or emitted.
 
-### Automated daily refresh (launchd)
+### Recommended: automated daily refresh (GitHub Action — no machine needed)
+
+`.github/workflows/highlights-refresh.yml` does the whole job **in the cloud**: every day at **5pm
+US Eastern** it clones the private source repos onto an ephemeral GitHub runner, runs
+`build-highlights.py`, and **publishes straight to `main`** (Pages redeploys). Your Mac is never
+involved.
+
+**One-time setup — add a single secret:**
+
+1. Create a **classic** Personal Access Token (github.com → Settings → Developer settings → Tokens
+   (classic)) owned by your account, with scopes **`repo`** (clone the private repos + push to
+   `main`) and **`read:user`** (read the contribution-calendar total for the "GitHub contributions"
+   tile).
+2. Add it to this repo as a secret named **`HIGHLIGHTS_PAT`** (repo → Settings → Secrets and
+   variables → Actions → New repository secret).
+
+That's it — no further action ever. Trigger a run immediately from the **Actions** tab → *Refresh
+"Git by the numbers"* → **Run workflow** (manual runs ignore the time gate).
+
+- **DST-correct timing.** GitHub cron is UTC with no DST, so the workflow fires at both 21:00 and
+  22:00 UTC and runs the job only when it's actually 17:00 in `America/New_York` — exactly once a day
+  year-round.
+- **Repo-name assumption.** The workflow clones `vikkybharadwaj/<folder-name>` for each source repo.
+  If a repo is named differently on GitHub than its local folder, edit the clone lines in the
+  workflow.
+- **Privacy.** It clones private repos onto GitHub-hosted runners (ephemeral) and stores a broad
+  classic PAT as a secret. Only aggregate numbers ever reach the public page — same as the local
+  script. If you prefer nothing private to touch GitHub's infra, use the launchd path below instead.
+
+### Alternative: automated daily refresh on your Mac (launchd)
 
 A local launchd agent keeps the page fresh **fully hands-off** — after a one-time install you never
 touch Terminal for it again:
@@ -60,10 +90,10 @@ touch Terminal for it again:
   `~/Library/LaunchAgents/com.vikkybharadwaj.highlights.plist`. Logs to
   `~/Library/Logs/highlights-refresh.log`.
 
-> **Why a one-time local install is still needed.** The numbers can only be *computed* on your Mac —
-> the source repos are private and local-only, so nothing in the cloud (CI or otherwise) can read
-> them. The launchd agent does that computation automatically in the background; the only manual
-> step ever is installing the agent once.
+> **When to use this instead of the Action.** Choose launchd if you'd rather your private repos never
+> be cloned onto GitHub's runners — the computation then happens entirely on your Mac and only the
+> numbers are pushed. The trade-off: your Mac must be on/awake around 5pm. The only manual step is
+> installing the agent once.
 
 ```bash
 # one-time install (or after the plist changes) — copies + loads the agent:
