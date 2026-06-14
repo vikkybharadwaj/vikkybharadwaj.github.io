@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#0a0f1a" />
+<title>The Operating System — Product Cockpit</title>
+<meta name="description" content="The whole operating system as one diagram: session lifecycle, the six-layer system map, the observe / judge / execute primitives, and the anti-drift loop that keeps the map honest. Anonymized; fabricated stand-in domain." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css?v=20260610subfull" />
+<style>
+  /* ---- OS-diagram-only styles (os- prefixed to avoid collision with styles.css) ---- */
+  .os-living {
+    max-width: 880px; margin: 26px auto 0; padding: 16px 20px;
+    border: 1px solid rgba(0,210,106,0.32); border-radius: 12px;
+    background: rgba(0,210,106,0.06); font-size: .82rem; color: var(--text-2); line-height: 1.65;
+  }
+  .os-living b { color: var(--green); }
+  .os-living .leaf { color: var(--green); font-weight: 700; letter-spacing: .12em; font-size: .66rem; text-transform: uppercase; display:block; margin-bottom:6px; }
+
+  .os-section { margin-top: 40px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); padding: 30px; }
+  .os-head { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+  .os-num { width: 28px; height: 28px; border-radius: 50%; background: var(--grad); color: #06120c; font-size: .8rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex: 0 0 28px; }
+  .os-head h2 { font-size: 1.3rem; font-weight: 700; margin: 0; }
+  .os-desc { font-size: .9rem; color: var(--text-2); margin: 0 0 24px; max-width: 900px; line-height: 1.7; }
+
+  /* swatches keyed to the six layers — same palette as the index k- classes */
+  .sw-anchor { background: var(--blue); }
+  .sw-hook   { background: var(--teal); }
+  .sw-policy { background: var(--green); }
+  .sw-skill  { background: var(--amber); }
+  .sw-memory { background: var(--purple); }
+  .sw-gov    { background: var(--text-3); }
+
+  /* ---- §1 lifecycle timeline ---- */
+  .os-tl { border-top: 1px solid var(--border); padding-top: 20px; }
+  .os-tl-axis { display: grid; grid-template-columns: 210px 1fr; align-items: center; margin-bottom: 12px; }
+  .os-tl-axis .axis-label { font-family: var(--mono); font-size: .6rem; color: var(--text-3); letter-spacing: .2em; text-align: center; }
+  .os-tl-axis .ends { display: flex; justify-content: space-between; font-family: var(--mono); font-size: .6rem; color: var(--text-3); padding: 0 2px; }
+  .os-tl-row { display: grid; grid-template-columns: 210px 1fr; align-items: center; padding: 9px 0; }
+  .os-tl-name { font-size: .82rem; font-weight: 600; color: var(--text); }
+  .os-tl-name span { display: block; font-family: var(--mono); font-size: .64rem; color: var(--text-3); font-weight: 400; margin-top: 2px; }
+  .os-track { position: relative; height: 12px; border-radius: 6px; background: rgba(255,255,255,0.04); }
+  .os-track .bar { position: absolute; top: 0; height: 12px; border-radius: 6px; }
+  .os-track .dot { position: absolute; top: 1px; width: 10px; height: 10px; border-radius: 50%; transform: translateX(-50%); }
+  .os-track .dashed { position: absolute; top: 5px; left: 0; right: 0; border-top: 1px dashed rgba(255,255,255,0.12); }
+
+  .os-legend { display: flex; flex-wrap: wrap; gap: 12px 22px; margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--border); }
+  .os-legend .item { display: flex; align-items: center; gap: 7px; font-size: .74rem; color: var(--text-2); }
+  .os-legend .sw { width: 11px; height: 11px; border-radius: 3px; flex: 0 0 11px; }
+
+  /* ---- card columns (system map / connections) ---- */
+  .os-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 16px; }
+  .os-rcard { border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; background: rgba(10,15,26,0.5); }
+  .os-rcard h3 { font-family: var(--mono); font-size: .66rem; letter-spacing: .14em; text-transform: uppercase; margin: 0 0 4px; }
+  .os-rcard .blurb { font-size: .8rem; color: var(--text-2); font-style: italic; margin-bottom: 14px; }
+  .os-rcard .row { font-size: .82rem; margin: 8px 0; display: flex; flex-wrap: wrap; gap: 6px; align-items: baseline; color: var(--text); }
+  .os-rcard .row code { color: var(--text); background: rgba(255,255,255,0.05); padding: 1px 6px; border-radius: 4px; font-size: .78rem; font-family: var(--mono); }
+  .os-rcard .row .note { font-size: .72rem; color: var(--text-3); }
+  .os-rcard .cnt { float: right; font-family: var(--mono); font-size: .66rem; color: var(--text-3); }
+
+  .t-anchor { border-color: rgba(79,140,255,0.4); } .t-anchor h3 { color: var(--blue); }
+  .t-hook   { border-color: rgba(20,184,166,0.4); } .t-hook h3   { color: var(--teal); }
+  .t-policy { border-color: rgba(0,210,106,0.4);  } .t-policy h3 { color: var(--green); }
+  .t-skill  { border-color: rgba(245,158,11,0.4); } .t-skill h3  { color: var(--amber); }
+  .t-memory { border-color: rgba(168,85,247,0.4); } .t-memory h3 { color: var(--purple); }
+  .t-gov    { border-color: rgba(148,163,184,0.4);} .t-gov h3    { color: var(--text-2); }
+
+  /* ---- §3 comparison table ---- */
+  table.os-cmp { width: 100%; border-collapse: collapse; font-size: .82rem; margin-top: 6px; }
+  table.os-cmp th, table.os-cmp td { text-align: left; padding: 12px 14px; vertical-align: top; border-bottom: 1px solid var(--border); }
+  table.os-cmp thead th { font-family: var(--mono); font-size: .64rem; letter-spacing: .14em; text-transform: uppercase; color: var(--text-2); }
+  table.os-cmp tbody th { font-family: var(--mono); font-size: .62rem; letter-spacing: .08em; text-transform: uppercase; color: var(--text-3); width: 130px; }
+  table.os-cmp .col-hook   { background: rgba(20,184,166,0.06); color: var(--text); }
+  table.os-cmp .col-policy { background: rgba(0,210,106,0.06); color: var(--text); }
+  table.os-cmp .col-skill  { background: rgba(245,158,11,0.06); color: var(--text); }
+  table.os-cmp .head-hook   { color: var(--teal); }
+  table.os-cmp .head-policy { color: var(--green); }
+  table.os-cmp .head-skill  { color: var(--amber); }
+  table.os-cmp .tagline { font-weight: 700; font-size: .9rem; }
+  .os-banner { margin-top: 20px; text-align: center; padding: 14px; border-radius: 10px; background: #05080f; border: 1px solid var(--border); font-size: .95rem; font-weight: 600; letter-spacing: .03em; color: var(--text); }
+  .os-banner .dot { color: var(--text-3); margin: 0 12px; }
+
+  /* ---- §4 anti-drift loop ---- */
+  .os-loop { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; counter-reset: step; }
+  .os-step { position: relative; border: 1px solid var(--border); border-radius: 12px; padding: 18px 18px 18px 18px; background: rgba(10,15,26,0.5); }
+  .os-step .n { font-family: var(--mono); font-size: .66rem; font-weight: 700; letter-spacing: .14em; color: var(--green); }
+  .os-step h4 { font-size: .95rem; margin: 6px 0 6px; color: var(--text); }
+  .os-step p { font-size: .8rem; color: var(--text-2); margin: 0; line-height: 1.6; }
+  .os-step.gate { border-color: rgba(0,210,106,0.45); background: rgba(0,210,106,0.05); }
+  .os-loop-note { margin-top: 18px; font-size: .86rem; color: var(--text-2); border-left: 3px solid var(--green); padding-left: 14px; line-height: 1.7; }
+  .os-loop-note b { color: var(--text); }
+
+  /* ---- §5 maintenance cards ---- */
+  .os-mgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+  .os-mcard { border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; background: rgba(10,15,26,0.5); }
+  .os-mcard .when { font-family: var(--mono); font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; color: var(--text-3); }
+  .os-mcard h4 { font-size: .92rem; margin: 5px 0 8px; color: var(--text); }
+  .os-mcard p { font-size: .8rem; color: var(--text-2); margin: 0; line-height: 1.6; }
+  .os-mcard code { color: var(--text); background: rgba(255,255,255,0.05); padding: 1px 5px; border-radius: 4px; font-size: .76rem; font-family: var(--mono); }
+
+  @media (max-width: 720px) {
+    .os-tl-axis, .os-tl-row { grid-template-columns: 120px 1fr; }
+    .os-tl-name { font-size: .74rem; }
+    .os-section { padding: 22px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<nav class="nav">
+  <div class="wrap">
+    <a href="../../index.html">&larr; Portfolio</a>
+    <a class="brand" href="index.html">Product Cockpit</a>
+    <a href="index.html">Overview</a>
+    <a href="docs/architecture.html">Architecture</a>
+    <a class="active" href="operating-system.html">Operating System</a>
+    <a href="appendix.html">Artifacts</a>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="top" style="padding:72px 0 28px; text-align:center;">
+  <div class="wrap" style="max-width:880px;">
+    <span class="nda">Anonymized &middot; fabricated stand-in domain</span>
+    <p class="eyebrow">The system, mapped</p>
+    <h1>The Operating System</h1>
+    <p class="lead" style="max-width:760px; margin:0 auto;">Session lifecycle &middot; the six-layer map &middot; observe / judge / execute &middot; the anti-drift loop. The same architecture the <a href="docs/architecture.html">deep-dive</a> explains in prose &mdash; here as one picture.</p>
+
+    <div class="os-living">
+      <span class="leaf">&#9678; The diagram is part of the system</span>
+      This page is the operating system&rsquo;s own <b>visual self-portrait</b> &mdash; and one of the registries the
+      <b>anti-drift loop</b> (&sect;4) keeps honest. Add a primitive without updating every place that names it,
+      including this diagram, and the change fails its own audit. So the map below can&rsquo;t quietly fall out of sync
+      with the territory. Counts are real (6 hooks &middot; 23 policies &middot; 10 skills &middot; 18 folders); the
+      domain is a fabricated stand-in.
+    </div>
+  </div>
+</header>
+
+<section style="padding-top:8px;">
+  <div class="wrap" style="max-width:1080px;">
+
+  <!-- ============ §1 SESSION LIFECYCLE ============ -->
+  <div class="os-section">
+    <div class="os-head"><div class="os-num">1</div><h2>Session lifecycle</h2></div>
+    <p class="os-desc">
+      When each primitive activates over a single working session. Anchors are loaded the whole time; hooks fire
+      deterministically at lifecycle events; policies load only when their trigger fires; skills run on demand;
+      memory is read at the start and written at the end. The same shape every session &mdash; which is what makes
+      the reconstruction tax go to zero.
+    </p>
+
+    <div class="os-tl">
+      <div class="os-tl-axis"><div></div><div class="axis-label">SESSION TIME</div></div>
+      <div class="os-tl-axis"><div></div><div class="ends"><span>START</span><span>END</span></div></div>
+
+      <div class="os-tl-row">
+        <div class="os-tl-name">Anchors<span>target user &middot; core job</span></div>
+        <div class="os-track"><div class="bar sw-anchor" style="left:0;right:0;"></div></div>
+      </div>
+      <div class="os-tl-row">
+        <div class="os-tl-name">Knowledge base<span>tech-spec / strategy / roadmap</span></div>
+        <div class="os-track"><div class="bar sw-anchor" style="left:0;right:0;opacity:0.5;"></div></div>
+      </div>
+      <div class="os-tl-row">
+        <div class="os-tl-name">Hooks<span>pull source &middot; drift check &middot; load memory</span></div>
+        <div class="os-track"><div class="bar sw-hook" style="left:0;width:16%;"></div><div class="bar sw-hook" style="right:0;width:12%;opacity:.8;"></div></div>
+      </div>
+      <div class="os-tl-row">
+        <div class="os-tl-name">Policies<span>loaded only when triggered</span></div>
+        <div class="os-track">
+          <div class="dashed"></div>
+          <div class="dot sw-policy" style="left:26%;"></div>
+          <div class="dot sw-policy" style="left:48%;"></div>
+          <div class="dot sw-policy" style="left:67%;"></div>
+          <div class="dot sw-policy" style="left:90%;"></div>
+        </div>
+      </div>
+      <div class="os-tl-row">
+        <div class="os-tl-name">Skills<span>invoked on demand</span></div>
+        <div class="os-track">
+          <div class="dashed"></div>
+          <div class="dot sw-skill" style="left:40%;"></div>
+          <div class="dot sw-skill" style="left:62%;"></div>
+        </div>
+      </div>
+      <div class="os-tl-row">
+        <div class="os-tl-name">Memory<span>read at start &middot; written at end</span></div>
+        <div class="os-track"><div class="bar sw-memory" style="left:0;width:10%;"></div><div class="bar sw-memory" style="right:0;width:10%;"></div></div>
+      </div>
+      <div class="os-tl-row">
+        <div class="os-tl-name">Governance audit<span>drift check &middot; review gate</span></div>
+        <div class="os-track">
+          <div class="dashed"></div>
+          <div class="dot sw-gov" style="left:8%;"></div>
+          <div class="dot sw-gov" style="left:97%;"></div>
+        </div>
+      </div>
+
+      <div class="os-legend">
+        <div class="item"><span class="sw sw-anchor"></span> Anchors &amp; knowledge &mdash; loaded all session</div>
+        <div class="item"><span class="sw sw-hook"></span> Hooks &mdash; harness-fired, deterministic</div>
+        <div class="item"><span class="sw sw-policy"></span> Policies &mdash; loaded on situational trigger</div>
+        <div class="item"><span class="sw sw-skill"></span> Skills &mdash; invoked on demand</div>
+        <div class="item"><span class="sw sw-memory"></span> Memory &mdash; read at start, written at end</div>
+        <div class="item"><span class="sw sw-gov"></span> Governance &mdash; audits the system itself</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ §2 SYSTEM MAP ============ -->
+  <div class="os-section">
+    <div class="os-head"><div class="os-num">2</div><h2>The system map &mdash; six layers, 18 folders</h2></div>
+    <p class="os-desc">
+      Every folder in the workspace performs one of six roles. The three middle layers &mdash; hooks, policies,
+      skills &mdash; are the <em>observe / judge / execute</em> primitives. They&rsquo;re bookended by the
+      <em>anchors</em> that frame every session and the <em>memory</em> and <em>governance</em> that make it
+      compound and stay honest. Color-coded to the lifecycle bars in &sect;1.
+    </p>
+
+    <div class="os-cols">
+      <div class="os-rcard t-anchor">
+        <h3>Anchors</h3>
+        <div class="blurb">Always-on context every session is checked against.</div>
+        <div class="row"><code>target-user</code><span class="note">who we&rsquo;re building for</span></div>
+        <div class="row"><code>core-job</code><span class="note">the one job the product does</span></div>
+        <div class="row"><span class="note">If a suggestion can&rsquo;t trace to these two, it&rsquo;s drift.</span></div>
+      </div>
+
+      <div class="os-rcard t-hook">
+        <h3>Hooks &mdash; observe <span class="cnt">6 scripts</span></h3>
+        <div class="blurb">Deterministic shell, fired by the harness. They surface; they never decide.</div>
+        <div class="row"><code>pull-source</code><span class="note">refresh reference material &mdash; never stale</span></div>
+        <div class="row"><code>drift-check</code><span class="note">did the folder map change? warn at start</span></div>
+        <div class="row"><code>load-memory</code><span class="note">re-load cross-session memory into context</span></div>
+      </div>
+
+      <div class="os-rcard t-policy">
+        <h3>Policies &mdash; judge <span class="cnt">23 rules</span></h3>
+        <div class="blurb">Markdown rules: a trigger + a procedure. Loaded only when the trigger fires.</div>
+        <div class="row"><code>strategy-alignment</code><span class="note">PR touches strategy &rarr; walk the signals</span></div>
+        <div class="row"><code>register-everywhere</code><span class="note">new primitive &rarr; update every registry</span></div>
+        <div class="row"><code>doc-sync</code><span class="note">behaviour change &rarr; update its spec in the same PR</span></div>
+      </div>
+
+      <div class="os-rcard t-skill">
+        <h3>Skills &mdash; execute <span class="cnt">10 workflows</span></h3>
+        <div class="blurb">Packaged multi-step procedures invoked on demand. Tools, not instructions.</div>
+        <div class="row"><code>/interview-to-brief</code><span class="note">raw research &rarr; cited problem brief</span></div>
+        <div class="row"><code>/feature-critique</code><span class="note">a feature &rarr; a structural critique</span></div>
+        <div class="row"><code>/strategy-sync-audit</code><span class="note">flag where the roadmap drifted from strategy</span></div>
+      </div>
+
+      <div class="os-rcard t-memory">
+        <h3>Compounding memory</h3>
+        <div class="blurb">Structured memory, re-loaded automatically &mdash; not a filing cabinet.</div>
+        <div class="row"><code>learnings-log</code><span class="note">non-obvious insights, appended after real work</span></div>
+        <div class="row"><code>backlog</code><span class="note">deferred decisions <em>and why</em></span></div>
+        <div class="row"><code>episode-index</code><span class="note">rolling summary of the last ~20 sessions</span></div>
+        <div class="row"><code>feedback-loop</code><span class="note">improvements to the system itself</span></div>
+      </div>
+
+      <div class="os-rcard t-gov">
+        <h3>Governance</h3>
+        <div class="blurb">The layer that keeps the map equal to the territory. See &sect;4.</div>
+        <div class="row"><code>registry-sync</code><span class="note">every name updated in lockstep</span></div>
+        <div class="row"><code>review-gate</code><span class="note">mismatch &rarr; merge blocked</span></div>
+        <div class="row"><code>ownership + cadence</code><span class="note">who merges what &middot; a recurring upkeep pass</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ §3 HOOKS vs POLICIES vs SKILLS ============ -->
+  <div class="os-section">
+    <div class="os-head"><div class="os-num">3</div><h2>Hooks vs. Policies vs. Skills</h2></div>
+    <p class="os-desc">
+      The three primitives people most commonly blur together &mdash; different in <em>who runs them, when, and what
+      they&rsquo;re best for</em>. Keeping them distinct is what makes the system legible, and what makes designing
+      the human&harr;AI division of labour an actual, demonstrable skill.
+    </p>
+
+    <table class="os-cmp">
+      <thead>
+        <tr>
+          <th>Dimension</th>
+          <th class="col-hook head-hook">Hooks</th>
+          <th class="col-policy head-policy">Policies</th>
+          <th class="col-skill head-skill">Skills</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th></th>
+          <td class="col-hook"><span class="tagline head-hook">Tripwire</span></td>
+          <td class="col-policy"><span class="tagline head-policy">Checklist</span></td>
+          <td class="col-skill"><span class="tagline head-skill">Playbook</span></td>
+        </tr>
+        <tr>
+          <th>What it is</th>
+          <td class="col-hook">A deterministic shell script</td>
+          <td class="col-policy">A plain-language markdown rule</td>
+          <td class="col-skill">A packaged multi-step workflow</td>
+        </tr>
+        <tr>
+          <th>Who runs it</th>
+          <td class="col-hook">The harness, automatically</td>
+          <td class="col-policy">The agent, when a trigger fires</td>
+          <td class="col-skill">A person, on demand</td>
+        </tr>
+        <tr>
+          <th>When it fires</th>
+          <td class="col-hook">Lifecycle events (start / end / prompt)</td>
+          <td class="col-policy">Only when its situation arises</td>
+          <td class="col-skill">When invoked by command</td>
+        </tr>
+        <tr>
+          <th>Its job</th>
+          <td class="col-hook">Observe &amp; surface &mdash; never decide</td>
+          <td class="col-policy">Judge a situation &mdash; guide the call</td>
+          <td class="col-skill">Execute a procedure &mdash; carry it out</td>
+        </tr>
+        <tr>
+          <th>Example</th>
+          <td class="col-hook">&ldquo;Pull latest source &amp; flag if the structure changed.&rdquo;</td>
+          <td class="col-policy">&ldquo;If this touches strategy, check the alignment signals.&rdquo;</td>
+          <td class="col-skill">&ldquo;Turn this interview into a structured brief.&rdquo;</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="os-banner">Hooks observe <span class="dot">&middot;</span> Policies judge <span class="dot">&middot;</span> Skills execute</div>
+  </div>
+
+  <!-- ============ §4 THE ANTI-DRIFT LOOP ============ -->
+  <div class="os-section">
+    <div class="os-head"><div class="os-num">4</div><h2>The anti-drift loop &mdash; the part I&rsquo;m proudest of</h2></div>
+    <p class="os-desc">
+      The rule that makes the system durable: <strong>any new primitive must update every registry that names it
+      &mdash; including this diagram &mdash; or the change fails its own audit.</strong> Adding a skill, for example,
+      forces all four steps below. Skip one and the loop blocks the merge.
+    </p>
+
+    <div class="os-loop">
+      <div class="os-step">
+        <div class="n">STEP 01</div>
+        <h4>The primitive lands</h4>
+        <p>A new skill (or hook, policy, folder) is added in its own place in the workspace.</p>
+      </div>
+      <div class="os-step">
+        <div class="n">STEP 02</div>
+        <h4>A policy fires</h4>
+        <p>The <code style="font-family:var(--mono);font-size:.78rem;">register-everywhere</code> policy triggers: &ldquo;this exists now &mdash; register it in every place that lists it.&rdquo;</p>
+      </div>
+      <div class="os-step">
+        <div class="n">STEP 03</div>
+        <h4>Every registry updates</h4>
+        <p>The index, the capabilities map, and the self-portrait diagram all update to include it. Map = territory again.</p>
+      </div>
+      <div class="os-step gate">
+        <div class="n">STEP 04 &middot; THE GATE</div>
+        <h4>An audit checks</h4>
+        <p>A structural-drift check at session start, plus a review gate before merge, compare the diagram to reality. Mismatch &rarr; <strong>blocked</strong>.</p>
+      </div>
+    </div>
+
+    <p class="os-loop-note">
+      <b>The payoff:</b> six months on, the map is still the territory. A newcomer can trust the system&rsquo;s
+      description of itself, because the system <b>can&rsquo;t</b> let that description go stale. That&rsquo;s the
+      difference between a project that decays the moment its author leaves and one that explains itself to the next
+      person &mdash; and it&rsquo;s why this very page can be trusted as a current map, not a stale screenshot.
+    </p>
+  </div>
+
+  <!-- ============ §5 HOW IT MAINTAINS ITSELF ============ -->
+  <div class="os-section">
+    <div class="os-head"><div class="os-num">5</div><h2>How the system maintains itself</h2></div>
+    <p class="os-desc">
+      The cadences and automations that keep the workspace current and its description honest &mdash; the
+      &ldquo;self-improvement layer&rdquo; that turns a docs folder into an operating system.
+    </p>
+
+    <div class="os-mgrid">
+      <div class="os-mcard">
+        <div class="when">Per session start</div>
+        <h4>Frame &amp; refresh</h4>
+        <p>Hooks pull the latest source, run the structural <code>drift-check</code>, and re-load memory &mdash; so the agent starts informed against current anchors, every time.</p>
+      </div>
+      <div class="os-mcard">
+        <div class="when">On situational trigger</div>
+        <h4>Judgement, applied</h4>
+        <p>The matching policy loads <em>only</em> when its situation arises &mdash; consistent judgement exactly when it&rsquo;s needed, without bloating context the rest of the time.</p>
+      </div>
+      <div class="os-mcard">
+        <div class="when">Every PR (always)</div>
+        <h4>Register or be blocked</h4>
+        <p>A new primitive must update every registry that names it, including this diagram. A <code>review-gate</code> blocks the merge on mismatch &mdash; drift is caught <em>before</em> merge, not in review.</p>
+      </div>
+      <div class="os-mcard">
+        <div class="when">On discovery</div>
+        <h4>Learnings loop</h4>
+        <p>A non-obvious insight from real work is appended to the <code>learnings-log</code> &mdash; and re-loaded next session, so the same lesson isn&rsquo;t re-learned twice.</p>
+      </div>
+      <div class="os-mcard">
+        <div class="when">Recurring upkeep</div>
+        <h4>Maintenance cadence</h4>
+        <p>A scheduled pass prunes the learnings log, retires orphaned folders, and refreshes stale specs &mdash; the unglamorous rigor that keeps a system honest over time.</p>
+      </div>
+      <div class="os-mcard">
+        <div class="when">Continuously</div>
+        <h4>The system audits itself</h4>
+        <p>Governance closes the loop: ownership decides who merges what, and the anti-drift audit (&sect;4) ensures the map can never quietly fall out of sync with the territory.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ GATEWAY ============ -->
+  <div style="margin-top:40px;">
+    <h3 style="font-family:var(--serif); font-size:1.4rem; margin-bottom:6px;">Keep going</h3>
+    <p class="muted" style="max-width:680px;">This is the system at a glance. For the <em>why</em> behind each layer, or the real code behind a primitive:</p>
+    <div class="gateway" style="grid-template-columns:repeat(2,1fr);">
+      <a href="docs/architecture.html"><span class="g-name">Architecture deep-dive &rarr;</span><span class="g-blurb">Why each layer exists and how they interact &mdash; the observe / judge / execute design and the anti-drift loop, in prose, plus why an AI agent changes the calculus.</span></a>
+      <a href="appendix.html"><span class="g-name">Artifacts &amp; code &rarr;</span><span class="g-blurb">A real, generalized hook, policy and skill &mdash; plus the worked anti-drift example. Read code, not adjectives.</span></a>
+    </div>
+  </div>
+
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="wrap">
+    <p><strong>Product Cockpit</strong> &mdash; The Operating System.</p>
+    <p class="muted">Anonymized portfolio case study. The domain is a neutral stand-in; the real product, data, and organisation are never identified here. Structural counts are real. Back to the <a href="index.html">overview</a> &middot; <a href="docs/architecture.html">architecture</a> &middot; <a href="appendix.html">artifacts</a></p>
+  </div>
+</footer>
+
+</body>
+</html>
