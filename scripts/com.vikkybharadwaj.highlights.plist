@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  com.vikkybharadwaj.highlights — local launchd agent that refreshes the
+  "Git by the numbers" strip DAILY at 5pm in the Mac's local time zone
+  (= 5pm EST/EDT when the machine is set to US Eastern; launchd follows the
+  wall clock, so it auto-tracks daylight saving).
+
+  Install / update the schedule (one-time, on your Mac):
+    cp scripts/com.vikkybharadwaj.highlights.plist ~/Library/LaunchAgents/
+    launchctl unload ~/Library/LaunchAgents/com.vikkybharadwaj.highlights.plist 2>/dev/null
+    launchctl load   ~/Library/LaunchAgents/com.vikkybharadwaj.highlights.plist
+
+  Notes:
+  - bash -lc loads your login profile so PATH, python3 and gh resolve.
+  - $HOME expands inside bash -lc, so no username is hard-coded here.
+  - Assumes the repo lives at ~/github-repos/vikkybharadwaj.github.io
+    (matches REPO in refresh-highlights-pr.sh). Adjust if yours differs.
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.vikkybharadwaj.highlights</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>-lc</string>
+    <string>exec "$HOME/github-repos/vikkybharadwaj.github.io/scripts/refresh-highlights-pr.sh" >> "$HOME/Library/Logs/highlights-refresh.log" 2>&1</string>
+  </array>
+
+  <!-- Daily at 17:00 local time. No Weekday key = every day. -->
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Hour</key>
+    <integer>17</integer>
+    <key>Minute</key>
+    <integer>0</integer>
+  </dict>
+
+  <!-- If the Mac was asleep/off at 17:00, run as soon as it wakes. -->
+  <key>RunAtLoad</key>
+  <false/>
+</dict>
+</plist>
