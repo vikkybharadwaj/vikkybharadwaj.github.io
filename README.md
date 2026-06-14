@@ -46,28 +46,32 @@ python3 scripts/build-highlights.py   # re-reads every configured repo, rewrites
 
 ### Automated daily refresh (launchd)
 
-A local launchd agent keeps the page fresh hands-off:
+A local launchd agent keeps the page fresh **fully hands-off** — after a one-time install you never
+touch Terminal for it again:
 
-- **`scripts/refresh-highlights-pr.sh`** (in this repo) regenerates the strip in a throwaway git
-  worktree off the latest `origin/main`, and **only if a number changed** opens or updates a single
-  evergreen PR on branch `auto/highlights-refresh`. It never merges and never touches your working
-  copy — you just review and merge the PR to publish.
+- **`scripts/refresh-highlights-pr.sh`** (despite the legacy name) regenerates the strip in a
+  throwaway git worktree off the latest `origin/main`, and **only if a number changed** commits and
+  pushes the refresh **straight to `main`** — no PR, no merge step. GitHub Pages redeploys on its
+  own. It never force-pushes and never touches your working copy.
 - **`com.vikkybharadwaj.highlights`** runs that script **daily at 5pm local time** (= 5pm EST/EDT
   when the Mac is set to US Eastern — launchd follows the wall clock, so it auto-tracks daylight
-  saving). The schedule lives in **`scripts/com.vikkybharadwaj.highlights.plist`** (now versioned
-  here); the *active* copy is the one you install at
+  saving). The schedule lives in **`scripts/com.vikkybharadwaj.highlights.plist`** (versioned here);
+  the *active* copy is the one installed at
   `~/Library/LaunchAgents/com.vikkybharadwaj.highlights.plist`. Logs to
   `~/Library/Logs/highlights-refresh.log`.
 
-```bash
-# install / update the schedule (run after pulling a change to the plist):
-cp scripts/com.vikkybharadwaj.highlights.plist ~/Library/LaunchAgents/
-launchctl unload ~/Library/LaunchAgents/com.vikkybharadwaj.highlights.plist 2>/dev/null
-launchctl load   ~/Library/LaunchAgents/com.vikkybharadwaj.highlights.plist
+> **Why a one-time local install is still needed.** The numbers can only be *computed* on your Mac —
+> the source repos are private and local-only, so nothing in the cloud (CI or otherwise) can read
+> them. The launchd agent does that computation automatically in the background; the only manual
+> step ever is installing the agent once.
 
-# run it now by hand (opens/updates the PR if anything changed):
+```bash
+# one-time install (or after the plist changes) — copies + loads the agent:
+bash scripts/install-highlights-agent.sh
+
+# refresh + publish to main right now, without waiting for 5pm:
 bash scripts/refresh-highlights-pr.sh
-# dry run — regenerate + report, but never push or open a PR:
+# dry run — regenerate + report, but never commit or push:
 HIGHLIGHTS_DRY_RUN=1 bash scripts/refresh-highlights-pr.sh
 # pause / resume the schedule:
 launchctl unload ~/Library/LaunchAgents/com.vikkybharadwaj.highlights.plist   # pause
