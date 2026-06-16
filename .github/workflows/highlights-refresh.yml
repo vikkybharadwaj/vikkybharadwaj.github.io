@@ -1,8 +1,8 @@
 name: Refresh "Git by the numbers"
 
-# Cloud replacement for the local launchd agent: computes the "Git by the numbers"
-# strip from the private source repos and publishes it STRAIGHT TO main (GitHub Pages
-# then redeploys). Runs entirely on GitHub — no Mac required.
+# Computes the "Git by the numbers" strip from the private source repos and publishes
+# it STRAIGHT TO main (GitHub Pages then redeploys). Runs entirely on GitHub — no Mac
+# required. (This fully replaces the old local launchd agent, which has been retired.)
 #
 # ── One-time setup ────────────────────────────────────────────────────────────
 # Add a repository secret named HIGHLIGHTS_PAT — a *classic* Personal Access Token
@@ -11,20 +11,26 @@ name: Refresh "Git by the numbers"
 #   • read:user  → read the contribution-calendar total (the "GitHub contributions"
 #                  tile) via the GraphQL API
 # Settings → Secrets and variables → Actions → New repository secret.
-# (A fine-grained PAT scoped to just the 5 repos also works for cloning/pushing, but
-#  the contributions tile may not populate — classic is the reliable choice.)
+#
+# ── Why a "once per Eastern day" gate, NOT an exact-hour gate ──────────────────
+# GitHub's scheduled runners carry NO timing guarantee and routinely fire 1–2h late.
+# The previous gate only proceeded when the Eastern hour was *exactly* 17, so a
+# delayed run (e.g. landing at 19:xx ET) silently skipped — the strip went stale for
+# days while every run still reported green. We now publish on the FIRST trigger of
+# each Eastern day that finds the strip not-yet-refreshed-today; the day's later
+# trigger(s) detect today's refresh commit and no-op. Robust to any GitHub delay.
 #
 # Note: this clones your private repos onto GitHub-hosted (ephemeral) runners. Only
-# aggregate numbers are ever emitted to the public page — same as the local script.
+# aggregate numbers are ever emitted to the public page — same as before.
 
 on:
   schedule:
-    # GitHub cron is UTC and has no DST handling. To land at 17:00 America/New_York
-    # every day year-round, fire at BOTH 21:00 and 22:00 UTC and gate on the real
-    # Eastern hour below: 21:00Z = 17:00 EDT (summer); 22:00Z = 17:00 EST (winter).
+    # GitHub cron is UTC. We aim to land ~17:00 America/New_York: 21:00 UTC = 17:00
+    # EDT (summer), 22:00 UTC = 17:00 EST (winter). Both fire every day; the gate
+    # below dedupes so only the first to actually run each Eastern day publishes.
     - cron: "0 21 * * *"
     - cron: "0 22 * * *"
-  workflow_dispatch: {}        # manual "Run workflow" button (runs regardless of hour)
+  workflow_dispatch: {}        # manual "Run workflow" button (always publishes)
 
 concurrency:
   group: highlights-refresh
@@ -34,16 +40,33 @@ jobs:
   refresh:
     runs-on: ubuntu-latest
     steps:
-      - name: Gate to 17:00 America/New_York
+      - name: Skip if already refreshed today (America/New_York)
         id: gate
+        env:
+          # Read-only commit lookup — the always-present default token is enough.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          hour=$(TZ=America/New_York date +%H)
-          echo "Eastern hour is $hour (event: ${{ github.event_name }})"
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "$hour" = "17" ]; then
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "Manual run — always publish."
             echo "run=yes" >> "$GITHUB_OUTPUT"
-          else
+            exit 0
+          fi
+          today=$(TZ=America/New_York date +%F)
+          # Latest commit on main — one cheap API call, no clone yet.
+          subject=$(gh api "repos/${{ github.repository }}/commits/main" \
+                      --jq '.commit.message' | head -1)
+          cdate=$(gh api "repos/${{ github.repository }}/commits/main" \
+                    --jq '.commit.committer.date')
+          cday=$(TZ=America/New_York date -d "$cdate" +%F)
+          echo "Today (ET)=$today · last-commit day (ET)=$cday · subject: $subject"
+          if [ "$cday" = "$today" ] && \
+             printf '%s' "$subject" | grep -q 'chore(highlights): daily refresh'; then
+            echo "Already refreshed today — nothing to do."
             echo "run=no" >> "$GITHUB_OUTPUT"
-            echo "Not 17:00 Eastern — this trigger is the off-by-DST one; skipping."
+          else
+            echo "Not yet refreshed today — proceeding."
+            echo "run=yes" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Clone source repos, build, publish to main
