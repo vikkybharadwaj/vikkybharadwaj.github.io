@@ -34,9 +34,9 @@ python3 scripts/build-highlights.py   # re-reads every configured repo, rewrites
 ```
 
 - **Where it runs.** The configured repos (Tide, ai_knowledgecenter, commandcenter, …) are
-  **private**. Two refresh paths exist: a **scheduled GitHub Action** (recommended — fully in the
-  cloud, no machine needed; see below) or a **local launchd agent** (computes on your Mac). Pick one
-  — don't run both, or they'll race to publish the same numbers.
+  **private**, so the numbers can only be computed where those repos can be cloned. A **scheduled
+  GitHub Action** does this fully in the cloud — no machine needed (see below). `scripts/refresh-highlights-pr.sh`
+  remains for running a refresh by hand from your Mac, but nothing is scheduled locally anymore.
 - **Window:** commit-history metrics (commits, cadence, Conventional %, PR count, AI-assisted %) are
   bounded to `since` in the config (**2026-01-01**). Point-in-time counts (files, docs, notes, evals,
   tools) are current snapshots. The page states this; the `git activity <first> → <last>` line in the
@@ -47,7 +47,7 @@ python3 scripts/build-highlights.py   # re-reads every configured repo, rewrites
 
 ### Recommended: automated daily refresh (GitHub Action — no machine needed)
 
-`.github/workflows/highlights-refresh.yml` does the whole job **in the cloud**: every day at **5pm
+`.github/workflows/highlights-refresh.yml` does the whole job **in the cloud**: every day around **5pm
 US Eastern** it clones the private source repos onto an ephemeral GitHub runner, runs
 `build-highlights.py`, and **publishes straight to `main`** (Pages redeploys). Your Mac is never
 involved.
@@ -62,51 +62,36 @@ involved.
    variables → Actions → New repository secret).
 
 That's it — no further action ever. Trigger a run immediately from the **Actions** tab → *Refresh
-"Git by the numbers"* → **Run workflow** (manual runs ignore the time gate).
+"Git by the numbers"* → **Run workflow** (manual runs always publish, ignoring the daily gate).
 
-- **DST-correct timing.** GitHub cron is UTC with no DST, so the workflow fires at both 21:00 and
-  22:00 UTC and runs the job only when it's actually 17:00 in `America/New_York` — exactly once a day
-  year-round.
+- **Robust to GitHub's loose scheduling.** GitHub's scheduled runners have no timing guarantee and
+  routinely fire 1–2h late. The workflow fires at both 21:00 and 22:00 UTC (= 17:00 EDT / EST), and
+  instead of demanding the clock read *exactly* 5pm — which a delayed run would miss, silently
+  skipping for days — it publishes on the **first trigger of each Eastern day** that finds the strip
+  not-yet-refreshed-today; the day's later trigger detects today's refresh commit and no-ops. So a
+  late run still publishes, just a little after 5pm.
 - **Repo-name assumption.** The workflow clones `vikkybharadwaj/<folder-name>` for each source repo.
   If a repo is named differently on GitHub than its local folder, edit the clone lines in the
   workflow.
 - **Privacy.** It clones private repos onto GitHub-hosted runners (ephemeral) and stores a broad
-  classic PAT as a secret. Only aggregate numbers ever reach the public page — same as the local
-  script. If you prefer nothing private to touch GitHub's infra, use the launchd path below instead.
+  classic PAT as a secret. Only aggregate numbers ever reach the public page.
 
-### Alternative: automated daily refresh on your Mac (launchd)
+### Manual local refresh (optional)
 
-A local launchd agent keeps the page fresh **fully hands-off** — after a one-time install you never
-touch Terminal for it again:
-
-- **`scripts/refresh-highlights-pr.sh`** (despite the legacy name) regenerates the strip in a
-  throwaway git worktree off the latest `origin/main`, and **only if a number changed** commits and
-  pushes the refresh **straight to `main`** — no PR, no merge step. GitHub Pages redeploys on its
-  own. It never force-pushes and never touches your working copy.
-- **`com.vikkybharadwaj.highlights`** runs that script **daily at 5pm local time** (= 5pm EST/EDT
-  when the Mac is set to US Eastern — launchd follows the wall clock, so it auto-tracks daylight
-  saving). The schedule lives in **`scripts/com.vikkybharadwaj.highlights.plist`** (versioned here);
-  the *active* copy is the one installed at
-  `~/Library/LaunchAgents/com.vikkybharadwaj.highlights.plist`. Logs to
-  `~/Library/Logs/highlights-refresh.log`.
-
-> **When to use this instead of the Action.** Choose launchd if you'd rather your private repos never
-> be cloned onto GitHub's runners — the computation then happens entirely on your Mac and only the
-> numbers are pushed. The trade-off: your Mac must be on/awake around 5pm. The only manual step is
-> installing the agent once.
+There is **no scheduled job on your Mac** — the GitHub Action above is the only scheduler. (A local
+launchd agent used to do this; it was retired in favor of the Action so the two can't race.) To
+regenerate and publish the strip by hand from your Mac:
 
 ```bash
-# one-time install (or after the plist changes) — copies + loads the agent:
-bash scripts/install-highlights-agent.sh
-
-# refresh + publish to main right now, without waiting for 5pm:
+# refresh + publish to main right now:
 bash scripts/refresh-highlights-pr.sh
 # dry run — regenerate + report, but never commit or push:
 HIGHLIGHTS_DRY_RUN=1 bash scripts/refresh-highlights-pr.sh
-# pause / resume the schedule:
-launchctl unload ~/Library/LaunchAgents/com.vikkybharadwaj.highlights.plist   # pause
-launchctl load   ~/Library/LaunchAgents/com.vikkybharadwaj.highlights.plist   # resume
 ```
+
+`scripts/refresh-highlights-pr.sh` regenerates the strip in a throwaway git worktree off the latest
+`origin/main` and, **only if a number changed**, commits and pushes straight to `main`. It never
+force-pushes and never touches your working copy. Logs to `~/Library/Logs/highlights-refresh.log`.
 
 ## Adding a new project
 
