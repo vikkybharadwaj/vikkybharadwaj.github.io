@@ -4,9 +4,9 @@
     "title": "How I operate.",
     "sub": "A snapshot from across my repos (public + private), generated from real git history \u2014 the operating habits behind the work above. Commit-history metrics cover 2026 to date."
   },
-  "updated": "2026-08-09",
+  "updated": "2026-08-10",
   "first": "2026-03-21",
-  "window": "Counts 2026 to date \u00b7 git activity 2026-03-21 \u2192 2026-08-09",
+  "window": "Counts 2026 to date \u00b7 git activity 2026-03-21 \u2192 2026-08-10",
   "insights": [
     {
       "key": "github_contributions",
@@ -17,14 +17,14 @@
     },
     {
       "key": "commits",
-      "value": "757",
+      "value": "759",
       "label": "commits shipped",
       "caption": "across 5 repos \u00b7 2026 to date",
       "accent": "g"
     },
     {
       "key": "cadence",
-      "value": "5.4",
+      "value": "5.3",
       "label": "commits a day",
       "caption": "steady, iterative cadence",
       "accent": "g"
@@ -66,7 +66,7 @@
     },
     {
       "key": "evals",
-      "value": "72",
+      "value": "73",
       "label": "eval fixtures",
       "caption": "AI quality measured, not guessed",
       "accent": "p"
@@ -101,7 +101,7 @@
     },
     {
       "key": "tracked_files",
-      "value": "809",
+      "value": "810",
       "label": "files under version control",
       "caption": "full-stack breadth",
       "accent": "t"
@@ -126,7 +126,7 @@
         ],
         [
           "JSON",
-          95
+          96
         ],
         [
           "HTML",
