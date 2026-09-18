@@ -9,7 +9,9 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', monospace; background: #0A0A0F; color: #FFFFFF; }
 
-#title { position: fixed; top: 16px; left: 16px; z-index: 50; }
+/* Header is in normal flow (NOT fixed): a fixed #title grows with its content and, being above
+   the tab bar, silently swallowed clicks on every tab/card beneath it. Only the tab bar sticks. */
+#title { max-width: 960px; margin: 0 auto; padding: 16px 24px 12px; }
 #title h1 { font-size: 18px; font-weight: 700; }
 #title p { font-size: 10px; color: #A0A0B0; margin-top: 2px; }
 #title a { color: #4F8CFF; text-decoration: none; font-size: 10px; }
@@ -17,10 +19,10 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
 
 /* Tab navigation */
 .tab-bar {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 40;
+  position: sticky; top: 0; z-index: 40;
   background: rgba(10,10,15,0.95); backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255,255,255,0.06);
-  padding: 56px 24px 0;
+  padding: 0 max(24px, calc((100% - 960px) / 2 + 24px)); /* tabs align with the 960px content column */
   display: flex; gap: 0; overflow-x: auto;
 }
 .tab-btn {
@@ -32,7 +34,7 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
 .tab-btn:hover { color: #FFFFFF; }
 .tab-btn.active { color: #00D26A; border-bottom-color: #00D26A; }
 
-.container { max-width: 960px; margin: 0 auto; padding: 110px 24px 48px; }
+.container { max-width: 960px; margin: 0 auto; padding: 24px 24px 48px; }
 
 .tab-content { display: none; }
 .tab-content.active { display: block; }
@@ -365,7 +367,7 @@ footer p { font-size: 10px; color: #475569; }
 <div id="title">
   <h1>Evals &amp; AI Quality</h1>
   <p>7 dimensions &middot; 81 fixtures &middot; 3 judge layers &middot; <a href="ground-truth-map.html">Ground Truth Guide</a> &middot; <a href="index.html">&larr; Hub</a></p>
-  <p style="font-size:12px;color:#94a3b8;max-width:760px;margin:10px auto 0;line-height:1.6;">
+  <p style="font-size:12px;color:#94a3b8;max-width:760px;margin:10px 0 0;line-height:1.6;">
     <strong style="color:#5eead4;">F21.2 (2026-06):</strong> the suite grew 50 &rarr; 88 fixtures (now 81 &mdash; alert-006 retired 2026-06-10 with the challenges feature removal; tone-007 retired 2026-06-11 with the streak feature removal; the 5 Smart Pulse fixtures &mdash; coach-006, proj-acc-007, pulse_no_regenerate-001/002/003 &mdash; retired 2026-06-12 with the Smart Pulse feature removal), adding coverage for the zero-coverage behaviors named in <code>evals/AUDIT_2026-06.md</code> &mdash; payday resolution (user_setting vs inferred, resolved-vs-upcoming, cadence anchors), the setAsideAccounts boundary, typicalDiscretionary (per-window + perDayOfWeek + thin-data null), thisWeek/restOfMonth windows, credit-card debt, multi-bank aggregation, and financial-distress resources. Each new fixture's ground truth was checked to satisfy its own code-checks. The dimension panels below show representative cards; the full set lives in <code>evals/fixtures/&lt;dimension&gt;.json</code> and individual cards are being added incrementally.
   </p>
 </div>
