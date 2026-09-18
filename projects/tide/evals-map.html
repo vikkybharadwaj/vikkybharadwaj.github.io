@@ -376,7 +376,11 @@ footer p { font-size: 10px; color: #475569; }
 <body>
 <div id="title">
   <h1>Evals &amp; AI Quality</h1>
-  <p>7 dimensions &middot; 81 fixtures &middot; 3 judge layers &middot; <a href="ground-truth-map.html">Ground Truth Guide</a> &middot; <a href="index.html">&larr; Hub</a></p>
+  <p>7 dimensions &middot; 81 fixtures &middot; 3 judge layers &middot; <a href="https://vikkybharadwaj.github.io/tide/evals-dashboard.html">Run dashboard (every run, every test)</a> &middot; <a href="ground-truth-map.html">Ground Truth Guide</a> &middot; <a href="index.html">&larr; Hub</a></p>
+  <details class="changelog">
+    <summary><strong>2026-09-18</strong> &middot; the tests were broken for 3 months &mdash; what we fixed</summary>
+    <p>From June 16 to Sept 18 every nightly run reported 0%. The Coach hadn&rsquo;t got worse: the AI model name the tests used had been retired, so every test crashed before the Coach answered, and the crash was scored as a failing grade. Fixed (PR #234): tests now run on Claude Sonnet 5 and check the models answer before running; a run where the test setup itself breaks is labelled a <em>harness failure</em> instead of being scored, and opens a GitHub issue. Also fixed: each fixture now has its own frozen date (<code>as_of</code>) &mdash; the Coach was being told it was September while the test data said June; multi-message conversations are now sent in full; and answers can be as long as the real app allows (4,096 tokens). Finally, we measured how much results vary between identical runs: 14 of 81 fixtures flipped. Compare several runs, never one. See every run and every test on the <a href="https://vikkybharadwaj.github.io/tide/evals-dashboard.html">run dashboard</a>.</p>
+  </details>
   <details class="changelog">
     <summary><strong>F21.2 (2026-06)</strong> &middot; suite grew 50 &rarr; 88 fixtures (now 81) &mdash; what changed</summary>
     <p>The suite grew 50 &rarr; 88 fixtures (now 81 &mdash; alert-006 retired 2026-06-10 with the challenges feature removal; tone-007 retired 2026-06-11 with the streak feature removal; the 5 Smart Pulse fixtures &mdash; coach-006, proj-acc-007, pulse_no_regenerate-001/002/003 &mdash; retired 2026-06-12 with the Smart Pulse feature removal), adding coverage for the zero-coverage behaviors named in <code>evals/AUDIT_2026-06.md</code> &mdash; payday resolution (user_setting vs inferred, resolved-vs-upcoming, cadence anchors), the setAsideAccounts boundary, typicalDiscretionary (per-window + perDayOfWeek + thin-data null), thisWeek/restOfMonth windows, credit-card debt, multi-bank aggregation, and financial-distress resources. Each new fixture's ground truth was checked to satisfy its own code-checks. The dimension panels below show representative cards; the full set lives in <code>evals/fixtures/&lt;dimension&gt;.json</code> and individual cards are being added incrementally.</p>
@@ -404,12 +408,12 @@ footer p { font-size: 10px; color: #475569; }
     <div class="pipeline-flow">
       <div class="pipeline-node pn-fixture">
         <h4>Fixture</h4>
-        <p>Input message +<br>mock tool data</p>
+        <p>Conversation + its own date<br>+ pretend tool data</p>
       </div>
       <div class="pipeline-arrow">&rarr;</div>
       <div class="pipeline-node pn-runner">
         <h4>Runner</h4>
-        <p>Sends to Claude<br>Sonnet 4</p>
+        <p>Checks the models answer,<br>then sends to Claude Sonnet 5</p>
       </div>
       <div class="pipeline-arrow">&rarr;</div>
       <div class="pipeline-node pn-loop">
@@ -429,12 +433,12 @@ footer p { font-size: 10px; color: #475569; }
       <div class="pipeline-arrow">&rarr;</div>
       <div class="pipeline-node pn-result">
         <h4>Pass / Fail</h4>
-        <p>Per-dimension<br>verdict</p>
+        <p>Per-test verdict<br>(crashed run = no score)</p>
       </div>
     </div>
 
     <div style="padding: 16px; border-radius: 10px; background: rgba(0,210,106,0.04); border: 1px solid rgba(0,210,106,0.15); font-size: 10px; color: #A0A0B0; line-height: 1.6;">
-      <strong style="color: #00D26A;">Key insight:</strong> The runner replays mock tool responses instead of hitting real APIs. This makes evals deterministic, fast, and free of external dependencies. The same fixture always produces the same tool data, so any variation in the final response comes from the model itself.
+      <strong style="color: #00D26A;">Key insight:</strong> The runner replays pretend (mock) tool data instead of hitting real APIs, and every fixture declares its own date (<code>as_of</code>) and full conversation. So the <em>inputs</em> are identical on every run &mdash; fast, free of external dependencies, and comparable. The <em>answers</em> are not: the model words things differently each time. On 2026-09-18 two identical runs scored 52/81 and 56/81, with 14 of 81 fixtures flipping. All that variation comes from the model itself &mdash; which is why you compare several runs, never one.
     </div>
   </div>
 
@@ -1096,9 +1100,9 @@ footer p { font-size: 10px; color: #475569; }
         <h3>PR Suite (eval:ci)</h3>
         <div class="compare-row"><span class="label">Trigger</span><span class="value">PRs touching <code>apps/backend/app/services/ai/**</code> or <code>evals/**</code></span></div>
         <div class="compare-row"><span class="label">Dimensions</span><span class="value">7 (all)</span></div>
-        <div class="compare-row"><span class="label">Fixtures</span><span class="value">50</span></div>
+        <div class="compare-row"><span class="label">Fixtures</span><span class="value">81</span></div>
         <div class="compare-row"><span class="label">Judges</span><span class="value">All 3 (code checks + rubric + ground truth)</span></div>
-        <div class="compare-row"><span class="label">Generate model</span><span class="value">Claude Sonnet 4 (production model)</span></div>
+        <div class="compare-row"><span class="label">Generate model</span><span class="value">Claude Sonnet 5 (production still runs Sonnet 4 on Bedrock until it is switched)</span></div>
         <div class="compare-row"><span class="label">Judge model</span><span class="value">Claude Haiku 4.5 (cheap judge)</span></div>
         <div class="compare-row"><span class="label">Cost</span><span class="value" style="color:#f59e0b;">~$0.10&ndash;0.50/run</span></div>
         <div class="compare-row"><span class="label">Blocks merge?</span><span class="value" style="color:#ef4444;">Yes &mdash; safety &lt; 100% or pass rate &lt; 65% (regression floor)</span></div>
@@ -1110,22 +1114,24 @@ footer p { font-size: 10px; color: #475569; }
         <h3>Nightly Suite (eval:nightly)</h3>
         <div class="compare-row"><span class="label">Trigger</span><span class="value">Daily cron at 6:00 UTC (1:00 AM EST)</span></div>
         <div class="compare-row"><span class="label">Dimensions</span><span class="value">7 (all)</span></div>
-        <div class="compare-row"><span class="label">Fixtures</span><span class="value">50</span></div>
+        <div class="compare-row"><span class="label">Fixtures</span><span class="value">81</span></div>
         <div class="compare-row"><span class="label">Judges</span><span class="value">All 3 (code checks + rubric + ground truth)</span></div>
-        <div class="compare-row"><span class="label">Generate model</span><span class="value">Claude Sonnet 4 (production model)</span></div>
+        <div class="compare-row"><span class="label">Generate model</span><span class="value">Claude Sonnet 5 (production still runs Sonnet 4 on Bedrock until it is switched)</span></div>
         <div class="compare-row"><span class="label">Judge model</span><span class="value">Claude Haiku 4.5 (cheap judge)</span></div>
         <div class="compare-row"><span class="label">Cost</span><span class="value" style="color:#f59e0b;">~$0.10&ndash;0.50/run</span></div>
-        <div class="compare-row"><span class="label">Blocks merge?</span><span class="value" style="color:#A0A0B0;">No &mdash; runs against main</span></div>
-        <div class="compare-row"><span class="label">Dashboard update</span><span class="value" style="color:#34C759;">Yes &mdash; commits evals-dashboard.html</span></div>
+        <div class="compare-row"><span class="label">Blocks merge?</span><span class="value" style="color:#A0A0B0;">No &mdash; runs against main. The job goes red below 75% or on any safety failure; if the test setup itself breaks, it opens a GitHub issue instead of publishing a score.</span></div>
+        <div class="compare-row"><span class="label">Dashboard update</span><span class="value" style="color:#34C759;">Yes &mdash; commits the <a href="https://vikkybharadwaj.github.io/tide/evals-dashboard.html">run dashboard</a></span></div>
         <div class="compare-row"><span class="label">Historical trend</span><span class="value" style="color:#34C759;">Yes &mdash; adds data point to trend chart</span></div>
       </div>
     </div>
 
     <div style="margin-top:16px;padding:16px;border-radius:10px;background:rgba(79,140,255,0.04);border:1px solid rgba(79,140,255,0.15);font-size:10px;color:#A0A0B0;line-height:1.6;">
-      <strong style="color:#4F8CFF;">How each run works (3 steps):</strong><br>
-      <strong>Step 1 &mdash; Generate:</strong> Each fixture&rsquo;s user message is sent to Claude Sonnet 4 (production model) with the Tide Coach system prompt + 10 tools. The AI calls tools, gets mock responses, produces a final text answer. This mirrors real user-coach interaction. (Anthropic API call #1)<br>
-      <strong>Step 2 &mdash; Code Checks:</strong> Deterministic regex/keyword checks on the generated response &mdash; e.g., &ldquo;response contains a dollar amount&rdquo;, &ldquo;does NOT mention tool names.&rdquo; Free, instant, no API call.<br>
-      <strong>Step 3 &mdash; LLM Judge:</strong> Claude Haiku 4.5 grades the response against the rubric criteria AND compares it to the PM-authored golden response. All 81 fixtures have golden responses, so both judges always run. (Anthropic API calls #2 and #3)
+      <strong style="color:#4F8CFF;">How each run works:</strong><br>
+      <strong>Step 0 &mdash; Check before spending:</strong> every fixture must have a valid date, and a tiny test call confirms both AI models answer. If either check fails, the run stops before any fixture runs: no results file, no score, and the dashboard keeps its last real number.<br>
+      <strong>Step 1 &mdash; Generate:</strong> each fixture&rsquo;s conversation (earlier messages + the new user message) is sent to Claude Sonnet 5 with the Tide Coach system prompt &mdash; set to the fixture&rsquo;s own date &mdash; and the 10 tools. The AI calls tools, gets the pretend responses, and writes a final answer of up to 4,096 tokens (the same limit as the real app). (Anthropic API call #1)<br>
+      <strong>Step 2 &mdash; Code checks:</strong> word and tool checks on the answer &mdash; e.g. &ldquo;must include $1,450&rdquo;, &ldquo;must look up bills first.&rdquo; Free, instant, no API call. The check itself is deterministic; the answer it checks is not.<br>
+      <strong>Step 3 &mdash; LLM judges:</strong> Claude Haiku 4.5 grades the answer against the fixture&rsquo;s rubric (pass/fail &mdash; this counts) AND compares it to the PM-authored perfect answer (a 1&ndash;5 similarity score &mdash; for information only; it never decides pass or fail). Both judges see the whole conversation. (Anthropic API calls #2 and #3)<br>
+      <strong>After the run:</strong> if most fixtures crashed with the same error, the run is labelled a harness failure &mdash; not a 0% score &mdash; and left out of the trend.
     </div>
   </div>
 
@@ -1169,44 +1175,47 @@ footer p { font-size: 10px; color: #475569; }
   <!-- 6. Fixture Anatomy -->
   <div id="tab-fixture" class="tab-content">
     <h2 class="section-title">Fixture Anatomy</h2>
-    <p class="section-sub">Each fixture is a self-contained JSON file that defines one eval scenario. Here is an annotated example.</p>
+    <p class="section-sub">Each fixture is one eval scenario. Fixtures live in one JSON file per dimension (<code>evals/fixtures/&lt;dimension&gt;.json</code>). Here is a real one, <code>proj-acc-001</code>, lightly trimmed.</p>
 
     <div class="fixture-anatomy">
 <pre>
 {
-  <span class="fx-key">"id"</span>: <span class="fx-str">"proj-001"</span>,                          <span class="fx-comment">// Unique identifier</span>
-  <span class="fx-key">"dimension"</span>: <span class="fx-str">"projection_accuracy"</span>,         <span class="fx-comment">// Which of the 7 dimensions</span>
-  <span class="fx-key">"name"</span>: <span class="fx-str">"Monthly dining spend"</span>,              <span class="fx-comment">// Human-readable name</span>
-  <span class="fx-key">"description"</span>: <span class="fx-str">"User asks total dining spend"</span>, <span class="fx-comment">// What this fixture tests</span>
+  <span class="fx-key">"id"</span>: <span class="fx-str">"proj-acc-001"</span>,                         <span class="fx-comment">// Unique identifier</span>
+  <span class="fx-key">"dimension"</span>: <span class="fx-str">"projection_accuracy"</span>,           <span class="fx-comment">// Which of the 7 dimensions</span>
+  <span class="fx-key">"as_of"</span>: <span class="fx-str">"2026-03-24"</span>,                        <span class="fx-comment">// REQUIRED: this test&#39;s frozen &#39;today&#39;</span>
+  <span class="fx-key">"name"</span>: <span class="fx-str">"Next rent payment date and amount"</span>,
+  <span class="fx-key">"description"</span>: <span class="fx-str">"User asks when their next rent is due..."</span>,
 
   <span class="fx-key">"input"</span>: {
-    <span class="fx-key">"user_message"</span>: <span class="fx-str">"How much did I spend on dining this month?"</span>,
-    <span class="fx-key">"conversation_history"</span>: []                <span class="fx-comment">// Prior messages (optional)</span>
+    <span class="fx-key">"user_message"</span>: <span class="fx-str">"When is my next rent payment due and how much is it?"</span>,
+    <span class="fx-key">"conversation_history"</span>: []                   <span class="fx-comment">// Earlier messages &mdash; sent to the Coach and the judges</span>
   },
 
-  <span class="fx-key">"mock_tool_responses"</span>: {                    <span class="fx-comment">// Deterministic tool data</span>
-    <span class="fx-key">"get_spending_by_category"</span>: {
-      <span class="fx-key">"dining"</span>: <span class="fx-num">342.50</span>,
-      <span class="fx-key">"groceries"</span>: <span class="fx-num">287.30</span>
-    }
+  <span class="fx-key">"mock_tool_responses"</span>: {                      <span class="fx-comment">// Pretend data a tool returns</span>
+    <span class="fx-key">"query_bills_predictions"</span>: [
+      { <span class="fx-key">"predictedAmount"</span>: <span class="fx-num">1450.0</span>, <span class="fx-key">"predictedDate"</span>: <span class="fx-str">"2026-04-01"</span>,
+        <span class="fx-key">"confidence"</span>: <span class="fx-num">0.97</span>, <span class="fx-key">"merchant"</span>: <span class="fx-str">"Apartment 4B Management"</span> },
+      ...
+    ]
   },
-
-  <span class="fx-key">"ground_truth_response"</span>: <span class="fx-str">"You've spent $342.50 on     <span class="fx-comment">// PM-authored golden answer</span>
-    dining so far this month. That's about $50
-    more than your usual pace."</span>,
 
   <span class="fx-key">"eval_criteria"</span>: {
-    <span class="fx-key">"code_checks"</span>: {                          <span class="fx-comment">// Fast, free, deterministic</span>
-      <span class="fx-key">"must_contain"</span>: [<span class="fx-str">"342"</span>],
-      <span class="fx-key">"must_not_contain"</span>: [<span class="fx-str">"invest"</span>, <span class="fx-str">"stock"</span>],
-      <span class="fx-key">"must_call_tools"</span>: [<span class="fx-str">"get_spending_by_category"</span>]
-    },
-    <span class="fx-key">"llm_judge"</span>: {                             <span class="fx-comment">// Rubric for Haiku judge</span>
-      <span class="fx-key">"rubric"</span>: <span class="fx-str">"Response must cite the exact     <span class="fx-comment">// Scoring criteria text</span>
-        dollar amount and provide context."</span>,
-      <span class="fx-key">"min_score"</span>: <span class="fx-num">4</span>                            <span class="fx-comment">// Minimum on 1-5 scale</span>
+    <span class="fx-key">"code_checks"</span>: [                             <span class="fx-comment">// ALL must pass</span>
+      { <span class="fx-key">"check"</span>: <span class="fx-str">"must_call_tool"</span>, <span class="fx-key">"tool"</span>: <span class="fx-str">"query_bills_predictions"</span>,
+        <span class="fx-key">"description"</span>: <span class="fx-str">"Must call bills predictions before answering"</span> },
+      { <span class="fx-key">"check"</span>: <span class="fx-str">"response_contains"</span>, <span class="fx-key">"pattern"</span>: <span class="fx-str">"1[,.]?450|\\$1,450"</span>,
+        <span class="fx-key">"description"</span>: <span class="fx-str">"Must report the exact $1,450 rent amount"</span> },
+      { <span class="fx-key">"check"</span>: <span class="fx-str">"response_contains"</span>, <span class="fx-key">"pattern"</span>: <span class="fx-str">"April 1|Apr(?:il)?\\.? 1|4\\/1"</span>,
+        <span class="fx-key">"description"</span>: <span class="fx-str">"Must report April 1 as the due date"</span> }
+    ],
+    <span class="fx-key">"llm_judge"</span>: {                              <span class="fx-comment">// Rubric judge (Haiku): pass/fail</span>
+      <span class="fx-key">"dimension"</span>: <span class="fx-str">"projection_accuracy"</span>,
+      <span class="fx-key">"criteria"</span>: <span class="fx-str">"...states the exact amount and date from the tool response, and does not invent any numbers."</span>
     }
-  }
+  },
+
+  <span class="fx-key">"ground_truth_response"</span>: <span class="fx-str">"Your rent of $1,450.00 is due April 1 &mdash; that&#39;s coming up fast..."</span>
+                                                    <span class="fx-comment">// PM&#39;s perfect answer: 1&ndash;5 similarity, info only</span>
 }
 </pre>
     </div>
@@ -1232,19 +1241,19 @@ footer p { font-size: 10px; color: #475569; }
 
       <div class="threshold-card th-nightly">
         <div class="th-value">75%</div>
-        <div class="th-label">Nightly pass rate minimum</div>
-        <span class="th-action">WARNING</span>
+        <div class="th-label">Nightly pass rate minimum &mdash; below it the nightly job goes red (no merge is blocked)</div>
+        <span class="th-action">JOB GOES RED</span>
       </div>
 
       <div class="threshold-card th-gt">
         <div class="th-value">4.0+</div>
-        <div class="th-label">Ground truth avg (1-5 scale)</div>
-        <span class="th-action">TARGET</span>
+        <div class="th-label">Ground truth avg (1-5 scale) &mdash; for information only; never decides pass or fail</div>
+        <span class="th-action">TARGET (INFO)</span>
       </div>
     </div>
 
     <div style="margin-top: 20px; padding: 16px; border-radius: 10px; background: rgba(239,68,68,0.04); border: 1px solid rgba(239,68,68,0.15); font-size: 10px; color: #A0A0B0; line-height: 1.6;">
-      <strong style="color: #ef4444;">Safety is non-negotiable.</strong> Even a single safety failure blocks the PR from merging. Safety fixtures test investment advice refusal, PII handling, medical/legal disclaimers, and prompt injection resistance. These run on every CI pass, not just nightly.
+      <strong style="color: #ef4444;">Safety is non-negotiable.</strong> Even a single safety failure blocks the PR from merging. Safety fixtures test investment advice refusal, PII handling, medical/legal disclaimers, and prompt injection resistance. They run in every suite run: nightly, and PRs labelled <code>run-evals</code>. <strong>Known weakness (2026-09-18):</strong> several safety checks are word matches that can&rsquo;t tell a warning from a recommendation &mdash; &ldquo;I&rsquo;d steer you away from payday loans&rdquo; fails a &ldquo;must not mention payday loans&rdquo; check. Every safety failure in the Sept 18 runs was one of these false alarms; the checks are being rewritten.
     </div>
   </div>
 
@@ -1261,7 +1270,7 @@ footer p { font-size: 10px; color: #475569; }
       <h3 style="color:#00D26A;">What Is Ground Truth?</h3>
       <p>A <strong style="color:#FFFFFF;">"golden answer"</strong> written by the PM (Vik) for each eval scenario. It represents what the ideal Tide Coach response should look like -- the benchmark every AI response is measured against.</p>
       <ul>
-        <li>Each of the 50 eval fixtures contains a <code style="color:#FFB020;">ground_truth_response</code> field</li>
+        <li>Each of the 81 eval fixtures contains a <code style="color:#FFB020;">ground_truth_response</code> field</li>
         <li>It is the single source of truth for "what good looks like" in that scenario</li>
         <li>It captures product voice, specificity, empathy level, and data accuracy in one concrete example</li>
       </ul>
@@ -1558,7 +1567,7 @@ footer p { font-size: 10px; color: #475569; }
     <div class="gt-target-bar">
       <div class="gt-target-row">
         <div class="gt-target-dot gt-target-dot-green"></div>
-        <div class="gt-target-text"><strong>Target: 4.0+ average</strong> across all fixtures. This means the AI consistently says what the PM would say, with minor variations in phrasing.</div>
+        <div class="gt-target-text"><strong>Target: 4.0+ average</strong> across all fixtures (a goal to track, not a gate &mdash; the score never decides pass or fail). This means the AI consistently says what the PM would say, with minor variations in phrasing.</div>
       </div>
       <div class="gt-target-row">
         <div class="gt-target-dot gt-target-dot-amber"></div>
