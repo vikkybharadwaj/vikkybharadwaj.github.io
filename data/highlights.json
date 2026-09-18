@@ -4,27 +4,27 @@
     "title": "How I operate.",
     "sub": "A snapshot from across my repos (public + private), generated from real git history \u2014 the operating habits behind the work above. Commit-history metrics cover 2026 to date."
   },
-  "updated": "2026-09-17",
+  "updated": "2026-09-18",
   "first": "2026-03-21",
-  "window": "Counts 2026 to date \u00b7 git activity 2026-03-21 \u2192 2026-09-17",
+  "window": "Counts 2026 to date \u00b7 git activity 2026-03-21 \u2192 2026-09-18",
   "insights": [
     {
       "key": "github_contributions",
-      "value": "1,238",
+      "value": "1,255",
       "label": "GitHub contributions",
       "caption": "commits, PRs & reviews \u00b7 public + private \u00b7 2026 to date",
       "accent": "g"
     },
     {
       "key": "commits",
-      "value": "835",
+      "value": "846",
       "label": "commits shipped",
       "caption": "across 5 repos \u00b7 2026 to date",
       "accent": "g"
     },
     {
       "key": "cadence",
-      "value": "4.6",
+      "value": "4.7",
       "label": "commits a day",
       "caption": "steady, iterative cadence",
       "accent": "g"
@@ -38,7 +38,7 @@
     },
     {
       "key": "pr_driven",
-      "value": "269",
+      "value": "277",
       "label": "changes shipped via PR",
       "caption": "reviewed \u2014 never straight to main",
       "accent": "b"
@@ -66,42 +66,42 @@
     },
     {
       "key": "evals",
-      "value": "111",
+      "value": "116",
       "label": "eval fixtures",
       "caption": "AI quality measured, not guessed",
       "accent": "p"
     },
     {
       "key": "knowledge_atoms",
-      "value": "75",
+      "value": "76",
       "label": "knowledge atoms",
       "caption": "notes + concepts wired into one map",
       "accent": "b"
     },
     {
       "key": "learnings",
-      "value": "472",
+      "value": "486",
       "label": "lessons captured",
       "caption": "institutional memory, written as I go",
       "accent": "g"
     },
     {
       "key": "changelog",
-      "value": "89",
+      "value": "91",
       "label": "documented changes",
       "caption": "every ship explained in plain English",
       "accent": "g"
     },
     {
       "key": "docs",
-      "value": "206",
+      "value": "207",
       "label": "docs & diagrams",
       "caption": "documentation as a living spec",
       "accent": "a"
     },
     {
       "key": "tracked_files",
-      "value": "848",
+      "value": "859",
       "label": "files under version control",
       "caption": "full-stack breadth",
       "accent": "t"
@@ -118,15 +118,15 @@
       "languages": [
         [
           "TypeScript",
-          384
+          389
         ],
         [
           "Markdown",
-          144
+          145
         ],
         [
           "JSON",
-          134
+          139
         ],
         [
           "HTML",
