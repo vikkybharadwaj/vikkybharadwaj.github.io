@@ -148,6 +148,11 @@
   .card-eval .icon { color: var(--green); }
   .card-eval .tag { background: rgba(0,210,106,0.15); color: var(--green); }
 
+  .card-dash { border-color: rgba(79,140,255,0.3); }
+  .card-dash:hover { box-shadow: 0 8px 32px rgba(79,140,255,0.2); border-color: var(--blue); }
+  .card-dash .icon { color: var(--blue); }
+  .card-dash .tag { background: rgba(79,140,255,0.15); color: var(--blue); }
+
   .card-ver { border-color: rgba(236,72,153,0.3); }
   .card-ver:hover { box-shadow: 0 8px 32px rgba(236,72,153,0.2); border-color: #ec4899; }
   .card-ver .icon { color: #ec4899; }
@@ -477,7 +482,7 @@
   <div class="wrap">
     <div class="sec-label">How it actually works</div>
     <h2 class="sec-title">Every diagram doubles as the spec.</h2>
-    <p class="sec-sub">The story above is the why. These eight interactive views are the how — the system topology, the data flows, the AI pipeline, the evals, and the runway math behind every claim. Click any card to explore.</p>
+    <p class="sec-sub">The story above is the why. These nine interactive views are the how — the system topology, the data flows, the AI pipeline, the evals, and the runway math behind every claim. Click any card to explore.</p>
 
     <div class="grid">
       <a class="card card-arch" href="architecture-map.html">
@@ -506,6 +511,13 @@
         <h2>Evals &amp; AI Quality</h2>
         <p>How the eval system works: 7 quality dimensions, 3 graders, a nightly run plus opt-in PR runs. Fixtures, thresholds, and the flywheel roadmap.</p>
         <span class="tag">7 DIMENSIONS &middot; 81 FIXTURES</span>
+      </a>
+
+      <a class="card card-dash" href="https://vikkybharadwaj.github.io/tide/evals-dashboard.html">
+        <span class="icon">&#9776;</span>
+        <h2>Evals Dashboard</h2>
+        <p>Every nightly run, every test, graded &mdash; failures included. The misses are what drive the fixture and prompt roadmap.</p>
+        <span class="tag">NIGHTLY &middot; EVERY RUN &middot; EVERY TEST</span>
       </a>
 
       <a class="card card-ver" href="feature-versions.html">
