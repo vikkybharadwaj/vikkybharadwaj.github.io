@@ -4,20 +4,20 @@
     "title": "How I operate.",
     "sub": "A snapshot from across my repos (public + private), generated from real git history \u2014 the operating habits behind the work above. Commit-history metrics cover 2026 to date."
   },
-  "updated": "2026-09-21",
+  "updated": "2026-09-22",
   "first": "2026-03-21",
-  "window": "Counts 2026 to date \u00b7 git activity 2026-03-21 \u2192 2026-09-21",
+  "window": "Counts 2026 to date \u00b7 git activity 2026-03-21 \u2192 2026-09-22",
   "insights": [
     {
       "key": "github_contributions",
-      "value": "1,371",
+      "value": "1,396",
       "label": "GitHub contributions",
       "caption": "commits, PRs & reviews \u00b7 public + private \u00b7 2026 to date",
       "accent": "g"
     },
     {
       "key": "commits",
-      "value": "915",
+      "value": "931",
       "label": "commits shipped",
       "caption": "across 5 repos \u00b7 2026 to date",
       "accent": "g"
@@ -38,14 +38,14 @@
     },
     {
       "key": "pr_driven",
-      "value": "333",
+      "value": "346",
       "label": "changes shipped via PR",
       "caption": "reviewed \u2014 never straight to main",
       "accent": "b"
     },
     {
       "key": "ai_assisted",
-      "value": "65%",
+      "value": "66%",
       "label": "AI-built commits",
       "caption": "I build with AI, and keep the receipts",
       "accent": "p"
@@ -66,14 +66,14 @@
     },
     {
       "key": "evals",
-      "value": "128",
+      "value": "129",
       "label": "eval fixtures",
       "caption": "AI quality measured, not guessed",
       "accent": "p"
     },
     {
       "key": "knowledge_atoms",
-      "value": "87",
+      "value": "88",
       "label": "knowledge atoms",
       "caption": "notes + concepts wired into one map",
       "accent": "b"
@@ -87,7 +87,7 @@
     },
     {
       "key": "changelog",
-      "value": "97",
+      "value": "99",
       "label": "documented changes",
       "caption": "every ship explained in plain English",
       "accent": "g"
@@ -101,7 +101,7 @@
     },
     {
       "key": "tracked_files",
-      "value": "893",
+      "value": "898",
       "label": "files under version control",
       "caption": "full-stack breadth",
       "accent": "t"
@@ -118,19 +118,19 @@
       "languages": [
         [
           "TypeScript",
-          392
+          394
         ],
         [
           "Markdown",
-          157
+          158
         ],
         [
           "JSON",
-          151
+          152
         ],
         [
           "HTML",
-          61
+          60
         ],
         [
           "Shell",
@@ -138,7 +138,7 @@
         ],
         [
           "YAML",
-          13
+          14
         ]
       ]
     }
