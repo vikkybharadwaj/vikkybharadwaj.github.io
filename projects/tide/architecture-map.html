@@ -214,11 +214,11 @@ const nodes = [
       tech:"Claude Haiku 4.5 via AWS Bedrock (suspended)",
       warning:"Feature is OFF in production. chats_controller.ts:151 hardcodes intentPromise = Promise.resolve('unknown')."
     }},
-  { id:"coach", label:"Tide Coach Agent", sub:"Claude Sonnet 4", type:"ai", mvp:"mvp", x:750, y:280,
+  { id:"coach", label:"Tide Coach Agent", sub:"Claude Sonnet 4.6", type:"ai", mvp:"mvp", x:750, y:280,
     detail:{
       desc:"User-facing AI financial coach. Streaming tool-use loop (max 10 iterations). 10 tools registered; 8 are MVP-active, 2 are MVP+.",
       bullets:[
-        "Model ID: us.anthropic.claude-sonnet-4-20250514-v1:0",
+        "Model ID: global.anthropic.claude-sonnet-4-6",
         "Max 10 tool iterations per turn; first token <2s target",
         "MVP tools: query_user_profile, query_bank_accounts, query_transactions, query_bills_predictions, query_payday_predictions, calculate_safe_to_spend (shares service with Home card), get_spending_by_category, query_coaching_history",
         "MVP+ tools: get_financial_insights (anomaly/trend analysis), query_reflection_stats (backend-only, UI removed)",
@@ -227,7 +227,7 @@ const nodes = [
         "Throttle retry: 1s/2s/4s exponential backoff on ThrottlingException",
         "ConverseStream API; 20-message context window (chatConfig.maxContextMessages)"
       ],
-      tech:"Claude Sonnet 4 via AWS Bedrock, 10 tools, SSE streaming via XMLHttpRequest"
+      tech:"Claude Sonnet 4.6 via AWS Bedrock, 10 tools, SSE streaming via XMLHttpRequest"
     }},
   { id:"postgres", label:"PostgreSQL", sub:"RDS db.t4g.micro", type:"data", mvp:"mvp", x:440, y:600,
     detail:{
@@ -354,7 +354,7 @@ const edges = [
   { from:"worker", to:"redis", color:"#a855f7", label:"BullMQ queues (12)", type:"data" },
   { from:"worker", to:"plaid", color:"#f59e0b", label:"Transaction sync", type:"external" },
   { from:"coach", to:"backend", color:"#3b82f6", label:"Tool calls (read-only DB)", type:"ai" },
-  { from:"bedrock", to:"coach", color:"#00d4ff", label:"Sonnet 4 inference", type:"ai" },
+  { from:"bedrock", to:"coach", color:"#00d4ff", label:"Sonnet 4.6 inference", type:"ai" },
   { from:"cognito", to:"backend", color:"#ef4444", label:"JWKS validation", type:"auth" },
   { from:"plaid", to:"backend", color:"#f59e0b", label:"Webhooks", type:"external" },
   { from:"mobile", to:"posthog", color:"#f59e0b", label:"Client events", type:"external" },
