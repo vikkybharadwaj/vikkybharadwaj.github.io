@@ -413,9 +413,6 @@ table.cl-table .cl-hl .pr { color: #64748b; font-size: 11px; }
       <div class="rcard t-skill">
         <h3 data-tip="Three kinds of reusable capability under .claude/. Commands you trigger by name; Skills Claude can also trigger itself; Agents are isolated helper Claudes.">Skills, commands &amp; agents</h3>
         <div class="blurb">Three distinct <code>.claude/</code> extensions — commands are user-invoked; skills can be model-invoked; agents are isolated subagents.</div>
-        <div class="row" data-tip="Walks you through defining what an AI feature could get wrong — the failure modes worth testing."><code>/dimensions</code><span class="note">command — eval dimensions (MECE failure modes)</span></div>
-        <div class="row" data-tip="Generates concrete test cases that cover those failure modes."><code>/fixtures</code><span class="note">command — eval test cases across dimensions</span></div>
-        <div class="row" data-tip="Helps you write the 'perfect answer' each test case gets graded against."><code>/ground-truth</code><span class="note">command — golden ideal responses</span></div>
         <div class="row" data-tip="A principal-designer review of a mobile screen's UX, with concrete fixes."><code>/ux-critique</code><span class="note">command — principal-designer mobile UI/UX audit</span></div>
         <div class="row" data-tip="The one sanctioned way to ship: branch, commit, PR, merge, notify — plus the changelog and portfolio-mirror steps."><code>/ship</code><span class="note">command — branch → PR → merge → notify (+ changelog, mirror sync)</span></div>
         <div class="row" data-tip="Scaffolds or runs a production-grade eval pipeline — directories, runners, judges, CI, dashboard."><code>/setup-evals</code><span class="note">command — scaffold / run an eval pipeline</span></div>
@@ -537,7 +534,7 @@ table.cl-table .cl-hl .pr { color: #64748b; font-size: 11px; }
           <th data-tip="The concrete examples that exist in Tide today.">In this repo</th>
           <td class="col-hook"><code>scripts/session-role.sh</code><code>scripts/session-context.sh (SessionStart)</code><code>scripts/precompact-context.sh (SessionStart:compact)</code><code>scripts/budget-guard.sh (PreToolUse)</code><code>scripts/consumer-guard.sh (PreToolUse)</code><code>scripts/git-guard.sh (PreToolUse)</code><code>scripts/doc-sync-guard.sh (PostToolUse)</code><code>scripts/security-guard.sh (PostToolUse)</code><code>scripts/changelog-guard.sh (PostToolUse)</code></td>
           <td class="col-policy"><code>DATA FLOW = SPEC — judgment only (spec-auditor + nightly sweep)</code><code>OWNER / CONSUMER — partly hook-backed (consumer-guard.sh)</code><code>BankDataProvider only — partly hook-backed (security-guard.sh)</code></td>
-          <td class="col-skill"><code>commands: /ship /setup-evals /dimensions /fixtures /ground-truth /ux-critique</code><code>skills: update-learnings, update-docs, /doc-drift (model-invoked)</code></td>
+          <td class="col-skill"><code>commands: /ship /setup-evals /ux-critique</code><code>skills: update-learnings, update-docs, /doc-drift (model-invoked)</code></td>
           <td class="col-agent"><code>spec-auditor (read-only: Read, Grep, Glob, Bash)</code><code>Riu persona — drift auditor for DATA FLOW = SPEC</code></td>
           <td class="col-routine"><code>Nightly Doc-Drift Sweep (Opus 4.8, 07:00 UTC)</code><code>→ opens a docs: PR; lives in claude.ai, not the repo</code></td>
         </tr>
@@ -581,7 +578,7 @@ table.cl-table .cl-hl .pr { color: #64748b; font-size: 11px; }
         <div class="blurb">The Claude Code host and published surfaces.</div>
         <div class="row tip-right" data-tip="The agent itself — running on Claude Opus 4.8 with a 1-million-token context window."><code>Claude Code</code><span class="note">Opus 4.8 (1M ctx) — web / remote container</span></div>
         <div class="row tip-right" data-tip="Repo-level config: which hooks run and what commands Claude is allowed to use."><code>.claude/settings.json</code><span class="note">repo-level hooks + permissions</span></div>
-        <div class="row tip-right" data-tip="The slash-command files for this repo (the /dimensions, /fixtures, … you type)."><code>.claude/commands/</code><span class="note">repo slash-command skills</span></div>
+        <div class="row tip-right" data-tip="The slash-command files for this repo (the /ship, /ux-critique, … you type)."><code>.claude/commands/</code><span class="note">repo slash-command skills</span></div>
         <div class="row tip-right" data-tip="Scheduled cloud agents (claude.ai 'routines') that run on a cron clock in Anthropic's cloud — off your machine. The Nightly Doc-Drift Sweep lives here, not in the repo; managed at claude.ai/code/routines."><code>Routines</code> <span class="pill pill-live">live</span><span class="note">claude.ai — scheduled cloud agents (nightly doc-drift sweep)</span></div>
         <div class="row tip-right" data-tip="The live site that publishes these docs automatically on every merge to main."><code>GitHub Pages</code> <span class="pill pill-live">live</span><span class="note">publishes <code>docs/</code> on merge to main</span></div>
         <div class="row"><a href="https://vikkybharadwaj.github.io/tide/">vikkybharadwaj.github.io/tide</a></div>
@@ -818,6 +815,8 @@ table.cl-table .cl-hl .pr { color: #64748b; font-size: 11px; }
 /* Changelog entries — derived from git history of docs/operating-system.html.
    Newest entries go at the TOP of this array; "num" is the stable change number. */
 const CHANGELOG = [
+  { num: 21, date: "2026-09-24", time: "07:39 EDT", by: "Vik Bharadwaj", bot: false, pr: "#311",
+    hl: "Delete the legacy /dimensions, /fixtures, /ground-truth commands." },
   { num: 20, date: "2026-09-24", time: "07:21 EDT", by: "Vik Bharadwaj", bot: false, pr: "#310",
     hl: "Catch the Operating System page up with 3 months of drift + track it." },
   { num: 19, date: "2026-06-11", time: "10:06 EDT", by: "Vik Bharadwaj", bot: false, pr: "#186",
