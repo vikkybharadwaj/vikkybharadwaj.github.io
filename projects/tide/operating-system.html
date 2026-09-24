@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
+html { color-scheme: dark; } /* dark native scrollbars */
 html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', monospace; background: #0a0f1a; color: #e2e8f0; line-height: 1.6; }
 a { color: #3b82f6; text-decoration: none; }
 a:hover { text-decoration: underline; }
@@ -111,9 +112,18 @@ section { margin-top: 48px; border: 1.5px solid rgba(255,255,255,0.07); border-r
 /* anchor tooltips to the right edge for items in the last grid column / right side */
 [data-tip].tip-right::after { left: auto; right: 0; }
 [data-tip].tip-right::before { left: auto; right: 16px; }
+/* Phones: an idle tooltip is opacity:0 but still laid out, and one anchored near the right edge
+   widened the whole page (138px of sideways scroll). Take idle tooltips out of layout, and cap a
+   tapped one to the screen. Desktop keeps the fade. */
+@media (max-width: 860px) {
+  [data-tip]:not(:hover)::after, [data-tip]:not(:hover)::before { display: none; }
+  [data-tip]::after { max-width: calc(100vw - 48px); }
+}
 
 /* ---- §3 comparison table ---- */
 table.cmp { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 6px; }
+/* Phones: the 6-column table scrolls inside its own box instead of dragging the whole page sideways. */
+@media (max-width: 860px) { table.cmp { display: block; overflow-x: auto; } }
 table.cmp th, table.cmp td { text-align: left; padding: 12px 14px; vertical-align: top; border-bottom: 1px solid rgba(255,255,255,0.06); }
 table.cmp thead th { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #94a3b8; }
 table.cmp tbody th { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: #64748b; width: 130px; }
@@ -374,10 +384,15 @@ table.cl-table .cl-hl .pr { color: #64748b; font-size: 11px; }
         <div class="row" data-tip="After the context window is compacted, re-injects what compaction drops: in-flight branch/uncommitted work, docs that still owe a sync, your NOTES.md scratchpad, and a 'recall may be degraded — re-verify' checklist."><code>scripts/precompact-context.sh</code> <span class="pill pill-live">new</span><span class="note">SessionStart(compact) — re-grounds after compaction</span></div>
         <div class="row" data-tip="Blocks any command that would create an expensive AWS resource. Outcome: you can't accidentally blow the $46/month budget." ><code>scripts/budget-guard.sh</code> <span class="pill pill-live">new</span><span class="note">PreToolUse(Bash) — DENIES banned AWS cost commands</span></div>
         <div class="row" data-tip="If a stack is already running, refuses to start a duplicate. Outcome: no port clashes or corrupted shared database when running parallel sessions."><code>scripts/consumer-guard.sh</code> <span class="pill pill-live">new</span><span class="note">PreToolUse(Bash) — DENIES duplicate service starts on a CONSUMER session</span></div>
+        <div class="row" data-tip="Refuses any commit on main and any push to main. Outcome: every change — even a one-line typo — goes through a branch and a PR."><code>scripts/git-guard.sh</code> <span class="pill pill-live">new</span><span class="note">PreToolUse(Bash) — DENIES commits/pushes to main (PR-only)</span></div>
         <div class="row" data-tip="When you edit code that has a matching doc, reminds you which docs to update in the SAME change. Outcome: the docs never silently fall out of date."><code>scripts/doc-sync-guard.sh</code> <span class="pill pill-live">new</span><span class="note">PostToolUse(Edit/Write) — reminds to update matching docs</span></div>
         <div class="row" data-tip="Scans each edit for fintech mistakes — unencrypted PII, leaked logs, direct Plaid calls, AI writing to the DB. Outcome: security rules get caught as you type, not in review."><code>scripts/security-guard.sh</code> <span class="pill pill-live">new</span><span class="note">PostToolUse(Edit/Write) — flags PII/encryption/Plaid/AI-write violations</span></div>
+        <div class="row" data-tip="Flags the moment this page's Changelog falls behind its real commit history, so the list can't silently freeze again."><code>scripts/changelog-guard.sh</code> <span class="pill pill-live">new</span><span class="note">PostToolUse(Edit/Write) — flags a stale Operating System changelog</span></div>
         <div class="row" data-tip="The one command to become the stack OWNER — boots docker, the API and the worker together."><code>scripts/dev-stack.sh</code><span class="note">manual — become OWNER (docker + API + worker)</span></div>
         <div class="row" data-tip="A manual sweep that catches leaked API keys or committed .env secrets before they ship."><code>scripts/check-api-key-security.sh</code><span class="note">manual — guards leaked API keys / .env</span></div>
+        <div class="row" data-tip="Copies the published docs into the public portfolio site. Refuses to run unless the checkout is exactly origin/main, so a stale branch can't overwrite the live mirror."><code>scripts/sync-portfolio.sh</code> <span class="pill pill-live">new</span><span class="note">/ship 6.6 — docs → portfolio mirror (origin/main only)</span></div>
+        <div class="row" data-tip="Rebuilds this page's Changelog from the file's real git history, only ever appending."><code>scripts/sync-changelog.py</code><span class="note">/ship 6.5 — regenerates this page's changelog from git log</span></div>
+        <div class="row" data-tip="Copies the live Claude Code memory folder into the repo's memory/ snapshot so it's versioned on GitHub. Doesn't commit — you ship it via /ship."><code>scripts/sync-memory.sh</code><span class="note">manual — snapshots ~/.claude memory into memory/</span></div>
         <div class="row" data-tip="The wiring file — tells Claude Code which hooks to run at which events, plus what commands it's allowed to use."><code>.claude/settings.json</code><span class="note">wires SessionStart + Pre/PostToolUse hooks + permissions</span></div>
       </div>
 
@@ -402,7 +417,10 @@ table.cl-table .cl-hl .pr { color: #64748b; font-size: 11px; }
         <div class="row" data-tip="Generates concrete test cases that cover those failure modes."><code>/fixtures</code><span class="note">command — eval test cases across dimensions</span></div>
         <div class="row" data-tip="Helps you write the 'perfect answer' each test case gets graded against."><code>/ground-truth</code><span class="note">command — golden ideal responses</span></div>
         <div class="row" data-tip="A principal-designer review of a mobile screen's UX, with concrete fixes."><code>/ux-critique</code><span class="note">command — principal-designer mobile UI/UX audit</span></div>
+        <div class="row" data-tip="The one sanctioned way to ship: branch, commit, PR, merge, notify — plus the changelog and portfolio-mirror steps."><code>/ship</code><span class="note">command — branch → PR → merge → notify (+ changelog, mirror sync)</span></div>
+        <div class="row" data-tip="Scaffolds or runs a production-grade eval pipeline — directories, runners, judges, CI, dashboard."><code>/setup-evals</code><span class="note">command — scaffold / run an eval pipeline</span></div>
         <div class="row" data-tip="Claude triggers this itself after a fix to record the lesson in LEARNINGS.md — no nagging needed."><code>update-learnings</code> <span class="pill pill-live">new</span><span class="note">SKILL — model-invoked on any bug fix → LEARNINGS.md</span></div>
+        <div class="row" data-tip="Claude triggers this itself when a code change touches schema, APIs, flows, security, AI, infra or architecture — and updates the matching docs in the same PR."><code>update-docs</code> <span class="pill pill-live">new</span><span class="note">SKILL — model-invoked on spec-bearing changes → matching docs, same PR</span></div>
         <div class="row" data-tip="Scaffolds a new AI Coach tool across all 4 files that must change together, so it actually works and stays testable."><code>/new-ai-tool</code> <span class="pill pill-live">new</span><span class="note">SKILL — scaffolds the 4 Bedrock-tool files in lockstep + ai-pipeline-map</span></div>
         <div class="row" data-tip="Creates a new database table + model with encryption, access control and docs already baked in — the fintech guardrails can't be forgotten."><code>/new-model</code> <span class="pill pill-live">new</span><span class="note">SKILL — model+migration with encryption / serializeAs / HMAC / Bouncer baked in</span></div>
         <div class="row" data-tip="Sweeps EVERY tracked doc (not just data-flow) for drift against the code and reports each mismatch with doc:line → code:line, then fixes + opens a PR on your go-ahead. The in-session twin of the nightly doc-drift routine (§5)."><code>/doc-drift</code> <span class="pill pill-live">new</span><span class="note">SKILL — on-demand all-docs drift sweep → docs: PR (twin of the §5 nightly routine)</span></div>
@@ -418,7 +436,7 @@ table.cl-table .cl-hl .pr { color: #64748b; font-size: 11px; }
         <div class="row" data-tip="The server — the AdonisJS API plus the background-job worker."><code>apps/backend/</code><span class="note">AdonisJS 6 API + BullMQ worker</span></div>
         <div class="row" data-tip="The single gateway to bank data; wraps Plaid behind a swappable interface."><code>packages/bank-data-provider/</code><span class="note">BankDataProvider + PlaidAdapter</span></div>
         <div class="row" data-tip="Code shared by app and server — types, encryption helpers, constants."><code>packages/shared/</code><span class="note">types, encryption utils, constants</span></div>
-        <div class="row" data-tip="The AI quality test suite — fixtures, graders and the runner that scores the Coach."><code>evals/</code><span class="note">fixtures, judges, runner — AI quality suite</span></div>
+        <div class="row" data-tip="The AI quality test suite — 92 scripted tests, the two graders (rule checks + an AI judge), a pre-flight check and the runner that scores the Coach."><code>evals/</code><span class="note">92 tests, rule checks + AI judge, pre-flight, runner</span></div>
       </div>
 
       <!-- ops -->
@@ -426,7 +444,7 @@ table.cl-table .cl-hl .pr { color: #64748b; font-size: 11px; }
         <h3 data-tip="The plumbing: how Tide is deployed, what runs in CI, and how these docs get published." class="tip-right">Operations</h3>
         <div class="blurb">Infra, CI, meta- and contributor docs.</div>
         <div class="row tip-right" data-tip="How Tide is deployed — Docker images, k3s manifests, Terraform (the cheap, no-EKS stack)."><code>infra/</code><span class="note">Dockerfiles, k3s manifests, Terraform</span></div>
-        <div class="row tip-right" data-tip="The CI pipelines that run on every push — tests, AI evals, and deploy."><code>.github/workflows/</code><span class="note">ci.yaml, evals.yml, deploy.yaml</span></div>
+        <div class="row tip-right" data-tip="The GitHub Actions pipelines — tests on every push, AI evals (nightly + opt-in per PR), deploy, the eval-judge experiment, and the job that closes superseded doc-drift PRs."><code>.github/workflows/</code><span class="note">ci.yaml, evals.yml, deploy.yaml, judge-experiment.yml, drift-supersede.yml</span></div>
         <div class="row tip-right" data-tip="Spins up local Postgres + Redis with one command for development."><code>docker-compose.yml</code><span class="note">local Postgres + Redis</span></div>
         <div class="row tip-right" data-tip="Publishes the docs/ folder as the public visual-docs site on every merge to main."><code>GitHub Pages</code><span class="note">serves <code>docs/</code> as the visual-docs site (Settings → Pages, main /docs)</span></div>
         <div class="row tip-right" data-tip="Lets parallel sessions work in isolated copies of the repo without stepping on each other's files."><code>.worktreeinclude</code><span class="note">parallel-session worktree isolation</span></div>
@@ -517,9 +535,9 @@ table.cl-table .cl-hl .pr { color: #64748b; font-size: 11px; }
         </tr>
         <tr>
           <th data-tip="The concrete examples that exist in Tide today.">In this repo</th>
-          <td class="col-hook"><code>scripts/session-role.sh</code><code>scripts/session-context.sh (SessionStart)</code><code>scripts/precompact-context.sh (SessionStart:compact)</code><code>scripts/budget-guard.sh (PreToolUse)</code><code>scripts/consumer-guard.sh (PreToolUse)</code><code>scripts/doc-sync-guard.sh (PostToolUse)</code><code>scripts/security-guard.sh (PostToolUse)</code><code>scripts/changelog-guard.sh (PostToolUse)</code></td>
+          <td class="col-hook"><code>scripts/session-role.sh</code><code>scripts/session-context.sh (SessionStart)</code><code>scripts/precompact-context.sh (SessionStart:compact)</code><code>scripts/budget-guard.sh (PreToolUse)</code><code>scripts/consumer-guard.sh (PreToolUse)</code><code>scripts/git-guard.sh (PreToolUse)</code><code>scripts/doc-sync-guard.sh (PostToolUse)</code><code>scripts/security-guard.sh (PostToolUse)</code><code>scripts/changelog-guard.sh (PostToolUse)</code></td>
           <td class="col-policy"><code>DATA FLOW = SPEC — judgment only (spec-auditor + nightly sweep)</code><code>OWNER / CONSUMER — partly hook-backed (consumer-guard.sh)</code><code>BankDataProvider only — partly hook-backed (security-guard.sh)</code></td>
-          <td class="col-skill"><code>commands: /dimensions /fixtures /ground-truth /ux-critique</code><code>skills: update-learnings, /doc-drift (model-invoked)</code></td>
+          <td class="col-skill"><code>commands: /ship /setup-evals /dimensions /fixtures /ground-truth /ux-critique</code><code>skills: update-learnings, update-docs, /doc-drift (model-invoked)</code></td>
           <td class="col-agent"><code>spec-auditor (read-only: Read, Grep, Glob, Bash)</code><code>Riu persona — drift auditor for DATA FLOW = SPEC</code></td>
           <td class="col-routine"><code>Nightly Doc-Drift Sweep (Opus 4.8, 07:00 UTC)</code><code>→ opens a docs: PR; lives in claude.ai, not the repo</code></td>
         </tr>
@@ -635,7 +653,10 @@ table.cl-table .cl-hl .pr { color: #64748b; font-size: 11px; }
         every published page, re-applies the mirror's nav transform, deletes orphans, and warns when the
         hand-owned portfolio landing's stat numbers fall behind. <code>/ship</code> step 6.6 runs it in the
         same ship cycle as any docs change; <code>/doc-drift</code> runs <code>--check</code> as its 8th
-        sweep area. Mirror pages are never hand-edited again.</p>
+        sweep area. Mirror pages are never hand-edited again. Because it publishes whatever the working tree
+        holds, the apply mode <b>refuses (exit 3) unless the checkout is exactly <code>origin/main</code></b> with a
+        clean <code>docs/</code>: a stale local branch can no longer overwrite the live mirror with old docs.
+        <code>--check</code> stays read-only and runs anywhere.</p>
       </div>
 
       <div class="mcard">
@@ -659,6 +680,16 @@ table.cl-table .cl-hl .pr { color: #64748b; font-size: 11px; }
         stack fact discovered — appending a dated, root-caused entry to <code>docs/LEARNINGS.md</code> in
         the same PR. Upgrades the old "remember to append" convention into a model-invoked routine,
         reviewed before mobile work to avoid repeating known pitfalls.</p>
+      </div>
+
+      <div class="mcard">
+        <div class="when">Per command &middot; PreToolUse(Bash) hook</div>
+        <h4 data-tip="Makes 'everything via PR' physical — a commit on main or a push to main simply won't run.">PR-only deny-wall <span class="pill pill-live">tripwire</span></h4>
+        <p><code>scripts/git-guard.sh</code> hard-<b>denies</b> <code>git commit</code> while on
+        <code>main</code> and any <code>git push</code> that targets <code>main</code>. "Everything ships via
+        PR" was convention-only and failed three days running — small fixes kept landing straight on main
+        because the agent judged them "too small for a PR". Now there is no judgment call to get wrong:
+        <code>/ship</code> is the only path.</p>
       </div>
 
       <div class="mcard">
@@ -717,6 +748,15 @@ table.cl-table .cl-hl .pr { color: #64748b; font-size: 11px; }
       </div>
 
       <div class="mcard">
+        <div class="when">Whenever a new sweep PR opens &middot; GitHub Actions</div>
+        <h4 data-tip="Keeps exactly one nightly doc-drift PR waiting for review, instead of a pile nobody can merge.">Superseded-sweep cleanup <span class="pill pill-park">CI</span></h4>
+        <p><code>.github/workflows/drift-supersede.yml</code> closes older doc-drift sweep PRs the moment
+        a new one opens. Each sweep is a fresh audit of <code>main</code>, so an older one is never worth
+        merging, and left alone they piled up (fifteen open at once, all editing the same lines, so none
+        could merge). Now exactly one is ever waiting on a person.</p>
+      </div>
+
+      <div class="mcard">
         <div class="when">Every push / PR to main &middot; GitHub Actions</div>
         <h4 data-tip="Every push is auto-checked (lint + types + tests) before it can merge or deploy — broken code can't slip in.">CI: lint, typecheck, test <span class="pill pill-park">CI</span></h4>
         <p><code>.github/workflows/ci.yaml</code> runs lint + typecheck + tests against an ephemeral
@@ -724,11 +764,15 @@ table.cl-table .cl-hl .pr { color: #64748b; font-size: 11px; }
       </div>
 
       <div class="mcard">
-        <div class="when">AI changes + nightly &middot; GitHub Actions</div>
-        <h4 data-tip="Scores the AI coach against fixtures whenever AI code changes, plus nightly — so answer quality can't silently regress.">AI eval suite <span class="pill pill-park">CI</span></h4>
-        <p><code>.github/workflows/evals.yml</code> runs on changes under
-        <code>apps/backend/app/services/ai/**</code> or <code>evals/**</code>, plus a nightly cron —
-        scored against fixtures + judges.</p>
+        <div class="when">Nightly + opt-in per PR &middot; GitHub Actions</div>
+        <h4 data-tip="Scores the AI coach's answers every night, and on any PR you opt in — so answer quality can't silently regress, without paying API dollars on every push.">AI eval suite <span class="pill pill-park">CI</span></h4>
+        <p><code>.github/workflows/evals.yml</code> runs the full 92-test suite <b>nightly</b> (06:00 UTC).
+        A PR touching <code>apps/backend/app/services/ai/**</code> or <code>evals/**</code> always gets the
+        free structural checks, but the paid suite runs only when the PR carries the
+        <code>run-evals</code> label. Each answer is scored by two graders (rule checks + an AI judge); a
+        pre-flight check stops a run whose setup is broken, so it's reported as a harness failure rather
+        than a 0% score. <code>judge-experiment.yml</code> (manual) measures the AI judge itself against
+        human grades.</p>
       </div>
 
       <div class="mcard">
@@ -742,7 +786,7 @@ table.cl-table .cl-hl .pr { color: #64748b; font-size: 11px; }
   </section>
 
   <footer>
-    <p>Tide Cash Flow App &middot; The Operating System &middot; <a href="index.html">← back to Visual Docs hub</a></p>
+    <p>Tide Cash Flow App &middot; The Operating System &middot; <a href="index.html">← back to the Tide docs hub</a></p>
   </footer>
 
 </div>
@@ -774,6 +818,8 @@ table.cl-table .cl-hl .pr { color: #64748b; font-size: 11px; }
 /* Changelog entries — derived from git history of docs/operating-system.html.
    Newest entries go at the TOP of this array; "num" is the stable change number. */
 const CHANGELOG = [
+  { num: 20, date: "2026-09-24", time: "07:21 EDT", by: "Vik Bharadwaj", bot: false, pr: "#310",
+    hl: "Catch the Operating System page up with 3 months of drift + track it." },
   { num: 19, date: "2026-06-11", time: "10:06 EDT", by: "Vik Bharadwaj", bot: false, pr: "#186",
     hl: "Portfolio-mirror sync mechanism + doc-residue fixes — the public mirror can never silently drift again." },
   { num: 18, date: "2026-05-30", time: "14:21 EDT", by: "Vik Bharadwaj", bot: false, pr: "#150",
