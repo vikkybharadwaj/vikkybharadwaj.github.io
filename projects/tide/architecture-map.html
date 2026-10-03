@@ -214,11 +214,11 @@ const nodes = [
       tech:"Claude Haiku 4.5 via AWS Bedrock (suspended)",
       warning:"Feature is OFF in production. chats_controller.ts:151 hardcodes intentPromise = Promise.resolve('unknown')."
     }},
-  { id:"coach", label:"Tide Coach Agent", sub:"Claude Sonnet 4", type:"ai", mvp:"mvp", x:750, y:280,
+  { id:"coach", label:"Tide Coach Agent", sub:"Claude Sonnet 4.6", type:"ai", mvp:"mvp", x:750, y:280,
     detail:{
       desc:"User-facing AI financial coach. Streaming tool-use loop (max 10 iterations). 10 tools registered; 8 are MVP-active, 2 are MVP+.",
       bullets:[
-        "Model ID: us.anthropic.claude-sonnet-4-20250514-v1:0",
+        "Model ID: global.anthropic.claude-sonnet-4-6",
         "Max 10 tool iterations per turn; first token <2s target",
         "MVP tools: query_user_profile, query_bank_accounts, query_transactions, query_bills_predictions, query_payday_predictions, calculate_safe_to_spend (shares service with Home card), get_spending_by_category, query_coaching_history",
         "MVP+ tools: get_financial_insights (anomaly/trend analysis), query_reflection_stats (backend-only, UI removed)",
@@ -227,7 +227,7 @@ const nodes = [
         "Throttle retry: 1s/2s/4s exponential backoff on ThrottlingException",
         "ConverseStream API; 20-message context window (chatConfig.maxContextMessages)"
       ],
-      tech:"Claude Sonnet 4 via AWS Bedrock, 10 tools, SSE streaming via XMLHttpRequest"
+      tech:"Claude Sonnet 4.6 via AWS Bedrock, 10 tools, SSE streaming via XMLHttpRequest"
     }},
   { id:"postgres", label:"PostgreSQL", sub:"RDS db.t4g.micro", type:"data", mvp:"mvp", x:440, y:600,
     detail:{
@@ -323,6 +323,31 @@ const nodes = [
       ],
       tech:"k3s on EC2 t4g.small, 30GB gp3 EBS, Nginx Ingress Controller"
     }},
+  { id:"arize", label:"Arize AX", sub:"Coach traces (evals)", type:"external", mvp:"mvp", x:1000, y:80,
+    detail:{
+      desc:"Receives one trace per Coach turn so every answer can be graded against exactly what the Coach was shown. The foundation of the real-data evals (docs/EVALS_STRATEGY.md, section 7). Off unless ARIZE_ENABLED=true with both keys set; when off, every span is a no-op.",
+      bullets:[
+        "Span tree per turn: AGENT coach.turn → LLM coach.llm (each tool-loop step) + TOOL coach.tool (each call, with its full output)",
+        "Built by hand with OpenInference conventions (services/tracing/coach_tracing.ts) — auto-instrumentation is undocumented for ConverseStream and cannot see tools",
+        "Masked before export (trace_masking.ts): name, email, account/routing numbers, masks, Plaid ids, long digit runs, opaque tokens. Amounts, dates, merchants kept",
+        "Content only for allowlisted users (TRACE_CONTENT_USER_IDS); everyone else traced structurally — tool names, tokens, timings",
+        "BatchSpanProcessor registered in start/tracing.ts — export never sits on the chat's response path; flushed on shutdown",
+        "Arize AX Free: 25k spans/month, 15-day retention. Labels are exported into the repo as the permanent record"
+      ],
+      tech:"@opentelemetry/sdk-trace-base 2.x, @opentelemetry/exporter-trace-otlp-proto → otlp.arize.com, @arizeai/openinference-semantic-conventions"
+    }},
+  { id:"anthropic", label:"Anthropic API", sub:"Coach model for eval runs", type:"ai", mvp:"mvp", x:1000, y:570,
+    detail:{
+      desc:"Serves the same model the app gets from Bedrock (Claude Sonnet 4.6), for scheduled eval runs only. Runs bill here so a full 100-scenario run (~$10-12) never touches the $46/month AWS budget. The app itself never calls it.",
+      bullets:[
+        "Called only by node ace coach:scenarios through runCoachTurn — the same function the app uses; only the CoachModelClient differs",
+        "Model id derived from the Bedrock id (SONNET_MODEL_LABEL), so the two providers cannot name different models",
+        "SDK retries 408/429/5xx with exponential backoff (honours retry-after) + a circuit breaker (5 failures → open 60s, 120s per call)",
+        "Same prompt caching shape as Bedrock: system prompt and tool list marked as a cacheable prefix",
+        "Key: TIDE_EVALS_ANTHROPIC_API_KEY (not ANTHROPIC_API_KEY, which would change how Claude Code bills)"
+      ],
+      tech:"@anthropic-ai/sdk messages.stream, services/ai/anthropic_coach_client.ts"
+    }},
   { id:"posthog", label:"PostHog", sub:"Product Analytics", type:"external", mvp:"mvp", x:1000, y:325,
     detail:{
       desc:"Product analytics from both sides of the stack. Mobile sends client events directly; backend captures server-side events from model lifecycle hooks. Events join on the Cognito sub as distinct_id — never PII.",
@@ -354,11 +379,13 @@ const edges = [
   { from:"worker", to:"redis", color:"#a855f7", label:"BullMQ queues (12)", type:"data" },
   { from:"worker", to:"plaid", color:"#f59e0b", label:"Transaction sync", type:"external" },
   { from:"coach", to:"backend", color:"#3b82f6", label:"Tool calls (read-only DB)", type:"ai" },
-  { from:"bedrock", to:"coach", color:"#00d4ff", label:"Sonnet 4 inference", type:"ai" },
+  { from:"bedrock", to:"coach", color:"#00d4ff", label:"Sonnet 4.6 inference", type:"ai" },
   { from:"cognito", to:"backend", color:"#ef4444", label:"JWKS validation", type:"auth" },
   { from:"plaid", to:"backend", color:"#f59e0b", label:"Webhooks", type:"external" },
   { from:"mobile", to:"posthog", color:"#f59e0b", label:"Client events", type:"external" },
   { from:"backend", to:"posthog", color:"#f59e0b", label:"Server events (model hooks)", type:"external" },
+  { from:"backend", to:"arize", color:"#f59e0b", label:"Coach traces (OTLP, masked)", type:"external" },
+  { from:"backend", to:"anthropic", color:"#00d4ff", label:"Eval runs only (coach:scenarios)", type:"ai" },
 ];
 
 // RENDER
