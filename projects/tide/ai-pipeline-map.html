@@ -151,7 +151,7 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
     <div class="stage-card stage-classifier">
       <div class="stage-label">Stage 2 &mdash; Classification (DISABLED)</div>
       <h3>Intent Classifier (Haiku 4.5)</h3>
-      <p>Currently turned OFF &mdash; <code>chats_controller.ts</code> sets <code>const intentPromise = Promise.resolve('unknown')</code>. A per-message Haiku call competed with the chat stream for Bedrock quota and triggered throttling, so the stage is stubbed out (re-enable once AWS quota is raised). When live, it would classify query intent on AWS Bedrock; today every turn is routed to the Coach with all 10 tools regardless of intent.</p>
+      <p>Currently turned OFF &mdash; <code>chats_controller.ts</code> sets <code>const intentPromise = Promise.resolve('unknown')</code>. A per-message Haiku call competed with the chat stream for Bedrock quota and triggered throttling, so the stage is stubbed out (re-enable once AWS quota is raised). When live, it would classify query intent on AWS Bedrock; today every turn is routed to the Coach with all 8 tools regardless of intent.</p>
       <span class="latency">disabled (was &lt;500ms target)</span>
     </div>
     <div class="pipeline-connector"><div class="arrow"></div></div>
@@ -159,7 +159,7 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
     <div class="stage-card stage-coach">
       <div class="stage-label">Stage 3 &mdash; Agent</div>
       <h3>Tide Coach Agent (Sonnet 4.6)</h3>
-      <p>Primary AI financial coach. Has all 10 tools available every turn (intent routing is disabled &mdash; see Stage 2) and lets the model pick which to call. Generates personalized financial advice with full conversation context.</p>
+      <p>Primary AI financial coach. Has all 8 tools available every turn (intent routing is disabled &mdash; see Stage 2) and lets the model pick which to call. Generates personalized financial advice with full conversation context.</p>
       <span class="latency">First token &lt;2s</span>
     </div>
     <div class="pipeline-connector"><div class="arrow"></div></div>
@@ -214,7 +214,7 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
     @media (max-width: 640px) { .tr-card dl { grid-template-columns: 1fr; } }
   </style>
   <div class="tools-section">
-    <h2>Tide Coach Tools (10)</h2>
+    <h2>Tide Coach Tools (8)</h2>
     <p class="tr-intro">What the Coach can look up. Click a tool for its reference: what it is for, its inputs (read from the code), its logic step by step, its output, and its known limits. ⚠ marks a tool with an open eval finding.</p>
     <div class="tools-grid">
       <a class="tool-card tr-link" href="#tool-query_user_profile">
@@ -236,10 +236,10 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
         
       </a>
       <a class="tool-card tr-link" href="#tool-query_bills_predictions">
-        <div class="tool-num">TOOL 4</div>
+        <div class="tool-num">TOOL 4 · matches Home Recurring Expenses (checking bills + card payments)</div>
         <div class="tool-name"><code>query_bills_predictions</code></div>
-        <div class="tool-desc">Upcoming recurring bills and subscriptions.</div>
-        <span class="tr-flag">⚠ eval finding #1</span>
+        <div class="tool-desc">Everything due soon: recurring bills, credit-card payments, and subscriptions billed to cards.</div>
+        
       </a>
       <a class="tool-card tr-link" href="#tool-query_payday_predictions">
         <div class="tool-num">TOOL 5 · matches Home payday chip</div>
@@ -251,30 +251,18 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
         <div class="tool-num">TOOL 6 · matches Home Safe to Spend card</div>
         <div class="tool-name"><code>calculate_safe_to_spend</code></div>
         <div class="tool-desc">How much the user can spend: the same Safe to Spend engine that powers Home.</div>
-        <span class="tr-flag">⚠ eval finding #3, #4</span>
+        
       </a>
       <a class="tool-card tr-link" href="#tool-get_spending_by_category">
         <div class="tool-num">TOOL 7 · matches Spending tab donut</div>
         <div class="tool-name"><code>get_spending_by_category</code></div>
         <div class="tool-desc">True spending by category: the same numbers as the Spending tab donut.</div>
-        
+        <span class="tr-flag">⚠ eval finding #5</span>
       </a>
       <a class="tool-card tr-link" href="#tool-get_financial_insights">
         <div class="tool-num">TOOL 8 · matches Home spending chart (spending_trends only)</div>
         <div class="tool-name"><code>get_financial_insights</code></div>
         <div class="tool-desc">Four analyses in one tool: monthly trend, largest expenses, recurring charges, anomalies.</div>
-        
-      </a>
-      <a class="tool-card tr-link" href="#tool-query_coaching_history">
-        <div class="tool-num">TOOL 9</div>
-        <div class="tool-name"><code>query_coaching_history</code></div>
-        <div class="tool-desc">Past advice the Coach gave and what came of it.</div>
-        
-      </a>
-      <a class="tool-card tr-link" href="#tool-query_reflection_stats">
-        <div class="tool-num">TOOL 10</div>
-        <div class="tool-name"><code>query_reflection_stats</code></div>
-        <div class="tool-desc">How the user tagged their spending (worth it, necessary, regret).</div>
         
       </a>
     </div>
@@ -308,21 +296,21 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
       <dl>
         <dt>When the Coach uses it</dt><dd>A specific merchant, date range, account or amount ("How much at Amazon lately?").</dd>
         <dt>Inputs</dt><dd><table class="tr-inputs"><thead><tr><th>Input</th><th>Type</th><th>Meaning</th></tr></thead><tbody><tr><td><code>bankAccountId</code></td><td>number</td><td>Filter to a specific bank account ID (from query_bank_accounts). Use this when the user asks about a specific account or bank.</td></tr><tr><td><code>startDate</code></td><td>string</td><td>ISO date YYYY-MM-DD</td></tr><tr><td><code>endDate</code></td><td>string</td><td>ISO date YYYY-MM-DD</td></tr><tr><td><code>categoryId</code></td><td>number</td><td></td></tr><tr><td><code>merchantName</code></td><td>string</td><td></td></tr><tr><td><code>minAmount</code></td><td>number</td><td></td></tr><tr><td><code>maxAmount</code></td><td>number</td><td></td></tr><tr><td><code>transactionType</code></td><td>debit | credit</td><td></td></tr><tr><td><code>limit</code></td><td>number</td><td>Max results, default 50</td></tr></tbody></table></dd>
-        <dt>Logic, step by step</dt><dd><ol><li>Reads transactions for the user, newest first, with merchant, category and account (queryTransactions).</li><li>Applies whichever filters are given: account id, start/end date, category id, merchant name (case-insensitive contains), min/max amount, debit/credit.</li><li>Returns at most <code>limit</code> rows: default 50, never more than 100.</li></ol></dd>
-        <dt>Output</dt><dd><ul><li>per transaction: id, amount, description, transactionDate, transactionType, isPending, merchant, category, accountName, institution</li></ul></dd>
+        <dt>Logic, step by step</dt><dd><ol><li>Reads transactions for the user, newest first, with merchant, category and account (queryTransactions).</li><li>Hides a pending row once its posted twin exists (excludeSupersededPending, the same rule as the app's transaction list), so each real charge appears once (5c, 2026-10-04).</li><li>Applies whichever filters are given: account id, start/end date, category id, merchant name (case-insensitive contains), min/max amount, debit/credit.</li><li>Returns at most <code>limit</code> rows: default 50, never more than 100.</li></ol></dd>
+        <dt>Output</dt><dd><ul><li>per transaction: id, amount, description, transactionDate, transactionType, isPending (true = not posted yet, never a duplicate), merchant, category, accountName, institution</li></ul></dd>
         
-        <dt>Known limits</dt><dd><ul class="tr-limits"><li>Capped at 50 rows by default (100 max) with NO total count, so a "total" summed from the list can silently miss older rows.</li><li>Includes PENDING rows. A pending charge and its posted twin can both appear, which reads like a double charge. The Spending tab de-duplicates these; this tool does not.</li><li>Filtering by category needs a numeric categoryId, and no tool lists category ids.</li></ul></dd>
+        <dt>Known limits</dt><dd><ul class="tr-limits"><li>Capped at 50 rows by default (100 max) with NO total count, so a "total" summed from the list can silently miss older rows.</li><li>Pending rows with no posted twin yet are still listed (isPending=true); they are real charges awaiting settlement.</li><li>Filtering by category needs a numeric categoryId, and no tool lists category ids.</li></ul></dd>
       </dl>
     </article>
     <article class="tr-card" id="tool-query_bills_predictions">
-      <header><span class="tool-num">TOOL 4</span><h3><code>query_bills_predictions</code></h3><p>Upcoming recurring bills and subscriptions.</p></header>
+      <header><span class="tool-num">TOOL 4</span><h3><code>query_bills_predictions</code></h3><p>Everything due soon: recurring bills, credit-card payments, and subscriptions billed to cards.</p></header>
       <dl>
-        <dt>When the Coach uses it</dt><dd>"What bills are coming up?", "When is my mortgage due?"</dd>
+        <dt>When the Coach uses it</dt><dd>"What bills are coming up?", "When is my mortgage due?", "Any subscriptions renewing soon?"</dd>
         <dt>Inputs</dt><dd><table class="tr-inputs"><thead><tr><th>Input</th><th>Type</th><th>Meaning</th></tr></thead><tbody><tr><td><code>daysAhead</code></td><td>number</td><td>How many days ahead to look, default 30</td></tr><tr class="tr-ignored"><td><code>unpaidOnly</code> <span class="tr-badge">ignored by the code</span></td><td>boolean</td><td>Only return unpaid bills, default true</td></tr></tbody></table></dd>
-        <dt>Logic, step by step</dt><dd><ol><li>Reads active recurring_streams of type bill or subscription whose next predicted date falls between today and today + daysAhead (default 30) (queryBillsPredictions).</li><li>Drops streams billed to a credit card (isMoneyMathEligible): those charges are paid through the card bill.</li><li>Returns them in date order.</li></ol></dd>
-        <dt>Output</dt><dd><ul><li>per bill: id, predictedAmount, predictedDate, confidence (0–1), merchant, recurrencePattern, isPaid (always false)</li></ul></dd>
-        
-        <dt>Known limits</dt><dd><ul class="tr-limits"><li class="tr-finding"><b>Finding #1.</b> Does NOT include credit-card payments due. Home's Recurring Expenses adds those from Safe to Spend, so the Coach's answer can miss most of what is actually due.</li><li><code>unpaidOnly</code> is declared but ignored, and isPaid is hard-coded false.</li><li>The date window uses the server clock, not the user's timezone.</li></ul></dd>
+        <dt>Logic, step by step</dt><dd><ol><li>Window: today to today + daysAhead (default 30), in the user's timezone (queryBillsPredictions).</li><li>bills[]: active bill/subscription recurring_streams paid from checking (isMoneyMathEligible), expanded to every occurrence inside the window by cadence (occurrencesWithin).</li><li>cardPayments[]: each card's statement amount due inside the window, from computeSafeToSpend's ccObligations — the same ladder Home's Recurring Expenses merges in (5c fixes finding #1).</li><li>subscriptionsBilledToCards[]: subscriptions charged to a card. Real subscriptions, but already inside that card's payment, so excluded from totalDue.</li><li>totalDue = bills + cardPayments.</li></ol></dd>
+        <dt>Output</dt><dd><ul><li>window {from, to, timezone}</li><li>bills[] {id, predictedAmount, predictedDate, confidence (0–1), merchant, recurrencePattern, streamType}</li><li>cardPayments[] {card, amountDue, dueDate, basis, minimumPayment}</li><li>subscriptionsBilledToCards[] (same shape as bills), totalDue, note</li></ul></dd>
+        <dt>Must match</dt><dd>Home Recurring Expenses (checking bills + card payments). Both read the same code.</dd>
+        <dt>Known limits</dt><dd><ul class="tr-limits"><li><code>unpaidOnly</code> is declared but ignored.</li><li>A subscription whose predicted date has already passed is not listed (it may have lapsed); recurring_charges flags those as likelyEnded.</li></ul></dd>
       </dl>
     </article>
     <article class="tr-card" id="tool-query_payday_predictions">
@@ -330,10 +318,10 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
       <dl>
         <dt>When the Coach uses it</dt><dd>"When do I get paid?", "Will I make it to payday?"</dd>
         <dt>Inputs</dt><dd><table class="tr-inputs"><thead><tr><th>Input</th><th>Type</th><th>Meaning</th></tr></thead><tbody><tr><td><code>daysAhead</code></td><td>number</td><td>How many days ahead to look, default 30</td></tr></tbody></table></dd>
-        <dt>Logic, step by step</dt><dd><ol><li>Resolves the authoritative next payday with resolvePayday (the same helper Home uses): the user's payday setting wins on cadence, the income stream wins on amount.</li><li>Separately lists active income streams due within daysAhead (default 30), excluding transfer-ins, refunds and card "payment received" credits.</li></ol></dd>
-        <dt>Output</dt><dd><ul><li>resolved: nextPayday, predictedAmount, frequency, source, confidence, band (low/medium/high), isFallback, amountBasis, daysUntilPayday, isPaydayToday</li><li>upcoming[]: id, source, predictedAmount, predictedDate, confidence, frequency</li></ul></dd>
+        <dt>Logic, step by step</dt><dd><ol><li>Resolves the authoritative next payday with resolvePayday (the same helper Home uses): the user's payday setting wins on cadence, the income stream wins on amount.</li><li>paydays[]: every payday in the window, walking the same schedule forward with resolvePayday (5e, 2026-10-04: "what comes in next month?" saw one deposit).</li><li>upcoming[]: every occurrence of each active income stream in the window (occurrencesWithin), excluding transfer-ins, refunds and card "payment received" credits; partOfPaycheck marks user-confirmed slices already inside a payday amount.</li></ol></dd>
+        <dt>Output</dt><dd><ul><li>resolved: nextPayday, predictedAmount, frequency, source, confidence, band (low/medium/high), isFallback, amountBasis, daysUntilPayday, isPaydayToday</li><li>paydays[]: date, predictedAmount, amountBasis</li><li>upcoming[]: id, source, predictedAmount, predictedDate, confidence, frequency, partOfPaycheck</li><li>window {from, to, timezone}, note</li></ul></dd>
         <dt>Must match</dt><dd>Home payday chip. Both read the same code.</dd>
-        <dt>Known limits</dt><dd><ul class="tr-limits"><li>A low-confidence or fallback payday is an ESTIMATE. The Coach must not state it as fact (red line 10).</li><li>The upcoming[] window uses the server clock, not the user's timezone.</li></ul></dd>
+        <dt>Known limits</dt><dd><ul class="tr-limits"><li>A low-confidence or fallback payday is an ESTIMATE. The Coach must not state it as fact (red line 10).</li></ul></dd>
       </dl>
     </article>
     <article class="tr-card" id="tool-calculate_safe_to_spend">
@@ -341,10 +329,10 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
       <dl>
         <dt>When the Coach uses it</dt><dd>Affordability ("Can I afford…?"), "How much can I spend this week?", "Will I make it to payday?"</dd>
         <dt>Inputs</dt><dd><p class="tr-none">No inputs. The tool always works on the signed-in user.</p></dd>
-        <dt>Logic, step by step</dt><dd><ol><li>Calls computeSafeToSpend (safe_to_spend_service.ts) in the user's timezone, the single engine shared with GET /predictions/safe-to-spend.</li><li>The engine projects the checking balance day by day: L(d) = cash + income landing on or before d − obligations on or before d. Obligations are bills, loans, card payments due, essentials and estimated everyday "habits".</li><li>Horizon = whichever is later: the day before payday, or month end.</li><li>Daily pace = the lowest L(d) ÷ (d+1) across the horizon, so spending at that pace never dips below zero on any day.</li><li>Each window (today, this week, until payday, this month) = pace × the days in that window. If the pace is negative (a shortfall), every window equals the deficit instead.</li><li>projectSafeToSpendForCoach reshapes the result so every number Home shows is reachable from one tool call.</li></ol></dd>
-        <dt>Output</dt><dd><ul><li>today / thisWeek / untilPayday / thisMonth: amount, daysInWindow, perDayInWindow, moneyOut {billsUtilsSubs, loans, plannedSavings, ccDue, essentials, habits, total}, bills[], income[]</li><li>dailyBudget, daysUntilPayday, isPaydayToday, nextPayday, spendableBalance</li><li>floor {date, value, bindingBill}, shortfall {isShortfall, shortfallAmount, earliestShortfallDate}</li><li>ccObligations[] per card {amountDue, basis, dueDate, minimumPayment, purchaseApr, totalBalance}, ccNextCycleWarning, creditCardDebt (display only)</li><li>essentials, typicalDiscretionary, accountsIncluded, setAsideAccounts, loansExcluded, lastSyncedAt</li></ul></dd>
+        <dt>Logic, step by step</dt><dd><ol><li>Calls computeSafeToSpend (safe_to_spend_service.ts) in the user's timezone, the single engine shared with GET /predictions/safe-to-spend.</li><li>The engine projects the checking balance day by day: L(d) = cash + income landing on or before d − obligations on or before d. Obligations are bills, loans, card payments due, essentials and estimated everyday "habits".</li><li>Horizon = the latest of: the day before the runway payday, month end, week end (v5.6). The runway payday is the next payday, except ON payday, when it is the following one, so payday never collapses the runway to one day.</li><li>Daily pace = the lowest L(d) ÷ (d+1) across the horizon, so spending at that pace never dips below zero on any day.</li><li>Each window (today, this week, until payday, this month) = pace × the days in that window. If the pace is negative (a shortfall), every window equals the deficit instead.</li><li>projectSafeToSpendForCoach reshapes the result so every number Home shows is reachable from one tool call.</li></ol></dd>
+        <dt>Output</dt><dd><ul><li>today / thisWeek / untilPayday / thisMonth: amount, daysInWindow, perDayInWindow, moneyOut {billsUtilsSubs, loans, plannedSavings, ccDue, essentials, habits, total}, bills[], income[], cardPaymentsHeldBack[] and cardPaymentsAfterWindow[] {card, amount, dueDate} (round-2 fix: computed by splitCardPayments so the Coach quotes which payments a window already covers instead of comparing dates)</li><li>dailyBudget, daysUntilPayday, isPaydayToday, nextPayday, runwayPayday, spendableBalance</li><li>floor {date, value, bindingBill}, shortfall {isShortfall, shortfallAmount, earliestShortfallDate}</li><li>ccObligations[] per card {amountDue, basis, dueDate, minimumPayment, purchaseApr, totalBalance}, ccNextCycleWarning, creditCardDebt (display only)</li><li>essentials, typicalDiscretionary, accountsIncluded, setAsideAccounts, loansExcluded, lastSyncedAt</li></ul></dd>
         <dt>Must match</dt><dd>Home Safe to Spend card. Both read the same code.</dd>
-        <dt>Known limits</dt><dd><ul class="tr-limits"><li class="tr-finding"><b>Finding #3.</b> When payday and month end fall on the same day, the horizon is ONE day, so the daily pace becomes the whole balance and multi-day windows multiply it (30 Sep 2026: today $17,365.85, this week $86,829.25).</li><li class="tr-finding"><b>Finding #4.</b> Its description, which the Coach reads, still describes v5.1 ("the global floor caps every window; This Week can never exceed This Month"). The engine is v5.5 and no longer caps, so the Coach is told a rule that is no longer true.</li><li>A card payment is subtracted only once its due date falls inside the window, so "already accounted for" is wrong for today's figure when the payment is due later.</li><li>creditCardDebt is the full revolving balance for display. It is NOT subtracted; only the statement amount due is.</li></ul></dd>
+        <dt>Known limits</dt><dd><ul class="tr-limits"><li>A card payment is subtracted only once its due date falls inside the window, so "already accounted for" is wrong for a window that ends before the due date. On payday the runway reaches the day before the next paycheck; statements due after that are left to that paycheck (owner decision 5f).</li><li>creditCardDebt is the full revolving balance for display. It is NOT subtracted; only the statement amount due is.</li></ul></dd>
       </dl>
     </article>
     <article class="tr-card" id="tool-get_spending_by_category">
@@ -355,7 +343,7 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
         <dt>Logic, step by step</dt><dd><ol><li>Resolves the window in the user's timezone: today, last 7 days rolling, or month to date (default). A custom start/end overrides it; an end without a start looks back 30 days (getSpendingByCategory).</li><li>Fetches posted rows only (pending excluded) with the Spending tab's shared SQL (fetchSpendingDetailRows).</li><li>projectSpendingForCoach partitions income, transfers and card-bill payments out of spending, nets refunds per category, and sums positive categories into totalSpent.</li></ol></dd>
         <dt>Output</dt><dd><ul><li>window {timeframe, startDate, endDate, timezone}, totalSpent, transactionCount</li><li>categories[] {category, total, pctOfTotal, transactionCount, subcategories[]}</li><li>excluded {income, transfersIn, transfersOut, ccPayments}, uncategorized {total, transactionCount}</li></ul></dd>
         <dt>Must match</dt><dd>Spending tab donut. Both read the same code.</dd>
-        <dt>Known limits</dt><dd><ul class="tr-limits"><li>Month to date is a partial month. Comparing it with a full previous month needs saying so.</li><li>A large NEGATIVE uncategorized bucket is money coming in (often payroll or a transfer the categoriser missed), not refunds and not "hidden spending".</li></ul></dd>
+        <dt>Known limits</dt><dd><ul class="tr-limits"><li>Month to date is a partial month. Comparing it with a full previous month needs saying so.</li><li class="tr-finding"><b>Finding #5.</b> A NEGATIVE uncategorized bucket is money coming in, not refunds and not "hidden spending". Before 2026-10-03 every paycheck and Zelle/Venmo transfer landed there because Plaid v2 codes were missing from Tide's categories, so income read $0. That root cause is fixed; any rows still uncategorized carry the deliberately unmapped OTHER_OTHER code.</li></ul></dd>
       </dl>
     </article>
     <article class="tr-card" id="tool-get_financial_insights">
@@ -363,32 +351,10 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
       <dl>
         <dt>When the Coach uses it</dt><dd>Trends ("Am I spending more than usual?"), biggest purchases, "What am I subscribed to?", "Anything weird?"</dd>
         <dt>Inputs</dt><dd><table class="tr-inputs"><thead><tr><th>Input</th><th>Type</th><th>Meaning</th></tr></thead><tbody><tr><td><code>insightType</code></td><td>spending_trends | largest_expenses | recurring_charges | anomalies</td><td></td></tr><tr><td><code>months</code></td><td>number</td><td>How many months of data to analyze, default 3</td></tr></tbody></table></dd>
-        <dt>Logic, step by step</dt><dd><ol><li>insightType picks the analysis (default spending_trends). months is capped at 12, default 3 (getFinancialInsights).</li><li>spending_trends: the same true-spending monthly totals as the Home chart, calendar months in the user's timezone.</li><li>largest_expenses: the 10 biggest DEBIT rows in the last N months, straight from transactions.</li><li>recurring_charges: every active recurring stream, most frequent first.</li><li>anomalies: per category, the mean and standard deviation of debits over N months. Returns up to 10 debits more than 2 standard deviations above their category mean.</li></ol></dd>
-        <dt>Output</dt><dd><ul><li>spending_trends: months[] {month, total, transactionCount}</li><li>largest_expenses / anomalies: transactions[] {amount, description, date, merchant, category}</li><li>recurring_charges: merchants[] {merchant, transactionCount, averageAmount, streamType, frequency, confidence, predictedNextDate, predictedNextAmount}</li></ul></dd>
+        <dt>Logic, step by step</dt><dd><ol><li>insightType picks the analysis (default spending_trends). months is capped at 12, default 3 (getFinancialInsights).</li><li>spending_trends: the same true-spending monthly totals as the Home chart, calendar months in the user's timezone.</li><li>The other three read the same rows: transactions in the window with superseded pendings hidden, shaped for the pure rules in coach_insights.ts (5c, 2026-10-04).</li><li>largest_expenses: the 10 biggest real expenses (isExpense: no transfers, income or credit-card payments).</li><li>recurring_charges: billsAndSubscriptions[] and income[] (billedToCard, likelyEnded = expected charge over 7 days overdue) plus repeatedTransfers[] — the same transfer amount to the same counterparty 2+ times, grouped by normalized description because the merchant normalizer mints a new merchant per transfer row.</li><li>anomalies: candidates from the last 30 days judged against the window's history. Non-habitual charges above category mean + 2σ (unusually_large); a habitual merchant (3+ charges) only when over 3× its median AND over 1.5× its previous highest (large_for_this_merchant); more charges at one merchant within two days than usual — 3+, or double its busiest earlier two days for a habitual merchant (rapid_repeat); two identical posted charges at one merchant on one day (identical_same_day, to ask about).</li></ol></dd>
+        <dt>Output</dt><dd><ul><li>spending_trends: months[] {month, total, transactionCount}</li><li>largest_expenses: window, excludes, transactions[] {amount, description, date, merchant, category}</li><li>anomalies: window {historyFrom, candidatesFrom}, transactions[] {amount, description, date, merchant, category, reason, detail}, note</li><li>recurring_charges: window, billsAndSubscriptions[], income[], repeatedTransfers[] {direction, counterparty, amount, count, dates, typicalGapDays}, notes</li></ul></dd>
         <dt>Must match</dt><dd>Home spending chart (spending_trends only). Both read the same code.</dd>
-        <dt>Known limits</dt><dd><ul class="tr-limits"><li>largest_expenses uses raw debits, so transfers between your own accounts and card-bill payments rank as "expenses".</li><li>anomalies counts pending and posted copies separately and does not exclude transfers, so a pending/posted pair can look like a duplicate charge.</li><li>recurring_charges ignores <code>months</code> and includes income and card-billed streams as well as bills.</li></ul></dd>
-      </dl>
-    </article>
-    <article class="tr-card" id="tool-query_coaching_history">
-      <header><span class="tool-num">TOOL 9</span><h3><code>query_coaching_history</code></h3><p>Past advice the Coach gave and what came of it.</p></header>
-      <dl>
-        <dt>When the Coach uses it</dt><dd>Follow-ups: "Did cutting takeout help?", "What did you tell me last time?"</dd>
-        <dt>Inputs</dt><dd><table class="tr-inputs"><thead><tr><th>Input</th><th>Type</th><th>Meaning</th></tr></thead><tbody><tr><td><code>category</code></td><td>string</td><td>Filter by category: spending, saving, bills, credit</td></tr><tr><td><code>limit</code></td><td>number</td><td>Max results, default 10</td></tr></tbody></table></dd>
-        <dt>Logic, step by step</dt><dd><ol><li>Reads coaching_histories for the user, newest first, optionally one category, up to <code>limit</code> (default 10, max 50) (queryCoachingHistory).</li></ol></dd>
-        <dt>Output</dt><dd><ul><li>per entry: id, date, recommendation, category, userResponse, outcome, impactAmount</li></ul></dd>
-        
-        <dt>Known limits</dt><dd><ul class="tr-limits"><li>Nothing writes to coaching_histories today, so it is empty for every user. A Coach that "remembers" past advice is inventing it.</li></ul></dd>
-      </dl>
-    </article>
-    <article class="tr-card" id="tool-query_reflection_stats">
-      <header><span class="tool-num">TOOL 10</span><h3><code>query_reflection_stats</code></h3><p>How the user tagged their spending (worth it, necessary, regret).</p></header>
-      <dl>
-        <dt>When the Coach uses it</dt><dd>Reflection or regret questions. A legacy MVP+ feature.</dd>
-        <dt>Inputs</dt><dd><table class="tr-inputs"><thead><tr><th>Input</th><th>Type</th><th>Meaning</th></tr></thead><tbody><tr><td><code>period</code></td><td>string</td><td>Time period: '7d', '30d', or '90d'. Defaults to '30d'</td></tr></tbody></table></dd>
-        <dt>Logic, step by step</dt><dd><ol><li>ReflectionService.getStats over 7, 30 or 90 days (default 30) (queryReflectionStats).</li></ol></dd>
-        <dt>Output</dt><dd><ul><li>period, totalReflections, worthItRatio, necessaryRatio, regretRatio, totalSpent, topRegretCategories</li></ul></dd>
-        
-        <dt>Known limits</dt><dd><ul class="tr-limits"><li>The reflection UI was removed from the app, so there is no new data. Expect zeros.</li></ul></dd>
+        <dt>Known limits</dt><dd><ul class="tr-limits"><li>Anomaly rules are heuristics, not fraud detection: none of these flags means fraud on its own.</li><li>Repeated transfers need the same amount to the cent; a transfer that varies in amount is not grouped.</li></ul></dd>
       </dl>
     </article>
   </section>
@@ -409,14 +375,14 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
       <div class="tier-badge t2">TIER 2</div>
       <div class="tier-content">
         <h3>Financial Data</h3>
-        <p>Accounts, transactions, predictions, spending, reflections (MVP+). Agent pulls on demand via tools 1-8, 10. Data lives in Postgres, fetched only when relevant.</p>
+        <p>Accounts, transactions, predictions, spending. Agent pulls on demand via tools 1-8. Data lives in Postgres, fetched only when relevant.</p>
       </div>
     </div>
     <div class="tier-row">
       <div class="tier-badge t3">TIER 3</div>
       <div class="tier-content">
-        <h3>Coaching History</h3>
-        <p>Past recommendations + user responses + outcomes. Via tool 9 (query_coaching_history). Enables: "I suggested canceling Hulu last month — did you follow through?"</p>
+        <h3>Coaching History &mdash; removed</h3>
+        <p>Removed 2026-10-04 (round-1 failure type 14). Nothing wrote coaching history, so the tool always returned empty while the prompt told the Coach to follow up on past advice &mdash; an invitation to invent it. Tide keeps no memory across chats, and the Coach now says so.</p>
       </div>
     </div>
   </div>
@@ -439,7 +405,7 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
         <div class="model-row"><span class="label">Latency</span><span class="value">First token &lt;2s</span></div>
         <div class="model-row"><span class="label">Purpose</span><span class="value">Financial coaching + tools</span></div>
         <div class="model-row"><span class="label">Platform</span><span class="value">AWS Bedrock</span></div>
-        <div class="model-row"><span class="label">Tools</span><span class="value">10 tools available</span></div>
+        <div class="model-row"><span class="label">Tools</span><span class="value">8 tools available</span></div>
         <div class="model-row"><span class="label">Tokens</span><span class="value">Read from each stream's <code>metadata</code> event, summed across the tool loop into <code>ai_traces</code> (cached prompt tokens included)</span></div>
         <div class="model-row"><span class="label">Tracing</span><span class="value">One trace per turn to Arize AX when enabled: AGENT &rarr; LLM per loop step + TOOL per call (with its output), masked; content only for allowlisted users. Feeds the real-data evals.</span></div>
       </div>
@@ -482,7 +448,7 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
       <div class="tier-badge t3">TIER 3</div>
       <div class="tier-content">
         <h3>Plaid Detailed Code</h3>
-        <p>Plaid's native PFC classification. Used when no user override and no AI cache. categorySource='plaid'. Handles confident cases (coffee, gas, groceries) with no AI cost.</p>
+        <p>Plaid's native PFC classification, matched to a Tide category by exact code. Used when there is no user override and no AI cache. categorySource='plaid'. Handles confident cases (coffee, gas, groceries) with no AI cost. Tide seeds both Plaid taxonomies (v1 and v2) so every code Plaid sends has a category. An <code>INCOME_*</code> code on a credit card resolves to a card payment, never income. An unmatched code is logged at sync time instead of silently saving the transaction uncategorised (the 2026-10-03 bug that hid every paycheck).</p>
       </div>
     </div>
   </div>

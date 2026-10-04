@@ -216,18 +216,18 @@ const nodes = [
     }},
   { id:"coach", label:"Tide Coach Agent", sub:"Claude Sonnet 4.6", type:"ai", mvp:"mvp", x:750, y:280,
     detail:{
-      desc:"User-facing AI financial coach. Streaming tool-use loop (max 10 iterations). 10 tools registered; 8 are MVP-active, 2 are MVP+.",
+      desc:"User-facing AI financial coach. Streaming tool-use loop (max 10 iterations). 8 tools registered (2026-10-04: query_coaching_history and query_reflection_stats removed — nothing wrote coaching history and the reflection UI is gone, so the prompt was describing features Tide no longer has; round-1 failure type 14).",
       bullets:[
         "Model ID: global.anthropic.claude-sonnet-4-6",
         "Max 10 tool iterations per turn; first token <2s target",
-        "MVP tools: query_user_profile, query_bank_accounts, query_transactions, query_bills_predictions, query_payday_predictions, calculate_safe_to_spend (shares service with Home card), get_spending_by_category, query_coaching_history",
-        "MVP+ tools: get_financial_insights (anomaly/trend analysis), query_reflection_stats (backend-only, UI removed)",
+        "MVP tools: query_user_profile, query_bank_accounts, query_transactions, query_bills_predictions, query_payday_predictions, calculate_safe_to_spend (shares service with Home card), get_spending_by_category",
+        "MVP+ tools: get_financial_insights (anomaly/trend analysis)",
         "All tools run on read-only DB connection (RO if DB_READONLY_HOST set)",
         "Bouncer policy enforcement: ChatPolicy on the controller; tool queries filter by user.id",
         "Throttle retry: 1s/2s/4s exponential backoff on ThrottlingException",
         "ConverseStream API; 20-message context window (chatConfig.maxContextMessages)"
       ],
-      tech:"Claude Sonnet 4.6 via AWS Bedrock, 10 tools, SSE streaming via XMLHttpRequest"
+      tech:"Claude Sonnet 4.6 via AWS Bedrock, 8 tools, SSE streaming via XMLHttpRequest"
     }},
   { id:"postgres", label:"PostgreSQL", sub:"RDS db.t4g.micro", type:"data", mvp:"mvp", x:440, y:600,
     detail:{
