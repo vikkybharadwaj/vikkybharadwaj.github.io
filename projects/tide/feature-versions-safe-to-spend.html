@@ -138,14 +138,105 @@ footer p { font-size: 10px; color: #475569; }
 
   <div class="timeline">
 
-    <!-- v5.4 -->
+    <!-- v5.7 -->
     <div class="version-card v-current">
+      <div class="version-header">
+        <div>
+          <div class="version-label">v5.7</div>
+          <div class="version-date">2026-10-04</div>
+        </div>
+        <span class="version-tag">CURRENT</span>
+      </div>
+      <div class="version-title">A confirmed paycheck re-detected as a second income stream no longer counts twice &mdash; found by the round-2 evals</div>
+      <div class="version-section">
+        <h4>What changed (code)</h4>
+        <ul>
+          <li><strong>The bug:</strong> the paycheck is three user-confirmed semimonthly slices, but the detector also kept an unconfirmed &ldquo;biweekly&rdquo; stream for one of the same deposits, so the ledger counted that money twice and This Month (and the pace behind every window) was inflated by about a quarter.</li>
+          <li><strong>Fix:</strong> pure <code>dropShadowIncome()</code> &mdash; once paycheck slices are confirmed on an account, an unconfirmed income stream on the same account within 5% of a confirmed slice is the same deposit and is dropped, in the ledger and in the Coach&rsquo;s payday tool.</li>
+        </ul>
+      </div>
+      <div class="version-section">
+        <h4>Trigger</h4>
+        <ul><li>Round-2 grading: two independent graders flagged the same paycheck counted twice; a read-only data check confirmed it.</li></ul>
+      </div>
+      <div class="version-footer">
+        <code>PR (phase 4c / 6a)</code>
+        <span>fix(safe-to-spend): v5.7 &mdash; drop shadow income streams</span>
+      </div>
+    </div>
+
+    <!-- v5.6 -->
+    <div class="version-card v-correction">
+      <div class="version-header">
+        <div>
+          <div class="version-label">v5.6</div>
+          <div class="version-date">2026-10-04</div>
+        </div>
+        <span class="version-tag">CORRECTION</span>
+      </div>
+      <div class="version-title">Payday no longer collapses the runway to one day &mdash; found by the real-data evals (finding #3)</div>
+
+      <div class="version-section">
+        <h4>What changed (code)</h4>
+        <ul>
+          <li><strong>The bug:</strong> the horizon was <code>[today, max(payday&minus;1, month end)]</code> and on payday the runway was &ldquo;just today&rdquo;. On <strong>30 Sep 2026</strong> (payday <em>and</em> month end) the pace became &ldquo;cash + today&rsquo;s paycheck &divide; 1 day&rdquo;, and This Week multiplied it by 5 days the engine never looked at &mdash; a weekly figure larger than all cash plus all income.</li>
+          <li><strong>Fix 1 &mdash; the horizon covers every window it prices:</strong> <code>globalIdx = max(paydayIdx, monthEndIdx, weekEndIdx)</code>.</li>
+          <li><strong>Fix 2 &mdash; on payday the runway rolls to the FOLLOWING paycheck</strong> (pure <code>runwayPayday()</code>; new <code>runwayPayday</code> field). Home: &ldquo;payday today 🎉 &middot; safe until next payday (Thu Oct 15)&rdquo;.</li>
+          <li><strong>Owner decision 5f &mdash; &ldquo;this pay cycle&rdquo;:</strong> hold back what is due before the next paycheck; what is due after it is that paycheck&rsquo;s job. Rejected: &ldquo;cover each window only&rdquo; (ignores mid-month card dues) and &ldquo;this cycle + the next&rdquo; (over-conservative).</li>
+        </ul>
+      </div>
+
+      <div class="version-section">
+        <h4>Trigger</h4>
+        <ul>
+          <li>The round-1 real-data eval run: 6 failing conversations (failure type 1) quoted the impossible weekly figure; after the 5a prompt fix the Coach even defended it.</li>
+        </ul>
+      </div>
+
+      <div class="version-section">
+        <h4>Lessons</h4>
+        <ul>
+          <li><strong>An index that is &ldquo;usually&rdquo; larger isn&rsquo;t a horizon.</strong> Make the invariant explicit (every priced window &sube; horizon) and test the degenerate day.</li>
+          <li><strong>A prompt can&rsquo;t fix a confidently wrong engine</strong> &mdash; the prompt sanity rule was ignored in 5 of 5 cases.</li>
+        </ul>
+      </div>
+
+      <div class="version-footer">
+        <code>PR (5b)</code>
+        <span>fix(safe-to-spend): v5.6 &mdash; payday rolls the runway; horizon covers every window</span>
+      </div>
+    </div>
+
+    <!-- v5.5 -->
+    <div class="version-card v-rework">
+      <div class="version-header">
+        <div>
+          <div class="version-label">v5.5</div>
+          <div class="version-date">2026-06-13</div>
+        </div>
+        <span class="version-tag">REWORK</span>
+      </div>
+      <div class="version-title">Every tab is the sustainable daily pace &times; the days in its window, reaching across paychecks</div>
+      <div class="version-section">
+        <h4>What changed (code)</h4>
+        <ul>
+          <li>The global floor no longer caps the tabs: the pace <code>x = min L(d)/(d+1)</code> already clears every dip. This Month legitimately exceeds cash when it crosses a paycheck; the floor survives as the dip footnote and shortfall amount.</li>
+        </ul>
+      </div>
+      <div class="version-footer">
+        <code>#223</code>
+        <span>feat(safe-to-spend): v5.5 &mdash; every tab is pace &times; days</span>
+      </div>
+    </div>
+
+    <!-- v5.4 -->
+    <div class="version-card v-evolve">
       <div class="version-header">
         <div>
           <div class="version-label">v5.4</div>
           <div class="version-date">2026-06-12</div>
         </div>
-        <span class="version-tag">CURRENT</span>
+        <span class="version-tag">EVOLVE</span>
       </div>
       <div class="version-title">Spending habits become a Money Out term &mdash; the hero is what&rsquo;s free even if your habits repeat</div>
 
