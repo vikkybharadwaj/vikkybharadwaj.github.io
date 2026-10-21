@@ -16,10 +16,10 @@ Dark, monospace, and technical with a green-to-blue gradient as its single signa
 - **Surfaces.** Cards are `surface` (translucent navy) with `backdrop-filter: blur(8px)`, a 1px `border` hairline and `radius-lg` (14px), or `radius-xl` (18px) for feature cards and figure frames. No opaque white or grey panels.
 - **Colour.** `text` for headings, `text-2` for paragraphs, `text-3` for metadata. `green` is primary, `blue` is the link colour. `purple`, `amber`, `teal` and `cyan` each carry a topic or a note type; use one accent per card.
 - **Gradient.** `grad-brand` (green to blue, 100deg) appears on the primary button, the active nav link and one highlighted word in the hero h1. Nowhere else.
-- **Type.** JetBrains Mono at weights 400 to 800 for everything. Headlines are 800 with negative tracking (`display` -2px, `title` -1px, `heading` -0.5px); eyebrows are 11px, 700, 2px tracking, uppercase. Body copy is 13px to 15px with line-height 1.7 to 1.9, capped near 760px wide.
+- **Type.** JetBrains Mono at weights 400 to 800 for everything. Headlines are 800 with negative tracking (`display` -2px, `title` -1px, `heading` -0.5px); eyebrows are 11px, 700, 2px tracking, uppercase. Body copy is `fs-13` to `fs-15` with `lh-relaxed`, capped near 760px wide.
 - **Spacing.** Page gutter `space-6` (24px), card padding `space-5`/`space-6`, grid gap `space-gap` (18px), section padding `space-8` (58px). Content sits in a 1040px wrapper (1080px on case-study pages).
 - **Borders and shadows.** Borders do the separating. Shadows appear only as coloured glows on hover (`glow-green`, `glow-blue`...), never as neutral drop shadows.
-- **Motion.** Hover lifts only: cards `translateY(-4px)` to `-6px`, buttons `-2px`, pills `-1px`, timeline rows `translateX(3px)`, in 0.15s to 0.2s ease. Arrows slide 5px right on card hover. Nothing animates on load.
+- **Motion.** Hover lifts only: cards `translateY(-4px)`, buttons `-2px`, pills `-1px`, timeline rows `translateX(3px)`, in 0.15s to 0.2s ease. Arrows slide 5px right on card hover. Nothing animates on load.
 - **States.** Hover raises and strengthens the border to the full tone. Focus: the source defines none; use a 2px `cyan` outline with 2px to 3px offset (about 10.8:1 on `bg`).
 - **Layout.** Left-aligned. Grids use `repeat(auto-fill, minmax(280px, 1fr))` for cards and `minmax(190px, 1fr)` for stats; three-up bands collapse to one column at 880px. Sticky blurred nav at the top.
 
