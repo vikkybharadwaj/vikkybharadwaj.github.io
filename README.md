@@ -123,3 +123,18 @@ force-pushes and never touches your working copy. Logs to `~/Library/Logs/highli
 and a contact block. To wire up LinkedIn, find the `LINKEDIN_SLOT` comment in the contact
 section, set the real URL on that `<a>`, and remove the `soon` class + the `SOON` pill.
 Email (`vikky.bharadwaj@gmail.com`) and GitHub links are already live.
+
+## Design system (single source of truth)
+
+`design-system/tokens.json` holds every colour, radius, shadow, spacing step and the font stack.
+`design-system/tokens.css` is generated from it and linked by every page (`<link rel="stylesheet" href="…/design-system/tokens.css">`;
+the Product Cockpit pages get it through `assets/styles.css`). Pages must not redeclare token values or write palette hex literals in CSS; use `var(--green)`, `var(--radius-lg)` and so on.
+
+```bash
+# change a token in design-system/tokens.json, then:
+python3 scripts/build-design-tokens.py   # regenerates design-system/tokens.css
+```
+
+`design-system/README.md` is the brand book (voice, visual rules, usage) and `design-system/components/` holds the React components and previews.
+SVG attributes and JavaScript cannot resolve `var()`, so inside those use the token's literal hex from `tokens.css`.
+

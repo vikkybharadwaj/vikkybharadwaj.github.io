@@ -5,52 +5,53 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Safe to Spend &mdash; Math Explorer &middot; Tide</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../design-system/tokens.css">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', monospace; background: #0a0f1a; color: #e2e8f0; line-height: 1.6; }
+html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', monospace; background: var(--bg); color: var(--text); line-height: 1.6; }
 .container { max-width: 1100px; margin: 0 auto; padding: 48px 24px; }
 
 header { margin-bottom: 32px; }
-header .back { display: inline-block; font-size: 11px; color: #64748b; margin-bottom: 16px; text-decoration: none; }
-header .back:hover { color: #94a3b8; }
+header .back { display: inline-block; font-size: 11px; color: var(--text-3); margin-bottom: 16px; text-decoration: none; }
+header .back:hover { color: var(--text-2); }
 header h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
-header .tagline { font-size: 12px; color: #94a3b8; max-width: 720px; }
+header .tagline { font-size: 12px; color: var(--text-2); max-width: 720px; }
 
 .intro {
-  background: rgba(17,24,39,0.6);
+  background: color-mix(in srgb, var(--surface-solid) 60%, transparent);
   border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 12px;
+  border-radius: var(--radius-mid);
   padding: 22px 26px;
   margin-bottom: 28px;
   font-size: 12px;
-  color: #cbd5e1;
+  color: var(--code-text);
 }
-.intro strong { color: #fbbf24; }
-.intro code { background: rgba(0,0,0,0.3); padding: 1px 6px; border-radius: 3px; font-size: 11px; color: #fbbf24; }
+.intro strong { color: var(--amber); }
+.intro code { background: rgba(0,0,0,0.3); padding: 1px 6px; border-radius: var(--radius-xs); font-size: 11px; color: var(--amber); }
 
 /* === HUB DIAGRAM === */
 .hub-section { margin-bottom: 36px; }
-.hub-section h2 { font-size: 16px; font-weight: 700; color: #fbbf24; margin-bottom: 18px; }
+.hub-section h2 { font-size: 16px; font-weight: 700; color: var(--amber); margin-bottom: 18px; }
 
 .formula-block {
   background: rgba(0,0,0,0.35);
   border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   padding: 24px;
   text-align: center;
   margin-bottom: 22px;
   font-size: 13px;
 }
 .formula-block .step { padding: 10px 0; }
-.formula-block .arrow { color: #64748b; font-size: 16px; padding: 4px 0; }
+.formula-block .arrow { color: var(--text-3); font-size: 16px; padding: 4px 0; }
 .formula-block code { font-size: 13px; font-weight: 600; }
-.formula-block .label { color: #94a3b8; font-size: 11px; display: block; margin-top: 2px; }
+.formula-block .label { color: var(--text-2); font-size: 11px; display: block; margin-top: 2px; }
 
-.tag-add { color: #22c55e; font-weight: 700; }
-.tag-sub { color: #f59e0b; font-weight: 700; }
-.tag-eq { color: #ec4899; font-weight: 700; }
-.tag-div { color: #a855f7; font-weight: 700; }
-.tag-mul { color: #3b82f6; font-weight: 700; }
+.tag-add { color: var(--green); font-weight: 700; }
+.tag-sub { color: var(--amber); font-weight: 700; }
+.tag-eq { color: var(--pink); font-weight: 700; }
+.tag-div { color: var(--purple); font-weight: 700; }
+.tag-mul { color: var(--blue); font-weight: 700; }
 
 /* === COMPONENT CARDS === */
 .components-grid {
@@ -62,11 +63,11 @@ header .tagline { font-size: 12px; color: #94a3b8; max-width: 720px; }
 
 details.component {
   border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 10px;
-  background: rgba(17,24,39,0.6);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--surface-solid) 60%, transparent);
   overflow: hidden;
 }
-details.component[open] { border-color: rgba(251,191,36,0.4); }
+details.component[open] { border-color: color-mix(in srgb, var(--amber) 40%, transparent); }
 
 details.component summary {
   list-style: none;
@@ -81,11 +82,11 @@ details.component summary::-webkit-details-marker { display: none; }
 details.component summary::after {
   content: '▸';
   margin-left: auto;
-  color: #64748b;
+  color: var(--text-3);
   font-size: 14px;
   transition: transform 0.2s;
 }
-details.component[open] summary::after { transform: rotate(90deg); color: #fbbf24; }
+details.component[open] summary::after { transform: rotate(90deg); color: var(--amber); }
 
 details.component summary .icon-circle {
   width: 28px; height: 28px;
@@ -94,8 +95,8 @@ details.component summary .icon-circle {
   font-size: 14px; font-weight: 700;
   flex-shrink: 0;
 }
-details.component summary .title { font-size: 14px; font-weight: 700; color: #e2e8f0; }
-details.component summary .subtitle { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+details.component summary .title { font-size: 14px; font-weight: 700; color: var(--text); }
+details.component summary .subtitle { font-size: 11px; color: var(--text-2); margin-top: 2px; }
 details.component summary .meta { display: flex; flex-direction: column; }
 
 details.component .body {
@@ -105,84 +106,84 @@ details.component .body {
 details.component .body h4 {
   font-size: 11px;
   font-weight: 700;
-  color: #94a3b8;
+  color: var(--text-2);
   margin: 14px 0 6px 0;
   letter-spacing: 1px;
   text-transform: uppercase;
 }
 details.component .body p, details.component .body ul, details.component .body li {
-  font-size: 12px; color: #cbd5e1;
+  font-size: 12px; color: var(--code-text);
 }
 details.component .body ul { margin: 4px 0 0 16px; }
 details.component .body li { margin-bottom: 4px; }
-details.component .body code { background: rgba(0,0,0,0.3); padding: 1px 5px; border-radius: 3px; font-size: 11px; color: #fbbf24; }
+details.component .body code { background: rgba(0,0,0,0.3); padding: 1px 5px; border-radius: var(--radius-xs); font-size: 11px; color: var(--amber); }
 details.component .body pre {
   background: rgba(0,0,0,0.35);
   padding: 10px 12px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 11px;
-  color: #cbd5e1;
+  color: var(--code-text);
   overflow-x: auto;
   margin: 8px 0;
-  border-left: 2px solid #fbbf24;
+  border-left: 2px solid var(--amber);
 }
 
-.color-add { background: rgba(34,197,94,0.15); color: #22c55e; border: 1px solid rgba(34,197,94,0.4); }
-.color-sub { background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.4); }
-.color-div { background: rgba(168,85,247,0.15); color: #a855f7; border: 1px solid rgba(168,85,247,0.4); }
-.color-mul { background: rgba(59,130,246,0.15); color: #3b82f6; border: 1px solid rgba(59,130,246,0.4); }
-.color-context { background: rgba(236,72,153,0.15); color: #ec4899; border: 1px solid rgba(236,72,153,0.4); }
+.color-add { background: color-mix(in srgb, var(--green) 15%, transparent); color: var(--green); border: 1px solid color-mix(in srgb, var(--green) 40%, transparent); }
+.color-sub { background: color-mix(in srgb, var(--amber) 15%, transparent); color: var(--amber); border: 1px solid color-mix(in srgb, var(--amber) 40%, transparent); }
+.color-div { background: color-mix(in srgb, var(--purple) 15%, transparent); color: var(--purple); border: 1px solid color-mix(in srgb, var(--purple) 40%, transparent); }
+.color-mul { background: color-mix(in srgb, var(--blue) 15%, transparent); color: var(--blue); border: 1px solid color-mix(in srgb, var(--blue) 40%, transparent); }
+.color-context { background: color-mix(in srgb, var(--pink) 15%, transparent); color: var(--pink); border: 1px solid color-mix(in srgb, var(--pink) 40%, transparent); }
 
 /* === TAB MATRIX === */
 .tab-matrix-section { margin-bottom: 32px; }
-.tab-matrix-section h2 { font-size: 16px; font-weight: 700; color: #fbbf24; margin-bottom: 12px; }
-.tab-matrix-section p { font-size: 12px; color: #cbd5e1; margin-bottom: 12px; }
+.tab-matrix-section h2 { font-size: 16px; font-weight: 700; color: var(--amber); margin-bottom: 12px; }
+.tab-matrix-section p { font-size: 12px; color: var(--code-text); margin-bottom: 12px; }
 
 table.tab-matrix { width: 100%; border-collapse: collapse; font-size: 11px; }
 table.tab-matrix th, table.tab-matrix td { padding: 8px 10px; border: 1px solid rgba(255,255,255,0.08); text-align: left; vertical-align: top; }
-table.tab-matrix th { background: rgba(251,191,36,0.08); color: #fbbf24; font-weight: 700; }
-table.tab-matrix td.row-label { font-weight: 700; color: #e2e8f0; }
+table.tab-matrix th { background: color-mix(in srgb, var(--amber) 8%, transparent); color: var(--amber); font-weight: 700; }
+table.tab-matrix td.row-label { font-weight: 700; color: var(--text); }
 
 /* === OPEN QUESTIONS === */
 .open-questions {
-  background: rgba(239,68,68,0.06);
-  border: 1px solid rgba(239,68,68,0.3);
-  border-radius: 10px;
+  background: color-mix(in srgb, var(--red) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--red) 30%, transparent);
+  border-radius: var(--radius-md);
   padding: 20px 24px;
   margin-bottom: 32px;
 }
-.open-questions h2 { font-size: 16px; font-weight: 700; color: #ef4444; margin-bottom: 10px; }
+.open-questions h2 { font-size: 16px; font-weight: 700; color: var(--red); margin-bottom: 10px; }
 .open-questions ul { margin: 4px 0 0 16px; }
-.open-questions li { font-size: 12px; color: #cbd5e1; margin-bottom: 8px; line-height: 1.5; }
-.open-questions strong { color: #fca5a5; }
-.open-questions code { background: rgba(0,0,0,0.3); padding: 1px 5px; border-radius: 3px; font-size: 11px; color: #fcd34d; }
+.open-questions li { font-size: 12px; color: var(--code-text); margin-bottom: 8px; line-height: 1.5; }
+.open-questions strong { color: var(--rose); }
+.open-questions code { background: rgba(0,0,0,0.3); padding: 1px 5px; border-radius: var(--radius-xs); font-size: 11px; color: var(--amber); }
 
 /* === LIVE EXAMPLE === */
 .live-example {
-  background: linear-gradient(135deg, rgba(168,85,247,0.06), rgba(59,130,246,0.06));
-  border: 1px solid rgba(168,85,247,0.25);
-  border-radius: 10px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--purple) 6%, transparent), color-mix(in srgb, var(--blue) 6%, transparent));
+  border: 1px solid color-mix(in srgb, var(--purple) 25%, transparent);
+  border-radius: var(--radius-md);
   padding: 22px 26px;
   margin-bottom: 32px;
 }
-.live-example h2 { font-size: 16px; font-weight: 700; color: #a855f7; margin-bottom: 10px; }
-.live-example p { font-size: 12px; color: #cbd5e1; margin-bottom: 8px; }
-.live-example code { background: rgba(0,0,0,0.3); padding: 1px 5px; border-radius: 3px; font-size: 11px; color: #fbbf24; }
-.live-example .num { color: #22c55e; font-weight: 700; }
+.live-example h2 { font-size: 16px; font-weight: 700; color: var(--purple); margin-bottom: 10px; }
+.live-example p { font-size: 12px; color: var(--code-text); margin-bottom: 8px; }
+.live-example code { background: rgba(0,0,0,0.3); padding: 1px 5px; border-radius: var(--radius-xs); font-size: 11px; color: var(--amber); }
+.live-example .num { color: var(--green); font-weight: 700; }
 
 footer { text-align: center; margin-top: 48px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.06); }
-footer p { font-size: 10px; color: #475569; }
+footer p { font-size: 10px; color: var(--text-3); }
 
 </style>
 </head>
 <body>
-<a id="wt-backnav" href="index.html" style="position:fixed;top:14px;left:14px;z-index:99999;font-family:monospace;font-size:12px;font-weight:700;color:#4F8CFF;text-decoration:none;background:rgba(10,15,26,0.85);padding:7px 12px;border-radius:8px;border:1px solid rgba(79,140,255,0.35);">&larr; Hub</a>
+<a id="wt-backnav" href="index.html" style="position:fixed;top:14px;left:14px;z-index:99999;font-family:monospace;font-size:12px;font-weight:700;color:var(--blue);text-decoration:none;background:color-mix(in srgb, var(--bg) 85%, transparent);padding:7px 12px;border-radius: var(--radius-base);border:1px solid color-mix(in srgb, var(--blue) 35%, transparent);">&larr; Hub</a>
 <div class="container">
   <header>
     <a href="feature-versions-safe-to-spend.html" class="back">&larr; Back to Safe to Spend Versions</a>
     <h1>Safe to Spend &mdash; Math Explorer</h1>
-    <p style="font-size: 11px; color: #64748b; margin-top: 6px;">
-      Markdown companion: <a href="https://github.com/vikkybharadwaj/Tide_Vik-s-Version/blob/main/docs/SAFE_TO_SPEND_MATH.md" style="color: #fbbf24;"><code style="background:rgba(0,0,0,0.3); padding:1px 6px; border-radius:3px;">docs/SAFE_TO_SPEND_MATH.md</code></a>
+    <p style="font-size: 11px; color: var(--text-3); margin-top: 6px;">
+      Markdown companion: <a href="https://github.com/vikkybharadwaj/Tide_Vik-s-Version/blob/main/docs/SAFE_TO_SPEND_MATH.md" style="color: var(--amber);"><code style="background:rgba(0,0,0,0.3); padding:1px 6px; border-radius: var(--radius-xs);">docs/SAFE_TO_SPEND_MATH.md</code></a>
     </p>
     <p class="tagline">v5.4 (2026-06-12, global floor + habits in Money Out): one primitive &mdash; a projected daily cash-flow ledger &mdash; drives every number on the card, and one invariant bounds every tab: no window ever promises money a longer window proves you need. Click into any component to see exactly how it&rsquo;s calculated, what window it covers, and how each tab reads the same curve.</p>
   </header>
@@ -203,7 +204,7 @@ footer p { font-size: 10px; color: #475569; }
   <div class="hub-section">
     <h2>The end-to-end model &mdash; the daily ledger</h2>
     <div class="formula-block">
-      <div class="step"><code><span class="tag-eq">L(d)</span> <span class="tag-eq">=</span> <span class="tag-add">spendableBalance</span> <span class="tag-add">+</span> <span style="color:#22c55e;">&Sigma; inflows(&le;d)</span> <span class="tag-sub">&minus;</span> <span style="color:#f59e0b;">&Sigma; outflows(&le;d)</span></code><span class="label">projected day-by-day, today &rarr; max(month end, payday&minus;1), user&rsquo;s timezone</span></div>
+      <div class="step"><code><span class="tag-eq">L(d)</span> <span class="tag-eq">=</span> <span class="tag-add">spendableBalance</span> <span class="tag-add">+</span> <span style="color:var(--green);">&Sigma; inflows(&le;d)</span> <span class="tag-sub">&minus;</span> <span style="color:var(--amber);">&Sigma; outflows(&le;d)</span></code><span class="label">projected day-by-day, today &rarr; max(month end, payday&minus;1), user&rsquo;s timezone</span></div>
       <div class="arrow">&darr; every tab is a read of this one curve</div>
       <div class="step"><code><strong>Until Payday</strong> <span class="tag-eq">=</span> the GLOBAL FLOOR: min L(d), d &isin; [today, max(payday&minus;1, month end)]</code><span class="label">v5.1 &mdash; the most you can spend right now and still cover every projected obligation; the hero number. The one invariant: no window ever promises money a longer window proves you need</span></div>
       <div class="step"><code><strong>Today</strong> <span class="tag-eq">=</span> dailyBudget <span class="tag-eq">=</span> the sustainable RATE: min over d of L(d) <span class="tag-div">/</span> daysUntil(d)</code><span class="label">same global horizon &mdash; spending this rate never drives ANY projected day below zero</span></div>
@@ -212,7 +213,7 @@ footer p { font-size: 10px; color: #475569; }
       <div class="arrow">&darr;</div>
       <div class="step"><code><span class="tag-sub">Shortfalls are NEVER clamped</span></code><span class="label">negative floor ships as first-class shortfall fields {isShortfall, shortfallAmount, earliestShortfallDate, bindingConstraint} &mdash; Home and Coach render it identically</span></div>
     </div>
-    <p style="font-size:11px; color:#94a3b8;">Outflows are a MECE partition (bills/utils/subs &middot; loans &middot; planned savings &middot; CC due-this-cycle &middot; essentials &middot; habits &mdash; v5.4); inflows are band-gated income occurrences. Everything recurring is <strong style="color:#fbbf24;">occurrence-expanded</strong>: a 3-paycheck month counts 3 paychecks; a weekly bill counts every week. <strong>v5.4:</strong> the habits forecast (<code>moneyOut.habits</code>) is SUBTRACTED &mdash; the hero is what&rsquo;s free even if your habits repeat; the old context-only projection line is retired.</p>
+    <p style="font-size:11px; color:var(--text-2);">Outflows are a MECE partition (bills/utils/subs &middot; loans &middot; planned savings &middot; CC due-this-cycle &middot; essentials &middot; habits &mdash; v5.4); inflows are band-gated income occurrences. Everything recurring is <strong style="color:var(--amber);">occurrence-expanded</strong>: a 3-paycheck month counts 3 paychecks; a weekly bill counts every week. <strong>v5.4:</strong> the habits forecast (<code>moneyOut.habits</code>) is SUBTRACTED &mdash; the hero is what&rsquo;s free even if your habits repeat; the old context-only projection line is retired.</p>
   </div>
 
   <!-- ===================== COMPONENT CARDS ===================== -->
@@ -437,7 +438,7 @@ arithmetic tests for two major versions; never again)</pre>
           <h4>Don&rsquo;t confuse it with essentials</h4>
           <p><strong>Essentials</strong> = the necessities whitelist (can&rsquo;t-skip categories). <strong>Spending habits</strong> = everything non-recurring OUTSIDE that whitelist. Both are subtracted since v5.4, and they are MECE by construction (the habits sample excludes the essentials prefixes). The v4.x &ldquo;circularity&rdquo; rationale for keeping habits out was re-decided 2026-06-12: the hero now answers &ldquo;what&rsquo;s truly free even if your habits repeat.&rdquo;</p>
           <h4>Full math spec</h4>
-          <p style="margin-top: 6px;"><a href="safe-to-spend-typical-spending-spec.html" style="color: #fbbf24; text-decoration: underline; font-weight: 600;">&rarr; Typical Spending Forecast spec (worked example)</a></p>
+          <p style="margin-top: 6px;"><a href="safe-to-spend-typical-spending-spec.html" style="color: var(--amber); text-decoration: underline; font-weight: 600;">&rarr; Typical Spending Forecast spec (worked example)</a></p>
           <h4>Code reference</h4>
           <pre>typical_discretionary_service.ts:computeTypicalDiscretionary</pre>
         </div>
@@ -463,7 +464,7 @@ arithmetic tests for two major versions; never again)</pre>
       <tbody>
         <tr>
           <td class="row-label">Ledger curve L(d)</td>
-          <td colspan="4" style="text-align:center; color:#94a3b8;">Same one curve &mdash; every tab is a read of it</td>
+          <td colspan="4" style="text-align:center; color:var(--text-2);">Same one curve &mdash; every tab is a read of it</td>
         </tr>
         <tr>
           <td class="row-label">Window end</td>
@@ -502,7 +503,7 @@ arithmetic tests for two major versions; never again)</pre>
         </tr>
         <tr>
           <td class="row-label">Spending habits (moneyOut.habits)</td>
-          <td colspan="4" style="text-align:center; color:#94a3b8;">sum of habitsByDay inside each window &mdash; SUBTRACTED like essentials (v5.4); term omitted &lt;60d history</td>
+          <td colspan="4" style="text-align:center; color:var(--text-2);">sum of habitsByDay inside each window &mdash; SUBTRACTED like essentials (v5.4); term omitted &lt;60d history</td>
         </tr>
       </tbody>
     </table>
@@ -512,7 +513,7 @@ arithmetic tests for two major versions; never again)</pre>
   <div class="live-example">
     <h2>Worked example 1 &mdash; why the rate is $25/day, not $66/day</h2>
     <p>$1,000 in checking. $800 rent due day 3. Payday day 9 &rarr; pre-payday window is days 1&ndash;8. No other events.</p>
-    <pre style="background:rgba(0,0,0,0.35); padding:12px; border-radius:6px; font-size:11px; overflow-x:auto; color:#cbd5e1; border-left:2px solid #a855f7;">
+    <pre style="background:rgba(0,0,0,0.35); padding:12px; border-radius: var(--radius-sm); font-size:11px; overflow-x:auto; color:var(--code-text); border-left:2px solid var(--purple);">
 Day d:      1      2      3      4      5      6      7      8    | 9 (payday)
 Event:      —      —    −800     —      —      —      —      —    | +paycheck
 L(d):     1000   1000    200    200    200    200    200    200   |
@@ -530,7 +531,7 @@ This Month (ends day 8) = min(25 × 8, 200)  = <span class="num">$200</span>
   <div class="live-example">
     <h2>Worked example 2 &mdash; shortfall: income can&rsquo;t mask an earlier dip</h2>
     <p>$500 in checking. $1,000 rent due day 2. $2,000 paycheck lands day 5 (payday) &rarr; pre-payday window is days 1&ndash;4.</p>
-    <pre style="background:rgba(0,0,0,0.35); padding:12px; border-radius:6px; font-size:11px; overflow-x:auto; color:#cbd5e1; border-left:2px solid #a855f7;">
+    <pre style="background:rgba(0,0,0,0.35); padding:12px; border-radius: var(--radius-sm); font-size:11px; overflow-x:auto; color:var(--code-text); border-left:2px solid var(--purple);">
 Day d:      1      2      3      4    | 5 (payday)
 Event:      —    −1000    —      —    | +2000
 L(d):      500   −500   −500   −500   | +1500
@@ -563,7 +564,7 @@ shortfall = { isShortfall: true, shortfallAmount: −500,
   </div>
 
   <footer>
-    <p>Safe to Spend Math Explorer &middot; v5.4 (daily cash-flow ledger + global floor + habits in Money Out, 2026-06-12) &middot; Pair this with the <a href="safe-to-spend-typical-spending-spec.html" style="color:#94a3b8;">Spending Habits math spec</a> for the moneyOut.habits walkthrough.</p>
+    <p>Safe to Spend Math Explorer &middot; v5.4 (daily cash-flow ledger + global floor + habits in Money Out, 2026-06-12) &middot; Pair this with the <a href="safe-to-spend-typical-spending-spec.html" style="color:var(--text-2);">Spending Habits math spec</a> for the moneyOut.habits walkthrough.</p>
   </footer>
 </div>
 

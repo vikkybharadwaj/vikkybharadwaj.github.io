@@ -5,21 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tide Data Flows</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../design-system/tokens.css">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', monospace; background: #0a0f1a; color: #e2e8f0; }
+html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', monospace; background: var(--bg); color: var(--text); }
 
 #title {
   padding: 16px 16px 0;
 }
 #title h1 { font-size: 18px; font-weight: 700; }
-#title p { font-size: 10px; color: #64748b; margin-top: 2px; }
-#title a { color: #3b82f6; text-decoration: none; font-size: 10px; }
+#title p { font-size: 10px; color: var(--text-3); margin-top: 2px; }
+#title a { color: var(--blue); text-decoration: none; font-size: 10px; }
 #title a:hover { text-decoration: underline; }
 
 .top-bar {
   position: sticky; top: 0; z-index: 50;
-  background: #0a0f1a;
+  background: var(--bg);
   padding-bottom: 12px;
   border-bottom: 1px solid rgba(255,255,255,0.08);
   margin-bottom: 8px;
@@ -30,28 +31,28 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
   padding: 12px 16px 0;
 }
 .group-btn {
-  padding: 10px 20px; border-radius: 6px; font-size: 11px; font-weight: 700;
+  padding: 10px 20px; border-radius: var(--radius-sm); font-size: 11px; font-weight: 700;
   cursor: pointer; border: 1px solid rgba(255,255,255,0.12);
-  background: rgba(17,24,39,0.7); color: #94a3b8;
+  background: color-mix(in srgb, var(--surface-solid) 70%, transparent); color: var(--text-2);
   transition: all 0.2s; letter-spacing: 0.5px;
 }
-.group-btn:hover { border-color: rgba(255,255,255,0.35); color: #e2e8f0; }
-.group-btn.active-group-mvp { border-color: #22c55e; color: #22c55e; background: rgba(34,197,94,0.12); }
-.group-btn.active-group-mvpplus { border-color: #f59e0b; color: #f59e0b; background: rgba(245,158,11,0.12); }
+.group-btn:hover { border-color: rgba(255,255,255,0.35); color: var(--text); }
+.group-btn.active-group-mvp { border-color: var(--green); color: var(--green); background: color-mix(in srgb, var(--green) 12%, transparent); }
+.group-btn.active-group-mvpplus { border-color: var(--amber); color: var(--amber); background: color-mix(in srgb, var(--amber) 12%, transparent); }
 
 .tabs {
   display: flex; flex-wrap: wrap; gap: 8px;
   padding: 12px 16px 0;
 }
 .tab {
-  padding: 8px 16px; border-radius: 6px; font-size: 11px; font-weight: 700;
+  padding: 8px 16px; border-radius: var(--radius-sm); font-size: 11px; font-weight: 700;
   cursor: pointer; border: 1px solid rgba(255,255,255,0.1);
-  background: rgba(17,24,39,0.9); color: #94a3b8;
+  background: color-mix(in srgb, var(--surface-solid) 90%, transparent); color: var(--text-2);
   transition: all 0.2s; letter-spacing: 0.3px;
   white-space: nowrap;
 }
-.tab:hover { border-color: rgba(255,255,255,0.3); color: #e2e8f0; background: rgba(17,24,39,1); }
-.tab.active { border-color: #3b82f6; color: #3b82f6; background: rgba(59,130,246,0.15); }
+.tab:hover { border-color: rgba(255,255,255,0.3); color: var(--text); background: color-mix(in srgb, var(--surface-solid) 100%, transparent); }
+.tab.active { border-color: var(--blue); color: var(--blue); background: color-mix(in srgb, var(--blue) 15%, transparent); }
 .tab[data-group="mvp-plus"] { border-style: dashed; }
 
 .flow-container {
@@ -62,7 +63,7 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
 .flow-container.active { display: block; }
 
 .flow-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
-.flow-desc { font-size: 11px; color: #94a3b8; margin-bottom: 24px; line-height: 1.6; }
+.flow-desc { font-size: 11px; color: var(--text-2); margin-bottom: 24px; line-height: 1.6; }
 
 .step {
   display: flex; gap: 16px; margin-bottom: 2px;
@@ -106,78 +107,78 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
   display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
 }
 .step-num {
-  font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 3px;
+  font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: var(--radius-xs);
   letter-spacing: 0.5px;
 }
 .step-actor { font-size: 11px; font-weight: 700; }
-.step-action { font-size: 11px; color: #94a3b8; line-height: 1.5; }
+.step-action { font-size: 11px; color: var(--text-2); line-height: 1.5; }
 .step-detail {
-  margin-top: 6px; padding: 8px 12px; border-radius: 6px;
-  background: rgba(17,24,39,0.6); border: 1px solid rgba(255,255,255,0.06);
-  font-size: 10px; color: #64748b; line-height: 1.5;
+  margin-top: 6px; padding: 8px 12px; border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--surface-solid) 60%, transparent); border: 1px solid rgba(255,255,255,0.06);
+  font-size: 10px; color: var(--text-3); line-height: 1.5;
 }
-.step-detail code { color: #00d4ff; }
+.step-detail code { color: var(--cyan); }
 .step-latency {
-  display: inline-block; margin-top: 4px; padding: 1px 6px; border-radius: 3px;
-  font-size: 9px; font-weight: 600; background: rgba(34,197,94,0.1); color: #22c55e;
+  display: inline-block; margin-top: 4px; padding: 1px 6px; border-radius: var(--radius-xs);
+  font-size: 9px; font-weight: 600; background: color-mix(in srgb, var(--green) 10%, transparent); color: var(--green);
 }
 
 /* Flow colors */
-.flow-auth .step-dot { border-color: #ef4444; }
-.flow-auth .step-connector { background: #ef4444; }
-.flow-auth .step-num { background: rgba(239,68,68,0.15); color: #ef4444; }
-.flow-auth .flow-title { color: #ef4444; }
+.flow-auth .step-dot { border-color: var(--red); }
+.flow-auth .step-connector { background: var(--red); }
+.flow-auth .step-num { background: color-mix(in srgb, var(--red) 15%, transparent); color: var(--red); }
+.flow-auth .flow-title { color: var(--red); }
 
-.flow-dashboard .step-dot { border-color: #3b82f6; }
-.flow-dashboard .step-connector { background: #3b82f6; }
-.flow-dashboard .step-num { background: rgba(59,130,246,0.15); color: #3b82f6; }
-.flow-dashboard .flow-title { color: #3b82f6; }
+.flow-dashboard .step-dot { border-color: var(--blue); }
+.flow-dashboard .step-connector { background: var(--blue); }
+.flow-dashboard .step-num { background: color-mix(in srgb, var(--blue) 15%, transparent); color: var(--blue); }
+.flow-dashboard .flow-title { color: var(--blue); }
 
-.flow-sync .step-dot { border-color: #a855f7; }
-.flow-sync .step-connector { background: #a855f7; }
-.flow-sync .step-num { background: rgba(168,85,247,0.15); color: #a855f7; }
-.flow-sync .flow-title { color: #a855f7; }
+.flow-sync .step-dot { border-color: var(--purple); }
+.flow-sync .step-connector { background: var(--purple); }
+.flow-sync .step-num { background: color-mix(in srgb, var(--purple) 15%, transparent); color: var(--purple); }
+.flow-sync .flow-title { color: var(--purple); }
 
-.flow-chat .step-dot { border-color: #00d4ff; }
-.flow-chat .step-connector { background: #00d4ff; }
-.flow-chat .step-num { background: rgba(0,212,255,0.15); color: #00d4ff; }
-.flow-chat .flow-title { color: #00d4ff; }
+.flow-chat .step-dot { border-color: var(--cyan); }
+.flow-chat .step-connector { background: var(--cyan); }
+.flow-chat .step-num { background: color-mix(in srgb, var(--cyan) 15%, transparent); color: var(--cyan); }
+.flow-chat .flow-title { color: var(--cyan); }
 
-.flow-predictions .step-dot { border-color: #22c55e; }
-.flow-predictions .step-connector { background: #22c55e; }
-.flow-predictions .step-num { background: rgba(34,197,94,0.15); color: #22c55e; }
-.flow-predictions .flow-title { color: #22c55e; }
+.flow-predictions .step-dot { border-color: var(--green); }
+.flow-predictions .step-connector { background: var(--green); }
+.flow-predictions .step-num { background: color-mix(in srgb, var(--green) 15%, transparent); color: var(--green); }
+.flow-predictions .flow-title { color: var(--green); }
 
-.flow-safetospend .step-dot { border-color: #f59e0b; }
-.flow-safetospend .step-connector { background: #f59e0b; }
-.flow-safetospend .step-num { background: rgba(245,158,11,0.15); color: #f59e0b; }
-.flow-safetospend .flow-title { color: #f59e0b; }
+.flow-safetospend .step-dot { border-color: var(--amber); }
+.flow-safetospend .step-connector { background: var(--amber); }
+.flow-safetospend .step-num { background: color-mix(in srgb, var(--amber) 15%, transparent); color: var(--amber); }
+.flow-safetospend .flow-title { color: var(--amber); }
 
 
-.flow-reflection .step-dot { border-color: #ec4899; }
-.flow-reflection .step-connector { background: #ec4899; }
-.flow-reflection .step-num { background: rgba(236,72,153,0.15); color: #ec4899; }
-.flow-reflection .flow-title { color: #ec4899; }
+.flow-reflection .step-dot { border-color: var(--pink); }
+.flow-reflection .step-connector { background: var(--pink); }
+.flow-reflection .step-num { background: color-mix(in srgb, var(--pink) 15%, transparent); color: var(--pink); }
+.flow-reflection .flow-title { color: var(--pink); }
 
-.flow-bankconnections .step-dot { border-color: #f59e0b; }
-.flow-bankconnections .step-connector { background: #f59e0b; }
-.flow-bankconnections .step-num { background: rgba(245,158,11,0.15); color: #f59e0b; }
-.flow-bankconnections .flow-title { color: #f59e0b; }
+.flow-bankconnections .step-dot { border-color: var(--amber); }
+.flow-bankconnections .step-connector { background: var(--amber); }
+.flow-bankconnections .step-num { background: color-mix(in srgb, var(--amber) 15%, transparent); color: var(--amber); }
+.flow-bankconnections .flow-title { color: var(--amber); }
 
-.flow-notifications .step-dot { border-color: #64748b; }
-.flow-notifications .step-connector { background: #64748b; }
-.flow-notifications .step-num { background: rgba(100,116,139,0.15); color: #64748b; }
-.flow-notifications .flow-title { color: #64748b; }
+.flow-notifications .step-dot { border-color: var(--text-3); }
+.flow-notifications .step-connector { background: var(--text-3); }
+.flow-notifications .step-num { background: color-mix(in srgb, var(--text-3) 15%, transparent); color: var(--text-3); }
+.flow-notifications .flow-title { color: var(--text-3); }
 
-.flow-insights .step-dot { border-color: #8b5cf6; }
-.flow-insights .step-connector { background: #8b5cf6; }
-.flow-insights .step-num { background: rgba(139,92,246,0.15); color: #8b5cf6; }
-.flow-insights .flow-title { color: #8b5cf6; }
+.flow-insights .step-dot { border-color: var(--purple); }
+.flow-insights .step-connector { background: var(--purple); }
+.flow-insights .step-num { background: color-mix(in srgb, var(--purple) 15%, transparent); color: var(--purple); }
+.flow-insights .flow-title { color: var(--purple); }
 
-.flow-csvimport .step-dot { border-color: #f97316; }
-.flow-csvimport .step-connector { background: #f97316; }
-.flow-csvimport .step-num { background: rgba(249,115,22,0.15); color: #f97316; }
-.flow-csvimport .flow-title { color: #f97316; }
+.flow-csvimport .step-dot { border-color: var(--amber); }
+.flow-csvimport .step-connector { background: var(--amber); }
+.flow-csvimport .step-num { background: color-mix(in srgb, var(--amber) 15%, transparent); color: var(--amber); }
+.flow-csvimport .flow-title { color: var(--amber); }
 </style>
 </head>
 <body>
@@ -185,10 +186,10 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
   <div id="title">
     <h1>Data Flows</h1>
     <p>11 critical paths &middot; <a href="index.html">&larr; Hub</a></p>
-    <div style="font-size:11px;color:#94a3b8;margin-top:8px;line-height:1.5;max-width:900px;">
+    <div style="font-size:11px;color:var(--text-2);margin-top:8px;line-height:1.5;max-width:900px;">
       Each flow is <strong>the spec</strong> for its feature &mdash; the steps contain enough detail to serve as product + implementation reference without opening the codebase. Flows are grouped under
-      <span style="color:#22c55e;font-weight:600;">MVP</span> (shipped, actively maintained &mdash; kept current with code in every PR) and
-      <span style="color:#f59e0b;font-weight:600;">MVP+</span> (planned / deferred &mdash; documented for context).
+      <span style="color:var(--green);font-weight:600;">MVP</span> (shipped, actively maintained &mdash; kept current with code in every PR) and
+      <span style="color:var(--amber);font-weight:600;">MVP+</span> (planned / deferred &mdash; documented for context).
       Rule: any PR that changes feature behavior must also update the matching flow's steps &mdash; code and spec stay in sync.
     </div>
   </div>
@@ -246,35 +247,35 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
     <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">8</span><span class="step-actor">Mobile App</span></div><div class="step-action">Composes final Home UI in the canonical order</div><div class="step-detail">Render order on Home: <strong>SafeToSpend</strong> (with 4-tab segmented control, default Until Payday) &rarr; <strong>Recent Transactions</strong> (top 10 from this dashboard call) &rarr; <strong>Upcoming Bills</strong> (top 5 from streams). Pull-to-refresh re-runs step 1 and invalidates all three React Query caches.</div><span class="step-latency">Total end-to-end: ~300-500ms</span></div></div>
   </div>
 
-  <div style="margin-top:40px;padding:24px;background:rgba(59,130,246,0.05);border:1px solid rgba(59,130,246,0.2);border-radius:8px;">
-    <div style="font-size:14px;font-weight:700;color:#3b82f6;margin-bottom:16px;letter-spacing:1px;">SPEC &mdash; DASHBOARD</div>
+  <div style="margin-top:40px;padding:24px;background:color-mix(in srgb, var(--blue) 5%, transparent);border:1px solid color-mix(in srgb, var(--blue) 20%, transparent);border-radius: var(--radius-base);">
+    <div style="font-size:14px;font-weight:700;color:var(--blue);margin-bottom:16px;letter-spacing:1px;">SPEC &mdash; DASHBOARD</div>
 
     <div style="margin-bottom:16px;">
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Endpoint contract</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">Endpoint contract</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
         <code>GET /api/dashboard</code> &rarr; <code>{ totalBalance: number, accountCount: number, accounts: BankAccount[], recentTransactions: Transaction[10], upcomingBills: UpcomingBill[5] }</code>. Auth required. Bouncer policies enforce <code>user_id === authenticatedUserId</code> on every preloaded relation. <code>upcomingBills[]</code> items carry <code>{ id, predictedAmount, predictedDate, confidence, recurrencePattern, merchant: { name }, accountName, accountType }</code> &mdash; same shape as <code>GET /predictions/bills</code> so mobile can use one component. No pagination &mdash; the limits are hard-coded (10 transactions, 5 bills) because this is a home screen summary.
       </div>
     </div>
 
     <div style="margin-bottom:16px;">
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Parallelism &amp; budget</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">Parallelism &amp; budget</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
         One <code>Promise.all()</code> over three queries. Target p95 &lt; 500ms. If any single query exceeds ~200ms we treat it as an N+1 or missing-index bug, not a design tradeoff. Home makes 3 parallel follow-ups after this call (SafeToSpend, Bills, and the notifications inbox badge) &mdash; all run off the same auth middleware cache so JWT re-verification is &lt;1ms.
       </div>
     </div>
 
     <div style="margin-bottom:16px;">
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Render order on Home (canonical)</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
-        1. SafeToSpend (4-tab control, default Until Payday) &mdash; see <a href="#flow-safetospend" onclick="showFlow('safetospend', event);return false;" style="color:#f59e0b;">Safe to Spend Flow</a><br>
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">Render order on Home (canonical)</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
+        1. SafeToSpend (4-tab control, default Until Payday) &mdash; see <a href="#flow-safetospend" onclick="showFlow('safetospend', event);return false;" style="color:var(--amber);">Safe to Spend Flow</a><br>
         2. Recent Transactions (top 10 from this dashboard call, tap row &rarr; transaction detail)<br>
-        3. Recurring Expenses (v5.2 &mdash; account-scope pills [Checking &amp; debit | Credit cards], dated list with category chips; depository view includes display-only card-payment rows badged "in Safe to Spend"; credit view is display-only card-billed recurring spend with explainer) &mdash; see <a href="#flow-predictions" onclick="showFlow('predictions', event);return false;" style="color:#22c55e;">Bill Predictions Flow</a>
+        3. Recurring Expenses (v5.2 &mdash; account-scope pills [Checking &amp; debit | Credit cards], dated list with category chips; depository view includes display-only card-payment rows badged "in Safe to Spend"; credit view is display-only card-billed recurring spend with explainer) &mdash; see <a href="#flow-predictions" onclick="showFlow('predictions', event);return false;" style="color:var(--green);">Bill Predictions Flow</a>
       </div>
     </div>
 
     <div>
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Security invariants</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">Security invariants</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
         &bull; All four queries filter on <code>user_id = auth.user.id</code>. Never trust query params for user scope.<br>
         &bull; Encrypted account fields (<code>officialName</code>, <code>mask</code>) auto-decrypt via Lucid computed properties. Plaid access tokens never leave the backend (<code>serializeAs: null</code>).<br>
         &bull; Logs use <code>redactForLogging()</code> &mdash; no PII in CloudWatch.
@@ -299,46 +300,46 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
 
   <!-- Plaid Sync Category Resolution Priority &mdash; canonical location.
        Mirrored on the AI Pipeline page for cross-reference. -->
-  <div style="margin-top:40px;padding:24px;background:rgba(168,85,247,0.05);border:1px solid rgba(168,85,247,0.2);border-radius:8px;">
-    <div style="font-size:14px;font-weight:700;color:#a855f7;margin-bottom:8px;letter-spacing:1px;">PLAID SYNC &mdash; CATEGORY RESOLUTION PRIORITY</div>
-    <div style="font-size:11px;color:#94a3b8;margin-bottom:16px;line-height:1.6;">
+  <div style="margin-top:40px;padding:24px;background:color-mix(in srgb, var(--purple) 5%, transparent);border:1px solid color-mix(in srgb, var(--purple) 20%, transparent);border-radius: var(--radius-base);">
+    <div style="font-size:14px;font-weight:700;color:var(--purple);margin-bottom:8px;letter-spacing:1px;">PLAID SYNC &mdash; CATEGORY RESOLUTION PRIORITY</div>
+    <div style="font-size:11px;color:var(--text-2);margin-bottom:16px;line-height:1.6;">
       For each incoming transaction, <code>category_id</code> is resolved by walking three tiers in order. The first tier that produces a non-null category wins. Applied in step 4c above. <strong>Guard above all tiers:</strong> if the existing row already has <code>categorySource='user'</code> (a direct per-transaction edit), sync skips category resolution entirely for that row &mdash; the user's choice always wins. <code>categorySource</code> enum: <code>'plaid' | 'rule' | 'ai' | 'user'</code> (<code>'rule'</code> = merchant-override tier below; <code>'user'</code> = direct per-transaction edit via <code>PATCH /transactions/:id</code>).
     </div>
 
-    <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;background:rgba(34,197,94,0.05);border-left:3px solid #22c55e;border-radius:4px;margin-bottom:10px;">
-      <span style="font-size:10px;font-weight:700;color:#22c55e;padding:3px 8px;background:rgba(34,197,94,0.15);border-radius:3px;letter-spacing:0.5px;">TIER 1</span>
+    <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;background:color-mix(in srgb, var(--green) 5%, transparent);border-left:3px solid var(--green);border-radius: var(--radius-xs);margin-bottom:10px;">
+      <span style="font-size:10px;font-weight:700;color:var(--green);padding:3px 8px;background:color-mix(in srgb, var(--green) 15%, transparent);border-radius: var(--radius-xs);letter-spacing:0.5px;">TIER 1</span>
       <div style="flex:1;">
-        <div style="font-size:13px;color:#e2e8f0;font-weight:600;margin-bottom:4px;">User Merchant Rule</div>
-        <div style="font-size:11px;color:#94a3b8;line-height:1.5;">
+        <div style="font-size:13px;color:var(--text);font-weight:600;margin-bottom:4px;">User Merchant Rule</div>
+        <div style="font-size:11px;color:var(--text-2);line-height:1.5;">
           <code>merchant_category_overrides</code> row (unique per user+merchant) &mdash; written when the user recategorizes a transaction and picks <strong>"Always for &lt;merchant&gt;"</strong> (<code>PATCH /transactions/:id</code> with <code>applyToMerchant: true</code> &rarr; <code>updateOrCreate</code>, last write wins). Applies to ALL future transactions from that merchant for that user. <code>categorySource='rule'</code>. Shipped end-to-end 2026-06-12: tap any row in the transactions list &rarr; category picker sheet (leaf categories grouped under primaries; bare primaries not selectable &mdash; the backend rejects them since the spending exclusion checks <code>parent_code</code>) &rarr; "Just this once" (edits only that row, <code>categorySource='user'</code>) vs "Always for &lt;merchant&gt;" (also writes this rule). The edited row itself is protected by the <code>categorySource='user'</code> clobber-guard above; this rule tier is what carries the correction FORWARD to new transactions.
         </div>
       </div>
     </div>
 
-    <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;background:rgba(79,140,255,0.05);border-left:3px solid #4f8cff;border-radius:4px;margin-bottom:10px;">
-      <span style="font-size:10px;font-weight:700;color:#4f8cff;padding:3px 8px;background:rgba(79,140,255,0.15);border-radius:3px;letter-spacing:0.5px;">TIER 2</span>
+    <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;background:color-mix(in srgb, var(--blue) 5%, transparent);border-left:3px solid var(--blue);border-radius: var(--radius-xs);margin-bottom:10px;">
+      <span style="font-size:10px;font-weight:700;color:var(--blue);padding:3px 8px;background:color-mix(in srgb, var(--blue) 15%, transparent);border-radius: var(--radius-xs);letter-spacing:0.5px;">TIER 2</span>
       <div style="flex:1;">
-        <div style="font-size:13px;color:#e2e8f0;font-weight:600;margin-bottom:4px;">Merchant AI Cache</div>
-        <div style="font-size:11px;color:#94a3b8;line-height:1.5;">
+        <div style="font-size:13px;color:var(--text);font-weight:600;margin-bottom:4px;">Merchant AI Cache</div>
+        <div style="font-size:11px;color:var(--text-2);line-height:1.5;">
           <code>merchants.ai_category_id</code> &mdash; set by Claude Haiku on a prior sync when Plaid's code was ambiguous (step 4b). <code>categorySource='ai'</code>. One AI call per unique merchant, reused forever. Ambiguous Plaid codes today: <code>GENERAL_SERVICES_OTHER</code>, <code>ENTERTAINMENT_OTHER</code>, <code>PERSONAL_CARE_OTHER</code>, <code>GENERAL_MERCHANDISE_GIFTS_AND_NOVELTIES</code>, null. Widen this set based on DB evidence &mdash; not blind speculation.
         </div>
       </div>
     </div>
 
-    <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;background:rgba(245,158,11,0.05);border-left:3px solid #f59e0b;border-radius:4px;margin-bottom:16px;">
-      <span style="font-size:10px;font-weight:700;color:#f59e0b;padding:3px 8px;background:rgba(245,158,11,0.15);border-radius:3px;letter-spacing:0.5px;">TIER 3</span>
+    <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;background:color-mix(in srgb, var(--amber) 5%, transparent);border-left:3px solid var(--amber);border-radius: var(--radius-xs);margin-bottom:16px;">
+      <span style="font-size:10px;font-weight:700;color:var(--amber);padding:3px 8px;background:color-mix(in srgb, var(--amber) 15%, transparent);border-radius: var(--radius-xs);letter-spacing:0.5px;">TIER 3</span>
       <div style="flex:1;">
-        <div style="font-size:13px;color:#e2e8f0;font-weight:600;margin-bottom:4px;">Plaid Detailed Code</div>
-        <div style="font-size:11px;color:#94a3b8;line-height:1.5;">
+        <div style="font-size:13px;color:var(--text);font-weight:600;margin-bottom:4px;">Plaid Detailed Code</div>
+        <div style="font-size:11px;color:var(--text-2);line-height:1.5;">
           Plaid's native PFC classification. <code>categorySource='plaid'</code>. Handles confident cases (coffee, gas, groceries) with zero AI cost. Used when no user override and no AI cache.
         </div>
       </div>
     </div>
 
-    <div style="font-size:11px;color:#94a3b8;line-height:1.6;padding-top:12px;border-top:1px solid rgba(168,85,247,0.15);">
-      <strong style="color:#cbd5e1;">Related:</strong>
-      See <a href="#flow-insights" onclick="showFlow('insights', event);return false;" style="color:#8b5cf6;">Spending Insights Flow</a> for how categorized transactions are aggregated into the donut + category list.
-      The same priority chain is visualized on the <a href="ai-pipeline-map.html" style="color:#8b5cf6;">AI Pipeline</a> page for the AI-first view of the system.
+    <div style="font-size:11px;color:var(--text-2);line-height:1.6;padding-top:12px;border-top:1px solid color-mix(in srgb, var(--purple) 15%, transparent);">
+      <strong style="color:var(--code-text);">Related:</strong>
+      See <a href="#flow-insights" onclick="showFlow('insights', event);return false;" style="color:var(--purple);">Spending Insights Flow</a> for how categorized transactions are aggregated into the donut + category list.
+      The same priority chain is visualized on the <a href="ai-pipeline-map.html" style="color:var(--purple);">AI Pipeline</a> page for the AI-first view of the system.
     </div>
   </div>
 </div>
@@ -379,61 +380,61 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
     <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">15</span><span class="step-actor">Coach tracing</span></div><div class="step-action">The whole turn is exported as one trace to Arize AX (when enabled)</div><div class="step-detail">Created in <code>sendMessage</code> via <code>startCoachTurn()</code> (<code>app/services/tracing/coach_tracing.ts</code>) before the stream starts; passed into <code>runCoachTurn</code>. Span tree: one <strong>AGENT</strong> span <code>coach.turn</code> (question, answer, chat id as session, rendered date + timezone, prompt-version fingerprint) &rarr; one <strong>LLM</strong> span <code>coach.llm</code> per trip round the tool loop (messages sent incl. system prompt, tool calls requested, stop reason, prompt/completion/cache tokens) and one <strong>TOOL</strong> span <code>coach.tool</code> per tool call (arguments + the full JSON output &mdash; the only record of what the Coach actually saw). Masked before export by <code>createTraceMasker</code> (<code>trace_masking.ts</code>): name, email, account/routing numbers, account masks, Plaid ids, long digit runs and opaque tokens are replaced; amounts, dates and merchants are kept so answers can be graded. Content is attached only for users in <code>TRACE_CONTENT_USER_IDS</code>; everyone else is traced structurally (tool names, tokens, timings). Exported by a <code>BatchSpanProcessor</code> registered in <code>start/tracing.ts</code> &mdash; off unless <code>ARIZE_ENABLED=true</code> with <code>ARIZE_SPACE_ID</code> + <code>ARIZE_API_KEY</code>; when off every span is a no-op.</div><span class="step-latency">Off the response path (batched)</span></div></div>
   </div>
 
-  <div style="margin-top:40px;padding:24px;background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.2);border-radius:8px;">
-    <div style="font-size:14px;font-weight:700;color:#00d4ff;margin-bottom:16px;letter-spacing:1px;">SPEC &mdash; AI COACH</div>
+  <div style="margin-top:40px;padding:24px;background:color-mix(in srgb, var(--cyan) 5%, transparent);border:1px solid color-mix(in srgb, var(--cyan) 20%, transparent);border-radius: var(--radius-base);">
+    <div style="font-size:14px;font-weight:700;color:var(--cyan);margin-bottom:16px;letter-spacing:1px;">SPEC &mdash; AI COACH</div>
 
     <div style="margin-bottom:16px;">
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Models</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">Models</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
         Tide Coach (streaming, tool use): <code>global.anthropic.claude-sonnet-4-6</code>. Intent classifier (disabled today, reserved for quota recovery): <code>us.anthropic.claude-haiku-4-5-20251001-v1:0</code>. Access via AWS Bedrock Converse / ConverseStream APIs. Custom HTTP strategy is used for Bedrock AgentCore JWT auth (AWS SDK cannot &mdash; see CLAUDE.md).
       </div>
     </div>
 
     <div style="margin-bottom:16px;">
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Context window</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">Context window</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
         <code>chatConfig.maxContextMessages = 20</code> (chronological). Blank messages are filtered out before sending to Bedrock (empty text blocks crash ConverseStream). Alternating user/assistant roles enforced &mdash; defensive cleanup handles the rare queue-lag gap.
       </div>
     </div>
 
     <div style="margin-bottom:16px;">
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Tool loop</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">Tool loop</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
         Max <code>MAX_TOOL_ITERATIONS = 10</code> per turn. All tools run against a read-only DB connection. Bouncer policies still enforced: <code>user_id === authenticatedUserId</code> at every query. <code>calculate_safe_to_spend</code> delegates to the shared <code>safe_to_spend_service.ts</code> &mdash; Home card and AI Coach return byte-for-byte identical numbers. <strong>Home parity (Epic 0):</strong> the tool result is shaped by the pure <code>projectSafeToSpendForCoach()</code> projection so every field the Home card renders is reachable in ONE call (no follow-up tool call, no Coach-side arithmetic); a "Home parity principle" system-prompt rule (F0.2) forbids re-computing these numbers, and the <code>coach_safe_to_spend_parity.spec.ts</code> unit test (F0.4) fails CI if a field is ever dropped.
       </div>
     </div>
 
     <div style="margin-bottom:16px;">
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Streaming transport (React Native quirk)</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">Streaming transport (React Native quirk)</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
         Mobile client uses <code>XMLHttpRequest</code> + <code>onprogress</code>, not <code>fetch()</code>. RN's fetch does not expose <code>response.body</code> as a ReadableStream. See <code>apps/mobile/src/services/sse-client.ts</code>. Server writes <code>text/event-stream</code> with <code>X-Accel-Buffering: no</code> to disable CDN buffering.
       </div>
     </div>
 
     <div style="margin-bottom:16px;">
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Persistence contract</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">Persistence contract</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
         User message: synchronous write BEFORE history load (invariant for alternating-role contract). Assistant message: BullMQ <code>chat-messages</code> queue with 30-day failure retention (never reduce). Synchronous fallback if queue dispatch fails. Partial responses persisted even on streaming errors.
       </div>
     </div>
 
     <div style="margin-bottom:16px;">
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Tracing (evals input)</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">Tracing (evals input)</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
         One OpenInference trace per turn &rarr; Arize AX over OTLP (<code>https://otlp.arize.com/v1/traces</code>), project <code>ARIZE_PROJECT_NAME</code> (default <code>tide-coach</code>). Span tree AGENT &rarr; LLM (per loop step) + TOOL (per call). Kept: amounts, dates, merchants. Masked: name, email, account/routing numbers, masks, Plaid ids, digit runs &ge;8, opaque tokens. Content only for allowlisted users (<code>TRACE_CONTENT_USER_IDS</code>, dev: 53). Built by hand, not with auto-instrumentation (undocumented for <code>ConverseStream</code>, and it cannot see tools). Purpose: every Coach answer can be graded against exactly what the Coach was shown &mdash; see <code>docs/EVALS_STRATEGY.md</code> &sect;7.
       </div>
     </div>
 
     <div style="margin-bottom:16px;">
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Throttling &amp; quota</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">Throttling &amp; quota</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
         Bedrock ThrottlingException triggers exponential backoff (1s / 2s / 4s) &mdash; see commit <code>2e33ff4</code>. Intent classification was disabled to free quota for the chat stream &mdash; re-enable only after AWS quota increase. Circuit breaker on AI service: 5 failures &rarr; open 30s. All AI calls use the shared circuit breaker + retry wrapper per CLAUDE.md.
       </div>
     </div>
 
     <div>
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Error paths covered</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">Error paths covered</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
         &bull; Bedrock unavailable &rarr; 503 before opening stream<br>
         &bull; Throttle &rarr; retry w/ backoff, surface only after exhausting attempts<br>
         &bull; Streaming error mid-flight &rarr; persist partial text, emit <code>event: error</code> + <code>done</code><br>
@@ -477,12 +478,12 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
     <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">12</span><span class="step-actor">Downstream consumers</span></div><div class="step-action">The same <code>recurring_streams</code> table feeds two other flows</div><div class="step-detail">&bull; <strong>Safe to Spend</strong> (v5 ledger) places bill occurrences (<code>conf &ge; 0.3</code>, category-gated, depository-scoped &mdash; v5.2, occurrence-expanded) and band-gated income (depository-sourced only) on the daily ledger &mdash; see that flow.<br>&bull; <strong>AI Coach</strong> <code>query_bills_predictions</code> tool reads streams directly via the read-only connection.<br>Single source of truth &rarr; all three UIs quote the same numbers.</div></div></div>
   </div>
 
-  <div style="margin-top:40px;padding:24px;background:rgba(34,197,94,0.05);border:1px solid rgba(34,197,94,0.2);border-radius:8px;">
-    <div style="font-size:14px;font-weight:700;color:#22c55e;margin-bottom:16px;letter-spacing:1px;">SPEC &mdash; BILL PREDICTIONS</div>
+  <div style="margin-top:40px;padding:24px;background:color-mix(in srgb, var(--green) 5%, transparent);border:1px solid color-mix(in srgb, var(--green) 20%, transparent);border-radius: var(--radius-base);">
+    <div style="font-size:14px;font-weight:700;color:var(--green);margin-bottom:16px;letter-spacing:1px;">SPEC &mdash; BILL PREDICTIONS</div>
 
     <div style="margin-bottom:16px;">
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Detection pipeline (5 stages)</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">Detection pipeline (5 stages)</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
         1. Normalize description (strip processor prefixes, phone numbers, suffixes, city/state).<br>
         2. Fuzzy-group by merchant (Dice 0.75). Drop groups with &lt;2 occurrences.<br>
         3. Detect period against <code>KNOWN_PERIODS</code> with tolerance bands.<br>
@@ -492,15 +493,15 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
     </div>
 
     <div style="margin-bottom:16px;">
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Periods and tolerances</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">Periods and tolerances</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
         <code>weekly=7 (&plusmn;2)</code>, <code>biweekly=14 (&plusmn;3)</code>, <code>semi_monthly=15 (&plusmn;3)</code>, <code>monthly=30 (&plusmn;5)</code>, <code>quarterly=91 (&plusmn;10)</code>, <code>annual=365 (&plusmn;20)</code>. First match wins (narrowest tolerance). Tighten bands only with DB evidence &mdash; false positives are cheap, missed subscriptions are not.
       </div>
     </div>
 
     <div style="margin-bottom:16px;">
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Thresholds (shared with consumers)</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">Thresholds (shared with consumers)</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
         Write-side: <code>MIN_CONFIDENCE = 0.3</code> (stream must clear this to persist).<br>
         Read-side: Recurring Expenses UI shows everything &ge; 0.3 (full list); badges render the server-computed <code>confidenceBand</code> (high &ge; 0.85, medium &ge; 0.5).<br>
         Safe to Spend bills: &ge; 0.3 conservative (to avoid overspending).<br>
@@ -509,22 +510,22 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
     </div>
 
     <div style="margin-bottom:16px;">
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Staleness + refresh</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">Staleness + refresh</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
         On-demand refresh at read time when the oldest stream is &gt;24h. No background job dependency &mdash; this was an explicit MVP decision. The Transaction Sync flow also enqueues <code>GeneratePredictionsJob</code> after every sync, which refreshes the same streams when the queue worker is running. Either path keeps streams current.
       </div>
     </div>
 
     <div style="margin-bottom:16px;">
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Storage: <code>recurring_streams</code></div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">Storage: <code>recurring_streams</code></div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
         17 columns. Unique key: <code>(userId, normalizedMerchantName, frequency)</code>. Key fields: <code>streamType</code> (<code>bill</code>/<code>income</code>/<code>subscription</code>), <code>detectedPeriodDays</code>, <code>anchorDay</code>, <code>averageAmount</code>, <code>lastAmount</code>, <code>predictedNextAmount</code>, <code>predictedNextDate</code>, <code>lastObservedDate</code>, <code>confidenceScore</code>, <code>occurrenceCount</code>, <code>isActive</code>, <code>bankAccountId</code>.
       </div>
     </div>
 
     <div>
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">MVP+ (deferred)</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">MVP+ (deferred)</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
         &bull; Swipe-to-mark-paid from mobile (needs an <code>is_paid</code>-style column on <code>recurring_streams</code> or a separate per-occurrence table; old <code>bills_predictions.is_paid</code> feature was dropped with the table)<br>
         &bull; Variable-amount bill support (e.g., utility bills that change month-to-month)<br>
         &bull; User-editable streams (pause, rename, delete false positives)<br>
@@ -540,18 +541,18 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
     <table style="width:100%; border-collapse:collapse; margin-top:8px; font-size:11px;">
       <thead>
         <tr style="background:rgba(255,255,255,0.03);">
-          <th style="text-align:left; padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:#94a3b8;">Category</th>
-          <th style="text-align:left; padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:#94a3b8;">Captured?</th>
-          <th style="text-align:left; padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:#94a3b8;">How</th>
+          <th style="text-align:left; padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:var(--text-2);">Category</th>
+          <th style="text-align:left; padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:var(--text-2);">Captured?</th>
+          <th style="text-align:left; padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:var(--text-2);">How</th>
         </tr>
       </thead>
       <tbody>
-        <tr><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Past debit / checking spending (cleared)</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:#22c55e;">&#10003;</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);"><code>spendableBalance</code> reads <code>availableBalance</code> from Plaid <strong>checking</strong> accounts only (v4.9 — savings excluded as deliberate behavioral choice; surfaced separately as <code>setAsideAccounts</code>) &mdash; cleared txns already reduced the balance</td></tr>
-        <tr><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Past debit / checking spending (pending)</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:#22c55e;">&#10003;</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Plaid <code>availableBalance</code> subtracts pending debits automatically. Pending charges typically appear within minutes-to-hours of swipe; posted charges lag 1-3 days</td></tr>
-        <tr><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Past credit-card spending</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:#22c55e;">&#10003;</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">per-card <code>moneyOut.ccDue</code> on the DUE DATE via the statement ladder (statement net of payments &rarr; stream estimate &rarr; minimum &rarr; <code>ccDueUnknown</code>); <code>creditCardDebt</code> = total revolving balance, DISPLAY ONLY (v5)</td></tr>
-        <tr><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Future recurring bills (rent, Netflix, gym)</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:#22c55e;">&#10003;</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);"><code>upcomingBills</code> from <code>recurring_streams</code> with conf &ge; 0.3</td></tr>
-        <tr><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Future recurring income (paycheck)</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:#22c55e;">&#10003;</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);"><code>expectedIncomeTotal</code> from income streams by unified band (high full, medium p25 "estimated", low excluded); v5.3 sums all confirmed multi-account slices</td></tr>
-        <tr><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Future non-recurring discretionary habits (dinner, Target, impulse) &mdash; <strong>checking/debit only</strong></td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:#22c55e;">&#10003;</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);"><code>moneyOut.habits</code> (v5.4 &mdash; SUBTRACTED like essentials; was context-only v4.6&ndash;v5.2). Per-weekday robust mean over non-recurring, non-essential checking/debit spend, spread across every ledger day; per-window methodology metadata in <code>typicalDiscretionary</code> (null &lt;60d &rarr; term omitted). CC swipes are deliberately OUT (the ccDue ladder carries them). UI: &ldquo;Spending habits&rdquo; Money Out row tagged &ldquo;estimated&rdquo;. <a href="safe-to-spend-typical-spending-spec.html" style="color:#fbbf24; text-decoration:underline; font-weight:600;">See the full math spec &rarr;</a></td></tr>
+        <tr><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Past debit / checking spending (cleared)</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:var(--green);">&#10003;</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);"><code>spendableBalance</code> reads <code>availableBalance</code> from Plaid <strong>checking</strong> accounts only (v4.9 — savings excluded as deliberate behavioral choice; surfaced separately as <code>setAsideAccounts</code>) &mdash; cleared txns already reduced the balance</td></tr>
+        <tr><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Past debit / checking spending (pending)</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:var(--green);">&#10003;</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Plaid <code>availableBalance</code> subtracts pending debits automatically. Pending charges typically appear within minutes-to-hours of swipe; posted charges lag 1-3 days</td></tr>
+        <tr><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Past credit-card spending</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:var(--green);">&#10003;</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">per-card <code>moneyOut.ccDue</code> on the DUE DATE via the statement ladder (statement net of payments &rarr; stream estimate &rarr; minimum &rarr; <code>ccDueUnknown</code>); <code>creditCardDebt</code> = total revolving balance, DISPLAY ONLY (v5)</td></tr>
+        <tr><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Future recurring bills (rent, Netflix, gym)</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:var(--green);">&#10003;</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);"><code>upcomingBills</code> from <code>recurring_streams</code> with conf &ge; 0.3</td></tr>
+        <tr><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Future recurring income (paycheck)</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:var(--green);">&#10003;</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);"><code>expectedIncomeTotal</code> from income streams by unified band (high full, medium p25 "estimated", low excluded); v5.3 sums all confirmed multi-account slices</td></tr>
+        <tr><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Future non-recurring discretionary habits (dinner, Target, impulse) &mdash; <strong>checking/debit only</strong></td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:var(--green);">&#10003;</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);"><code>moneyOut.habits</code> (v5.4 &mdash; SUBTRACTED like essentials; was context-only v4.6&ndash;v5.2). Per-weekday robust mean over non-recurring, non-essential checking/debit spend, spread across every ledger day; per-window methodology metadata in <code>typicalDiscretionary</code> (null &lt;60d &rarr; term omitted). CC swipes are deliberately OUT (the ccDue ladder carries them). UI: &ldquo;Spending habits&rdquo; Money Out row tagged &ldquo;estimated&rdquo;. <a href="safe-to-spend-typical-spending-spec.html" style="color:var(--amber); text-decoration:underline; font-weight:600;">See the full math spec &rarr;</a></td></tr>
       </tbody>
     </table>
   </div>
@@ -591,61 +592,61 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
 
     <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">9</span><span class="step-actor">PlaidService</span></div><div class="step-action">Registers webhook URL with Plaid</div><div class="step-detail">Plaid is told to <code>POST /api/webhooks/plaid</code> on future events (<code>TRANSACTIONS</code>: <code>INITIAL_UPDATE</code>, <code>DEFAULT_UPDATE</code>, <code>HISTORICAL_UPDATE</code>; <code>ITEM</code>: <code>ERROR</code>, <code>PENDING_EXPIRATION</code>). Webhook endpoint is HMAC-verified via Plaid's <code>verification_key_id</code> JWKS. Unsigned hits are rejected.</div></div></div>
 
-    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">10</span><span class="step-actor">Worker</span></div><div class="step-action">Enqueues <code>SyncDailyTransactionsJob</code> for initial 30-day backfill</div><div class="step-detail">Queue: <code>transactions-sync</code>. First sync uses a 30-day window (matching the daily cron's 30-day window since v5.3) to give the app immediate historical context for categorization and recurrence detection. Same circuit-breaker + retry wrapper (<code>5 failures &rarr; open 30s</code>, <code>3 attempts with 2s/4s/8s backoff</code>). See the <a href="#flow-sync" onclick="showFlow('sync', event);return false;" style="color:#a855f7;">Transaction Sync Flow</a> for the category resolution priority applied to these rows.</div></div></div>
+    <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">10</span><span class="step-actor">Worker</span></div><div class="step-action">Enqueues <code>SyncDailyTransactionsJob</code> for initial 30-day backfill</div><div class="step-detail">Queue: <code>transactions-sync</code>. First sync uses a 30-day window (matching the daily cron's 30-day window since v5.3) to give the app immediate historical context for categorization and recurrence detection. Same circuit-breaker + retry wrapper (<code>5 failures &rarr; open 30s</code>, <code>3 attempts with 2s/4s/8s backoff</code>). See the <a href="#flow-sync" onclick="showFlow('sync', event);return false;" style="color:var(--purple);">Transaction Sync Flow</a> for the category resolution priority applied to these rows.</div></div></div>
 
     <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">11</span><span class="step-actor">Backend API</span></div><div class="step-action">Returns success + new accounts to mobile</div><div class="step-detail">Response shape: <code>{ bankConnection: { id, institutionName }, accounts: [{ id, name, mask, type, availableBalance }] }</code>. Mobile invalidates React Query caches for <code>['dashboard']</code>, <code>['accounts']</code>, <code>['bills']</code>, <code>['safe-to-spend']</code> so the next render shows the new bank everywhere. Initial transaction backfill is still running async &mdash; transactions appear within ~10-30s.</div></div></div>
 
     <div class="step"><div class="step-line"><div class="step-dot"></div><div class="step-connector"></div></div><div class="step-content"><div class="step-header"><span class="step-num">12</span><span class="step-actor">Plaid Webhook</span></div><div class="step-action">Ongoing refresh via <code>POST /api/webhooks/plaid</code></div><div class="step-detail"><code>HISTORICAL_UPDATE</code> (full backfill complete) / <code>DEFAULT_UPDATE</code> (new transactions) / <code>TRANSACTIONS_REMOVED</code> (tx corrected) / <code>ITEM_ERROR</code> (credentials expired &mdash; user must re-auth) events fan out to <code>ProcessWebhookEventJob</code>. Each triggers a targeted sync for the affected item &mdash; much cheaper than the full 2 AM cron.</div></div></div>
   </div>
 
-  <div style="margin-top:40px;padding:24px;background:rgba(245,158,11,0.05);border:1px solid rgba(245,158,11,0.2);border-radius:8px;">
-    <div style="font-size:14px;font-weight:700;color:#f59e0b;margin-bottom:16px;letter-spacing:1px;">SPEC &mdash; BANK CONNECTIONS</div>
+  <div style="margin-top:40px;padding:24px;background:color-mix(in srgb, var(--amber) 5%, transparent);border:1px solid color-mix(in srgb, var(--amber) 20%, transparent);border-radius: var(--radius-base);">
+    <div style="font-size:14px;font-weight:700;color:var(--amber);margin-bottom:16px;letter-spacing:1px;">SPEC &mdash; BANK CONNECTIONS</div>
 
     <div style="margin-bottom:16px;">
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">SDK &amp; build requirements</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">SDK &amp; build requirements</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
         Mobile: <code>react-native-plaid-link-sdk</code> v12.8.0 (native module, NOT WebView). Requires a custom Expo dev build &mdash; Expo Go cannot load native modules. iOS build via <code>xcodebuild</code>, installed via <code>xcrun devicectl</code>. Android: standard <code>expo prebuild</code> + Gradle build.
       </div>
     </div>
 
     <div style="margin-bottom:16px;">
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">OAuth redirect plumbing (Chase, Wells Fargo, &hellip;)</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">OAuth redirect plumbing (Chase, Wells Fargo, &hellip;)</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
         Backend passes <code>redirect_uri</code> = universal link URL to <code>linkTokenCreate</code>. iOS app must declare the matching domain in <code>Tide.entitlements</code> (<code>applinks:&lt;domain&gt;</code>) and the host must serve <code>apple-app-site-association</code> with this app's bundle + team ID. Without either, the Link session hangs at the OAuth return step.
       </div>
     </div>
 
     <div style="margin-bottom:16px;">
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Secret handling</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">Secret handling</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
         Plaid <code>access_token</code> is stored AES-256 encrypted on <code>bank_connections.access_token</code> with <code>serializeAs: null</code> &mdash; never appears in any API response, never logged. All logs use <code>redactForLogging()</code>. <code>client_id</code>/<code>secret</code> live in backend env vars, never shipped to mobile.
       </div>
     </div>
 
     <div style="margin-bottom:16px;">
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Resilience</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">Resilience</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
         All Plaid calls routed through the <code>BankDataProvider</code> interface with circuit breaker (<code>failureThreshold=5</code>, <code>resetTimeoutMs=30000</code>, <code>requestTimeoutMs=10000</code>) and exponential backoff retry (3 attempts: 2s/4s/8s). Circuit open &rarr; fail fast; user sees "Connection paused, try again in 30s" rather than a cascade of errors.
       </div>
     </div>
 
     <div style="margin-bottom:16px;">
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Webhook contract</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">Webhook contract</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
         <code>POST /api/webhooks/plaid</code> &mdash; HMAC-verified via Plaid JWKS (<code>verification_key_id</code>). Events handled: <code>TRANSACTIONS.INITIAL_UPDATE</code>, <code>TRANSACTIONS.HISTORICAL_UPDATE</code>, <code>TRANSACTIONS.DEFAULT_UPDATE</code>, <code>TRANSACTIONS.TRANSACTIONS_REMOVED</code>, <code>ITEM.ERROR</code>, <code>ITEM.PENDING_EXPIRATION</code>. Each maps to <code>ProcessWebhookEventJob</code>. Unsigned hits &rarr; 401.
       </div>
     </div>
 
     <div style="margin-bottom:16px;">
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Production readiness</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">Production readiness</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
         Plaid production config prepared; gated on Transactions product approval. Once approved, swap <code>PLAID_ENV=sandbox</code> &rarr; <code>PLAID_ENV=production</code> and rotate <code>PLAID_SECRET</code>. Sandbox-specific heuristics (pending/posted dedup fallback in Spending Insights) stay valid in prod because real banks also sometimes omit the FK.
       </div>
     </div>
 
     <div>
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">MVP+ (deferred)</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">MVP+ (deferred)</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
         &bull; Disconnect / re-auth UI from the Accounts screen (backend <code>itemRemove</code> exists, mobile UI not shipped)<br>
         &bull; Multi-item management (labeling, hiding specific accounts from SafeToSpend)<br>
         &bull; Auto-recovery flow for <code>ITEM_ERROR</code> (push + deep link back into Plaid Link update mode)<br>
@@ -687,28 +688,28 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
   </div>
 
   <!-- Inline spec &mdash; embedded so the flow page is the single source of truth. -->
-  <div style="margin-top:40px;padding:24px;background:rgba(139,92,246,0.05);border:1px solid rgba(139,92,246,0.2);border-radius:8px;">
-    <div style="font-size:14px;font-weight:700;color:#8b5cf6;margin-bottom:16px;letter-spacing:1px;">SPEC &mdash; SPENDING INSIGHTS</div>
+  <div style="margin-top:40px;padding:24px;background:color-mix(in srgb, var(--purple) 5%, transparent);border:1px solid color-mix(in srgb, var(--purple) 20%, transparent);border-radius: var(--radius-base);">
+    <div style="font-size:14px;font-weight:700;color:var(--purple);margin-bottom:16px;letter-spacing:1px;">SPEC &mdash; SPENDING INSIGHTS</div>
 
     <div style="margin-bottom:16px;">
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Timeframes (MVP)</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">Timeframes (MVP)</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
         <code>day</code> &middot; today only &middot; <code>week</code> &middot; rolling last 7 days (not calendar week) &middot; <code>month</code> &middot; calendar month-to-date (1st &rarr; today).
         Label shown to user: "Today" / "Last 7 Days" / "This Month" &mdash; week is honest about the rolling window.
       </div>
     </div>
 
     <div style="margin-bottom:16px;">
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Category taxonomy</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">Category taxonomy</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
         Primaries come from Plaid PFC (16 categories) plus three Tide extensions: <code>SOFTWARE_AND_TECH</code> (single catch-all subcategory <code>SOFTWARE_AND_TECH_ALL</code>), <code>SUBSCRIPTIONS</code> (entertainment subs), and <code>CASH</code> (ATM/bank-counter withdrawals; icon <code>cash-outline</code>, color <code>#30B0C7</code>). Reparented Plaid codes (original codes kept so Plaid sync still matches): <code>ENTERTAINMENT_MUSIC_AND_AUDIO</code> + <code>ENTERTAINMENT_TV_AND_MOVIES</code> &rarr; <code>SUBSCRIPTIONS</code>; <code>GENERAL_SERVICES_INSURANCE</code> &rarr; <code>TRANSFER_OUT</code> (insurance is investment-like, not discretionary spending); <code>TRANSFER_OUT_WITHDRAWAL</code> &rarr; <code>CASH</code> (2026-06-12 &mdash; cash leaving your hand IS spending, so withdrawals count in the donut instead of hiding in the excluded Transfers footer; genuine inter-account transfers &mdash; savings, investment, account transfer &mdash; stay under <code>TRANSFER_OUT</code>, excluded).
         <br>Seeded via <code>category_seeder.ts</code> from <code>database/data/category_taxonomy.ts</code>, which builds the list from two committed files: <code>plaid_pfc_taxonomy.csv</code> (Plaid PFC <strong>v1</strong> as Tide curates it) and <code>plaid_pfc_taxonomy_v2.csv</code> (Plaid's combined v2/v1 file, verbatim). PFCv2 is a superset of v1, and Plaid customers created after Dec 2025 receive v2 codes. <strong>2026-10-03 fix:</strong> Tide only knew v1, and Plaid codes match Tide categories by EXACT code, so 26 v2 codes (<code>INCOME_SALARY</code>, the Zelle/Venmo <code>*_FROM_APPS</code> transfers, …) were saved uncategorised and Income read $0. All v2 codes v1 lacks are now seeded. The new v2 primary <code>LOAN_DISBURSEMENTS</code> goes under <code>TRANSFER_IN</code> (as v1 filed loan payouts), and the v2 catch-all <code>OTHER_OTHER</code> is deliberately left uncategorised (<code>INTENTIONALLY_UNMAPPED</code>). <code>resolveCategoryCode()</code>: an <code>INCOME_*</code> code on a <strong>credit card</strong> is a card payment (<code>LOAN_PAYMENTS_CREDIT_CARD_PAYMENT</code>), never income, because Plaid v2 labels a card's "AUTOMATIC PAYMENT – THANK YOU" as salary. A Plaid code with no Tide category now logs <code>[Sync] Plaid category codes with no Tide category…</code>, and <code>category_taxonomy.spec.ts</code> fails if any v2 code lacks a home. Repair for existing rows: <code>node ace categories:backfill-plaid-codes [--apply]</code> (only rows with no category). <code>NAME_OVERRIDES</code> map handles display names for reparented codes (<code>TRANSFER_OUT_WITHDRAWAL</code> displays as "Cash Withdrawal").
       </div>
     </div>
 
     <div style="margin-bottom:16px;">
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Filters &mdash; applied in order</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">Filters &mdash; applied in order</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
         1. <strong>Pending dedup</strong> (<code>excludeSupersededPending</code>) &mdash; hides pending rows that have a posted sibling. Primary rule: <code>pending_transaction_id</code> FK; heuristic fallback: user + account + merchant + amount within 7 days.
         <br>2. <strong>CC double-side</strong> (<code>excludeCreditCardSideOfCcPayment</code>) &mdash; suppresses the credit-card-account side of <code>LOAN_PAYMENTS_CREDIT_CARD_PAYMENT</code>. Applied unconditionally in the insights query (per-account semantics don't apply here since this is aggregate spending).
         <br>3. <strong>CC checking-side partition</strong> (<code>classifyDetailRow</code>) &mdash; the surviving CHECKING-side debit of a CC bill payment is partitioned into <code>excluded.ccPayments</code>, NOT spending: the card swipes already counted in their own categories at purchase time, so counting the bill too would double-count every dollar ($500 of purchases + the $500 payment must equal $500 spent, not $1,000). Other <code>LOAN_PAYMENTS</code> leaves (auto/student/mortgage) remain spending &mdash; real money out, not duplicated.
@@ -717,8 +718,8 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
     </div>
 
     <div style="margin-bottom:16px;">
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Donut money math &mdash; positive-only (2026-06-12)</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">Donut money math &mdash; positive-only (2026-06-12)</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
         Per-primary amounts are NET of refunds, so a refund-heavy category can net negative &mdash; and a negative addend in a ratio denominator breaks the 100% invariant (field repro: "Software &amp; Tech &minus;$40.72, &minus;13.8%" while the other percentages summed to ~113.9%, plus garbled negative donut arcs). Spec:
         <br>&bull; <strong>Slice value</strong> = <code>max(primaryNet, 0)</code> &mdash; negative nets are never slices.
         <br>&bull; <strong><code>totalSpent</code></strong> (donut center) = <code>&Sigma; max(primaryNet, 0)</code> &mdash; positive nets only.
@@ -729,8 +730,8 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
     </div>
 
     <div style="margin-bottom:16px;">
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Drill-in parity contract (2026-06-12)</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">Drill-in parity contract (2026-06-12)</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
         The drill-in list re-queries through <code>GET /transactions</code>, a DIFFERENT endpoint than the donut &mdash; so filter + aggregation semantics are shared explicitly (pure helpers in <code>transaction_list_query.ts</code>, unit-tested in <code>transaction_list_query.spec.ts</code>):
         <br>1. <strong>Account scope</strong> &mdash; <code>/transactions</code> accepts <code>bankAccountIds[]</code> (same validator shape as insights), composed with the legacy single <code>bankAccountId</code> as a deduplicated UNION (<code>composeAccountIds()</code>). Every Spending drill path passes the donut's account selection as <code>accountIds</code> and the list applies it. Ownership = the endpoint's <code>user_id</code> scope (foreign ids yield zero rows), identical to insights.
         <br>2. <strong>Pending</strong> &mdash; drill-ins default to <code>isPending=false</code> (the donut's <code>includePending=false</code>); the Posted / All / Pending chips override explicitly. The superseded-pending dedupe (<code>excludeSupersededPending</code>) is always on in the list, matching the donut.
@@ -740,8 +741,8 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
     </div>
 
     <div style="margin-bottom:16px;">
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Footer behavior (what's "Not counted in spending")</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">Footer behavior (what's "Not counted in spending")</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
         Hidden entirely: Income, Transfers-in (not spending-adjacent).
         <br>Shown + tappable: Transfers-out (tap &rarr; drills into the Transfer Out primary via <code>parentCategoryCode=TRANSFER_OUT</code>; ATM withdrawals no longer appear here &mdash; they're the CASH spending category now) and Uncategorized (tap &rarr; drills into <code>all-transactions</code> with <code>uncategorized=1</code> + the current window's <code>startDate</code>/<code>endDate</code> + an "Uncategorized" context header; backend filter: <code>GET /transactions?uncategorized=true</code> &rarr; <code>category_id IS NULL</code>). Both footer drill-ins also forward the account-chip selection as <code>accountIds</code> &mdash; footer totals are account-filtered, so their drill-ins must be too.
         <br>Shown, info-only (not tappable): <strong>Credit card payments</strong> (<code>excluded.ccPayments</code> &gt; 0) &mdash; the checking-side CC bill payments; the &#9432; explains that every purchase already counted in its own category at swipe time, so counting the bill would double-count.
@@ -750,8 +751,8 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
     </div>
 
     <div style="margin-bottom:16px;">
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Mobile cache freshness (2026-06-12)</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">Mobile cache freshness (2026-06-12)</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
         Three mechanisms keep the donut honest beyond the 60s staleTime:
         <br>1. <strong>Focus-driven refetch</strong> &mdash; React Query's <code>focusManager</code> is bridged to <code>AppState</code> in <code>services/query-client.ts</code> (app-wide, at client creation). RN never fires browser visibility events, so without this bridge <code>refetchOnWindowFocus</code> is inert; with it, returning to the foreground refetches every stale active query.
         <br>2. <strong>Sync invalidation</strong> &mdash; every transaction-landing path (Plaid connect <code>exchangeToken</code>, re-link <code>openRelink</code> in <code>use-plaid-link.ts</code>, pull-to-refresh <code>useSyncBankData</code> in <code>use-bank-connections.ts</code>) invalidates the shared <code>TRANSACTION_DERIVED_QUERY_KEYS</code> list exported from <code>query-client.ts</code> &mdash; <code>transactions</code>, <code>spending-by-category</code>, <code>safe-to-spend</code>, <code>dashboard</code>, <code>predictions</code>, <code>bank-accounts</code> &mdash; so newly synced transactions show up here without waiting out staleTime.
@@ -760,8 +761,8 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
     </div>
 
     <div style="margin-bottom:16px;">
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">One spending-math core &mdash; all "what did I spend" surfaces (2026-06-12)</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">One spending-math core &mdash; all "what did I spend" surfaces (2026-06-12)</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
         Three surfaces used to compute spending with DIFFERENT math (the Coach tool summed <code>transaction_type='debit'</code> rows with pending included and server-local windows; the Home chart summed ALL transactions &mdash; income netted against spending &mdash; and mobile hid the sign with <code>Math.abs</code>). All now compose the same two layers: <code>spending_query.ts</code> (SQL predicates: pending excluded by default, superseded-pending dedupe, CC double-side) + <code>spending_insights_math.ts</code> (pure: partition, positive-only aggregation, window resolution; unit-tested without a DB).
         <br>&bull; <strong>Spending tab donut</strong> &mdash; <code>GET /insights/spending-by-category</code> (this flow). The reference surface.
         <br>&bull; <strong>Home-tab Spending chart</strong> &mdash; <code>GET /transactions/monthly-summary?months=N&amp;timezone=&lt;IANA&gt;</code> &rarr; <code>fetchMonthlySpendingRows()</code> + <code>aggregateMonthlySpending()</code>: per-month TRUE spending (donut semantics: <code>&Sigma; max(primaryNet, 0)</code>, uncategorized outside the total), last N calendar months including current month-to-date, anchored + bucketed in the user's timezone, zero-filled so the x-axis never skips a month. Response rows: <code>{ month: 'YYYY-MM', totalSpent, transactionCount }</code>. The current month's point EQUALS the donut's "This Month" center number. Mobile (<code>SpendingChart.tsx</code> via <code>useMonthlySummary</code>) renders <code>totalSpent</code> directly &mdash; the <code>Math.abs</code> hack is gone.
@@ -771,15 +772,15 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
     </div>
 
     <div style="margin-bottom:16px;">
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">Related flows (upstream)</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
-        Category assignment to each transaction row happens at <strong>Transaction Sync</strong> time &mdash; see <a href="#flow-sync" onclick="showFlow('sync', event);return false;" style="color:#a855f7;">Transaction Sync Flow</a> for the Plaid Sync Category Resolution Priority (merchant rule &rarr; AI cache &rarr; Plaid detailed, with direct user edits pinned via <code>categorySource='user'</code>). Spending Insights just READS <code>transactions.category_id</code>; manual corrections (<code>PATCH /transactions/:id</code>, optional <code>applyToMerchant</code>) land here on the next refetch &mdash; the mutation invalidates both the <code>['transactions']</code> and <code>['spending-by-category']</code> caches.
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">Related flows (upstream)</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
+        Category assignment to each transaction row happens at <strong>Transaction Sync</strong> time &mdash; see <a href="#flow-sync" onclick="showFlow('sync', event);return false;" style="color:var(--purple);">Transaction Sync Flow</a> for the Plaid Sync Category Resolution Priority (merchant rule &rarr; AI cache &rarr; Plaid detailed, with direct user edits pinned via <code>categorySource='user'</code>). Spending Insights just READS <code>transactions.category_id</code>; manual corrections (<code>PATCH /transactions/:id</code>, optional <code>applyToMerchant</code>) land here on the next refetch &mdash; the mutation invalidates both the <code>['transactions']</code> and <code>['spending-by-category']</code> caches.
       </div>
     </div>
 
     <div>
-      <div style="font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">MVP+ (deferred)</div>
-      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">
+      <div style="font-size:12px;font-weight:700;color:var(--code-text);margin-bottom:6px;">MVP+ (deferred)</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.6;">
         &bull; Year-to-date + user-picked custom date range (needs <code>react-native-calendars</code> for the range picker, validator extension, date-picker bottom sheet)<br>
         &bull; Anomaly detection ("you spent 2&times; your usual on dining this month")<br>
         &bull; Monthly spending trend charts<br>

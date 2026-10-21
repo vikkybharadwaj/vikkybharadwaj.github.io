@@ -11,21 +11,8 @@
 <meta property="og:url" content="https://vikkybharadwaj.github.io/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="design-system/tokens.css">
 <style>
-  :root {
-    --bg: #0a0f1a;
-    --surface: rgba(17,24,39,0.6);
-    --text: #e2e8f0;
-    --text-2: #94a3b8;
-    --text-3: #64748b;
-    --green: #00D26A;
-    --blue: #4F8CFF;
-    --purple: #a855f7;
-    --amber: #f59e0b;
-    --teal: #14b8a6;
-    --cyan: #00d4ff;
-    --border: rgba(255,255,255,0.08);
-  }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
   body {
@@ -51,23 +38,23 @@
   nav {
     position: sticky; top: 0; z-index: 50;
     backdrop-filter: blur(12px);
-    background: rgba(10,15,26,0.7);
+    background: color-mix(in srgb, var(--bg) 70%, transparent);
     border-bottom: 1px solid var(--border);
   }
   nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
   nav .logo { font-weight: 800; font-size: 15px; letter-spacing: -0.5px; }
   nav .logo span { color: var(--green); }
   nav .links { display: flex; gap: 4px; font-size: 12px; color: var(--text-2); }
-  nav .links a { padding: 6px 11px; border-radius: 8px; transition: color .15s, background .15s; }
+  nav .links a { padding: 6px 11px; border-radius: var(--radius-base); transition: color .15s, background .15s; }
   nav .links a:hover { background: rgba(255,255,255,0.05); color: var(--text); }
-  nav .links a.active { background: linear-gradient(100deg, var(--green), var(--blue)); color: #06120c; font-weight: 700; }
+  nav .links a.active { background: linear-gradient(100deg, var(--green), var(--blue)); color: var(--on-accent); font-weight: 700; }
   @media (max-width: 680px) { nav .links { display: none; } }
 
   header.hero { padding: 104px 0 56px; }
   .eyebrow {
     display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 2px;
-    color: var(--green); padding: 5px 12px; border-radius: 6px;
-    background: rgba(0,210,106,0.10); border: 1px solid rgba(0,210,106,0.3);
+    color: var(--green); padding: 5px 12px; border-radius: var(--radius-sm);
+    background: color-mix(in srgb, var(--green) 10%, transparent); border: 1px solid color-mix(in srgb, var(--green) 30%, transparent);
     margin-bottom: 24px;
   }
   .hero h1 {
@@ -84,11 +71,11 @@
   .btn {
     display: inline-flex; align-items: center; gap: 8px;
     font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer;
-    padding: 13px 22px; border-radius: 10px; border: 1px solid transparent;
+    padding: 13px 22px; border-radius: var(--radius-md); border: 1px solid transparent;
     transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease;
   }
-  .btn-primary { background: linear-gradient(100deg, var(--green), var(--blue)); color: #06120c; }
-  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,210,106,0.25); }
+  .btn-primary { background: linear-gradient(100deg, var(--green), var(--blue)); color: var(--on-accent); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px color-mix(in srgb, var(--green) 25%, transparent); }
   .btn-ghost { background: transparent; border-color: var(--border); color: var(--text); }
   .btn-ghost:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.25); }
 
@@ -105,7 +92,7 @@
   @media (max-width: 880px) { .explore-grid { grid-template-columns: 1fr; } }
   .xcard {
     display: flex; flex-direction: column; position: relative; overflow: hidden;
-    border-radius: 18px; padding: 30px 26px;
+    border-radius: var(--radius-xl); padding: 30px 26px;
     border: 1.5px solid var(--border); background: var(--surface); backdrop-filter: blur(8px);
     transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
   }
@@ -120,17 +107,17 @@
   .xcard .xsub { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--accent, var(--green)); margin-top: 6px; }
   .xcard .xdesc { font-size: 13px; color: var(--text-2); line-height: 1.75; margin-top: 14px; }
   .xcard .xtags { display: flex; flex-wrap: wrap; gap: 7px; margin: 18px 0 0; }
-  .xcard .xtag { font-size: 10.5px; font-weight: 600; color: var(--text-2); padding: 4px 9px; border-radius: 999px; border: 1px solid var(--border); background: rgba(255,255,255,0.02); }
+  .xcard .xtag { font-size: 10.5px; font-weight: 600; color: var(--text-2); padding: 4px 9px; border-radius: var(--radius-pill); border: 1px solid var(--border); background: rgba(255,255,255,0.02); }
   .xcard .xopen { display: inline-flex; align-items: center; gap: 8px; margin-top: auto; padding-top: 22px; font-size: 12.5px; font-weight: 700; color: var(--accent, var(--green)); }
   .xcard .xopen .arr { transition: transform .2s ease; }
   .xcard:hover .xopen .arr { transform: translateX(5px); }
   .xcard.ext .xopen .arr::after { content: ' ↗'; }
-  .xcard.g { --accent: var(--green); border-color: rgba(0,210,106,0.30); }
-  .xcard.g:hover { border-color: var(--green); box-shadow: 0 18px 50px rgba(0,210,106,0.16); }
-  .xcard.t { --accent: var(--teal); border-color: rgba(20,184,166,0.30); }
-  .xcard.t:hover { border-color: var(--teal); box-shadow: 0 18px 50px rgba(20,184,166,0.16); }
-  .xcard.c { --accent: var(--cyan); border-color: rgba(0,212,255,0.30); }
-  .xcard.c:hover { border-color: var(--cyan); box-shadow: 0 18px 50px rgba(0,212,255,0.16); }
+  .xcard.g { --accent: var(--green); border-color: color-mix(in srgb, var(--green) 30%, transparent); }
+  .xcard.g:hover { border-color: var(--green); box-shadow: 0 18px 50px color-mix(in srgb, var(--green) 16%, transparent); }
+  .xcard.t { --accent: var(--teal); border-color: color-mix(in srgb, var(--teal) 30%, transparent); }
+  .xcard.t:hover { border-color: var(--teal); box-shadow: 0 18px 50px color-mix(in srgb, var(--teal) 16%, transparent); }
+  .xcard.c { --accent: var(--cyan); border-color: color-mix(in srgb, var(--cyan) 30%, transparent); }
+  .xcard.c:hover { border-color: var(--cyan); box-shadow: 0 18px 50px color-mix(in srgb, var(--cyan) 16%, transparent); }
 
   .about p { color: var(--text-2); font-size: 15px; line-height: 1.9; max-width: 760px; }
   .about p b { color: var(--text); font-weight: 600; }
@@ -140,7 +127,7 @@
   .xp { display: flex; flex-direction: column; gap: 14px; margin-top: 28px; }
   .xp-item {
     border: 1px solid var(--border); border-left: 3px solid var(--accent, var(--blue));
-    border-radius: 14px; padding: 22px 24px; background: var(--surface); backdrop-filter: blur(8px);
+    border-radius: var(--radius-lg); padding: 22px 24px; background: var(--surface); backdrop-filter: blur(8px);
     transition: transform .15s ease, border-color .2s ease;
   }
   .xp-item:hover { transform: translateX(3px); }
@@ -159,24 +146,24 @@
 
   .edu { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 16px; }
   @media (max-width: 600px) { .edu { grid-template-columns: 1fr; } }
-  .edu .e { border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; background: var(--surface); }
+  .edu .e { border: 1px solid var(--border); border-radius: var(--radius-mid); padding: 18px 20px; background: var(--surface); }
   .edu .e .deg { font-size: 13.5px; font-weight: 700; }
   .edu .e .sch { font-size: 12px; color: var(--text-2); margin-top: 4px; }
 
   /* ---------- Highlights ---------- */
   .hl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 16px; margin-top: 28px; }
-  .hl { border: 1px solid var(--border); border-radius: 14px; padding: 22px; background: var(--surface); backdrop-filter: blur(8px); }
+  .hl { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; background: var(--surface); backdrop-filter: blur(8px); }
   .hl h3 { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent, var(--text-3)); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
   .hl.g { --accent: var(--green); } .hl.b { --accent: var(--blue); } .hl.p { --accent: var(--purple); } .hl.a { --accent: var(--amber); } .hl.c { --accent: var(--cyan); }
   .hl .pills { display: flex; flex-wrap: wrap; gap: 8px; }
-  .hl .pill { font-size: 11.5px; font-weight: 600; color: var(--text-2); padding: 5px 11px; border-radius: 999px; border: 1px solid var(--border); background: rgba(255,255,255,0.02); }
+  .hl .pill { font-size: 11.5px; font-weight: 600; color: var(--text-2); padding: 5px 11px; border-radius: var(--radius-pill); border: 1px solid var(--border); background: rgba(255,255,255,0.02); }
   .hl a.pill { transition: transform .12s ease, border-color .15s ease, color .15s ease, background .15s ease; }
   .hl a.pill:hover { transform: translateY(-1px); border-color: var(--accent, var(--blue)); color: var(--text); background: rgba(255,255,255,0.05); }
   .hl .pill .lk { opacity: .5; font-size: 10px; margin-left: 2px; }
 
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; margin-top: 22px; }
   .cap {
-    border: 1px solid var(--border); border-radius: 14px; padding: 24px;
+    border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px;
     background: var(--surface); backdrop-filter: blur(8px);
     transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
   }
@@ -184,14 +171,14 @@
   .cap .ic { font-size: 24px; margin-bottom: 14px; display: block; }
   .cap h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
   .cap p { font-size: 12.5px; color: var(--text-2); line-height: 1.7; }
-  .cap.g { border-color: rgba(0,210,106,0.28); } .cap.g:hover { border-color: var(--green); box-shadow: 0 10px 34px rgba(0,210,106,0.16); }
-  .cap.b { border-color: rgba(79,140,255,0.28); } .cap.b:hover { border-color: var(--blue); box-shadow: 0 10px 34px rgba(79,140,255,0.16); }
-  .cap.p { border-color: rgba(168,85,247,0.28); } .cap.p:hover { border-color: var(--purple); box-shadow: 0 10px 34px rgba(168,85,247,0.16); }
-  .cap.a { border-color: rgba(245,158,11,0.28); } .cap.a:hover { border-color: var(--amber); box-shadow: 0 10px 34px rgba(245,158,11,0.16); }
+  .cap.g { border-color: color-mix(in srgb, var(--green) 28%, transparent); } .cap.g:hover { border-color: var(--green); box-shadow: 0 10px 34px color-mix(in srgb, var(--green) 16%, transparent); }
+  .cap.b { border-color: color-mix(in srgb, var(--blue) 28%, transparent); } .cap.b:hover { border-color: var(--blue); box-shadow: 0 10px 34px color-mix(in srgb, var(--blue) 16%, transparent); }
+  .cap.p { border-color: color-mix(in srgb, var(--purple) 28%, transparent); } .cap.p:hover { border-color: var(--purple); box-shadow: 0 10px 34px color-mix(in srgb, var(--purple) 16%, transparent); }
+  .cap.a { border-color: color-mix(in srgb, var(--amber) 28%, transparent); } .cap.a:hover { border-color: var(--amber); box-shadow: 0 10px 34px color-mix(in srgb, var(--amber) 16%, transparent); }
 
   /* the AI PM operating-loop figure */
   .loop-figure {
-    margin: 32px 0 6px; border: 1px solid var(--border); border-radius: 18px;
+    margin: 32px 0 6px; border: 1px solid var(--border); border-radius: var(--radius-xl);
     padding: 26px 18px 16px; background: var(--surface); backdrop-filter: blur(8px);
   }
   .loop-figure svg { width: 100%; height: auto; max-width: 720px; display: block; margin: 0 auto; }
@@ -205,12 +192,12 @@
   .grp-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
   .more { margin-top: 22px; font-size: 13px; color: var(--text-2); }
-  .more a { color: var(--blue); font-weight: 600; border-bottom: 1px solid rgba(79,140,255,0.4); }
-  .more a:hover { color: #7aa9ff; }
+  .more a { color: var(--blue); font-weight: 600; border-bottom: 1px solid color-mix(in srgb, var(--blue) 40%, transparent); }
+  .more a:hover { color: var(--link-hover); }
 
   .contact-card {
     margin-top: 30px;
-    border: 1px solid var(--border); border-radius: 18px; padding: 40px;
+    border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 40px;
     background: var(--surface); backdrop-filter: blur(8px); text-align: center;
   }
   .contact-card h2 { font-size: clamp(22px, 3.4vw, 30px); font-weight: 800; letter-spacing: -1px; margin-bottom: 12px; }
@@ -218,7 +205,7 @@
   .contact-links { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
   .clink {
     display: inline-flex; align-items: center; gap: 9px; font-size: 13px; font-weight: 600;
-    padding: 12px 20px; border-radius: 10px; border: 1px solid var(--border);
+    padding: 12px 20px; border-radius: var(--radius-md); border: 1px solid var(--border);
     color: var(--text); transition: transform .15s ease, border-color .2s ease, background .2s ease;
   }
   .clink:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.28); background: rgba(255,255,255,0.03); }
@@ -226,7 +213,7 @@
   /* "Git by the numbers" — live metrics strip (generated by scripts/build-highlights.py) */
   .stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px; margin-top: 30px; }
   .stat {
-    border: 1px solid var(--border); border-radius: 14px; padding: 20px;
+    border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px;
     background: var(--surface); backdrop-filter: blur(8px);
     transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
   }
@@ -234,20 +221,20 @@
   .stat-num { font-size: clamp(26px, 4.4vw, 34px); font-weight: 800; letter-spacing: -1px; line-height: 1; }
   .stat-label { font-size: 12.5px; font-weight: 700; margin-top: 9px; }
   .stat-cap { font-size: 11px; color: var(--text-3); margin-top: 6px; line-height: 1.55; }
-  .stat.g .stat-num { color: var(--green); }  .stat.g { border-color: rgba(0,210,106,0.26); }  .stat.g:hover { border-color: var(--green);  box-shadow: 0 10px 30px rgba(0,210,106,0.14); }
-  .stat.b .stat-num { color: var(--blue); }   .stat.b { border-color: rgba(79,140,255,0.26); } .stat.b:hover { border-color: var(--blue);   box-shadow: 0 10px 30px rgba(79,140,255,0.14); }
-  .stat.p .stat-num { color: var(--purple); } .stat.p { border-color: rgba(168,85,247,0.26); } .stat.p:hover { border-color: var(--purple); box-shadow: 0 10px 30px rgba(168,85,247,0.14); }
-  .stat.a .stat-num { color: var(--amber); }  .stat.a { border-color: rgba(245,158,11,0.26); } .stat.a:hover { border-color: var(--amber);  box-shadow: 0 10px 30px rgba(245,158,11,0.14); }
+  .stat.g .stat-num { color: var(--green); }  .stat.g { border-color: color-mix(in srgb, var(--green) 26%, transparent); }  .stat.g:hover { border-color: var(--green);  box-shadow: 0 10px 30px color-mix(in srgb, var(--green) 14%, transparent); }
+  .stat.b .stat-num { color: var(--blue); }   .stat.b { border-color: color-mix(in srgb, var(--blue) 26%, transparent); } .stat.b:hover { border-color: var(--blue);   box-shadow: 0 10px 30px color-mix(in srgb, var(--blue) 14%, transparent); }
+  .stat.p .stat-num { color: var(--purple); } .stat.p { border-color: color-mix(in srgb, var(--purple) 26%, transparent); } .stat.p:hover { border-color: var(--purple); box-shadow: 0 10px 30px color-mix(in srgb, var(--purple) 14%, transparent); }
+  .stat.a .stat-num { color: var(--amber); }  .stat.a { border-color: color-mix(in srgb, var(--amber) 26%, transparent); } .stat.a:hover { border-color: var(--amber);  box-shadow: 0 10px 30px color-mix(in srgb, var(--amber) 14%, transparent); }
   .stat.t .stat-num { color: var(--text); }
   .stat-wide { grid-column: 1 / -1; }
-  .stackbar { display: flex; height: 14px; border-radius: 7px; overflow: hidden; margin: 14px 0 12px; border: 1px solid var(--border); }
+  .stackbar { display: flex; height: 14px; border-radius: var(--radius-sm); overflow: hidden; margin: 14px 0 12px; border: 1px solid var(--border); }
   .stackbar span { height: 100%; }
   .stack-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 11px; color: var(--text-2); }
   .stack-legend i { font-style: normal; display: inline-flex; align-items: center; gap: 6px; }
   .stack-legend b { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
   .stat-meta { margin-top: 20px; font-size: 11px; color: var(--text-3); }
-  .stat-meta a { color: var(--blue); font-weight: 600; border-bottom: 1px solid rgba(79,140,255,0.4); }
-  .stat-meta a:hover { color: #7aa9ff; }
+  .stat-meta a { color: var(--blue); font-weight: 600; border-bottom: 1px solid color-mix(in srgb, var(--blue) 40%, transparent); }
+  .stat-meta a:hover { color: var(--link-hover); }
 
   footer { padding: 50px 0 60px; border-top: 1px solid var(--border); margin-top: 40px; text-align: center; }
   footer p { font-size: 12px; color: var(--text-3); }
@@ -536,7 +523,7 @@
         <text x="300" y="150" text-anchor="middle" font-size="10.5" font-weight="700" fill="#00D26A">&#8635; data flywheel</text>
 
         <!-- center hub -->
-        <circle cx="380" cy="300" r="66" fill="#0b1120" stroke="rgba(245,158,11,0.45)" stroke-width="1.5"/>
+        <circle cx="380" cy="300" r="66" fill="#0e1422" stroke="rgba(245,158,11,0.45)" stroke-width="1.5"/>
         <text x="380" y="288" text-anchor="middle" font-size="16" font-weight="800" fill="#f59e0b" letter-spacing="0.5">AI PM</text>
         <text x="380" y="302" text-anchor="middle" font-size="8.5" font-weight="700" fill="#64748b" letter-spacing="1.5">OPERATING LOOP</text>
         <line x1="344" y1="310" x2="416" y2="310" stroke="rgba(255,255,255,0.10)" stroke-width="1"/>
@@ -544,12 +531,12 @@
         <text x="380" y="340" text-anchor="middle" font-size="10.5" fill="#94a3b8">outcomes out</text>
 
         <!-- stage nodes -->
-        <g><circle cx="380" cy="110" r="46" fill="#0d1426" stroke="#00D26A" stroke-width="1.5"/><text x="380" y="89" text-anchor="middle" font-size="9.5" font-weight="700" fill="#64748b">1</text><text x="380" y="111" text-anchor="middle" font-size="21">&#128066;</text><text x="380" y="134" text-anchor="middle" font-size="13" font-weight="700" fill="#e2e8f0">Listen</text></g>
-        <g><circle cx="544.5" cy="205" r="46" fill="#0d1426" stroke="#4F8CFF" stroke-width="1.5"/><text x="544.5" y="184" text-anchor="middle" font-size="9.5" font-weight="700" fill="#64748b">2</text><text x="544.5" y="206" text-anchor="middle" font-size="21">&#128506;</text><text x="544.5" y="229" text-anchor="middle" font-size="13" font-weight="700" fill="#e2e8f0">Frame</text></g>
-        <g><circle cx="544.5" cy="395" r="46" fill="#0d1426" stroke="#a855f7" stroke-width="1.5"/><text x="544.5" y="374" text-anchor="middle" font-size="9.5" font-weight="700" fill="#64748b">3</text><text x="544.5" y="396" text-anchor="middle" font-size="21">&#9999;</text><text x="544.5" y="419" text-anchor="middle" font-size="13" font-weight="700" fill="#e2e8f0">Design</text></g>
-        <g><circle cx="380" cy="490" r="46" fill="#0d1426" stroke="#00D26A" stroke-width="1.5"/><text x="380" y="469" text-anchor="middle" font-size="9.5" font-weight="700" fill="#64748b">4</text><text x="380" y="491" text-anchor="middle" font-size="21">&#128640;</text><text x="380" y="514" text-anchor="middle" font-size="13" font-weight="700" fill="#e2e8f0">Ship</text></g>
-        <g><circle cx="215.5" cy="395" r="46" fill="#0d1426" stroke="#4F8CFF" stroke-width="1.5"/><text x="215.5" y="374" text-anchor="middle" font-size="9.5" font-weight="700" fill="#64748b">5</text><text x="215.5" y="396" text-anchor="middle" font-size="21">&#128202;</text><text x="215.5" y="419" text-anchor="middle" font-size="13" font-weight="700" fill="#e2e8f0">Measure</text></g>
-        <g><circle cx="215.5" cy="205" r="46" fill="#0d1426" stroke="#a855f7" stroke-width="1.5"/><text x="215.5" y="184" text-anchor="middle" font-size="9.5" font-weight="700" fill="#64748b">6</text><text x="215.5" y="206" text-anchor="middle" font-size="21">&#129504;</text><text x="215.5" y="229" text-anchor="middle" font-size="13" font-weight="700" fill="#e2e8f0">Learn</text></g>
+        <g><circle cx="380" cy="110" r="46" fill="#0e1422" stroke="#00D26A" stroke-width="1.5"/><text x="380" y="89" text-anchor="middle" font-size="9.5" font-weight="700" fill="#64748b">1</text><text x="380" y="111" text-anchor="middle" font-size="21">&#128066;</text><text x="380" y="134" text-anchor="middle" font-size="13" font-weight="700" fill="#e2e8f0">Listen</text></g>
+        <g><circle cx="544.5" cy="205" r="46" fill="#0e1422" stroke="#4F8CFF" stroke-width="1.5"/><text x="544.5" y="184" text-anchor="middle" font-size="9.5" font-weight="700" fill="#64748b">2</text><text x="544.5" y="206" text-anchor="middle" font-size="21">&#128506;</text><text x="544.5" y="229" text-anchor="middle" font-size="13" font-weight="700" fill="#e2e8f0">Frame</text></g>
+        <g><circle cx="544.5" cy="395" r="46" fill="#0e1422" stroke="#a855f7" stroke-width="1.5"/><text x="544.5" y="374" text-anchor="middle" font-size="9.5" font-weight="700" fill="#64748b">3</text><text x="544.5" y="396" text-anchor="middle" font-size="21">&#9999;</text><text x="544.5" y="419" text-anchor="middle" font-size="13" font-weight="700" fill="#e2e8f0">Design</text></g>
+        <g><circle cx="380" cy="490" r="46" fill="#0e1422" stroke="#00D26A" stroke-width="1.5"/><text x="380" y="469" text-anchor="middle" font-size="9.5" font-weight="700" fill="#64748b">4</text><text x="380" y="491" text-anchor="middle" font-size="21">&#128640;</text><text x="380" y="514" text-anchor="middle" font-size="13" font-weight="700" fill="#e2e8f0">Ship</text></g>
+        <g><circle cx="215.5" cy="395" r="46" fill="#0e1422" stroke="#4F8CFF" stroke-width="1.5"/><text x="215.5" y="374" text-anchor="middle" font-size="9.5" font-weight="700" fill="#64748b">5</text><text x="215.5" y="396" text-anchor="middle" font-size="21">&#128202;</text><text x="215.5" y="419" text-anchor="middle" font-size="13" font-weight="700" fill="#e2e8f0">Measure</text></g>
+        <g><circle cx="215.5" cy="205" r="46" fill="#0e1422" stroke="#a855f7" stroke-width="1.5"/><text x="215.5" y="184" text-anchor="middle" font-size="9.5" font-weight="700" fill="#64748b">6</text><text x="215.5" y="206" text-anchor="middle" font-size="21">&#129504;</text><text x="215.5" y="229" text-anchor="middle" font-size="13" font-weight="700" fill="#e2e8f0">Learn</text></g>
 
         <!-- feedback inputs feeding Listen -->
         <g>
@@ -688,8 +675,8 @@
       <div class="stat t stat-wide">
         <div class="stat-label">the stack</div>
         <div class="stat-cap">what I actually build with, across every repo</div>
-        <div class="stackbar"><span style="width:46.7%;background:#00D26A" title="TypeScript 46.7%"></span><span style="width:21.8%;background:#4F8CFF" title="JSON 21.8%"></span><span style="width:20.9%;background:#a855f7" title="Markdown 20.9%"></span><span style="width:6.9%;background:#f59e0b" title="HTML 6.9%"></span><span style="width:2.2%;background:#22d3ee" title="Shell 2.2%"></span><span style="width:1.6%;background:#94a3b8" title="YAML 1.6%"></span></div>
-        <div class="stack-legend"><i><b style="background:#00D26A"></b>TypeScript 46.7%</i><i><b style="background:#4F8CFF"></b>JSON 21.8%</i><i><b style="background:#a855f7"></b>Markdown 20.9%</i><i><b style="background:#f59e0b"></b>HTML 6.9%</i><i><b style="background:#22d3ee"></b>Shell 2.2%</i><i><b style="background:#94a3b8"></b>YAML 1.6%</i></div>
+        <div class="stackbar"><span style="width:46.7%;background:var(--green)" title="TypeScript 46.7%"></span><span style="width:21.8%;background:var(--blue)" title="JSON 21.8%"></span><span style="width:20.9%;background:var(--purple)" title="Markdown 20.9%"></span><span style="width:6.9%;background:var(--amber)" title="HTML 6.9%"></span><span style="width:2.2%;background:var(--cyan)" title="Shell 2.2%"></span><span style="width:1.6%;background:var(--text-2)" title="YAML 1.6%"></span></div>
+        <div class="stack-legend"><i><b style="background:var(--green)"></b>TypeScript 46.7%</i><i><b style="background:var(--blue)"></b>JSON 21.8%</i><i><b style="background:var(--purple)"></b>Markdown 20.9%</i><i><b style="background:var(--amber)"></b>HTML 6.9%</i><i><b style="background:var(--cyan)"></b>Shell 2.2%</i><i><b style="background:var(--text-2)"></b>YAML 1.6%</i></div>
       </div>
     </div>
     <p class="stat-meta">Counts 2026 to date · git activity 2026-03-21 → 2026-10-20 · commit history only; file/tooling counts are a current snapshot · no private code or content. <a href="https://github.com/vikkybharadwaj" target="_blank" rel="noopener">See the work →</a></p>

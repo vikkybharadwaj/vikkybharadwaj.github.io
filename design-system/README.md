@@ -34,8 +34,13 @@ There is no icon set. The source uses single emoji as card icons, the arrow glyp
 - Load JetBrains Mono from Google Fonts (400 to 800) and keep `ui-monospace, SFMono-Regular, Menlo, monospace` as the fallback; `var(--font-mono)` carries both.
 - Components need React 18 and the `VikDS` bundle; styles are in `components/bundle.css`.
 
-## Known gaps in the source
+## Status colours
+
+- Success is `green`, warning is `amber`, danger is `red` (about 5.1:1 on `bg`), information is `blue`. Always add a word or icon; never separate success from danger by hue alone.
+- Light tints of a status colour used as text on a tinted chip take the base token, or `rose` for red.
+
+## Known gaps
 
 - `text-3` (4.0:1) fails the 4.5:1 text floor and `purple` is marginal on `surface` (4.65:1); both are kept exact. Keep `text-3` to metadata.
-- The Tide data-flow and architecture maps hard-code their own reds and blues (for example `#ef4444` section numbers); those are page-local and not tokenised here.
-- No focus styles, no light theme and no mobile menu exist in the source.
+- No focus styles, no light theme and no mobile menu exist in the portfolio.
+- Font sizes and spacing in the pages are still written as literals; only colour, radius and font family are tokenised in page CSS.
