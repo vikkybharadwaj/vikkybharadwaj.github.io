@@ -59,7 +59,7 @@
   --glow-purple: 0 10px 34px rgba(168,85,247,0.16);
   --glow-amber: 0 10px 34px rgba(245,158,11,0.16);
   --glow-button: 0 10px 30px rgba(0,210,106,0.25);
-  --grad-brand: linear-gradient(100deg, #00D26A, #4F8CFF);
+  --grad-brand: linear-gradient(100deg, var(--green), var(--blue));
   --fs-10: 10px;
   --fs-11: 11px;
   --fs-12: 12px;
@@ -70,10 +70,11 @@
   --fs-30: 30px;
   --fs-34: 34px;
   --fs-68: 68px;
+  --lh-display: 1.05;
   --lh-tight: 1.15;
   --lh-snug: 1.5;
   --lh-normal: 1.6;
-  --lh-relaxed: 1.8;
+  --lh-relaxed: 1.7;
   --dur-fast: 0.15s;
   --dur-base: 0.2s;
   --z-sticky: 50;
@@ -82,3 +83,4 @@
   --z-tooltip: 400;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }

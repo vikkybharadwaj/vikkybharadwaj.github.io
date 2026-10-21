@@ -242,7 +242,6 @@ def make_insights(m):
     return reg
 
 
-ACCENT_HEX = {"g": "#00D26A", "b": "#4F8CFF", "p": "#a855f7", "a": "#f59e0b", "t": "#94a3b8"}
 
 
 def esc(s):
@@ -297,7 +296,7 @@ def render(cfg, m):
 def render_stack(m):
     langs = m["languages"][:6]
     total = sum(c for _, c in langs) or 1
-    palette = ["#00D26A", "#4F8CFF", "#a855f7", "#f59e0b", "#22d3ee", "#94a3b8"]
+    palette = ["var(--green)", "var(--blue)", "var(--purple)", "var(--amber)", "var(--cyan)", "var(--text-3)"]  # design tokens: no hex in generated HTML
     segs, legend = [], []
     for i, (name, c) in enumerate(langs):
         w = round(100 * c / total, 1)
@@ -319,7 +318,7 @@ def render_latest(ls):
     return (
         '      <div class="stat g stat-wide">\n'
         '        <div class="stat-label">most recent ship' + when + '</div>\n'
-        f'        <div class="stat-cap" style="font-size:13px;color:var(--text-2)">“{esc(ls["headline"])}”</div>\n'
+        f'        <div class="stat-cap stat-quote">“{esc(ls["headline"])}”</div>\n'
         '      </div>'
     )
 

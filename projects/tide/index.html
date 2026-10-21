@@ -67,13 +67,13 @@
   }
   .hero h1 {
     font-size: clamp(var(--fs-34), 7vw, var(--fs-68)); font-weight: 800; letter-spacing: -2px;
-    line-height: var(--lh-tight); margin-bottom: var(--space-6);
+    line-height: var(--lh-display); margin-bottom: var(--space-6);
   }
   .hero h1 .grad {
     background: var(--grad);
     -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
   }
-  .hero .lede { font-size: clamp(var(--fs-15), 2.4vw, var(--fs-21)); color: var(--text-2); max-width: none; line-height: var(--lh-relaxed); }
+  .hero .lede { font-size: clamp(var(--fs-15), 2.4vw, var(--fs-17)); color: var(--text-2); max-width: none; line-height: var(--lh-relaxed); }
   .hero .lede b { color: var(--text); font-weight: 600; }
   .cta-row { display: flex; flex-wrap: wrap; gap: var(--space-4); margin-top: var(--space-7); }
   .btn {
@@ -97,7 +97,7 @@
   @media (max-width: 760px) { .stats { grid-template-columns: repeat(2,1fr); } }
 
   /* sections */
-  section { padding: var(--space-9) 0; }
+  section { padding: var(--space-8) 0; }
   .sec-label { font-size: var(--fs-11); font-weight: 700; letter-spacing: 2px; color: var(--text-3); text-transform: uppercase; margin-bottom: var(--space-4); }
   .sec-title { font-size: clamp(var(--fs-21), 3.4vw, var(--fs-30)); font-weight: 800; letter-spacing: -1px; margin-bottom: var(--space-3); }
   .sec-sub { color: var(--text-2); font-size: var(--fs-15); max-width: 720px; line-height: var(--lh-relaxed); }

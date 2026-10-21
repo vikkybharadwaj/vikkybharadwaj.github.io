@@ -59,8 +59,8 @@
     margin-bottom: var(--space-6);
   }
   .hero h1 {
-    font-size: clamp(var(--fs-34), 6.4vw, var(--fs-68)); font-weight: 800; letter-spacing: -2px;
-    line-height: var(--lh-tight); margin-bottom: var(--space-6);
+    font-size: clamp(var(--fs-34), 5.2vw, var(--fs-68)); font-weight: 800; letter-spacing: -2px;
+    line-height: var(--lh-display); margin-bottom: var(--space-6);
   }
   .hero h1 .grad {
     background: linear-gradient(100deg, var(--green), var(--blue));
@@ -98,9 +98,10 @@
   .tools { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-4); margin-top: var(--space-6); }
   @media (max-width: 720px) { .tools { grid-template-columns: 1fr; } }
   .tool {
-    border: 1px solid color-mix(in srgb, var(--accent, var(--green)) 30%, transparent); border-radius: var(--radius-lg); padding: var(--space-5) var(--space-6); background: var(--surface); backdrop-filter: blur(8px);
+    border: 1px solid color-mix(in srgb, var(--accent, var(--green)) 45%, transparent); border-radius: var(--radius-lg); padding: var(--space-5) var(--space-6); background: var(--surface); backdrop-filter: blur(8px);
   }
   .tool .ti { font-size: var(--fs-21); }
+  .tool .ti::before { content: ''; display: inline-block; inline-size: 8px; block-size: 8px; border-radius: 50%; background: var(--accent, var(--green)); margin-inline-end: var(--space-2); vertical-align: .1em; }
   .tool h3 { font-size: var(--fs-15); font-weight: 800; margin: var(--space-2) 0 var(--space-1); }
   .tool .what { font-size: var(--fs-13); color: var(--text); line-height: var(--lh-relaxed); }
   .tool .ana { font-size: var(--fs-13); color: var(--text-3); line-height: var(--lh-relaxed); margin-top: var(--space-2); }

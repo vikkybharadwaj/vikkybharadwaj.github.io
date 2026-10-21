@@ -4,7 +4,7 @@ Use `variant="primary"` once per row: green-to-blue `grad-brand` fill with `on-a
 
 **You provide:** the label as children (sentence case, start with a verb: "Explore my work"), and `href` or `onClick`.
 
-- Do put the primary button first in the row, with a 14px gap.
+- Do put the primary button first in the row, with a `space-4` gap.
 - Don't put two primary buttons side by side.
 - Don't put the button on a light surface: `on-accent` text is tuned for the dark ground.
 

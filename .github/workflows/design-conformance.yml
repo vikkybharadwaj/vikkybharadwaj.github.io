@@ -2,11 +2,16 @@ name: Design conformance
 
 on:
   pull_request:
+  workflow_dispatch:
   push:
     branches: [main]
 
 permissions:
   contents: read
+
+concurrency:
+  group: design-conformance-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   conformance:
@@ -22,3 +27,5 @@ jobs:
           git diff --exit-code design-system/tokens.css
       - name: Pages conform to the design system
         run: python3 scripts/check-design-conformance.py -v
+      - name: Gate tests and generated-HTML test
+        run: python3 scripts/tests/run_tests.py

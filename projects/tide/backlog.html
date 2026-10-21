@@ -107,7 +107,7 @@ footer p { font-size: var(--fs-10); color: var(--text-3); }
 .fb-count { font-size: var(--fs-11); color: var(--text-3); white-space: nowrap; }
 .fb-count b { color: var(--cyan); font-weight: 700; }
 .fb-presets { display: flex; gap: var(--space-2); flex-wrap: wrap; align-items: center; }
-.fb-btn { background: color-mix(in srgb, var(--surface-solid) 70%, transparent); color: var(--code-text); border: 1px solid rgba(255,255,255,0.15); border-radius: var(--radius-sm); padding: var(--space-1) var(--space-3); font-family: inherit; font-size: var(--fs-11); font-weight: 600; cursor: pointer; transition: background 0.15s, border-color 0.15s, color 0.15s; }
+.fb-btn { background: color-mix(in srgb, var(--surface-solid) 70%, transparent); color: var(--code-text); border: 1px solid rgba(255,255,255,0.15); border-radius: var(--radius-sm); padding: var(--space-2) var(--space-3); font-family: inherit; font-size: var(--fs-11); font-weight: 600; cursor: pointer; transition: background 0.15s, border-color 0.15s, color 0.15s; }
 .fb-btn:hover { background: color-mix(in srgb, var(--cyan) 15%, transparent); border-color: var(--cyan); color: var(--cyan); }
 .fb-btn.active { background: color-mix(in srgb, var(--cyan) 20%, transparent); border-color: var(--cyan); color: var(--cyan); }
 .fb-reset:hover { background: color-mix(in srgb, var(--red) 15%, transparent); border-color: var(--rose); color: var(--rose); }
@@ -116,10 +116,10 @@ footer p { font-size: var(--fs-10); color: var(--text-3); }
 .fb-groups { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); padding-top: 2px; border-top: 1px solid rgba(255,255,255,0.06); }
 .fb-group { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
 .fb-label { font-size: var(--fs-10); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--blue); margin-right: 2px; }
-.chip { padding: 3px var(--space-2); border-radius: var(--radius-sm); font-size: var(--fs-10); font-weight: 700; letter-spacing: 0.4px; cursor: pointer; opacity: 0.4; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); color: var(--code-text); transition: opacity 0.12s; user-select: none; font-family: inherit; }
+.chip { padding: var(--space-1) var(--space-2); min-height: 24px; display: inline-flex; align-items: center; border-radius: var(--radius-sm); font-size: var(--fs-10); font-weight: 700; letter-spacing: 0.4px; cursor: pointer; opacity: 0.65; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); color: var(--code-text); transition: opacity 0.12s; user-select: none; font-family: inherit; }
 .chip:hover { opacity: 0.8; }
-.chip.active { opacity: 1; }
-.chip.zero { opacity: 0.16; }
+.chip.active { opacity: 1; border-color: var(--text); color: var(--text); }
+.chip.zero { opacity: 0.3; }
 .chip .chip-n { font-weight: 500; opacity: 0.65; margin-left: var(--space-1); }
 /* chip tints (data-val is unique across dimensions) */
 /* Filter chips follow the badge scheme: scope and status are coloured pills; category and effort are neutral squares; priority is a neutral pill. */
@@ -133,6 +133,19 @@ footer p { font-size: var(--fs-10); color: var(--text-3); }
 .chip[data-val="p4"] { color: var(--text-2); border: 1px dotted var(--border-2); background: transparent; }
 .empty-state { text-align: center; color: var(--text-3); padding: var(--space-8) var(--space-5); font-size: var(--fs-13); }
 .feature.fb-hidden, details.epic.fb-hidden { display: none; }
+
+/* Category identity: a small dot per bucket; the label text stays neutral and carries the meaning. */
+.cat-CX::before, .cat-TECH::before, .cat-UI::before, .cat-AIDATA::before, .cat-LAUNCH::before { content: ''; inline-size: 6px; block-size: 6px; border-radius: 50%; background: var(--text-3); }
+.cat-CX::before { background: var(--green); } .cat-TECH::before { background: var(--red); } .cat-UI::before { background: var(--cyan); }
+.cat-AIDATA::before { background: var(--purple); } .cat-LAUNCH::before { background: var(--amber); }
+.chip[data-dim="category"]::before { content: ''; inline-size: 6px; block-size: 6px; border-radius: 50%; margin-right: var(--space-1); background: var(--text-3); }
+.chip[data-val="CX"]::before { background: var(--green); } .chip[data-val="TECH"]::before { background: var(--red); } .chip[data-val="UI"]::before { background: var(--cyan); }
+.chip[data-val="AIDATA"]::before { background: var(--purple); } .chip[data-val="LAUNCH"]::before { background: var(--amber); }
+@media (max-width: 600px) {
+  details.epic summary { flex-wrap: wrap; padding: var(--space-4); }
+  details.epic .meta { flex: 1 1 calc(100% - 52px); }
+  details.epic .scope-pill, details.epic .stats { align-self: center; }
+}
 </style>
 </head>
 <body>

@@ -3,7 +3,7 @@ Dark, monospace, and technical with a green-to-blue gradient as its single signa
 ## Content fundamentals
 
 - **Voice.** First person, plain, builder-forward. A product manager who ships. Lead with what was built and the result: "A product manager who builds — across the app, the AI pipeline, the data model, and the evals."
-- **Casing.** Sentence case for titles, buttons and nav ("Explore my work", "Career Highlights" is the one title-case exception in nav). Eyebrows, card subtitles and callout titles are uppercase through CSS, not in the source text.
+- **Casing.** Sentence case for titles, buttons and nav ("Explore my work", "Career Highlights" is the one title-case exception in nav). Eyebrows, card subtitles and callout titles are uppercase (through CSS or as typed in the source).
 - **Pronouns.** "I" for first-person claims on case studies ("What I'd do differently"); imperative "you" in the playbook ("Build me a one-page portfolio...").
 - **Length.** Card copy is two to four lines; section subtitles one or two sentences, max 720px wide.
 - **Numbers.** Every figure states its window and source ("Last 90 days across 4 repos").
@@ -17,9 +17,9 @@ Dark, monospace, and technical with a green-to-blue gradient as its single signa
 - **Colour.** `text` for headings, `text-2` for paragraphs, `text-3` for metadata. `green` is primary, `blue` is the link colour. `purple`, `amber`, `teal` and `cyan` each carry a topic or a note type; use one accent per card.
 - **Gradient.** `grad-brand` (green to blue, 100deg) appears on the primary button, the active nav link and one highlighted word in the hero h1. Nowhere else.
 - **Type.** JetBrains Mono at weights 400 to 800 for everything. Headlines are 800 with negative tracking (`display` -2px, `title` -1px, `heading` -0.5px); eyebrows are 11px, 700, 2px tracking, uppercase. Body copy is `fs-13` to `fs-15` with `lh-relaxed`, capped near 760px wide.
-- **Spacing.** Page gutter `space-6` (24px), card padding `space-5`/`space-6`, grid gap `space-gap` (18px), section padding `space-8` (58px). Content sits in a 1040px wrapper (1080px on case-study pages).
+- **Spacing.** Page gutter `space-6` (24px), card padding `space-5`/`space-6`/`space-7`, grid gap `space-4` or `space-5`, section padding `space-8` (48px). Content sits in a 1040px wrapper (1080px on case-study pages).
 - **Borders and shadows.** Borders do the separating. Shadows appear only as coloured glows on hover (`glow-green`, `glow-blue`...), never as neutral drop shadows.
-- **Motion.** Hover lifts only: cards `translateY(-4px)`, buttons `-2px`, pills `-1px`, timeline rows `translateX(3px)`, in 0.15s to 0.2s ease. Arrows slide 5px right on card hover. Nothing animates on load.
+- **Motion.** Hover lifts only: feature cards `translateY(-6px)`, stat tiles `-4px`, buttons `-2px`, pills `-1px`, timeline rows `translateX(3px)`, in 0.15s to 0.2s ease. Arrows slide 5px right on card hover. Nothing animates on load.
 - **States.** Hover raises and strengthens the border to the full tone. Focus: the source defines none; use a 2px `cyan` outline with 2px to 3px offset (about 10.8:1 on `bg`).
 - **Layout.** Left-aligned. Grids use `repeat(auto-fill, minmax(280px, 1fr))` for cards and `minmax(190px, 1fr)` for stats; three-up bands collapse to one column at 880px. Sticky blurred nav at the top.
 
@@ -50,11 +50,12 @@ There is no icon set. The source uses single emoji as card icons, the arrow glyp
 
 ## Rules for pages
 
-- **No coloured edge stripes.** Tone is shown by a full 1px border at 30% of the tone (`color-mix(in srgb, var(--tone) 30%, transparent)`), a tone-coloured label, and an 8px dot (`.ds-dot`). Never a 2px to 6px coloured `border-left` or `border-top`, and no edge-hugging `::before` bar.
+- **No coloured edge stripes.** Tone is shown by a full 1px border at 30% of the tone (`color-mix(in srgb, var(--tone) 30%, transparent)`), a tone-coloured label, and an 8px dot (the `.ds-dot` pattern; pages implement it with a `::before` on the title or number). Never a 2px to 6px coloured `border-left` or `border-top`, and no edge-hugging `::before` bar.
 - **Scales are mandatory.** Font sizes use `fs-*`, line heights `lh-*`, padding, margin and gap `space-*` (0, auto, 1 to 3px, negatives and 80px and up are left alone), radii `radius-*`. The size floor is 10px, including diagram labels.
 - **No hex in pages.** CSS uses tokens. Inline SVG uses `style="fill:var(--token)"`, never `fill="#..."`. JavaScript reads tokens with `getComputedStyle(document.documentElement).getPropertyValue('--name')`. Only `tokens.json`, `tokens.css` and the `theme-color` meta tag contain hex.
 - **Dimensions stay distinct.** When one view shows several attributes of an item (category, effort, value, scope, priority), only status or scope is coloured. Category is a neutral square tag with a `#` prefix, effort a neutral square with a fill ramp, value a neutral square with a level glyph, priority a neutral pill with a border style (solid, dashed, dotted). Every chip carries a word.
-- Run `python3 scripts/check-design-conformance.py` before merging; it must exit 0.
+- Neutral white or black alphas (`rgba(255,255,255,x)`) are allowed for hairlines and veils; every other colour comes from a token.
+- Run `python3 scripts/check-design-conformance.py` before merging; it must exit 0. See `design-system/CONTRIBUTING.md`.
 
 ## Known gaps
 

@@ -4,8 +4,8 @@
 .vk-root { font-family: var(--font-mono); color: var(--text); -webkit-font-smoothing: antialiased; }
 .vk-root *, .vk-root *::before, .vk-root *::after { box-sizing: border-box; }
 .vk-tone-green  { --tone: var(--green); }
-.vk-tone-blue   { --tone: var(--blue); }
-.vk-tone-purple { --tone: var(--purple); }
+.vk-tone-blue   { --tone: var(--blue); --tone-text: var(--blue-text); }
+.vk-tone-purple { --tone: var(--purple); --tone-text: var(--purple-text); }
 .vk-tone-amber  { --tone: var(--amber); }
 .vk-tone-teal   { --tone: var(--teal); }
 .vk-tone-cyan   { --tone: var(--cyan); }
@@ -21,7 +21,7 @@
 .vk-btn-ghost:hover { border-color: var(--border-2); }
 
 /* Eyebrow */
-.vk-eyebrow-box { display: inline-block; font: 700 var(--fs-11)/var(--lh-tight) var(--font-mono); letter-spacing: 2px; text-transform: uppercase; color: var(--tone, var(--green)); padding: var(--space-1) var(--space-3); border-radius: var(--radius-sm); background: color-mix(in srgb, var(--tone, var(--green)) 10%, transparent); border: 1px solid color-mix(in srgb, var(--tone, var(--green)) 30%, transparent); }
+.vk-eyebrow-box { display: inline-block; font: 700 var(--fs-11)/var(--lh-tight) var(--font-mono); letter-spacing: 2px; text-transform: uppercase; color: var(--tone-text, var(--tone, var(--green))); padding: var(--space-1) var(--space-3); border-radius: var(--radius-sm); background: color-mix(in srgb, var(--tone, var(--green)) 10%, transparent); border: 1px solid color-mix(in srgb, var(--tone, var(--green)) 30%, transparent); }
 .vk-eyebrow-label { font: 700 var(--fs-11)/var(--lh-tight) var(--font-mono); letter-spacing: 2px; text-transform: uppercase; color: var(--text-3); display: flex; align-items: center; gap: var(--space-3); }
 .vk-eyebrow-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
@@ -38,7 +38,7 @@ a.vk-pill-outline:hover { transform: translateY(-1px); border-color: var(--tone,
 .vk-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 .vk-card-num { font-size: var(--fs-11); font-weight: 700; letter-spacing: 1.5px; color: var(--text-3); }
 .vk-card h3 { margin: var(--space-4) 0 0; font-size: var(--fs-21); font-weight: 800; letter-spacing: -.5px; line-height: var(--lh-tight); }
-.vk-card-sub { font-size: var(--fs-11); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--tone, var(--green)); margin-top: var(--space-2); }
+.vk-card-sub { font-size: var(--fs-11); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--tone-text, var(--tone, var(--green))); margin-top: var(--space-2); }
 .vk-card-body { font-size: var(--fs-13); color: var(--text-2); line-height: var(--lh-relaxed); margin-top: var(--space-4); }
 .vk-card-tags { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-5); }
 .vk-card-open { margin-top: auto; padding-top: var(--space-6); font-size: var(--fs-13); font-weight: 700; color: var(--tone, var(--green)); }
@@ -56,7 +56,7 @@ a.vk-pill-outline:hover { transform: translateY(-1px); border-color: var(--tone,
 
 /* Callout */
 .vk-callout { border-radius: var(--radius-md); padding: var(--space-4) var(--space-5); font-size: var(--fs-13); line-height: var(--lh-relaxed); border: 1px solid var(--tone, var(--text-2)); background: color-mix(in srgb, var(--tone, var(--text-2)) 6%, transparent); color: var(--text-2); }
-.vk-callout-title { display: block; font-weight: 800; font-size: var(--fs-12); letter-spacing: .5px; color: var(--tone, var(--text-2)); margin-bottom: var(--space-1); }
+.vk-callout-title { display: block; font-weight: 800; font-size: var(--fs-12); letter-spacing: .5px; color: var(--tone-text, var(--tone, var(--text-2))); margin-bottom: var(--space-1); }
 .vk-callout b { color: var(--text); font-weight: 600; }
 
 /* CodeBlock */
