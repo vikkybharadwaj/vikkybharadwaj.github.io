@@ -36,7 +36,7 @@ for rel in pages:
     # 1 tokens linked (cockpit pages inherit via a page that links styles.css which is linked with tokens)
     if not whole and "tokens.css" not in s: f["no-tokens-link"] += 1
     # 2 redeclared tokens
-    redecl = re.findall(r"^\s*--([a-z0-9-]+)\s*:", css, re.M)
+    redecl = re.findall(r"(?:^|[;{])\s*--([a-z0-9-]+)\s*:", css, re.M)
     for r in redecl:
         if r in VAL or r in RADII: f["redeclared-token"] += 1; notes.append(f"redeclares --{r}")
     # 3 palette hex literals inside CSS
@@ -66,19 +66,58 @@ for rel in pages:
             if c < 4.5: f["chip-contrast<4.5"] += 1; notes.append(f"{b} on {a} {n:.0%}: {c:.2f}")
     # 9 stripe pattern (info)
     f["stripe-borders(info)"] = len(re.findall(r"border-(?:left|top):\s*[2-6]px", css))
+    # 7 font-size / line-height in scale
+    for m in re.finditer(r"font-size:\s*([^;}\"]+)", css):
+        v = m.group(1).strip()
+        if re.fullmatch(r"var\(--fs-\d+\)|inherit|[\d.]+em|[\d.]+%", v) or v.startswith("calc"): continue
+        if v.startswith("clamp("):
+            if re.search(r"\d(px|rem)\b", v): f["font-size-off-scale"] += 1
+            continue
+        f["font-size-off-scale"] += 1
+    if not whole:
+        for m in re.finditer(r'\sfont-size="([\d.]+)"', s):
+            if int(float(m.group(1))) not in (10, 11, 12, 13, 15, 17, 21, 30, 34, 68): f["font-size-off-scale"] += 1
+    for m in re.finditer(r"line-height:\s*([^;}\"]+)", css):
+        v = m.group(1).strip().split("\n")[0].strip()
+        if not re.fullmatch(r"var\(--lh-[a-z]+\)|inherit|normal|1|16px", v): f["line-height-off-scale"] += 1; notes.append("line-height: " + repr(v))
+    # 8 spacing in scale
+    for m in re.finditer(r"(?<![\w-])(?:padding|margin|gap|row-gap|column-gap)(?:-(?:top|bottom|left|right|inline|block)(?:-(?:start|end))?)?:\s*([^;}\"]+)", css):
+        v = m.group(1)
+        if re.search(r"calc\(|clamp\(|min\(|max\(", v): continue
+        for t in v.split():
+            mm = re.fullmatch(r"(-?[\d.]+)(px|rem)", t)
+            if mm and not t.startswith("-"):
+                px = float(mm.group(1)) * (16 if mm.group(2) == "rem" else 1)
+                if 4 <= px < 80: f["spacing-off-scale"] += 1
+    # 9 stripe borders and edge stripes
+    for m in re.finditer(r"border-(?:top|left|right|inline-start):\s*([2-9][\d.]*)px\s+(?:solid|dashed)\s+((?:[^;}\"]|\([^)]*\))+)", css):
+        if re.search(r"transparent|var\(--(border|border-2|line)\)", m.group(2)): continue
+        f["stripe-border"] += 1; notes.append("stripe: " + m.group(0)[:60])
+    for m in re.finditer(r"::(?:before|after)\s*\{([^}]*)\}", css):
+        b = m.group(1)
+        if "position:" in b and "absolute" in b and re.search(r"(?:height|width):\s*[2-4]px", b) and re.search(r"inset:\s*0 0 auto|top:\s*0;[^}]*left:\s*0;[^}]*right:\s*0", b):
+            f["stripe-border"] += 1
+    # 10 hex outside allowed contexts (strip code/pre blocks, entities, theme-color meta)
+    if not whole:
+        m2 = re.sub(r"<(code|pre)\b.*?</\1>", "", s, flags=re.S)
+        m2 = re.sub(r"<meta[^>]*theme-color[^>]*>", "", m2)
+        m2 = re.sub(r"&#\d+;|&#x[0-9a-fA-F]+;", "", m2)
+        hx = re.findall(r"(?<![\w&])#[0-9a-fA-F]{6}\b", m2)
+        f["hex-in-page"] += len(hx)
+        if hx: notes.append("hex in page: " + ", ".join(sorted(set(hx)))[:80])
     # 12 meta
     if not whole:
         for k, pat in (("charset", r"<meta charset"), ("viewport", r'name="viewport"'), ("title", r"<title>"), ("lang", r"<html[^>]*lang=")):
             if not re.search(pat, s, re.I): f["missing-" + k] += 1
     rows.append((rel, f, notes)); tot.update({k: v for k, v in f.items() if not k.endswith("(info)")})
 FAILKEYS = [k for k in tot if not k.endswith("(info)")]
-print(f"{'page':58} " + " ".join(f"{k[:11]:>11}" for k in ["no-tokens-link","redeclared-token","css-hex","off-palette-rgba","font-literal","radius-off-scale","chip-contrast<4.5"]))
-cols = ["no-tokens-link","redeclared-token","css-hex","off-palette-rgba","font-literal","radius-off-scale","chip-contrast<4.5"]
+cols = COLS = ["redeclared-token","css-hex","hex-in-page","off-palette-rgba","font-literal","radius-off-scale","font-size-off-scale","line-height-off-scale","spacing-off-scale","stripe-border","chip-contrast<4.5"]
+print(f"{'page':50} " + " ".join(f"{k[:8]:>8}" for k in cols))
 for rel, f, notes in rows:
-    print(f"{rel:58} " + " ".join(f"{f[c]:>11}" for c in cols))
+    print(f"{rel:50} " + " ".join(f"{f[c]:>8}" for c in cols))
     if verbose:
         for n in notes[:6]: print("      -", n)
 print("\nTOTAL", {k: tot[k] for k in cols})
-print("info: svg/js hex literals", sum(f["svg-js-hex(info)"] for _, f, _ in rows), "| stripe borders", sum(f["stripe-borders(info)"] for _, f, _ in rows), "| max distinct font sizes on a page", max(f["font-sizes-distinct(info)"] for _, f, _ in rows))
-hard = [k for k in ("redeclared-token", "css-hex", "off-palette-rgba", "font-literal", "radius-off-scale", "chip-contrast<4.5", "missing-title", "missing-viewport", "missing-charset") if tot[k]]
+print("info: JS/SVG literal hex are covered by hex-in-page; max distinct px font-sizes on a page:", max(f["font-sizes-distinct(info)"] for _, f, _ in rows))
+hard = [k for k in (*cols, "no-tokens-link", "missing-title", "missing-viewport", "missing-charset") if tot[k]]
 sys.exit(1 if hard else 0)

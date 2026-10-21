@@ -48,8 +48,15 @@ There is no icon set. The source uses single emoji as card icons, the arrow glyp
 - Motion: `dur-fast` (0.15s) and `dur-base` (0.2s) with `ease`. Hover lifts are 4px on cards and stat tiles, 2px on buttons.
 - Layers: `z-sticky`, `z-overlay`, `z-modal`, `z-tooltip`. Breakpoints: 640, 900 and 1100px.
 
+## Rules for pages
+
+- **No coloured edge stripes.** Tone is shown by a full 1px border at 30% of the tone (`color-mix(in srgb, var(--tone) 30%, transparent)`), a tone-coloured label, and an 8px dot (`.ds-dot`). Never a 2px to 6px coloured `border-left` or `border-top`, and no edge-hugging `::before` bar.
+- **Scales are mandatory.** Font sizes use `fs-*`, line heights `lh-*`, padding, margin and gap `space-*` (0, auto, 1 to 3px, negatives and 80px and up are left alone), radii `radius-*`. The size floor is 10px, including diagram labels.
+- **No hex in pages.** CSS uses tokens. Inline SVG uses `style="fill:var(--token)"`, never `fill="#..."`. JavaScript reads tokens with `getComputedStyle(document.documentElement).getPropertyValue('--name')`. Only `tokens.json`, `tokens.css` and the `theme-color` meta tag contain hex.
+- **Dimensions stay distinct.** When one view shows several attributes of an item (category, effort, value, scope, priority), only status or scope is coloured. Category is a neutral square tag with a `#` prefix, effort a neutral square with a fill ramp, value a neutral square with a level glyph, priority a neutral pill with a border style (solid, dashed, dotted). Every chip carries a word.
+- Run `python3 scripts/check-design-conformance.py` before merging; it must exit 0.
+
 ## Known gaps
 
-- The portfolio pages still write font sizes, spacing and breakpoints as literals (29 distinct font sizes). The scales are defined; migrating pages to them is not done.
-- Cards and some pages use a 3px coloured top or left border as a tone accent. It is in the source and kept, but new work should prefer a tinted border plus a coloured label.
 - No light theme and no mobile menu exist in the portfolio.
+- The top-level "How I Learn AI" site is a separate repository and is not covered by this system or the conformance check.

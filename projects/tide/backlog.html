@@ -20,42 +20,43 @@ header .meta { margin-top: var(--space-4); font-size: var(--fs-11); color: var(-
 header .meta code { background: rgba(0,0,0,0.3); padding: 1px var(--space-2); border-radius: var(--radius-xs); color: var(--text-2); }
 
 .intro {
-  background: color-mix(in srgb, var(--indigo) 6%, transparent);
-  border: 1px solid color-mix(in srgb, var(--indigo) 25%, transparent);
+  background: color-mix(in srgb, var(--blue) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--blue) 25%, transparent);
   border-radius: var(--radius-md);
   padding: var(--space-5) var(--space-6);
   margin-bottom: var(--space-7);
   font-size: var(--fs-12);
   color: var(--code-text);
 }
-.intro strong { color: var(--indigo); }
+.intro strong { color: var(--blue); }
 .intro code { background: rgba(0,0,0,0.3); padding: 1px var(--space-2); border-radius: var(--radius-xs); color: var(--amber); font-size: var(--fs-11); }
 
 /* LEGEND */
 .legend { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-4); margin-bottom: var(--space-7); }
 @media (max-width: 760px) { .legend { grid-template-columns: 1fr; } }
 .legend-block { background: color-mix(in srgb, var(--surface-solid) 60%, transparent); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-base); padding: var(--space-3) var(--space-4); }
-.legend-block h3 { font-size: var(--fs-11); color: var(--indigo); font-weight: 700; margin-bottom: var(--space-2); letter-spacing: 1px; text-transform: uppercase; }
+.legend-block h3 { font-size: var(--fs-11); color: var(--blue); font-weight: 700; margin-bottom: var(--space-2); letter-spacing: 1px; text-transform: uppercase; }
 .legend-block .row { display: flex; align-items: center; gap: var(--space-2); padding: 2px 0; font-size: var(--fs-11); color: var(--text-2); }
-.legend-block .swatch { display: inline-flex; align-items: center; justify-content: center; width: 28px; padding: 2px 0; border-radius: var(--radius-xs); font-size: var(--fs-10); font-weight: 700; }
+.legend-block .swatch { display: inline-flex; align-items: center; justify-content: center; min-width: 28px; padding: 2px var(--space-2); gap: var(--space-1); border-radius: var(--radius-xs); font-size: var(--fs-10); font-weight: 700; }
 
-.effort-S { background: color-mix(in srgb, var(--green) 18%, transparent); color: var(--green); border: 1px solid color-mix(in srgb, var(--green) 35%, transparent); }
-.effort-M { background: color-mix(in srgb, var(--blue) 18%, transparent); color: var(--blue-text); border: 1px solid color-mix(in srgb, var(--blue) 35%, transparent); }
-.effort-L { background: color-mix(in srgb, var(--amber) 18%, transparent); color: var(--amber); border: 1px solid color-mix(in srgb, var(--amber) 35%, transparent); }
-.effort-XL { background: color-mix(in srgb, var(--red) 18%, transparent); color: var(--rose); border: 1px solid color-mix(in srgb, var(--red) 35%, transparent); }
-.value-low { background: color-mix(in srgb, var(--text-3) 18%, transparent); color: var(--text-2); border: 1px solid color-mix(in srgb, var(--text-3) 35%, transparent); }
-.value-med { background: color-mix(in srgb, var(--purple) 18%, transparent); color: var(--purple-text); border: 1px solid color-mix(in srgb, var(--purple) 35%, transparent); }
-.value-high { background: color-mix(in srgb, var(--teal) 18%, transparent); color: var(--teal); border: 1px solid color-mix(in srgb, var(--teal) 35%, transparent); }
-.value-critical { background: color-mix(in srgb, var(--pink) 18%, transparent); color: var(--pink-text); border: 1px solid color-mix(in srgb, var(--pink) 35%, transparent); }
+/* Dimension shapes: category = square tag with #, effort = square with fill density, value = square with a level glyph (all neutral); scope = coloured pill; priority = neutral pill. */
+.effort-S, .effort-M, .effort-L, .effort-XL, .value-low, .value-med, .value-high, .value-critical { color: var(--text); border: 1px solid var(--border-2); }
+.effort-S  { background: color-mix(in srgb, var(--text) 4%, transparent); }
+.effort-M  { background: color-mix(in srgb, var(--text) 8%, transparent); }
+.effort-L  { background: color-mix(in srgb, var(--text) 14%, transparent); }
+.effort-XL { background: color-mix(in srgb, var(--text) 20%, transparent); }
+.value-low, .value-med, .value-high, .value-critical { background: transparent; color: var(--text-2); }
+.value-low::before { content: '\25CB'; } .value-med::before { content: '\25D0'; }
+.value-high::before { content: '\25CF'; } .value-critical::before { content: '\25C6'; }
 
 /* EPIC ACCORDION */
 details.epic { border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-mid); background: color-mix(in srgb, var(--surface-solid) 50%, transparent); margin-bottom: var(--space-4); overflow: hidden; }
-details.epic[open] { border-color: color-mix(in srgb, var(--indigo) 50%, transparent); background: color-mix(in srgb, var(--indigo) 4%, transparent); }
+details.epic[open] { border-color: color-mix(in srgb, var(--blue) 50%, transparent); background: color-mix(in srgb, var(--blue) 4%, transparent); }
 details.epic summary { list-style: none; cursor: pointer; padding: var(--space-5) var(--space-6); display: flex; align-items: center; gap: var(--space-4); user-select: none; }
 details.epic summary::-webkit-details-marker { display: none; }
 details.epic summary::after { content: '▸'; margin-left: auto; color: var(--text-3); font-size: var(--fs-17); transition: transform 0.2s; flex-shrink: 0; }
-details.epic[open] summary::after { transform: rotate(90deg); color: var(--indigo); }
-details.epic .num { width: 36px; height: 36px; border-radius: 50%; background: color-mix(in srgb, var(--indigo) 15%, transparent); border: 1px solid color-mix(in srgb, var(--indigo) 40%, transparent); color: var(--indigo); display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: var(--fs-13); }
+details.epic[open] summary::after { transform: rotate(90deg); color: var(--blue); }
+details.epic .num { width: 36px; height: 36px; border-radius: 50%; background: color-mix(in srgb, var(--blue) 15%, transparent); border: 1px solid color-mix(in srgb, var(--blue) 40%, transparent); color: var(--blue); display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: var(--fs-13); }
 details.epic .meta { display: flex; flex-direction: column; flex: 1; }
 details.epic .name { font-size: var(--fs-17); font-weight: 700; color: var(--text); }
 details.epic .desc { font-size: var(--fs-11); color: var(--text-2); margin-top: var(--space-1); }
@@ -70,7 +71,7 @@ details.epic .stats { display: flex; gap: var(--space-4); font-size: var(--fs-10
 .feature { border: 1px solid rgba(255,255,255,0.05); border-radius: var(--radius-base); padding: var(--space-4) var(--space-4); margin-top: var(--space-4); background: rgba(0,0,0,0.15); }
 .feature .feature-title { font-size: var(--fs-13); font-weight: 700; color: var(--text); margin-bottom: var(--space-2); }
 .feature .feature-id { font-size: var(--fs-10); color: var(--text-3); margin-right: var(--space-2); font-weight: 600; }
-.feature .problem { font-size: var(--fs-11); color: var(--code-text); margin: var(--space-2) 0 var(--space-2) 0; border-left: 2px solid color-mix(in srgb, var(--indigo) 40%, transparent); padding-left: var(--space-3); }
+.feature .problem { font-size: var(--fs-11); color: var(--code-text); margin: var(--space-2) 0 var(--space-2) 0; background: color-mix(in srgb, var(--text-3) 8%, transparent); border-radius: var(--radius-sm); padding: var(--space-2) var(--space-3); }
 .feature .badges { display: flex; gap: var(--space-2); flex-wrap: wrap; margin-top: var(--space-2); }
 .feature .badge { padding: 2px var(--space-2); border-radius: var(--radius-xs); font-size: var(--fs-10); font-weight: 700; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: var(--space-1); }
 .feature .badge .label { color: var(--text-3); font-weight: 500; margin-right: 2px; }
@@ -78,61 +79,58 @@ details.epic .stats { display: flex; gap: var(--space-4); font-size: var(--fs-10
 .feature .notes code { background: rgba(0,0,0,0.3); padding: 1px var(--space-1); border-radius: var(--radius-xs); font-size: var(--fs-10); color: var(--purple); }
 
 /* CATEGORY BADGES (on each feature) */
-.cat-CX     { background: color-mix(in srgb, var(--green) 18%, transparent); color: var(--green); border: 1px solid color-mix(in srgb, var(--green) 40%, transparent); }
-.cat-TECH   { background: color-mix(in srgb, var(--red) 18%, transparent); color: var(--rose); border: 1px solid color-mix(in srgb, var(--red) 40%, transparent); }
-.cat-UI     { background: color-mix(in srgb, var(--teal) 18%, transparent); color: var(--teal); border: 1px solid color-mix(in srgb, var(--teal) 40%, transparent); }
-.cat-AIDATA { background: color-mix(in srgb, var(--purple) 18%, transparent); color: var(--purple-text); border: 1px solid color-mix(in srgb, var(--purple) 40%, transparent); }
-.cat-LAUNCH { background: color-mix(in srgb, var(--amber) 18%, transparent); color: var(--amber); border: 1px solid color-mix(in srgb, var(--amber) 40%, transparent); }
+.cat-CX, .cat-TECH, .cat-UI, .cat-AIDATA, .cat-LAUNCH { background: transparent; color: var(--text-2); border: 1px solid var(--border-2); }
+.cat-CX::before, .cat-TECH::before, .cat-UI::before, .cat-AIDATA::before, .cat-LAUNCH::before { content: '#'; color: var(--text-3); }
 
 footer { text-align: center; margin-top: var(--space-8); padding-top: var(--space-6); border-top: 1px solid rgba(255,255,255,0.06); }
 footer p { font-size: var(--fs-10); color: var(--text-3); }
 
 /* === MVP / Roadmap scope layer (locked 2026-06-10) === */
 .scope-pill { display: inline-block; margin-right: var(--space-2); padding: 1px var(--space-2); border-radius: var(--radius-md); font-size: var(--fs-10); font-weight: 700; letter-spacing: 0.6px; vertical-align: middle; white-space: nowrap; }
-.scope-pill.mvp { background: color-mix(in srgb, var(--green) 15%, transparent); color: var(--green); border: 1px solid color-mix(in srgb, var(--green) 45%, transparent); }
-.scope-pill.stretch { background: color-mix(in srgb, var(--amber) 15%, transparent); color: var(--amber); border: 1px solid color-mix(in srgb, var(--amber) 45%, transparent); }
-.scope-pill.p1 { background: color-mix(in srgb, var(--indigo) 15%, transparent); color: var(--indigo); border: 1px solid color-mix(in srgb, var(--indigo) 45%, transparent); }
-.scope-pill.p2 { background: color-mix(in srgb, var(--text-3) 18%, transparent); color: var(--text-2); border: 1px solid color-mix(in srgb, var(--text-3) 45%, transparent); }
-.scope-pill.p3 { background: color-mix(in srgb, var(--text-3) 4%, transparent); color: var(--text-3); border: 1px solid color-mix(in srgb, var(--text-3) 35%, transparent); }
-.scope-pill.p4 { background: color-mix(in srgb, var(--red) 10%, transparent); color: var(--rose); border: 1px solid color-mix(in srgb, var(--red) 35%, transparent); }
-.badge.scope-mvp { background: color-mix(in srgb, var(--green) 15%, transparent); color: var(--green); border: 1px solid color-mix(in srgb, var(--green) 45%, transparent); }
-.badge.scope-stretch { background: color-mix(in srgb, var(--amber) 15%, transparent); color: var(--amber); border: 1px solid color-mix(in srgb, var(--amber) 45%, transparent); }
-.badge.scope-p1 { background: color-mix(in srgb, var(--indigo) 12%, transparent); color: var(--indigo); border: 1px solid color-mix(in srgb, var(--indigo) 40%, transparent); }
-.badge.scope-shipped { background: color-mix(in srgb, var(--teal) 15%, transparent); color: var(--teal); border: 1px solid color-mix(in srgb, var(--teal) 45%, transparent); }
-.badge.scope-partial { background: color-mix(in srgb, var(--amber) 12%, transparent); color: var(--amber); border: 1px solid color-mix(in srgb, var(--amber) 40%, transparent); }
+/* Scope is the only coloured dimension. */
+.scope-pill.mvp, .badge.scope-mvp { border-radius: var(--radius-pill); background: color-mix(in srgb, var(--green) 15%, transparent); color: var(--green); border: 1px solid color-mix(in srgb, var(--green) 45%, transparent); }
+.scope-pill.stretch, .badge.scope-stretch { border-radius: var(--radius-pill); background: color-mix(in srgb, var(--amber) 15%, transparent); color: var(--amber); border: 1px solid color-mix(in srgb, var(--amber) 45%, transparent); }
+.badge.scope-shipped { border-radius: var(--radius-pill); background: var(--green); color: var(--on-accent); border: 1px solid var(--green); }
+.badge.scope-partial { border-radius: var(--radius-pill); background: transparent; color: var(--amber); border: 1px dashed var(--amber); }
+/* Priority: neutral pills, differentiated by border style. */
+.scope-pill.p1, .badge.scope-p1 { border-radius: var(--radius-pill); background: transparent; color: var(--text); border: 1px solid var(--text-2); }
+.scope-pill.p2 { border-radius: var(--radius-pill); background: transparent; color: var(--text-2); border: 1px solid var(--border-2); }
+.scope-pill.p3 { border-radius: var(--radius-pill); background: transparent; color: var(--text-2); border: 1px dashed var(--border-2); }
+.scope-pill.p4 { border-radius: var(--radius-pill); background: transparent; color: var(--text-2); border: 1px dotted var(--border-2); }
 
 /* === FILTER + SORT BAR === */
 .filter-bar { position: sticky; top: 0; z-index: 30; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-mid); padding: var(--space-3) var(--space-4); margin-bottom: var(--space-6); display: flex; flex-direction: column; gap: var(--space-3); }
 .fb-top { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
 .fb-search { flex: 1; min-width: 200px; background: rgba(0,0,0,0.4); color: var(--text); border: 1px solid rgba(255,255,255,0.12); border-radius: var(--radius-sm); padding: var(--space-2) var(--space-3); font-family: inherit; font-size: var(--fs-12); }
 .fb-search::placeholder { color: var(--text-3); }
-.fb-search:focus { outline: none; border-color: var(--teal); }
+.fb-search:focus { outline: none; border-color: var(--cyan); }
 .fb-count { font-size: var(--fs-11); color: var(--text-3); white-space: nowrap; }
-.fb-count b { color: var(--teal); font-weight: 700; }
+.fb-count b { color: var(--cyan); font-weight: 700; }
 .fb-presets { display: flex; gap: var(--space-2); flex-wrap: wrap; align-items: center; }
 .fb-btn { background: color-mix(in srgb, var(--surface-solid) 70%, transparent); color: var(--code-text); border: 1px solid rgba(255,255,255,0.15); border-radius: var(--radius-sm); padding: var(--space-1) var(--space-3); font-family: inherit; font-size: var(--fs-11); font-weight: 600; cursor: pointer; transition: background 0.15s, border-color 0.15s, color 0.15s; }
-.fb-btn:hover { background: color-mix(in srgb, var(--teal) 15%, transparent); border-color: var(--teal); color: var(--teal); }
-.fb-btn.active { background: color-mix(in srgb, var(--teal) 20%, transparent); border-color: var(--teal); color: var(--teal); }
+.fb-btn:hover { background: color-mix(in srgb, var(--cyan) 15%, transparent); border-color: var(--cyan); color: var(--cyan); }
+.fb-btn.active { background: color-mix(in srgb, var(--cyan) 20%, transparent); border-color: var(--cyan); color: var(--cyan); }
 .fb-reset:hover { background: color-mix(in srgb, var(--red) 15%, transparent); border-color: var(--rose); color: var(--rose); }
 .fb-sort { margin-left: auto; font-size: var(--fs-11); color: var(--text-2); display: flex; align-items: center; gap: var(--space-2); }
 .fb-sort select { background: color-mix(in srgb, var(--surface-solid) 70%, transparent); color: var(--code-text); border: 1px solid rgba(255,255,255,0.15); border-radius: var(--radius-sm); padding: var(--space-1) var(--space-2); font-family: inherit; font-size: var(--fs-11); cursor: pointer; }
 .fb-groups { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); padding-top: 2px; border-top: 1px solid rgba(255,255,255,0.06); }
 .fb-group { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
-.fb-label { font-size: var(--fs-10); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--indigo); margin-right: 2px; }
+.fb-label { font-size: var(--fs-10); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--blue); margin-right: 2px; }
 .chip { padding: 3px var(--space-2); border-radius: var(--radius-sm); font-size: var(--fs-10); font-weight: 700; letter-spacing: 0.4px; cursor: pointer; opacity: 0.4; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); color: var(--code-text); transition: opacity 0.12s; user-select: none; font-family: inherit; }
 .chip:hover { opacity: 0.8; }
 .chip.active { opacity: 1; }
 .chip.zero { opacity: 0.16; }
 .chip .chip-n { font-weight: 500; opacity: 0.65; margin-left: var(--space-1); }
 /* chip tints (data-val is unique across dimensions) */
-.chip[data-val="mvp"], .chip[data-val="shipped"], .chip[data-val="CX"], .chip[data-val="S"] { color: var(--green); border-color: color-mix(in srgb, var(--green) 45%, transparent); background: color-mix(in srgb, var(--green) 12%, transparent); }
-.chip[data-val="stretch"], .chip[data-val="partial"], .chip[data-val="L"], .chip[data-val="LAUNCH"] { color: var(--amber); border-color: color-mix(in srgb, var(--amber) 45%, transparent); background: color-mix(in srgb, var(--amber) 12%, transparent); }
-.chip[data-val="p1"] { color: var(--indigo); border-color: color-mix(in srgb, var(--indigo) 45%, transparent); background: color-mix(in srgb, var(--indigo) 12%, transparent); }
-.chip[data-val="p2"], .chip[data-val="p3"], .chip[data-val="p4"], .chip[data-val="planned"] { color: var(--text-2); border-color: color-mix(in srgb, var(--text-3) 45%, transparent); background: color-mix(in srgb, var(--text-3) 14%, transparent); }
-.chip[data-val="TECH"], .chip[data-val="XL"] { color: var(--rose); border-color: color-mix(in srgb, var(--red) 45%, transparent); background: color-mix(in srgb, var(--red) 12%, transparent); }
-.chip[data-val="UI"] { color: var(--teal); border-color: color-mix(in srgb, var(--teal) 45%, transparent); background: color-mix(in srgb, var(--teal) 12%, transparent); }
-.chip[data-val="AIDATA"] { color: var(--purple); border-color: color-mix(in srgb, var(--purple) 45%, transparent); background: color-mix(in srgb, var(--purple) 12%, transparent); }
-.chip[data-val="M"] { color: var(--blue); border-color: color-mix(in srgb, var(--blue) 45%, transparent); background: color-mix(in srgb, var(--blue) 12%, transparent); }
+/* Filter chips follow the badge scheme: scope and status are coloured pills; category and effort are neutral squares; priority is a neutral pill. */
+.chip[data-dim="scope"], .chip[data-dim="status"] { border-radius: var(--radius-pill); }
+.chip[data-dim="category"], .chip[data-dim="effort"] { color: var(--text-2); border-color: var(--border-2); background: transparent; }
+.chip[data-val="mvp"], .chip[data-val="shipped"] { color: var(--green); border-color: color-mix(in srgb, var(--green) 45%, transparent); background: color-mix(in srgb, var(--green) 12%, transparent); }
+.chip[data-val="stretch"], .chip[data-val="partial"] { color: var(--amber); border-color: color-mix(in srgb, var(--amber) 45%, transparent); background: color-mix(in srgb, var(--amber) 12%, transparent); }
+.chip[data-val="p1"] { color: var(--text); border-color: var(--text-2); background: transparent; }
+.chip[data-val="p2"], .chip[data-val="planned"] { color: var(--text-2); border-color: var(--border-2); background: transparent; }
+.chip[data-val="p3"] { color: var(--text-2); border: 1px dashed var(--border-2); background: transparent; }
+.chip[data-val="p4"] { color: var(--text-2); border: 1px dotted var(--border-2); background: transparent; }
 .empty-state { text-align: center; color: var(--text-3); padding: var(--space-8) var(--space-5); font-size: var(--fs-13); }
 .feature.fb-hidden, details.epic.fb-hidden { display: none; }
 </style>
@@ -144,7 +142,7 @@ footer p { font-size: var(--fs-10); color: var(--text-3); }
     <h1>Backlog</h1>
     <p class="tagline">Every idea, enhancement, and feature we've discussed and intentionally deferred. Organized as <strong>Epics</strong> (parent capabilities) → <strong>Features</strong> (child capabilities). Each feature is categorized into one of <strong>five buckets</strong> and scored on five attributes — designed to keep stabilization work visible alongside customer features.</p>
     <p style="font-size: var(--fs-11); color: var(--text-3); margin-top: var(--space-2);">
-      Markdown companion: <a href="https://github.com/vikkybharadwaj/Tide_Vik-s-Version/blob/main/docs/BACKLOG.md" style="color: var(--indigo);"><code style="background:rgba(0,0,0,0.3); padding: 1px var(--space-2); border-radius: var(--radius-xs);">docs/BACKLOG.md</code></a>
+      Markdown companion: <a href="https://github.com/vikkybharadwaj/Tide_Vik-s-Version/blob/main/docs/BACKLOG.md" style="color: var(--blue);"><code style="background:rgba(0,0,0,0.3); padding: 1px var(--space-2); border-radius: var(--radius-xs);">docs/BACKLOG.md</code></a>
     </p>
   </header>
 

@@ -24,7 +24,7 @@
   function Card(p) {
     var tag = p.href ? 'a' : 'div';
     return h(tag, { className: cx('vk-root', 'vk-card', tone(p.tone || 'green'), p.className), href: p.href },
-      p.number && h('div', { className: 'vk-card-num' }, p.number),
+      p.number && h('div', { className: 'vk-card-num ds-dot' }, p.number),
       h('h3', null, p.title),
       p.subtitle && h('div', { className: 'vk-card-sub' }, p.subtitle),
       p.children && h('div', { className: 'vk-card-body' }, p.children),

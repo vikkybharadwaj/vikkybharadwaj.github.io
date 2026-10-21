@@ -150,6 +150,7 @@ svg path, svg line { pointer-events: none; }
 <div class="tooltip" id="tooltip"></div>
 <svg id="edges"></svg>
 <script>
+const C = n => getComputedStyle(document.documentElement).getPropertyValue("--" + n).trim();
 // ============================================================================
 // NODES — audited against codebase 2026-04-22.
 // MVP: shipped + actively maintained. MVP+: deferred / partially wired / disabled.
@@ -368,25 +369,25 @@ const nodes = [
 // EDGES — current traffic paths.
 // ============================================================================
 const edges = [
-  { from:"mobile", to:"cognito", color:"#ef4444", label:"SMS OTP auth", type:"auth" },
-  { from:"mobile", to:"backend", color:"#4F8CFF", label:"REST API (JWT)", type:"data" },
-  { from:"mobile", to:"bedrock", color:"#00d4ff", label:"SSE streaming via backend", type:"ai" },
-  { from:"mobile", to:"fcm", color:"#f59e0b", label:"Push notifications (MVP+)", type:"data" },
-  { from:"backend", to:"postgres", color:"#00D26A", label:"Lucid ORM queries", type:"data" },
-  { from:"backend", to:"redis", color:"#a855f7", label:"Cache + rate limit", type:"data" },
-  { from:"backend", to:"worker", color:"#a855f7", label:"Enqueue jobs", type:"data" },
-  { from:"backend", to:"plaid", color:"#f59e0b", label:"BankDataProvider", type:"external" },
-  { from:"worker", to:"postgres", color:"#00D26A", label:"Read/write jobs", type:"data" },
-  { from:"worker", to:"redis", color:"#a855f7", label:"BullMQ queues (12)", type:"data" },
-  { from:"worker", to:"plaid", color:"#f59e0b", label:"Transaction sync", type:"external" },
-  { from:"coach", to:"backend", color:"#4F8CFF", label:"Tool calls (read-only DB)", type:"ai" },
-  { from:"bedrock", to:"coach", color:"#00d4ff", label:"Sonnet 4.6 inference", type:"ai" },
-  { from:"cognito", to:"backend", color:"#ef4444", label:"JWKS validation", type:"auth" },
-  { from:"plaid", to:"backend", color:"#f59e0b", label:"Webhooks", type:"external" },
-  { from:"mobile", to:"posthog", color:"#f59e0b", label:"Client events", type:"external" },
-  { from:"backend", to:"posthog", color:"#f59e0b", label:"Server events (model hooks)", type:"external" },
-  { from:"backend", to:"arize", color:"#f59e0b", label:"Coach traces (OTLP, masked)", type:"external" },
-  { from:"backend", to:"anthropic", color:"#00d4ff", label:"Eval runs only (coach:scenarios)", type:"ai" },
+  { from:"mobile", to:"cognito", color:"red", label:"SMS OTP auth", type:"auth" },
+  { from:"mobile", to:"backend", color:"blue", label:"REST API (JWT)", type:"data" },
+  { from:"mobile", to:"bedrock", color:"cyan", label:"SSE streaming via backend", type:"ai" },
+  { from:"mobile", to:"fcm", color:"amber", label:"Push notifications (MVP+)", type:"data" },
+  { from:"backend", to:"postgres", color:"green", label:"Lucid ORM queries", type:"data" },
+  { from:"backend", to:"redis", color:"purple", label:"Cache + rate limit", type:"data" },
+  { from:"backend", to:"worker", color:"purple", label:"Enqueue jobs", type:"data" },
+  { from:"backend", to:"plaid", color:"amber", label:"BankDataProvider", type:"external" },
+  { from:"worker", to:"postgres", color:"green", label:"Read/write jobs", type:"data" },
+  { from:"worker", to:"redis", color:"purple", label:"BullMQ queues (12)", type:"data" },
+  { from:"worker", to:"plaid", color:"amber", label:"Transaction sync", type:"external" },
+  { from:"coach", to:"backend", color:"blue", label:"Tool calls (read-only DB)", type:"ai" },
+  { from:"bedrock", to:"coach", color:"cyan", label:"Sonnet 4.6 inference", type:"ai" },
+  { from:"cognito", to:"backend", color:"red", label:"JWKS validation", type:"auth" },
+  { from:"plaid", to:"backend", color:"amber", label:"Webhooks", type:"external" },
+  { from:"mobile", to:"posthog", color:"amber", label:"Client events", type:"external" },
+  { from:"backend", to:"posthog", color:"amber", label:"Server events (model hooks)", type:"external" },
+  { from:"backend", to:"arize", color:"amber", label:"Coach traces (OTLP, masked)", type:"external" },
+  { from:"backend", to:"anthropic", color:"cyan", label:"Eval runs only (coach:scenarios)", type:"ai" },
 ];
 
 // RENDER
@@ -426,7 +427,7 @@ function drawEdges() {
     const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
     const dx = b.x - a.x, dy = b.y - a.y;
     const cx = mx - dy * 0.15, cy = my + dx * 0.15;
-    svg += `<path d="M${a.x},${a.y} Q${cx},${cy} ${b.x},${b.y}" fill="none" stroke="${e.color}" stroke-width="1.5" stroke-opacity="0.5" stroke-dasharray="6 4" class="edge-animated"/>`;
+    svg += `<path d="M${a.x},${a.y} Q${cx},${cy} ${b.x},${b.y}" fill="none" stroke="${C(e.color)}" stroke-width="1.5" stroke-opacity="0.5" stroke-dasharray="6 4" class="edge-animated"/>`;
   });
   svgEl.innerHTML = svg;
 }
@@ -434,22 +435,22 @@ drawEdges();
 
 // Legend
 const legendTypes = [
-  { label:"Auth flow", color:"#ef4444" },
-  { label:"Data flow", color:"#4F8CFF" },
-  { label:"AI flow", color:"#00d4ff" },
-  { label:"Job queue", color:"#a855f7" },
-  { label:"External API", color:"#f59e0b" },
-  { label:"DB access", color:"#00D26A" },
+  { label:"Auth flow", color:"red" },
+  { label:"Data flow", color:"blue" },
+  { label:"AI flow", color:"cyan" },
+  { label:"Job queue", color:"purple" },
+  { label:"External API", color:"amber" },
+  { label:"DB access", color:"green" },
 ];
 legend.innerHTML = legendTypes.map(t =>
-  `<div class="row"><div class="line" style="background:${t.color}"></div><span>${t.label}</span></div>`
+  `<div class="row"><div class="line" style="background:${C(t.color)}"></div><span>${t.label}</span></div>`
 ).join('');
 
 // Detail panel
 function openPanel(n) {
   const d = n.detail;
-  const colorMap = { mobile:"#f97316", backend:"#4F8CFF", worker:"#a855f7", ai:"#00d4ff", "ai-disabled":"#64748b", data:"#00D26A", external:"#f59e0b", security:"#ef4444", infra:"#94a3b8" };
-  const c = colorMap[n.type] || "#64748b";
+  const colorMap = { mobile:"orange", backend:"blue", worker:"purple", ai:"cyan", "ai-disabled":"text-3", data:"green", external:"amber", security:"red", infra:"text-2" };
+  const c = C(colorMap[n.type] || "text-3");
   const mvpLabelClass = n.mvp === 'mvp-plus' ? 'mvpplus' : 'mvp';
   const mvpLabelText = n.mvp === 'mvp-plus' ? 'MVP+' : 'MVP';
   const warning = d.warning ? `<div class="warning">&#9888; ${d.warning}</div>` : '';

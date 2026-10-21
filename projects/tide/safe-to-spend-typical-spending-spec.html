@@ -32,7 +32,7 @@ section p { font-size: var(--fs-12); color: var(--code-text); margin-bottom: var
 section ul, section ol { margin: var(--space-1) 0 var(--space-3) var(--space-4); }
 section li { font-size: var(--fs-12); color: var(--code-text); margin-bottom: var(--space-1); }
 section code { background: rgba(0,0,0,0.3); padding: 1px var(--space-2); border-radius: var(--radius-xs); font-size: var(--fs-11); color: var(--amber); }
-section pre { background: rgba(0,0,0,0.35); padding: var(--space-3) var(--space-4); border-radius: var(--radius-sm); font-size: var(--fs-11); overflow-x: auto; color: var(--code-text); margin: var(--space-2) 0; border-left: 2px solid var(--amber); }
+section pre { background: rgba(0,0,0,0.35); padding: var(--space-3) var(--space-4); border-radius: var(--radius-sm); font-size: var(--fs-11); overflow-x: auto; color: var(--code-text); margin: var(--space-2) 0; border:1px solid color-mix(in srgb, var(--amber) 30%, transparent); }
 
 table { width: 100%; border-collapse: collapse; font-size: var(--fs-11); margin: var(--space-3) 0; }
 table th, table td { padding: var(--space-2) var(--space-3); border: 1px solid rgba(255,255,255,0.06); text-align: left; }
@@ -41,7 +41,7 @@ table td.num { text-align: right; font-variant-numeric: tabular-nums; }
 table tr.highlight td { background: color-mix(in srgb, var(--amber) 6%, transparent); font-weight: 600; }
 
 .callout {
-  border-left: 3px solid var(--pink);
+  border:1px solid color-mix(in srgb, var(--pink) 30%, transparent);
   padding: var(--space-3) var(--space-4);
   background: color-mix(in srgb, var(--pink) 6%, transparent);
   border-radius: var(--radius-xs);

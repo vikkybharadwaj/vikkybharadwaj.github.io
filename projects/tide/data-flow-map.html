@@ -306,7 +306,7 @@ html, body { width: 100%; min-height: 100vh; font-family: var(--font-mono); back
       For each incoming transaction, <code>category_id</code> is resolved by walking three tiers in order. The first tier that produces a non-null category wins. Applied in step 4c above. <strong>Guard above all tiers:</strong> if the existing row already has <code>categorySource='user'</code> (a direct per-transaction edit), sync skips category resolution entirely for that row &mdash; the user's choice always wins. <code>categorySource</code> enum: <code>'plaid' | 'rule' | 'ai' | 'user'</code> (<code>'rule'</code> = merchant-override tier below; <code>'user'</code> = direct per-transaction edit via <code>PATCH /transactions/:id</code>).
     </div>
 
-    <div style="display:flex;gap: var(--space-3);align-items:flex-start;padding: var(--space-3);background:color-mix(in srgb, var(--green) 5%, transparent);border-left:3px solid var(--green);border-radius: var(--radius-xs);margin-bottom: var(--space-3);">
+    <div style="display:flex;gap: var(--space-3);align-items:flex-start;padding: var(--space-3);background:color-mix(in srgb, var(--green) 5%, transparent);border:1px solid color-mix(in srgb, var(--green) 30%, transparent);border-radius: var(--radius-xs);margin-bottom: var(--space-3);">
       <span style="font-size:var(--fs-10);font-weight:700;color:var(--green);padding: 3px var(--space-2);background:color-mix(in srgb, var(--green) 15%, transparent);border-radius: var(--radius-xs);letter-spacing:0.5px;">TIER 1</span>
       <div style="flex:1;">
         <div style="font-size:var(--fs-13);color:var(--text);font-weight:600;margin-bottom: var(--space-1);">User Merchant Rule</div>
@@ -316,7 +316,7 @@ html, body { width: 100%; min-height: 100vh; font-family: var(--font-mono); back
       </div>
     </div>
 
-    <div style="display:flex;gap: var(--space-3);align-items:flex-start;padding: var(--space-3);background:color-mix(in srgb, var(--blue) 5%, transparent);border-left:3px solid var(--blue);border-radius: var(--radius-xs);margin-bottom: var(--space-3);">
+    <div style="display:flex;gap: var(--space-3);align-items:flex-start;padding: var(--space-3);background:color-mix(in srgb, var(--blue) 5%, transparent);border:1px solid color-mix(in srgb, var(--blue) 30%, transparent);border-radius: var(--radius-xs);margin-bottom: var(--space-3);">
       <span style="font-size:var(--fs-10);font-weight:700;color:var(--blue);padding: 3px var(--space-2);background:color-mix(in srgb, var(--blue) 15%, transparent);border-radius: var(--radius-xs);letter-spacing:0.5px;">TIER 2</span>
       <div style="flex:1;">
         <div style="font-size:var(--fs-13);color:var(--text);font-weight:600;margin-bottom: var(--space-1);">Merchant AI Cache</div>
@@ -326,7 +326,7 @@ html, body { width: 100%; min-height: 100vh; font-family: var(--font-mono); back
       </div>
     </div>
 
-    <div style="display:flex;gap: var(--space-3);align-items:flex-start;padding: var(--space-3);background:color-mix(in srgb, var(--amber) 5%, transparent);border-left:3px solid var(--amber);border-radius: var(--radius-xs);margin-bottom: var(--space-4);">
+    <div style="display:flex;gap: var(--space-3);align-items:flex-start;padding: var(--space-3);background:color-mix(in srgb, var(--amber) 5%, transparent);border:1px solid color-mix(in srgb, var(--amber) 30%, transparent);border-radius: var(--radius-xs);margin-bottom: var(--space-4);">
       <span style="font-size:var(--fs-10);font-weight:700;color:var(--amber);padding: 3px var(--space-2);background:color-mix(in srgb, var(--amber) 15%, transparent);border-radius: var(--radius-xs);letter-spacing:0.5px;">TIER 3</span>
       <div style="flex:1;">
         <div style="font-size:var(--fs-13);color:var(--text);font-weight:600;margin-bottom: var(--space-1);">Plaid Detailed Code</div>

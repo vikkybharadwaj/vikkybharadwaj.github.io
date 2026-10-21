@@ -125,7 +125,7 @@ details.component .body pre {
   color: var(--code-text);
   overflow-x: auto;
   margin: var(--space-2) 0;
-  border-left: 2px solid var(--amber);
+  border:1px solid color-mix(in srgb, var(--amber) 30%, transparent);
 }
 
 .color-add { background: color-mix(in srgb, var(--green) 15%, transparent); color: var(--green); border: 1px solid color-mix(in srgb, var(--green) 40%, transparent); }
@@ -513,7 +513,7 @@ arithmetic tests for two major versions; never again)</pre>
   <div class="live-example">
     <h2>Worked example 1 &mdash; why the rate is $25/day, not $66/day</h2>
     <p>$1,000 in checking. $800 rent due day 3. Payday day 9 &rarr; pre-payday window is days 1&ndash;8. No other events.</p>
-    <pre style="background:rgba(0,0,0,0.35); padding: var(--space-3); border-radius: var(--radius-sm); font-size:var(--fs-11); overflow-x:auto; color:var(--code-text); border-left:2px solid var(--purple);">
+    <pre style="background:rgba(0,0,0,0.35); padding: var(--space-3); border-radius: var(--radius-sm); font-size:var(--fs-11); overflow-x:auto; color:var(--code-text); border:1px solid color-mix(in srgb, var(--purple) 30%, transparent);">
 Day d:      1      2      3      4      5      6      7      8    | 9 (payday)
 Event:      —      —    −800     —      —      —      —      —    | +paycheck
 L(d):     1000   1000    200    200    200    200    200    200   |
@@ -531,7 +531,7 @@ This Month (ends day 8) = min(25 × 8, 200)  = <span class="num">$200</span>
   <div class="live-example">
     <h2>Worked example 2 &mdash; shortfall: income can&rsquo;t mask an earlier dip</h2>
     <p>$500 in checking. $1,000 rent due day 2. $2,000 paycheck lands day 5 (payday) &rarr; pre-payday window is days 1&ndash;4.</p>
-    <pre style="background:rgba(0,0,0,0.35); padding: var(--space-3); border-radius: var(--radius-sm); font-size:var(--fs-11); overflow-x:auto; color:var(--code-text); border-left:2px solid var(--purple);">
+    <pre style="background:rgba(0,0,0,0.35); padding: var(--space-3); border-radius: var(--radius-sm); font-size:var(--fs-11); overflow-x:auto; color:var(--code-text); border:1px solid color-mix(in srgb, var(--purple) 30%, transparent);">
 Day d:      1      2      3      4    | 5 (payday)
 Event:      —    −1000    —      —    | +2000
 L(d):      500   −500   −500   −500   | +1500
