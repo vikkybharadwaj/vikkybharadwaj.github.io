@@ -1,0 +1,6 @@
+<!-- @dsCard group="Data" height=150 subtitle="Numeral tiles" -->
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0}body{background:var(--bg);padding:20px;font-family:var(--font-mono)}#root{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start}</style></head>
+<body><div id="root"></div><script>
+var D=window.VikDS,h=React.createElement;
+ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment,null,h('div',{style:{width:190}},h(D.Stat,{tone:'green',value:'1,284',label:'Commits',caption:'Last 90 days across 4 repos'})),h('div',{style:{width:190}},h(D.Stat,{tone:'blue',value:'86%',label:'Conventional',caption:'Commit messages that follow the spec'})),h('div',{style:{width:190}},h(D.Stat,{value:'42',label:'PRs merged',caption:'Reviewed by an AI first'}))));
+</script></body></html>

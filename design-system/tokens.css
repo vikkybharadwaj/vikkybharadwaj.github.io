@@ -1,0 +1,46 @@
+/* Vik Bharadwaj — generated from tokens.json. Edit tokens.json, then run scripts/build-design-tokens.py */
+:root {
+  --bg: #0a0f1a;
+  --surface: rgba(17,24,39,0.6);
+  --surface-2: rgba(17,24,39,0.85);
+  --text: #e2e8f0;
+  --text-2: #94a3b8;
+  --text-3: #64748b;
+  --green: #00D26A;
+  --blue: #4F8CFF;
+  --purple: #a855f7;
+  --amber: #f59e0b;
+  --teal: #14b8a6;
+  --cyan: #00d4ff;
+  --rose: #fb7185;
+  --pink: #ec4899;
+  --indigo: #818cf8;
+  --border: rgba(255,255,255,0.08);
+  --border-2: rgba(255,255,255,0.18);
+  --on-accent: #06120c;
+  --on-amber: #1a1206;
+  --code-bg: #060a12;
+  --code-text: #cbd5e1;
+  --link-hover: #7aa9ff;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 22px;
+  --space-6: 24px;
+  --space-gap: 18px;
+  --space-8: 58px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --radius-pill: 999px;
+  --shadow-lift: 0 18px 50px rgba(0,0,0,0.5);
+  --glow-green: 0 18px 50px rgba(0,210,106,0.16);
+  --glow-blue: 0 10px 34px rgba(79,140,255,0.16);
+  --glow-purple: 0 10px 34px rgba(168,85,247,0.16);
+  --glow-amber: 0 10px 34px rgba(245,158,11,0.16);
+  --glow-button: 0 10px 30px rgba(0,210,106,0.25);
+  --grad-brand: linear-gradient(100deg, #00D26A, #4F8CFF);
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
