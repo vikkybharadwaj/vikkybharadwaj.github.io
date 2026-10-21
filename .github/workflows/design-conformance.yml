@@ -1,0 +1,24 @@
+name: Design conformance
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  conformance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: tokens.css is up to date with tokens.json
+        run: |
+          python3 scripts/build-design-tokens.py
+          git diff --exit-code design-system/tokens.css
+      - name: Pages conform to the design system
+        run: python3 scripts/check-design-conformance.py -v

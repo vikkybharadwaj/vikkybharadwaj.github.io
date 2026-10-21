@@ -11,6 +11,8 @@ HEX = {n: res(n) for n in VAL if res(n).startswith("#")}
 RGBS = {tuple(int(h[i:i+2], 16) for i in (1,3,5)) for h in HEX.values()} | {(255,255,255), (0,0,0)}
 RADII = {t["name"]: t["value"] for t in tok["radius"]["tokens"]}
 verbose = "-v" in sys.argv
+args = [a for a in sys.argv[1:] if not a.startswith("-")]
+SITE = pathlib.Path(args[0]).resolve() if args else ROOT   # optional: check another site against these tokens
 
 def lum(h):
     r, g, b = [int(h[i:i+2], 16)/255 for i in (1,3,5)]
@@ -27,14 +29,17 @@ def css_text(s, whole):
     parts = re.findall(r"<style[^>]*>(.*?)</style>", s, re.S) + re.findall(r'(?<!lt;body)\sstyle="([^"]*)"', s)
     return "\n".join(parts)
 
-pages = ["index.html", "playbook/index.html"] + sorted(glob.glob("projects/**/*.html", recursive=True)) + ["projects/product-cockpit/assets/styles.css"]
+if SITE == ROOT:
+    pages = ["index.html", "playbook/index.html"] + sorted(glob.glob("projects/**/*.html", recursive=True)) + ["projects/product-cockpit/assets/styles.css"]
+else:
+    pages = sorted(str(p.relative_to(SITE)) for p in list(SITE.rglob("*.html")) + list(SITE.rglob("*.css")) if "node_modules" not in p.parts and ".git" not in p.parts)
 tot = collections.Counter(); rows = []
 for rel in pages:
-    s = (ROOT/rel).read_text(); whole = rel.endswith(".css")
+    s = (SITE/rel).read_text(errors="ignore"); whole = rel.endswith(".css")
     css = re.sub(r"/\*.*?\*/", "", css_text(s, whole), flags=re.S)
     f = collections.Counter(); notes = []
     # 1 tokens linked (cockpit pages inherit via a page that links styles.css which is linked with tokens)
-    if not whole and "tokens.css" not in s: f["no-tokens-link"] += 1
+    if not whole and SITE == ROOT and "tokens.css" not in s: f["no-tokens-link"] += 1
     # 2 redeclared tokens
     redecl = re.findall(r"(?:^|[;{])\s*--([a-z0-9-]+)\s*:", css, re.M)
     for r in redecl:
