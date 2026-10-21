@@ -1,0 +1,6 @@
+<!-- @dsCard group="Code" height=230 subtitle="Terminal block and prompt block" -->
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0}body{background:var(--bg);padding:20px;font-family:var(--font-mono)}#root{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start}</style></head>
+<body><div id="root"></div><script>
+var D=window.VikDS,h=React.createElement;
+ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment,null,h('div',{style:{width:460,display:'grid',gap:12}},h(D.CodeBlock,null,'git add .\ngit commit -m "feat: add portfolio"\ngit push -u origin main'),h(D.CodeBlock,{prompt:true},'Build me a one-page portfolio and push it to GitHub Pages.'))));
+</script></body></html>

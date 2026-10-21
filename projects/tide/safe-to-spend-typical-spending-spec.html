@@ -5,99 +5,101 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Typical Spending Forecast &mdash; Math Spec &middot; Tide</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../design-system/tokens.css">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', monospace; background: #0a0f1a; color: #e2e8f0; line-height: 1.6; }
-.container { max-width: 1000px; margin: 0 auto; padding: 48px 24px; }
+html, body { width: 100%; min-height: 100vh; font-family: var(--font-mono); background: var(--bg); color: var(--text); line-height: var(--lh-normal); }
+.container { max-width: 1000px; margin: 0 auto; padding: var(--space-8) var(--space-6); }
 
-header { margin-bottom: 40px; }
-header .back { display: inline-block; font-size: 11px; color: #64748b; margin-bottom: 16px; text-decoration: none; }
-header .back:hover { color: #94a3b8; }
-header h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
-header .tagline { font-size: 12px; color: #94a3b8; max-width: 680px; }
-header .badges { margin-top: 14px; display: flex; gap: 10px; flex-wrap: wrap; }
-header .badge { display: inline-block; padding: 3px 10px; border-radius: 4px; font-size: 10px; font-weight: 700; background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); letter-spacing: 0.5px; }
+header { margin-bottom: var(--space-7); }
+header .back { display: inline-block; font-size: var(--fs-11); color: var(--text-3); margin-bottom: var(--space-4); text-decoration: none; }
+header .back:hover { color: var(--text-2); }
+header h1 { font-size: var(--fs-30); font-weight: 700; margin-bottom: var(--space-2); }
+header .tagline { font-size: var(--fs-12); color: var(--text-2); max-width: 680px; }
+header .badges { margin-top: var(--space-4); display: flex; gap: var(--space-3); flex-wrap: wrap; }
+header .badge { display: inline-block; padding: 3px var(--space-3); border-radius: var(--radius-xs); font-size: var(--fs-10); font-weight: 700; background: color-mix(in srgb, var(--amber) 15%, transparent); color: var(--amber); border: 1px solid color-mix(in srgb, var(--amber) 30%, transparent); letter-spacing: 0.5px; }
 
 section {
-  background: rgba(17,24,39,0.6);
+  background: color-mix(in srgb, var(--surface-solid) 60%, transparent);
   border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 12px;
-  padding: 24px 28px;
-  margin-bottom: 24px;
+  border-radius: var(--radius-mid);
+  padding: var(--space-6) var(--space-7);
+  margin-bottom: var(--space-6);
 }
-section h2 { font-size: 17px; font-weight: 700; margin-bottom: 12px; color: #fbbf24; }
-section h3 { font-size: 14px; font-weight: 700; margin: 14px 0 8px 0; color: #e2e8f0; }
-section p { font-size: 12px; color: #cbd5e1; margin-bottom: 10px; }
-section ul, section ol { margin: 4px 0 10px 16px; }
-section li { font-size: 12px; color: #cbd5e1; margin-bottom: 4px; }
-section code { background: rgba(0,0,0,0.3); padding: 1px 6px; border-radius: 3px; font-size: 11px; color: #fbbf24; }
-section pre { background: rgba(0,0,0,0.35); padding: 12px 14px; border-radius: 6px; font-size: 11px; overflow-x: auto; color: #cbd5e1; margin: 8px 0; border-left: 2px solid #fbbf24; }
+section h2 { font-size: var(--fs-17); font-weight: 700; margin-bottom: var(--space-3); color: var(--amber); }
+section h3 { font-size: var(--fs-15); font-weight: 700; margin: var(--space-4) 0 var(--space-2) 0; color: var(--text); }
+section p { font-size: var(--fs-12); color: var(--code-text); margin-bottom: var(--space-3); }
+section ul, section ol { margin: var(--space-1) 0 var(--space-3) var(--space-4); }
+section li { font-size: var(--fs-12); color: var(--code-text); margin-bottom: var(--space-1); }
+section code { background: rgba(0,0,0,0.3); padding: 1px var(--space-2); border-radius: var(--radius-xs); font-size: var(--fs-11); color: var(--amber); }
+section pre { background: rgba(0,0,0,0.35); padding: var(--space-3) var(--space-4); border-radius: var(--radius-sm); font-size: var(--fs-11); overflow-x: auto; color: var(--code-text); margin: var(--space-2) 0; border:1px solid color-mix(in srgb, var(--amber) 30%, transparent); }
 
-table { width: 100%; border-collapse: collapse; font-size: 11px; margin: 10px 0; }
-table th, table td { padding: 6px 10px; border: 1px solid rgba(255,255,255,0.06); text-align: left; }
-table th { background: rgba(251,191,36,0.08); color: #fbbf24; font-weight: 700; }
+table { width: 100%; border-collapse: collapse; font-size: var(--fs-11); margin: var(--space-3) 0; }
+table th, table td { padding: var(--space-2) var(--space-3); border: 1px solid rgba(255,255,255,0.06); text-align: left; }
+table th { background: color-mix(in srgb, var(--amber) 8%, transparent); color: var(--amber); font-weight: 700; }
 table td.num { text-align: right; font-variant-numeric: tabular-nums; }
-table tr.highlight td { background: rgba(251,191,36,0.06); font-weight: 600; }
+table tr.highlight td { background: color-mix(in srgb, var(--amber) 6%, transparent); font-weight: 600; }
 
 .callout {
-  border-left: 3px solid #ec4899;
-  padding: 10px 14px;
-  background: rgba(236,72,153,0.06);
-  border-radius: 4px;
-  font-size: 12px;
-  color: #cbd5e1;
-  margin: 12px 0;
+  border:1px solid color-mix(in srgb, var(--pink) 30%, transparent);
+  padding: var(--space-3) var(--space-4);
+  background: color-mix(in srgb, var(--pink) 6%, transparent);
+  border-radius: var(--radius-xs);
+  font-size: var(--fs-12);
+  color: var(--code-text);
+  margin: var(--space-3) 0;
 }
-.callout strong { color: #ec4899; }
+.callout strong { color: var(--pink); }
 
 .step-list { counter-reset: step; }
-.step-list .step { counter-increment: step; padding-left: 32px; position: relative; margin-bottom: 14px; font-size: 12px; color: #cbd5e1; }
+.step-list .step { counter-increment: step; padding-left: var(--space-7); position: relative; margin-bottom: var(--space-4); font-size: var(--fs-12); color: var(--code-text); }
 .step-list .step::before {
   content: counter(step);
   position: absolute;
   left: 0; top: 0;
   width: 22px; height: 22px;
   border-radius: 50%;
-  background: #fbbf24;
-  color: #0a0f1a;
-  font-size: 11px; font-weight: 700;
+  background: var(--amber);
+  color: var(--bg);
+  font-size: var(--fs-11); font-weight: 700;
   display: flex; align-items: center; justify-content: center;
 }
-.step-list .step strong { color: #fbbf24; }
+.step-list .step strong { color: var(--amber); }
 
 .window-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 14px;
-  margin-top: 14px;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
 }
 .window-card {
-  padding: 12px 14px;
+  padding: var(--space-3) var(--space-4);
   background: rgba(0,0,0,0.25);
-  border-radius: 8px;
+  border-radius: var(--radius-base);
   border: 1px solid rgba(255,255,255,0.06);
 }
-.window-card h4 { font-size: 13px; font-weight: 700; color: #e2e8f0; margin-bottom: 6px; }
-.window-card .detail { font-size: 11px; color: #94a3b8; line-height: 1.5; }
+.window-card h4 { font-size: var(--fs-13); font-weight: 700; color: var(--text); margin-bottom: var(--space-2); }
+.window-card .detail { font-size: var(--fs-11); color: var(--text-2); line-height: var(--lh-snug); }
 .window-card .total {
-  margin-top: 8px;
-  font-size: 14px;
+  margin-top: var(--space-2);
+  font-size: var(--fs-15);
   font-weight: 700;
-  color: #ec4899;
+  color: var(--pink);
 }
 
-footer { text-align: center; margin-top: 48px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.06); }
-footer p { font-size: 10px; color: #475569; }
+footer { text-align: center; margin-top: var(--space-8); padding-top: var(--space-6); border-top: 1px solid rgba(255,255,255,0.06); }
+footer p { font-size: var(--fs-10); color: var(--text-3); }
+code { overflow-wrap: anywhere; }
 </style>
 </head>
 <body>
-<a id="wt-backnav" href="index.html" style="position:fixed;top:14px;left:14px;z-index:99999;font-family:monospace;font-size:12px;font-weight:700;color:#4F8CFF;text-decoration:none;background:rgba(10,15,26,0.85);padding:7px 12px;border-radius:8px;border:1px solid rgba(79,140,255,0.35);">&larr; Hub</a>
+<a id="wt-backnav" href="index.html" style="position:fixed;top:14px;left:14px;z-index:99999;font-family: var(--font-mono);font-size:var(--fs-12);font-weight:700;color:var(--blue);text-decoration:none;background:color-mix(in srgb, var(--bg) 85%, transparent);padding: var(--space-2) var(--space-3);border-radius: var(--radius-base);border:1px solid color-mix(in srgb, var(--blue) 35%, transparent);">&larr; Hub</a>
 <div class="container">
   <header>
     <a href="feature-versions-safe-to-spend.html" class="back">&larr; Back to Safe to Spend Versions</a>
     <h1>Typical Spending Forecast &mdash; Math Spec</h1>
-    <p style="font-size: 11px; color: #64748b; margin-top: 6px;">
-      Markdown companion: <a href="https://github.com/vikkybharadwaj/Tide_Vik-s-Version/blob/main/docs/SAFE_TO_SPEND_TYPICAL_SPENDING_SPEC.md" style="color: #fbbf24;"><code style="background:rgba(0,0,0,0.3); padding:1px 6px; border-radius:3px;">docs/SAFE_TO_SPEND_TYPICAL_SPENDING_SPEC.md</code></a>
+    <p style="font-size: var(--fs-11); color: var(--text-3); margin-top: var(--space-2);">
+      Markdown companion: <a href="https://github.com/vikkybharadwaj/Tide_Vik-s-Version/blob/main/docs/SAFE_TO_SPEND_TYPICAL_SPENDING_SPEC.md" style="color: var(--amber);"><code style="background:rgba(0,0,0,0.3); padding: 1px var(--space-2); border-radius: var(--radius-xs);">docs/SAFE_TO_SPEND_TYPICAL_SPENDING_SPEC.md</code></a>
     </p>
     <p class="tagline">How we compute the <strong>Spending habits</strong> Money Out term on Home&rsquo;s Safe to Spend card (v5.4: subtracted from the runway, tagged &ldquo;estimated&rdquo; &mdash; formerly the context-only &ldquo;if your habits repeat&rdquo; projection). Walks the actual algorithm, the actual filters, and a worked example from user 53&rsquo;s real transaction history.</p>
     <div class="badges">
@@ -262,7 +264,7 @@ footer p { font-size: 10px; color: #475569; }
       </div>
     </div>
 
-    <p class="callout" style="margin-top: 18px;">
+    <p class="callout" style="margin-top: var(--space-5);">
       <strong>Why Until Payday &gt; This Month.</strong> Until Payday&rsquo;s 9-day window stretches past end-of-month into May 1 (Friday &mdash; your next payday). Friday is a heavy-spend weekday ($461.49). That single extra Friday explains why Until Payday is $461.49 more than This Month, even though both end within 24 hours of each other.
     </p>
   </section>
@@ -301,8 +303,8 @@ footer p { font-size: 10px; color: #475569; }
     </table>
   </section>
 
-  <section style="background:rgba(239,68,68,0.06); border:1px solid rgba(239,68,68,0.3);">
-    <h2 style="color:#ef4444;">Why is user 53&rsquo;s Thursday so high? &mdash; the BILT story</h2>
+  <section style="background:color-mix(in srgb, var(--red) 6%, transparent); border:1px solid color-mix(in srgb, var(--red) 30%, transparent);">
+    <h2 style="color:var(--red);">Why is user 53&rsquo;s Thursday so high? &mdash; the BILT story</h2>
     <p>$666 felt high. Here&rsquo;s why: <strong>your monthly rent ($4,200/mo on Bilt Rewards card) is misclassified as discretionary because the recurrence detector hasn&rsquo;t caught it yet</strong>. Bilt has only fired twice in your 102-day lookback (Mar 12, Apr 2 — about 21 days apart, not exactly biweekly or monthly), so the detector hasn&rsquo;t built a stream for it. With <code>recurring_stream_id IS NULL</code> on those transactions, they fall into typical-discretionary&rsquo;s sample.</p>
     <h3>The two big Thursdays</h3>
     <table>

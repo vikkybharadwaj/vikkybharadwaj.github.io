@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../design-system/tokens.css">
 <link rel="stylesheet" href="assets/styles.css?v=20260610subfull" />
 </head>
 <body>
@@ -60,7 +61,7 @@
         <span class="tag">actual &middot; the core idea</span>
       </div>
     </div>
-    <p class="muted" style="font-size:.82rem; margin-top:14px;">Structural counts are real. The PR figure reflects small, frequently-merged docs &amp; infra changes in a solo repo &mdash; a working style, not 327 features. Outcome figures further down are labelled <em>illustrative</em>.</p>
+    <p class="muted" style="font-size:var(--fs-13); margin-top: var(--space-4);">Structural counts are real. The PR figure reflects small, frequently-merged docs &amp; infra changes in a solo repo &mdash; a working style, not 327 features. Outcome figures further down are labelled <em>illustrative</em>.</p>
   </div>
 </header>
 
@@ -71,7 +72,7 @@
     <h2>Customer first. Engineering-enabled. On purpose.</h2>
     <p class="lead maxw-readable">This isn&rsquo;t an engineering project with a customer bolted on &mdash; it&rsquo;s the reverse. The system exists to keep the customer at the center; the engineering &mdash; an AI-native operating system where hooks observe, policies judge and skills execute &mdash; is simply what keeps that durable.</p>
 
-    <h3 id="tour" style="margin-top:40px; font-family:var(--serif); font-size:1.5rem;">Take the tour &mdash; jump anywhere</h3>
+    <h3 id="tour" style="margin-top: var(--space-7); font-family:var(--font-mono); font-size:var(--fs-21);">Take the tour &mdash; jump anywhere</h3>
     <p class="muted" style="max-width:680px;">Read straight down, or jump to whatever you care about &mdash; the nav up top brings you back any time.</p>
     <ol class="tour">
       <li><a href="#problem"><span class="tour-n">01</span><span><span class="tour-t">The problem</span> <span class="tour-d">&mdash; why decisions quietly stall</span></span></a></li>
@@ -93,7 +94,7 @@
     <h2>Knowledge scatters faster than teams can decide.</h2>
     <p class="lead maxw-readable">Customer evidence, design, code reality, strategy and analytics each live somewhere different &mdash; and drift apart the moment they&rsquo;re written. Decision quality ends up depending on who&rsquo;s in the room and what they remember.</p>
 
-    <div class="grid cols-3" style="margin-top:34px;">
+    <div class="grid cols-3" style="margin-top: var(--space-7);">
       <div class="card">
         <div class="ico">Symptom 01</div>
         <h3>Folklore decisions</h3>
@@ -120,7 +121,7 @@
     <h2>Built for teams that decide together &mdash; not every team, on purpose.</h2>
     <p class="lead maxw-readable">A system like this earns its keep in a specific situation. Naming who it&rsquo;s <em>for</em> &mdash; and who it isn&rsquo;t, yet &mdash; kept it from sprawling into a tool that does everything and decides nothing.</p>
 
-    <div class="ba" style="margin-top:30px;">
+    <div class="ba" style="margin-top: var(--space-7);">
       <div class="col after">
         <h3>Squarely for</h3>
         <ul>
@@ -138,7 +139,7 @@
         </ul>
       </div>
     </div>
-    <p class="muted" style="font-size:.86rem; margin-top:18px; max-width:760px;">Built around one real team&rsquo;s way of deciding, then generalized to teams that share its shape &mdash; not every org or tool. That focus is the point.</p>
+    <p class="muted" style="font-size:var(--fs-13); margin-top: var(--space-5); max-width:760px;">Built around one real team&rsquo;s way of deciding, then generalized to teams that share its shape &mdash; not every org or tool. That focus is the point.</p>
   </div>
 </section>
 
@@ -149,7 +150,7 @@
     <h2>Treat the body of product knowledge as a system &mdash; with infrastructure, not just documents.</h2>
     <p class="lead maxw-readable">A docs folder decays. A <em>system</em> maintains itself. The insight: if the context the team decides with is also structured for an AI agent to read, you can wrap it in light infrastructure that keeps it fresh, flags its own drift, and compounds with every use.</p>
 
-    <div class="ba" style="margin-top:30px;">
+    <div class="ba" style="margin-top: var(--space-7);">
       <div class="col before">
         <h3>A docs folder</h3>
         <ul>
@@ -181,7 +182,7 @@
     <h2>&ldquo;Isn&rsquo;t this just a wiki?&rdquo; &mdash; no, and here&rsquo;s the line.</h2>
     <p class="lead maxw-readable">The obvious reaction to &ldquo;treat knowledge as a system&rdquo; is &ldquo;we already have tools for that.&rdquo; We do &mdash; and this doesn&rsquo;t replace them. It fills the gap they leave: the connective tissue that keeps decisions grounded while everything else drifts.</p>
 
-    <div class="grid cols-3" style="margin-top:30px;">
+    <div class="grid cols-3" style="margin-top: var(--space-7);">
       <div class="card">
         <div class="ico">The wiki</div>
         <h3>Notion / Confluence</h3>
@@ -199,10 +200,10 @@
       </div>
     </div>
 
-    <div class="card" style="margin-top:30px; border-left:4px solid var(--rust);">
-      <p class="eyebrow" style="margin-bottom:.5rem;">The wedge in one line</p>
-      <h3 style="font-family:var(--serif); font-size:1.5rem;">Not a place to store knowledge, or a tool for one stage &mdash; the system that keeps every decision grounded in current, cited evidence.</h3>
-      <p class="muted" style="font-size:1rem; max-width:760px;">It sits <em>alongside</em> the wiki, the tracker and the warehouse &mdash; reading from them, keeping them honest, and closing the loop from customer insight to execution that no single one owns.</p>
+    <div class="card" style="margin-top: var(--space-7); border:1px solid color-mix(in srgb, var(--green) 30%, transparent);">
+      <p class="eyebrow" style="margin-bottom: var(--space-2);">The wedge in one line</p>
+      <h3 style="font-family:var(--font-mono); font-size:var(--fs-21);">Not a place to store knowledge, or a tool for one stage &mdash; the system that keeps every decision grounded in current, cited evidence.</h3>
+      <p class="muted" style="font-size:var(--fs-17); max-width:760px;">It sits <em>alongside</em> the wiki, the tracker and the warehouse &mdash; reading from them, keeping them honest, and closing the loop from customer insight to execution that no single one owns.</p>
     </div>
   </div>
 </section>
@@ -215,8 +216,8 @@
     <p class="lead maxw-readable">The idea worth stealing: a clean separation between what <em>observes</em>, what <em>judges</em>, and what <em>executes</em> &mdash; plus a governance layer whose only job is to stop the system drifting from its own description.</p>
 
     <!-- the three-verb model -->
-    <h3 style="margin-top:38px; font-family:var(--serif); font-size:1.5rem;">The core division of labour</h3>
-    <div class="layers" style="margin-top:16px;">
+    <h3 style="margin-top: var(--space-7); font-family:var(--font-mono); font-size:var(--fs-21);">The core division of labour</h3>
+    <div class="layers" style="margin-top: var(--space-4);">
       <div class="layer obs">
         <span class="verb">Hooks &mdash; they observe</span>
         <h3>6 lifecycle scripts</h3>
@@ -235,16 +236,16 @@
     </div>
 
     <!-- the full stack -->
-    <p class="muted" style="max-width:760px; margin-top:34px;">Those three primitives sit inside a fuller stack &mdash; bookended by the <em>anchors</em> that frame every session and the <em>memory</em> and <em>governance</em> that make it compound and stay honest. The <a href="operating-system.html">operating-system map</a> lays out all six layers in one diagram.</p>
+    <p class="muted" style="max-width:760px; margin-top: var(--space-7);">Those three primitives sit inside a fuller stack &mdash; bookended by the <em>anchors</em> that frame every session and the <em>memory</em> and <em>governance</em> that make it compound and stay honest. The <a href="operating-system.html">operating-system map</a> lays out all six layers in one diagram.</p>
 
     <!-- governance highlight -->
-    <div class="card" style="margin-top:34px; border-left:4px solid var(--rust);">
-      <p class="eyebrow" style="margin-bottom:.5rem;">The idea I&rsquo;d put on a whiteboard in an interview</p>
-      <h3 style="font-family:var(--serif); font-size:1.6rem;">A system that can&rsquo;t silently drift from its own description.</h3>
-      <p class="muted" style="font-size:1rem; max-width:760px;">Every new primitive &mdash; hook, policy, skill, folder &mdash; must update every registry that names it, including the system&rsquo;s own visual self-portrait. Skip a registration and the change fails its own audit: a drift check flags it at session start, a review gate blocks the merge. The map can&rsquo;t quietly fall out of sync with the territory &mdash; the difference between a project that decays when its author leaves and one that explains itself to the next person.</p>
+    <div class="card" style="margin-top: var(--space-7); border:1px solid color-mix(in srgb, var(--green) 30%, transparent);">
+      <p class="eyebrow" style="margin-bottom: var(--space-2);">The idea I&rsquo;d put on a whiteboard in an interview</p>
+      <h3 style="font-family:var(--font-mono); font-size:var(--fs-30);">A system that can&rsquo;t silently drift from its own description.</h3>
+      <p class="muted" style="font-size:var(--fs-17); max-width:760px;">Every new primitive &mdash; hook, policy, skill, folder &mdash; must update every registry that names it, including the system&rsquo;s own visual self-portrait. Skip a registration and the change fails its own audit: a drift check flags it at session start, a review gate blocks the merge. The map can&rsquo;t quietly fall out of sync with the territory &mdash; the difference between a project that decays when its author leaves and one that explains itself to the next person.</p>
     </div>
 
-    <div class="btnrow" style="margin-top:30px;">
+    <div class="btnrow" style="margin-top: var(--space-7);">
       <a class="btn primary" href="operating-system.html">See the whole operating system, mapped &rarr;</a>
     </div>
   </div>
@@ -291,7 +292,7 @@
       </div>
 
     </div>
-    <p class="muted" style="font-size:.86rem; margin-top:16px;"><strong>On example 03:</strong> the tracker integration is designed but <em>not yet wired up</em> &mdash; where the system was headed: closing the loop from insight to execution status. Examples 01 and 02 ran live.</p>
+    <p class="muted" style="font-size:var(--fs-13); margin-top: var(--space-4);"><strong>On example 03:</strong> the tracker integration is designed but <em>not yet wired up</em> &mdash; where the system was headed: closing the loop from insight to execution status. Examples 01 and 02 ran live.</p>
   </div>
 </section>
 
@@ -302,7 +303,7 @@
     <h2>The reconstruction tax goes to zero.</h2>
     <div class="note illus"><strong>Qualitative, not measured.</strong> Real performance metrics are confidential, so the shifts below are described in direction, not numbers. The hero counts (primitives, folders, PRs) are the real, verifiable figures.</div>
 
-    <div class="shift" style="max-width:820px; margin-top:20px;">
+    <div class="shift" style="max-width:820px; margin-top: var(--space-5);">
       <div class="shift-row">
         <div class="shift-label">Context-gathering per decision</div>
         <div class="shift-pills"><span class="pill-before">was: hours</span><span class="arrow">&rarr;</span><span class="pill-after">now: minutes</span></div>
@@ -324,22 +325,22 @@
   <div class="wrap">
     <p class="eyebrow">What this is meant to show</p>
     <h2>The skills behind the system.</h2>
-    <div class="grid cols-2" style="margin-top:24px;">
+    <div class="grid cols-2" style="margin-top: var(--space-6);">
       <div class="card"><h3>Systems &amp; infrastructure thinking</h3><p>Seeing a recurring people-problem (context loss) and solving it with durable infrastructure rather than another doc or meeting.</p></div>
       <div class="card"><h3>AI-native fluency</h3><p>Designing the human&harr;AI division of labour deliberately &mdash; what the machine should observe, judge and execute &mdash; instead of bolting a chatbot onto a workflow.</p></div>
       <div class="card"><h3>Operational governance</h3><p>Anti-drift discipline, ownership and a maintenance cadence &mdash; the unglamorous rigor that keeps a system honest over time.</p></div>
       <div class="card"><h3>Product methodology + craft</h3><p>Evidence &rarr; strategy &rarr; roadmap &rarr; execution, end to end &mdash; and the design sense to make the whole thing legible at a glance.</p></div>
     </div>
 
-    <div class="card" style="margin-top:30px; border-left:4px solid var(--gold);">
-      <p class="eyebrow" style="margin-bottom:.5rem;">Honest trade-offs</p>
-      <h3 style="font-family:var(--serif); font-size:1.4rem;">What I&rsquo;d do differently</h3>
-      <p class="muted" style="font-size:1rem; max-width:760px;">23 policies is arguably over-governance for a project this young &mdash; a smaller team would start with five and let the rest earn their place. Some primitives were built ahead of need. The lesson isn&rsquo;t &ldquo;build all of this&rdquo; &mdash; it&rsquo;s &ldquo;build the observe / judge / execute spine, then let the system tell you what it&rsquo;s missing.&rdquo;</p>
+    <div class="card" style="margin-top: var(--space-7); border:1px solid color-mix(in srgb, var(--amber) 30%, transparent);">
+      <p class="eyebrow" style="margin-bottom: var(--space-2);">Honest trade-offs</p>
+      <h3 style="font-family:var(--font-mono); font-size:var(--fs-21);">What I&rsquo;d do differently</h3>
+      <p class="muted" style="font-size:var(--fs-17); max-width:760px;">23 policies is arguably over-governance for a project this young &mdash; a smaller team would start with five and let the rest earn their place. Some primitives were built ahead of need. The lesson isn&rsquo;t &ldquo;build all of this&rdquo; &mdash; it&rsquo;s &ldquo;build the observe / judge / execute spine, then let the system tell you what it&rsquo;s missing.&rdquo;</p>
     </div>
 
-    <h3 style="margin-top:44px; font-family:var(--serif); font-size:1.6rem;">Go deeper</h3>
+    <h3 style="margin-top: var(--space-8); font-family:var(--font-mono); font-size:var(--fs-30);">Go deeper</h3>
     <p class="muted" style="max-width:680px;">You&rsquo;ve got the whole picture. Three doors from here &mdash; the nav up top brings you back.</p>
-    <div class="gateway" style="grid-template-columns:repeat(3,1fr);">
+    <div class="gateway">
       <a href="docs/architecture.html"><span class="g-name">Architecture &rarr;</span><span class="g-blurb">Why each layer exists and how they interact &mdash; the observe / judge / execute design and the anti-drift loop, in depth.</span></a>
       <a href="operating-system.html"><span class="g-name">Operating System &rarr;</span><span class="g-blurb">The whole system as one diagram &mdash; session lifecycle, the six-layer map, and the anti-drift loop that keeps it honest.</span></a>
       <a href="appendix.html"><span class="g-name">Artifacts &amp; code &rarr;</span><span class="g-blurb">A real, generalized hook, policy and skill &mdash; plus the worked anti-drift example. Read code, not adjectives.</span></a>

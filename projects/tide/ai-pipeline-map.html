@@ -5,130 +5,131 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tide AI Pipeline</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../design-system/tokens.css">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', monospace; background: #0a0f1a; color: #e2e8f0; }
+html, body { width: 100%; min-height: 100vh; font-family: var(--font-mono); background: var(--bg); color: var(--text); }
 
 #title { position: fixed; top: 16px; left: 16px; z-index: 50; }
-#title h1 { font-size: 18px; font-weight: 700; }
-#title p { font-size: 10px; color: #64748b; margin-top: 2px; }
-#title a { color: #3b82f6; text-decoration: none; font-size: 10px; }
+#title h1 { font-size: var(--fs-17); font-weight: 700; }
+#title p { font-size: var(--fs-10); color: var(--text-3); margin-top: 2px; }
+#title a { color: var(--blue); text-decoration: none; font-size: var(--fs-10); }
 #title a:hover { text-decoration: underline; }
 
-.container { max-width: 900px; margin: 0 auto; padding: 80px 24px 48px; }
+.container { max-width: 900px; margin: 0 auto; padding: 80px var(--space-6) var(--space-8); }
 
 /* Pipeline visualization */
-.pipeline { margin-bottom: 32px; }
+.pipeline { margin-bottom: var(--space-7); }
 .pipeline-stage {
-  display: flex; gap: 16px; margin-bottom: 0; position: relative;
+  display: flex; gap: var(--space-4); margin-bottom: 0; position: relative;
 }
 .pipeline-connector {
-  display: flex; justify-content: center; padding: 4px 0;
+  display: flex; justify-content: center; padding: var(--space-1) 0;
 }
 .pipeline-connector .arrow {
-  width: 2px; height: 24px; background: rgba(0,212,255,0.3); position: relative;
+  width: 2px; height: 24px; background: color-mix(in srgb, var(--cyan) 30%, transparent); position: relative;
 }
 .pipeline-connector .arrow::after {
   content: ''; position: absolute; bottom: -4px; left: -4px;
   border-left: 5px solid transparent; border-right: 5px solid transparent;
-  border-top: 6px solid rgba(0,212,255,0.5);
+  border-top: 6px solid color-mix(in srgb, var(--cyan) 50%, transparent);
 }
 
 .stage-card {
-  flex: 1; border-radius: 10px; padding: 16px;
+  flex: 1; border-radius: var(--radius-md); padding: var(--space-4);
   border: 1.5px solid rgba(255,255,255,0.08);
-  background: rgba(17,24,39,0.6);
+  background: color-mix(in srgb, var(--surface-solid) 60%, transparent);
   transition: border-color 0.2s, box-shadow 0.2s;
   cursor: pointer;
 }
 .stage-card:hover { border-color: rgba(255,255,255,0.2); box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
-.stage-card .stage-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
-.stage-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
-.stage-card p { font-size: 10px; color: #94a3b8; line-height: 1.5; }
-.stage-card .latency { display: inline-block; margin-top: 6px; padding: 2px 8px; border-radius: 4px; font-size: 9px; font-weight: 600; }
+.stage-card .stage-label { font-size: var(--fs-10); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: var(--space-1); }
+.stage-card h3 { font-size: var(--fs-15); font-weight: 700; margin-bottom: var(--space-2); }
+.stage-card p { font-size: var(--fs-10); color: var(--text-2); line-height: var(--lh-snug); }
+.stage-card .latency { display: inline-block; margin-top: var(--space-2); padding: 2px var(--space-2); border-radius: var(--radius-xs); font-size: var(--fs-10); font-weight: 600; }
 
-.stage-user { border-color: rgba(249,115,22,0.3); }
-.stage-user .stage-label { color: #f97316; }
-.stage-user .latency { background: rgba(249,115,22,0.1); color: #f97316; }
+.stage-user { border-color: color-mix(in srgb, var(--orange) 30%, transparent); }
+.stage-user .stage-label { color: var(--orange); }
+.stage-user .latency { background: color-mix(in srgb, var(--orange) 10%, transparent); color: var(--orange); }
 
-.stage-classifier { border-color: rgba(0,212,255,0.3); }
-.stage-classifier .stage-label { color: #00d4ff; }
-.stage-classifier .latency { background: rgba(0,212,255,0.1); color: #00d4ff; }
+.stage-classifier { border-color: color-mix(in srgb, var(--cyan) 30%, transparent); }
+.stage-classifier .stage-label { color: var(--cyan); }
+.stage-classifier .latency { background: color-mix(in srgb, var(--cyan) 10%, transparent); color: var(--cyan); }
 
-.stage-coach { border-color: rgba(168,85,247,0.3); }
-.stage-coach .stage-label { color: #a855f7; }
-.stage-coach .latency { background: rgba(168,85,247,0.1); color: #a855f7; }
+.stage-coach { border-color: color-mix(in srgb, var(--purple) 30%, transparent); }
+.stage-coach .stage-label { color: var(--purple); }
+.stage-coach .latency { background: color-mix(in srgb, var(--purple) 10%, transparent); color: var(--purple-text); }
 
-.stage-tools { border-color: rgba(34,197,94,0.3); }
-.stage-tools .stage-label { color: #22c55e; }
-.stage-tools .latency { background: rgba(34,197,94,0.1); color: #22c55e; }
+.stage-tools { border-color: color-mix(in srgb, var(--green) 30%, transparent); }
+.stage-tools .stage-label { color: var(--green); }
+.stage-tools .latency { background: color-mix(in srgb, var(--green) 10%, transparent); color: var(--green); }
 
-.stage-response { border-color: rgba(59,130,246,0.3); }
-.stage-response .stage-label { color: #3b82f6; }
-.stage-response .latency { background: rgba(59,130,246,0.1); color: #3b82f6; }
+.stage-response { border-color: color-mix(in srgb, var(--blue) 30%, transparent); }
+.stage-response .stage-label { color: var(--blue); }
+.stage-response .latency { background: color-mix(in srgb, var(--blue) 10%, transparent); color: var(--blue-text); }
 
-.stage-persist { border-color: rgba(245,158,11,0.3); }
-.stage-persist .stage-label { color: #f59e0b; }
-.stage-persist .latency { background: rgba(245,158,11,0.1); color: #f59e0b; }
+.stage-persist { border-color: color-mix(in srgb, var(--amber) 30%, transparent); }
+.stage-persist .stage-label { color: var(--amber); }
+.stage-persist .latency { background: color-mix(in srgb, var(--amber) 10%, transparent); color: var(--amber); }
 
 /* Tools section */
-.tools-section { margin-top: 32px; }
-.tier-section { margin-top: 32px; }
-.tools-section h2 { font-size: 14px; margin-bottom: 16px; color: #a855f7; }
-.tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
+.tools-section { margin-top: var(--space-7); }
+.tier-section { margin-top: var(--space-7); }
+.tools-section h2 { font-size: var(--fs-15); margin-bottom: var(--space-4); color: var(--purple); }
+.tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: var(--space-3); }
 .tool-card {
-  border-radius: 8px; padding: 12px 16px;
-  border: 1px solid rgba(168,85,247,0.15);
-  background: rgba(17,24,39,0.5);
+  border-radius: var(--radius-base); padding: var(--space-3) var(--space-4);
+  border: 1px solid color-mix(in srgb, var(--purple) 15%, transparent);
+  background: color-mix(in srgb, var(--surface-solid) 50%, transparent);
   transition: border-color 0.2s;
 }
-.tool-card:hover { border-color: rgba(168,85,247,0.4); }
-.tool-card .tool-num { font-size: 9px; font-weight: 700; color: #a855f7; }
-.tool-card .tool-name { font-size: 12px; font-weight: 700; margin: 2px 0; }
-.tool-card .tool-name code { color: #00d4ff; font-weight: 400; }
-.tool-card .tool-desc { font-size: 10px; color: #94a3b8; }
-.tool-card .tool-tier { font-size: 9px; margin-top: 4px; padding: 1px 6px; border-radius: 3px; display: inline-block; }
-.tier-2 { background: rgba(59,130,246,0.15); color: #3b82f6; }
-.tier-3 { background: rgba(245,158,11,0.15); color: #f59e0b; }
+.tool-card:hover { border-color: color-mix(in srgb, var(--purple) 40%, transparent); }
+.tool-card .tool-num { font-size: var(--fs-10); font-weight: 700; color: var(--purple); }
+.tool-card .tool-name { font-size: var(--fs-12); font-weight: 700; margin: 2px 0; }
+.tool-card .tool-name code { color: var(--cyan); font-weight: 400; }
+.tool-card .tool-desc { font-size: var(--fs-10); color: var(--text-2); }
+.tool-card .tool-tier { font-size: var(--fs-10); margin-top: var(--space-1); padding: 1px var(--space-2); border-radius: var(--radius-xs); display: inline-block; }
+.tier-2 { background: color-mix(in srgb, var(--blue) 15%, transparent); color: var(--blue-text); }
+.tier-3 { background: color-mix(in srgb, var(--amber) 15%, transparent); color: var(--amber); }
 
 /* Memory model */
-.memory-section { margin-top: 32px; padding: 20px; border-radius: 12px; border: 1px solid rgba(0,212,255,0.2); background: rgba(0,212,255,0.03); }
-.memory-section h2 { font-size: 14px; color: #00d4ff; margin-bottom: 16px; }
+.memory-section { margin-top: var(--space-7); padding: var(--space-5); border-radius: var(--radius-mid); border: 1px solid color-mix(in srgb, var(--cyan) 20%, transparent); background: color-mix(in srgb, var(--cyan) 3%, transparent); }
+.memory-section h2 { font-size: var(--fs-15); color: var(--cyan); margin-bottom: var(--space-4); }
 .tier-row {
-  display: flex; gap: 12px; margin-bottom: 10px; padding: 10px;
-  border-radius: 8px; background: rgba(15,23,42,0.5);
+  display: flex; gap: var(--space-3); margin-bottom: var(--space-3); padding: var(--space-3);
+  border-radius: var(--radius-base); background: color-mix(in srgb, var(--surface-solid) 50%, transparent);
   border: 1px solid rgba(255,255,255,0.05);
 }
 .tier-badge {
-  flex-shrink: 0; width: 60px; height: 28px; border-radius: 4px;
+  flex-shrink: 0; width: 60px; height: 28px; border-radius: var(--radius-xs);
   display: flex; align-items: center; justify-content: center;
-  font-size: 9px; font-weight: 700;
+  font-size: var(--fs-10); font-weight: 700;
 }
-.tier-badge.t1 { background: rgba(34,197,94,0.15); color: #22c55e; }
-.tier-badge.t2 { background: rgba(59,130,246,0.15); color: #3b82f6; }
-.tier-badge.t3 { background: rgba(245,158,11,0.15); color: #f59e0b; }
+.tier-badge.t1 { background: color-mix(in srgb, var(--green) 15%, transparent); color: var(--green); }
+.tier-badge.t2 { background: color-mix(in srgb, var(--blue) 15%, transparent); color: var(--blue-text); }
+.tier-badge.t3 { background: color-mix(in srgb, var(--amber) 15%, transparent); color: var(--amber); }
 .tier-content { flex: 1; }
-.tier-content h3 { font-size: 11px; font-weight: 700; margin-bottom: 2px; }
-.tier-content p { font-size: 10px; color: #94a3b8; line-height: 1.5; }
+.tier-content h3 { font-size: var(--fs-11); font-weight: 700; margin-bottom: 2px; }
+.tier-content p { font-size: var(--fs-10); color: var(--text-2); line-height: var(--lh-snug); }
 
 /* Models comparison */
-.models-section { margin-top: 32px; }
-.models-section h2 { font-size: 14px; margin-bottom: 16px; color: #64748b; }
-.model-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.models-section { margin-top: var(--space-7); }
+.models-section h2 { font-size: var(--fs-15); margin-bottom: var(--space-4); color: var(--text-3); }
+.model-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
 .model-card {
-  border-radius: 10px; padding: 16px;
+  border-radius: var(--radius-md); padding: var(--space-4);
   border: 1px solid rgba(255,255,255,0.08);
-  background: rgba(17,24,39,0.5);
+  background: color-mix(in srgb, var(--surface-solid) 50%, transparent);
 }
-.model-card h3 { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
-.model-card .model-row { display: flex; justify-content: space-between; font-size: 10px; padding: 3px 0; }
-.model-card .model-row .label { color: #64748b; }
-.model-card .model-row .value { color: #e2e8f0; }
+.model-card h3 { font-size: var(--fs-13); font-weight: 700; margin-bottom: var(--space-2); }
+.model-card .model-row { display: flex; justify-content: space-between; font-size: var(--fs-10); padding: 3px 0; }
+.model-card .model-row .label { color: var(--text-3); }
+.model-card .model-row .value { color: var(--text); }
 
-.model-haiku { border-color: rgba(0,212,255,0.3); }
-.model-haiku h3 { color: #00d4ff; }
-.model-sonnet { border-color: rgba(168,85,247,0.3); }
-.model-sonnet h3 { color: #a855f7; }
+.model-haiku { border-color: color-mix(in srgb, var(--cyan) 30%, transparent); }
+.model-haiku h3 { color: var(--cyan); }
+.model-sonnet { border-color: color-mix(in srgb, var(--purple) 30%, transparent); }
+.model-sonnet h3 { color: var(--purple); }
 </style>
 </head>
 <body>
@@ -191,26 +192,27 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
   <!-- TOOL-REFERENCE:START (generated by evals/scripts/generate_tool_reference.ts — edit evals/tool_reference.ts, not this block) -->
   <style>
     a.tr-link { text-decoration: none; color: inherit; display: block; }
-    .tr-flag { display: inline-block; margin-top: 6px; font-size: 9px; font-weight: 700; color: #f87171; background: rgba(248,113,113,0.12); border-radius: 3px; padding: 1px 6px; }
-    .tr-intro { font-size: 11px; color: #94a3b8; margin: 4px 0 16px; max-width: 760px; line-height: 1.6; }
-    .tr-ref { margin-top: 28px; display: grid; gap: 14px; }
-    .tr-ref > h2 { font-size: 14px; color: #a855f7; margin: 0; }
-    .tr-card { border: 1px solid rgba(168,85,247,0.18); background: rgba(17,24,39,0.55); border-radius: 10px; padding: 16px 18px; scroll-margin-top: 16px; }
-    .tr-card header h3 { margin: 2px 0 4px; font-size: 14px; }
-    .tr-card header h3 code { color: #00d4ff; font-weight: 600; }
-    .tr-card header p { margin: 0; font-size: 12px; color: #cbd5e1; }
-    .tr-card dl { display: grid; grid-template-columns: 170px 1fr; gap: 10px 16px; margin: 14px 0 0; font-size: 11.5px; line-height: 1.6; }
-    .tr-card dt { color: #a855f7; font-weight: 700; font-size: 10px; letter-spacing: .04em; text-transform: uppercase; padding-top: 2px; }
-    .tr-card dd { margin: 0; color: #cbd5e1; }
-    .tr-card dd ul, .tr-card dd ol { margin: 0; padding-left: 18px; }
-    .tr-card code { color: #7dd3fc; }
-    .tr-inputs { border-collapse: collapse; width: 100%; font-size: 11px; }
-    .tr-inputs th, .tr-inputs td { text-align: left; padding: 4px 8px; border-bottom: 1px solid rgba(255,255,255,0.06); vertical-align: top; }
-    .tr-inputs th { color: #94a3b8; font-weight: 600; }
-    .tr-ignored td { color: #64748b; }
-    .tr-badge { font-size: 9px; color: #f59e0b; background: rgba(245,158,11,0.12); border-radius: 3px; padding: 0 5px; }
-    .tr-none { margin: 0; color: #94a3b8; }
-    .tr-limits li.tr-finding { color: #fca5a5; }
+    .tr-flag { display: inline-block; margin-top: var(--space-2); font-size: var(--fs-10); font-weight: 700; color: var(--rose); background: color-mix(in srgb, var(--rose) 12%, transparent); border-radius: var(--radius-xs); padding: 1px var(--space-2); }
+    .tr-intro { font-size: var(--fs-11); color: var(--text-2); margin: var(--space-1) 0 var(--space-4); max-width: 760px; line-height: var(--lh-normal); }
+    .tr-ref { margin-top: var(--space-7); display: grid; gap: var(--space-4); }
+    .tr-ref > h2 { font-size: var(--fs-15); color: var(--purple); margin: 0; }
+    .tr-card { border: 1px solid color-mix(in srgb, var(--purple) 18%, transparent); background: color-mix(in srgb, var(--surface-solid) 55%, transparent); border-radius: var(--radius-md); padding: var(--space-4) var(--space-5); scroll-margin-top: 16px; }
+    .tr-card header h3 { margin: 2px 0 var(--space-1); font-size: var(--fs-15); }
+    .tr-card header h3 code { color: var(--cyan); font-weight: 600; }
+    .tr-card header p { margin: 0; font-size: var(--fs-12); color: var(--code-text); }
+    .tr-card dl { display: grid; grid-template-columns: 170px 1fr; gap: var(--space-3) var(--space-4); margin: var(--space-4) 0 0; font-size: var(--fs-12); line-height: var(--lh-normal); }
+    .tr-card dt { color: var(--purple); font-weight: 700; font-size: var(--fs-10); letter-spacing: .04em; text-transform: uppercase; padding-top: 2px; }
+    .tr-card dd { margin: 0; color: var(--code-text); }
+    .tr-card dd ul, .tr-card dd ol { margin: 0; padding-left: var(--space-5); }
+    .tr-card code { color: var(--cyan); }
+    .tr-inputs { border-collapse: collapse; width: 100%; font-size: var(--fs-11); }
+    .tr-inputs th, .tr-inputs td { text-align: left; padding: var(--space-1) var(--space-2); border-bottom: 1px solid rgba(255,255,255,0.06); vertical-align: top; }
+    .tr-inputs th { color: var(--text-2); font-weight: 600; }
+    .tr-ignored td { color: var(--text-3); }
+    .tr-badge { font-size: var(--fs-10); color: var(--amber); background: color-mix(in srgb, var(--amber) 12%, transparent); border-radius: var(--radius-xs); padding: 0 var(--space-1); }
+    .tr-none { margin: 0; color: var(--text-2); }
+    .tr-limits li.tr-finding { color: var(--rose); }
+    .tr-card { min-width: 0; }
     @media (max-width: 640px) { .tr-card dl { grid-template-columns: 1fr; } }
   </style>
   <div class="tools-section">
@@ -363,7 +365,7 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
   <!-- Memory Model -->
   <div class="memory-section">
     <h2>Agent Memory Model (Tool-Based Context)</h2>
-    <p style="font-size:10px;color:#94a3b8;margin-bottom:16px;">The agent pulls context on demand via tools — no pre-loaded financial profile in prompts. Scales with data growth, token-efficient.</p>
+    <p style="font-size:var(--fs-10);color:var(--text-2);margin-bottom: var(--space-4);">The agent pulls context on demand via tools — no pre-loaded financial profile in prompts. Scales with data growth, token-efficient.</p>
     <div class="tier-row">
       <div class="tier-badge t1">TIER 1</div>
       <div class="tier-content">
@@ -427,8 +429,8 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
        AI-first view for the same priority chain). -->
   <div class="tier-section">
     <h2>Plaid Sync &mdash; Category Resolution Priority</h2>
-    <p style="font-size:11px;color:#94a3b8;margin-bottom:16px;">
-      Canonical spec in <a href="data-flow-map.html" style="color:#a855f7;">Transaction Sync Flow</a> (where it executes at sync time). Mirrored here for the AI-first view since Tier 2 runs Claude Haiku.
+    <p style="font-size:var(--fs-11);color:var(--text-2);margin-bottom: var(--space-4);">
+      Canonical spec in <a href="data-flow-map.html" style="color:var(--purple);">Transaction Sync Flow</a> (where it executes at sync time). Mirrored here for the AI-first view since Tier 2 runs Claude Haiku.
     </p>
     <div class="tier-row">
       <div class="tier-badge t1">TIER 1</div>
