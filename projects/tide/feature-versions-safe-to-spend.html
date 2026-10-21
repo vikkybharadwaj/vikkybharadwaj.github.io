@@ -8,34 +8,34 @@
 <link rel="stylesheet" href="../../design-system/tokens.css">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { width: 100%; min-height: 100vh; font-family: var(--font-mono); background: var(--bg); color: var(--text); line-height: 1.6; }
-.container { max-width: 980px; margin: 0 auto; padding: 48px 24px; }
+html, body { width: 100%; min-height: 100vh; font-family: var(--font-mono); background: var(--bg); color: var(--text); line-height: var(--lh-normal); }
+.container { max-width: 980px; margin: 0 auto; padding: var(--space-8) var(--space-6); }
 
-header { margin-bottom: 48px; text-align: center; }
-header .back { display: inline-block; font-size: 11px; color: var(--text-3); margin-bottom: 16px; text-decoration: none; }
+header { margin-bottom: var(--space-8); text-align: center; }
+header .back { display: inline-block; font-size: var(--fs-11); color: var(--text-3); margin-bottom: var(--space-4); text-decoration: none; }
 header .back:hover { color: var(--text-2); }
-header h1 { font-size: 30px; font-weight: 700; margin-bottom: 10px; }
-header .subtitle { font-size: 13px; color: var(--text-3); max-width: 680px; margin: 0 auto; }
-header .legend { margin-top: 28px; display: inline-flex; gap: 20px; padding: 14px 22px; border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-md); background: color-mix(in srgb, var(--surface-solid) 50%, transparent); flex-wrap: wrap; justify-content: center; }
-header .legend .item { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-2); }
+header h1 { font-size: var(--fs-30); font-weight: 700; margin-bottom: var(--space-3); }
+header .subtitle { font-size: var(--fs-13); color: var(--text-3); max-width: 680px; margin: 0 auto; }
+header .legend { margin-top: var(--space-7); display: inline-flex; gap: var(--space-5); padding: var(--space-4) var(--space-6); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-md); background: color-mix(in srgb, var(--surface-solid) 50%, transparent); flex-wrap: wrap; justify-content: center; }
+header .legend .item { display: flex; align-items: center; gap: var(--space-2); font-size: var(--fs-11); color: var(--text-2); }
 header .legend .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 
-.summary { background: color-mix(in srgb, var(--surface-solid) 60%, transparent); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-mid); padding: 24px 28px; margin-bottom: 40px; }
-.summary h3 { font-size: 13px; font-weight: 700; margin-bottom: 10px; letter-spacing: 0.5px; color: var(--pink); }
-.summary p { font-size: 12px; color: var(--code-text); }
-.summary ul { margin-top: 10px; list-style: none; padding: 0; }
-.summary li { font-size: 12px; color: var(--text-2); padding: 4px 0 4px 16px; position: relative; }
+.summary { background: color-mix(in srgb, var(--surface-solid) 60%, transparent); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-mid); padding: var(--space-6) var(--space-7); margin-bottom: var(--space-7); }
+.summary h3 { font-size: var(--fs-13); font-weight: 700; margin-bottom: var(--space-3); letter-spacing: 0.5px; color: var(--pink); }
+.summary p { font-size: var(--fs-12); color: var(--code-text); }
+.summary ul { margin-top: var(--space-3); list-style: none; padding: 0; }
+.summary li { font-size: var(--fs-12); color: var(--text-2); padding: var(--space-1) 0 var(--space-1) var(--space-4); position: relative; }
 .summary li::before { content: '\25B8'; position: absolute; left: 0; color: var(--pink); }
 
 /* Timeline */
-.timeline { position: relative; padding-left: 40px; }
+.timeline { position: relative; padding-left: var(--space-7); }
 .timeline::before {
   content: ''; position: absolute; left: 12px; top: 16px; bottom: 16px;
   width: 2px; background: linear-gradient(to bottom, var(--pink) 0%, var(--purple) 50%, var(--blue) 100%);
 }
 
 .version-card {
-  position: relative; margin-bottom: 24px; padding: 26px 28px;
+  position: relative; margin-bottom: var(--space-6); padding: var(--space-6) var(--space-7);
   border-radius: var(--radius-mid); background: color-mix(in srgb, var(--surface-solid) 60%, transparent);
   border: 1.5px solid rgba(255,255,255,0.08);
 }
@@ -60,55 +60,55 @@ header .legend .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink
 .version-card.v-revert { color: var(--red); opacity: 0.7; }
 .version-card.v-revert { border-color: color-mix(in srgb, var(--red) 30%, transparent); border-style: dashed; }
 
-.version-header { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 8px; }
-.version-label { font-size: 22px; font-weight: 700; color: var(--text); }
-.version-date { font-size: 11px; color: var(--text-3); }
+.version-header { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-2); }
+.version-label { font-size: var(--fs-21); font-weight: 700; color: var(--text); }
+.version-date { font-size: var(--fs-11); color: var(--text-3); }
 .version-tag {
-  display: inline-block; padding: 3px 10px; border-radius: var(--radius-xs);
-  font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+  display: inline-block; padding: 3px var(--space-3); border-radius: var(--radius-xs);
+  font-size: var(--fs-10); font-weight: 700; letter-spacing: 0.5px;
   background: currentColor; filter: brightness(1);
   color: var(--bg);
 }
 
-.version-title { font-size: 14px; font-weight: 600; color: var(--text); margin: 2px 0 14px; }
+.version-title { font-size: var(--fs-15); font-weight: 600; color: var(--text); margin: 2px 0 var(--space-4); }
 
-.version-section { margin-top: 14px; }
-.version-section h4 { font-size: 10px; font-weight: 700; color: var(--text-2); margin-bottom: 6px; letter-spacing: 1px; text-transform: uppercase; }
-.version-section p, .version-section ul { font-size: 12px; color: var(--code-text); }
+.version-section { margin-top: var(--space-4); }
+.version-section h4 { font-size: var(--fs-10); font-weight: 700; color: var(--text-2); margin-bottom: var(--space-2); letter-spacing: 1px; text-transform: uppercase; }
+.version-section p, .version-section ul { font-size: var(--fs-12); color: var(--code-text); }
 .version-section ul { list-style: none; padding: 0; }
-.version-section li { padding: 3px 0 3px 14px; position: relative; }
+.version-section li { padding: 3px 0 3px var(--space-4); position: relative; }
 .version-section li::before { content: '\25B8'; position: absolute; left: 0; color: currentColor; }
-.version-section code { background: rgba(0,0,0,0.3); padding: 1px 5px; border-radius: var(--radius-xs); font-size: 11px; color: var(--amber); }
+.version-section code { background: rgba(0,0,0,0.3); padding: 1px var(--space-1); border-radius: var(--radius-xs); font-size: var(--fs-11); color: var(--amber); }
 
-.version-footer { margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.06); display: flex; gap: 16px; flex-wrap: wrap; font-size: 10px; color: var(--text-3); }
+.version-footer { margin-top: var(--space-4); padding-top: var(--space-3); border-top: 1px solid rgba(255,255,255,0.06); display: flex; gap: var(--space-4); flex-wrap: wrap; font-size: var(--fs-10); color: var(--text-3); }
 .version-footer code { background: transparent; padding: 0; color: var(--text-3); }
 
-.meta-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px; }
+.meta-pair { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-top: var(--space-3); }
 @media (max-width: 680px) {
   .meta-pair { grid-template-columns: 1fr; }
-  .timeline { padding-left: 30px; }
+  .timeline { padding-left: var(--space-7); }
   .timeline::before { left: 6px; }
   .version-card::before { left: -30px; }
 }
-.meta-pair .box { background: rgba(0,0,0,0.2); border-radius: var(--radius-base); padding: 10px 14px; border: 1px solid rgba(255,255,255,0.05); }
-.meta-pair .box h5 { font-size: 9px; font-weight: 700; color: var(--text-3); letter-spacing: 1px; margin-bottom: 4px; text-transform: uppercase; }
-.meta-pair .box p { font-size: 11px; color: var(--text-2); }
+.meta-pair .box { background: rgba(0,0,0,0.2); border-radius: var(--radius-base); padding: var(--space-3) var(--space-4); border: 1px solid rgba(255,255,255,0.05); }
+.meta-pair .box h5 { font-size: var(--fs-10); font-weight: 700; color: var(--text-3); letter-spacing: 1px; margin-bottom: var(--space-1); text-transform: uppercase; }
+.meta-pair .box p { font-size: var(--fs-11); color: var(--text-2); }
 
-footer { text-align: center; margin-top: 56px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.06); }
-footer p { font-size: 10px; color: var(--text-3); }
+footer { text-align: center; margin-top: var(--space-8); padding-top: var(--space-6); border-top: 1px solid rgba(255,255,255,0.06); }
+footer p { font-size: var(--fs-10); color: var(--text-3); }
 </style>
 </head>
 <body>
-<a id="wt-backnav" href="index.html" style="position:fixed;top:14px;left:14px;z-index:99999;font-family: var(--font-mono);font-size:12px;font-weight:700;color:var(--blue);text-decoration:none;background:color-mix(in srgb, var(--bg) 85%, transparent);padding:7px 12px;border-radius: var(--radius-base);border:1px solid color-mix(in srgb, var(--blue) 35%, transparent);">&larr; Hub</a>
+<a id="wt-backnav" href="index.html" style="position:fixed;top:14px;left:14px;z-index:99999;font-family: var(--font-mono);font-size:var(--fs-12);font-weight:700;color:var(--blue);text-decoration:none;background:color-mix(in srgb, var(--bg) 85%, transparent);padding: var(--space-2) var(--space-3);border-radius: var(--radius-base);border:1px solid color-mix(in srgb, var(--blue) 35%, transparent);">&larr; Hub</a>
 <div class="container">
   <header>
     <a href="feature-versions.html" class="back">&larr; Back to Feature Versions</a>
     <h1>Safe to Spend &mdash; Version History</h1>
-    <p style="font-size: 11px; color: var(--text-3); margin-top: 6px;">
-      Markdown companion: <a href="https://github.com/vikkybharadwaj/Tide_Vik-s-Version/blob/main/docs/FEATURE_VERSIONS_SAFE_TO_SPEND.md" style="color: var(--pink);"><code style="background:rgba(0,0,0,0.3); padding:1px 6px; border-radius: var(--radius-xs);">docs/FEATURE_VERSIONS_SAFE_TO_SPEND.md</code></a>
+    <p style="font-size: var(--fs-11); color: var(--text-3); margin-top: var(--space-2);">
+      Markdown companion: <a href="https://github.com/vikkybharadwaj/Tide_Vik-s-Version/blob/main/docs/FEATURE_VERSIONS_SAFE_TO_SPEND.md" style="color: var(--pink);"><code style="background:rgba(0,0,0,0.3); padding: 1px var(--space-2); border-radius: var(--radius-xs);">docs/FEATURE_VERSIONS_SAFE_TO_SPEND.md</code></a>
     </p>
     <p class="subtitle">Twenty-one documented iterations from a single hero number to a behaviorally-tuned runway with savings deliberately set aside, drill-downs on every aggregate, and per-tab projections. Each version shipped on real user data, each change was earned.</p>
-    <p style="margin-top: 12px; font-size: 12px; display:flex; flex-direction:column; gap:6px;">
+    <p style="margin-top: var(--space-3); font-size: var(--fs-12); display:flex; flex-direction:column; gap: var(--space-2);">
       <a href="safe-to-spend-math-explorer.html" style="color: var(--amber); text-decoration: underline; font-weight: 600;">
         &rarr; Safe to Spend math explorer &mdash; click-to-expand component breakdown of the whole formula
       </a>
@@ -272,7 +272,7 @@ footer p { font-size: 10px; color: var(--text-3); }
       </div>
     </div>
 
-    <p style="font-size: 12px; color: var(--text-2); margin: 18px 0; padding: 10px 14px; border: 1px dashed rgba(255,255,255,0.15); border-radius: var(--radius-base);"><strong style="color:var(--code-text);">Timeline gap:</strong> v5.3 (2026-06-12, PRs #207&ndash;#211) was the paycheck/detection hardening wave &mdash; multi-account direct-deposit splits, semimonthly two-anchor expansion, confirmed-stream ownership contract, 30-day sync lookback, poison-row hardening. Detailed entry pending.</p>
+    <p style="font-size: var(--fs-12); color: var(--text-2); margin: var(--space-5) 0; padding: var(--space-3) var(--space-4); border: 1px dashed rgba(255,255,255,0.15); border-radius: var(--radius-base);"><strong style="color:var(--code-text);">Timeline gap:</strong> v5.3 (2026-06-12, PRs #207&ndash;#211) was the paycheck/detection hardening wave &mdash; multi-account direct-deposit splits, semimonthly two-anchor expansion, confirmed-stream ownership contract, 30-day sync lookback, poison-row hardening. Detailed entry pending.</p>
 
     <!-- v5.2 -->
     <div class="version-card">
@@ -317,7 +317,7 @@ footer p { font-size: 10px; color: var(--text-3); }
     </div>
 
     <!-- v5.0/v5.1 gap note -->
-    <p style="font-size: 12px; color: var(--text-2); margin: 18px 0; padding: 10px 14px; border: 1px dashed rgba(255,255,255,0.15); border-radius: var(--radius-base);"><strong style="color:var(--code-text);">Timeline gap:</strong> v5.0&ndash;v5.1 (2026-06-10 &rarr; 06-12, PRs #188&ndash;#193) were the daily cash-flow ledger rework &mdash; MECE Money Out, the Plaid Liabilities CC due ladder, payday/income v2, the global-floor invariant, and the ledger UI. Full current-state spec: <a href="safe-to-spend-math-explorer.html" style="color:var(--amber);">the math explorer</a> / <code>SAFE_TO_SPEND_MATH.md</code> (includes the v4.9 &rarr; v5 deltas table). Detailed timeline entries for v5.0/v5.1 are pending.</p>
+    <p style="font-size: var(--fs-12); color: var(--text-2); margin: var(--space-5) 0; padding: var(--space-3) var(--space-4); border: 1px dashed rgba(255,255,255,0.15); border-radius: var(--radius-base);"><strong style="color:var(--code-text);">Timeline gap:</strong> v5.0&ndash;v5.1 (2026-06-10 &rarr; 06-12, PRs #188&ndash;#193) were the daily cash-flow ledger rework &mdash; MECE Money Out, the Plaid Liabilities CC due ladder, payday/income v2, the global-floor invariant, and the ledger UI. Full current-state spec: <a href="safe-to-spend-math-explorer.html" style="color:var(--amber);">the math explorer</a> / <code>SAFE_TO_SPEND_MATH.md</code> (includes the v4.9 &rarr; v5 deltas table). Detailed timeline entries for v5.0/v5.1 are pending.</p>
 
     <!-- v4.9 -->
     <div class="version-card">
@@ -499,21 +499,21 @@ footer p { font-size: 10px; color: var(--text-3); }
 
       <div class="version-section">
         <h4>What the formula captures now</h4>
-        <table style="width:100%; border-collapse:collapse; margin-top:8px; font-size:11px;">
+        <table style="width:100%; border-collapse:collapse; margin-top: var(--space-2); font-size:var(--fs-11);">
           <thead>
             <tr style="background:rgba(255,255,255,0.03);">
-              <th style="text-align:left; padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Category</th>
-              <th style="text-align:left; padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Captured?</th>
-              <th style="text-align:left; padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">How</th>
+              <th style="text-align:left; padding: var(--space-2) var(--space-2); border:1px solid rgba(255,255,255,0.06);">Category</th>
+              <th style="text-align:left; padding: var(--space-2) var(--space-2); border:1px solid rgba(255,255,255,0.06);">Captured?</th>
+              <th style="text-align:left; padding: var(--space-2) var(--space-2); border:1px solid rgba(255,255,255,0.06);">How</th>
             </tr>
           </thead>
           <tbody>
-            <tr><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Past debit / checking spending (cleared)</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:var(--green);">&#10003;</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);"><code>spendableBalance</code> reads <code>availableBalance</code> from Plaid</td></tr>
-            <tr><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Past debit / checking spending (pending)</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:var(--green);">&#10003;</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Plaid <code>availableBalance</code> subtracts pending debits automatically</td></tr>
-            <tr><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Past credit-card spending</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:var(--green);">&#10003;</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);"><code>creditCardDebt</code> = sum of current CC balances</td></tr>
-            <tr><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Future recurring bills (rent, Netflix, gym)</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:var(--green);">&#10003;</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);"><code>upcomingBills</code> from <code>recurring_streams</code> (conf &ge; 0.3)</td></tr>
-            <tr><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);">Future recurring income (paycheck)</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:var(--green);">&#10003;</td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);"><code>expectedIncome</code> from income streams (conf &ge; 0.75)</td></tr>
-            <tr><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);"><strong>Future non-recurring discretionary</strong></td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06); color:var(--amber);"><strong>Context (v4.6)</strong></td><td style="padding:6px 8px; border:1px solid rgba(255,255,255,0.06);"><code>typicalDiscretionary</code> forecast, shown as &ldquo;Projection at payday&rdquo; &mdash; NOT subtracted from runway</td></tr>
+            <tr><td style="padding: var(--space-2) var(--space-2); border:1px solid rgba(255,255,255,0.06);">Past debit / checking spending (cleared)</td><td style="padding: var(--space-2) var(--space-2); border:1px solid rgba(255,255,255,0.06); color:var(--green);">&#10003;</td><td style="padding: var(--space-2) var(--space-2); border:1px solid rgba(255,255,255,0.06);"><code>spendableBalance</code> reads <code>availableBalance</code> from Plaid</td></tr>
+            <tr><td style="padding: var(--space-2) var(--space-2); border:1px solid rgba(255,255,255,0.06);">Past debit / checking spending (pending)</td><td style="padding: var(--space-2) var(--space-2); border:1px solid rgba(255,255,255,0.06); color:var(--green);">&#10003;</td><td style="padding: var(--space-2) var(--space-2); border:1px solid rgba(255,255,255,0.06);">Plaid <code>availableBalance</code> subtracts pending debits automatically</td></tr>
+            <tr><td style="padding: var(--space-2) var(--space-2); border:1px solid rgba(255,255,255,0.06);">Past credit-card spending</td><td style="padding: var(--space-2) var(--space-2); border:1px solid rgba(255,255,255,0.06); color:var(--green);">&#10003;</td><td style="padding: var(--space-2) var(--space-2); border:1px solid rgba(255,255,255,0.06);"><code>creditCardDebt</code> = sum of current CC balances</td></tr>
+            <tr><td style="padding: var(--space-2) var(--space-2); border:1px solid rgba(255,255,255,0.06);">Future recurring bills (rent, Netflix, gym)</td><td style="padding: var(--space-2) var(--space-2); border:1px solid rgba(255,255,255,0.06); color:var(--green);">&#10003;</td><td style="padding: var(--space-2) var(--space-2); border:1px solid rgba(255,255,255,0.06);"><code>upcomingBills</code> from <code>recurring_streams</code> (conf &ge; 0.3)</td></tr>
+            <tr><td style="padding: var(--space-2) var(--space-2); border:1px solid rgba(255,255,255,0.06);">Future recurring income (paycheck)</td><td style="padding: var(--space-2) var(--space-2); border:1px solid rgba(255,255,255,0.06); color:var(--green);">&#10003;</td><td style="padding: var(--space-2) var(--space-2); border:1px solid rgba(255,255,255,0.06);"><code>expectedIncome</code> from income streams (conf &ge; 0.75)</td></tr>
+            <tr><td style="padding: var(--space-2) var(--space-2); border:1px solid rgba(255,255,255,0.06);"><strong>Future non-recurring discretionary</strong></td><td style="padding: var(--space-2) var(--space-2); border:1px solid rgba(255,255,255,0.06); color:var(--amber);"><strong>Context (v4.6)</strong></td><td style="padding: var(--space-2) var(--space-2); border:1px solid rgba(255,255,255,0.06);"><code>typicalDiscretionary</code> forecast, shown as &ldquo;Projection at payday&rdquo; &mdash; NOT subtracted from runway</td></tr>
           </tbody>
         </table>
       </div>

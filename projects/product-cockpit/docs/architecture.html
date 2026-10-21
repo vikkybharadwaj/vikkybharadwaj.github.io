@@ -25,7 +25,7 @@
   </div>
 </nav>
 
-<header class="hero" style="padding:72px 0 32px;">
+<header class="hero" style="padding: var(--space-9) 0 var(--space-7);">
   <div class="wrap" style="max-width:820px;">
     <span class="nda">Anonymized &middot; fabricated stand-in domain</span>
     <p class="eyebrow">For the reader who wants to know <em>why</em></p>
@@ -34,17 +34,17 @@
   </div>
 </header>
 
-<section style="padding-top:24px;">
+<section style="padding-top: var(--space-6);">
   <div class="wrap" style="max-width:820px;">
 
     <p>The whole architecture rests on one principle:</p>
     <div class="note" style="border-color:var(--green);"><strong>Separate what observes, what judges, and what executes &mdash; and never let the system&rsquo;s description drift from its reality.</strong></div>
     <p>Everything below is an expansion of that sentence.</p>
 
-    <h2 style="margin-top:40px;">The three-verb model</h2>
+    <h2 style="margin-top: var(--space-7);">The three-verb model</h2>
     <p>Most &ldquo;AI in our workflow&rdquo; setups collapse automation, judgement, and procedure into one undifferentiated pile of prompts. Keeping them distinct is what makes the system legible and maintainable.</p>
 
-    <h3 class="ktag k-hook" style="margin-top:24px;">Hooks &mdash; <em>observe</em></h3>
+    <h3 class="ktag k-hook" style="margin-top: var(--space-6);">Hooks &mdash; <em>observe</em></h3>
     <p>Deterministic shell scripts the harness fires automatically at points in the session lifecycle (start, end, prompt-submit). Their defining constraint: <strong>they surface information; they never decide.</strong></p>
     <ul>
       <li>Pull the latest reference material so context is never stale.</li>
@@ -53,11 +53,11 @@
     </ul>
     <p>Why shell, not the agent? Because these jobs must happen <em>every</em> time, identically, with zero judgement. Determinism belongs in scripts. The moment a task needs judgement, it stops being a hook.</p>
 
-    <h3 class="ktag k-policy" style="margin-top:24px;">Policies &mdash; <em>judge</em></h3>
+    <h3 class="ktag k-policy" style="margin-top: var(--space-6);">Policies &mdash; <em>judge</em></h3>
     <p>Plain-language markdown rules, each with a <strong>trigger</strong> and a <strong>procedure</strong>. Crucially, they&rsquo;re loaded <em>only when their trigger fires</em> &mdash; not dumped into context on every session. This keeps the working context lean while still applying consistent judgement exactly when it&rsquo;s needed.</p>
     <div class="note">A policy is how you encode &ldquo;the way we judge this kind of situation&rdquo; <em>once</em>, so the hundredth decision gets the same rigor as the first.</div>
 
-    <h3 class="ktag k-skill" style="margin-top:24px;">Skills &mdash; <em>execute</em></h3>
+    <h3 class="ktag k-skill" style="margin-top: var(--space-6);">Skills &mdash; <em>execute</em></h3>
     <p>Packaged, repeatable, multi-step workflows invoked on demand. The input may be messy; the output is always the same disciplined shape.</p>
     <ul>
       <li><code>/interview-to-brief</code> &mdash; raw research &rarr; structured problem brief (cited).</li>
@@ -66,7 +66,7 @@
     </ul>
     <p>Skills compound: every use adds to a shared pattern library instead of being re-improvised.</p>
 
-    <div style="overflow-x:auto; margin:24px 0;">
+    <div style="overflow-x:auto; margin: var(--space-6) 0;">
     <table class="tbl">
       <thead><tr><th></th><th>Hooks</th><th>Policies</th><th>Skills</th></tr></thead>
       <tbody>
@@ -78,12 +78,12 @@
     </table>
     </div>
 
-    <h2 style="margin-top:44px;">The supporting layers</h2>
+    <h2 style="margin-top: var(--space-8);">The supporting layers</h2>
 
-    <h3 class="ktag k-anchor" style="margin-top:20px;">Anchors</h3>
+    <h3 class="ktag k-anchor" style="margin-top: var(--space-5);">Anchors</h3>
     <p>Two documents &mdash; the <strong>target user</strong> and the <strong>core job</strong> &mdash; that sit above everything. Every brief, every roadmap change, every feature idea is checked against them. They&rsquo;re the answer to &ldquo;is this drift?&rdquo; Without anchors, a backlog slowly fills with things that serve <em>someone</em>, just not the someone you&rsquo;re building for.</p>
 
-    <h3 class="ktag k-memory" style="margin-top:20px;">Compounding memory</h3>
+    <h3 class="ktag k-memory" style="margin-top: var(--space-5);">Compounding memory</h3>
     <p>Four structures that make sure nothing learned is lost:</p>
     <ul>
       <li><strong>Learnings log</strong> &mdash; non-obvious operational insights, appended after meaningful work.</li>
@@ -93,7 +93,7 @@
     </ul>
     <p>This is the difference between memory and a filing cabinet: the memory is <em>re-loaded into context automatically</em>, so each session stands on the last.</p>
 
-    <h3 class="ktag k-gov" style="margin-top:20px;">Governance &mdash; the anti-drift loop</h3>
+    <h3 class="ktag k-gov" style="margin-top: var(--space-5);">Governance &mdash; the anti-drift loop</h3>
     <p>The layer that makes the system durable. The rule: <strong>any new primitive must update every registry that names it &mdash; including the <a href="../operating-system.html">visual self-portrait</a> &mdash; or the change fails its own audit.</strong></p>
     <p>Concretely, adding a skill forces:</p>
     <ol>
@@ -105,7 +105,7 @@
     <p>The payoff: six months later, the map is still the territory. A newcomer can trust the system&rsquo;s description of itself, because the system <em>can&rsquo;t</em> let that description go stale.</p>
     <p>Governance also includes <strong>ownership</strong> (who can merge what, where) and a <strong>maintenance cadence</strong> (a recurring pass to prune the learnings log, retire orphaned folders, refresh stale specs). Unglamorous, and exactly the kind of rigor that separates a system that lasts from a clever one-off.</p>
 
-    <h2 style="margin-top:44px;">Why an AI agent changes the calculus</h2>
+    <h2 style="margin-top: var(--space-8);">Why an AI agent changes the calculus</h2>
     <p>None of these primitives are novel on their own &mdash; teams have had scripts, checklists, and templates forever. What changes when an AI coding agent reads the same context:</p>
     <ul>
       <li><strong>The checklist gets <em>applied</em>, not just <em>available</em>.</strong> A policy isn&rsquo;t a wiki page someone might remember to consult; it&rsquo;s loaded and acted on the moment its trigger fires.</li>
@@ -113,7 +113,7 @@
       <li><strong>The division of labour becomes a design surface.</strong> Deciding what the machine should <em>observe</em> vs. <em>judge</em> vs. <em>execute</em> is itself the core skill &mdash; and the thing this whole system is a demonstration of.</li>
     </ul>
 
-    <div class="btnrow" style="margin-top:34px;">
+    <div class="btnrow" style="margin-top: var(--space-7);">
       <a class="btn primary" href="../appendix.html">See the artifacts &amp; code</a>
       <a class="btn ghost" href="../index.html">&larr; Back to overview</a>
     </div>

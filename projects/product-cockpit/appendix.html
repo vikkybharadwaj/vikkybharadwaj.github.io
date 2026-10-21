@@ -25,7 +25,7 @@
   </div>
 </nav>
 
-<header class="hero" style="padding-bottom:40px;">
+<header class="hero" style="padding-bottom: var(--space-7);">
   <div class="wrap">
     <span class="nda">All artifacts below are generalized &amp; use a fabricated stand-in domain</span>
     <p class="eyebrow">The machine, not the manifesto</p>
@@ -35,7 +35,7 @@
 </header>
 
 <!-- HOOK -->
-<section id="hook" style="padding-top:40px;">
+<section id="hook" style="padding-top: var(--space-7);">
   <div class="wrap">
     <p class="eyebrow"><span class="kdot" style="background:var(--teal);"></span>A hook &middot; it observes, it never decides</p>
     <h2>Keep the picture fresh, flag drift.</h2>
@@ -61,7 +61,7 @@ current=$(find . -maxdepth 2 -type d | sort | sha1sum)
 <span class="c"># 3. Load cross-session memory (the last ~20 sessions) into context</span>
 cat memory/episode-index.md
 </pre>
-    <p class="muted" style="font-size:.92rem;">The discipline that matters: a hook <em>surfaces</em> a warning. It never edits, never merges over a conflict, never decides what the drift means. Determinism stays in shell; judgement stays with the agent.</p>
+    <p class="muted" style="font-size:var(--fs-15);">The discipline that matters: a hook <em>surfaces</em> a warning. It never edits, never merges over a conflict, never decides what the drift means. Determinism stays in shell; judgement stays with the agent.</p>
   </div>
 </section>
 
@@ -91,7 +91,7 @@ PR and push back (player-coach style) — up to three rounds — before merge.
 fails signal 3 (serves competitive power-users, not the tentative-beginner
 target persona) and signal 5 (no stated trade-off). Flagged, not merged.
 </pre>
-    <p class="muted" style="font-size:.92rem;">Encoding judgement once, in plain language, means the hundredth strategy decision gets the same rigor as the first &mdash; without re-explaining it to anyone, human or agent.</p>
+    <p class="muted" style="font-size:var(--fs-15);">Encoding judgement once, in plain language, means the hundredth strategy decision gets the same rigor as the first &mdash; without re-explaining it to anyone, human or agent.</p>
   </div>
 </section>
 
@@ -114,7 +114,7 @@ target persona) and signal 5 (no stated trade-off). Flagged, not merged.
   5. propose one starting direction + the trade-off it accepts
   6. emit the brief; never invent a quote that isn't in the source
 </pre>
-    <div class="artifact-label" style="margin-top:18px;">Example output &middot; fabricated habit-app domain</div>
+    <div class="artifact-label" style="margin-top: var(--space-5);">Example output &middot; fabricated habit-app domain</div>
 <pre><span class="c"># Problem brief: the "day-3 cliff"</span>
 
 <span class="k">Problem.</span>   New users build a streak for two days, then vanish on day 3.
@@ -127,7 +127,7 @@ target persona) and signal 5 (no stated trade-off). Flagged, not merged.
 <span class="k">Trade-off accepted.</span> Slightly softer accountability, in exchange for
            surviving the moment most users currently churn.
 </pre>
-    <p class="muted" style="font-size:.92rem;">Same shape every time means briefs stack, compare, and compound &mdash; instead of each one being a fresh act of improvisation.</p>
+    <p class="muted" style="font-size:var(--fs-15);">Same shape every time means briefs stack, compare, and compound &mdash; instead of each one being a fresh act of improvisation.</p>
   </div>
 </section>
 
@@ -146,9 +146,9 @@ target persona) and signal 5 (no stated trade-off). Flagged, not merged.
       <div class="tl-step"><span class="t">Result</span><h3>The description can never quietly fall out of date</h3><p>Six months later, the map is still the territory. That&rsquo;s what makes it survive its author.</p></div>
     </div>
 
-    <div class="card" style="margin-top:30px; border-left:4px solid var(--green);">
-      <h3 style="font-family:var(--font-mono); font-size:1.4rem;">Want the reasoning behind it?</h3>
-      <p class="muted" style="font-size:1rem;">The overview is the fast version; the architecture deep-dive has the whole argument &mdash; the design decisions, the philosophy, and why an AI agent changes the calculus.</p>
+    <div class="card" style="margin-top: var(--space-7); border-left:4px solid var(--green);">
+      <h3 style="font-family:var(--font-mono); font-size:var(--fs-21);">Want the reasoning behind it?</h3>
+      <p class="muted" style="font-size:var(--fs-17);">The overview is the fast version; the architecture deep-dive has the whole argument &mdash; the design decisions, the philosophy, and why an AI agent changes the calculus.</p>
       <div class="btnrow">
         <a class="btn primary" href="docs/architecture.html">Architecture deep-dive</a>
         <a class="btn ghost" href="index.html">&larr; Back to overview</a>

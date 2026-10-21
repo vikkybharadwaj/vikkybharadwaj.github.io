@@ -70,6 +70,10 @@
   --fs-30: 30px;
   --fs-34: 34px;
   --fs-68: 68px;
+  --lh-tight: 1.15;
+  --lh-snug: 1.5;
+  --lh-normal: 1.6;
+  --lh-relaxed: 1.8;
   --dur-fast: 0.15s;
   --dur-base: 0.2s;
   --z-sticky: 50;

@@ -4,7 +4,7 @@ import json, pathlib
 root = pathlib.Path(__file__).resolve().parent.parent / "design-system"
 t = json.loads((root / "tokens.json").read_text())
 out = ["/* Vik Bharadwaj — generated from tokens.json. Edit tokens.json, then run scripts/build-design-tokens.py */", ":root {"]
-for fam in ("color", "spacing", "radius", "shadow", "gradient", "fontsize", "duration", "zindex"):
+for fam in ("color", "spacing", "radius", "shadow", "gradient", "fontsize", "lineheight", "duration", "zindex"):
     for tok in t[fam]["tokens"]:
         v = tok["value"]
         if v.startswith("{") and v.endswith("}"):

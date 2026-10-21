@@ -14,18 +14,18 @@
 <style>
   /* ---- OS-diagram-only styles (os- prefixed to avoid collision with styles.css) ---- */
   .os-living {
-    max-width: 880px; margin: 26px auto 0; padding: 16px 20px;
+    max-width: 880px; margin: var(--space-6) auto 0; padding: var(--space-4) var(--space-5);
     border: 1px solid color-mix(in srgb, var(--green) 32%, transparent); border-radius: var(--radius-mid);
-    background: color-mix(in srgb, var(--green) 6%, transparent); font-size: .82rem; color: var(--text-2); line-height: 1.65;
+    background: color-mix(in srgb, var(--green) 6%, transparent); font-size: var(--fs-13); color: var(--text-2); line-height: var(--lh-normal);
   }
   .os-living b { color: var(--green); }
-  .os-living .leaf { color: var(--green); font-weight: 700; letter-spacing: .12em; font-size: .66rem; text-transform: uppercase; display:block; margin-bottom:6px; }
+  .os-living .leaf { color: var(--green); font-weight: 700; letter-spacing: .12em; font-size: var(--fs-11); text-transform: uppercase; display:block; margin-bottom: var(--space-2); }
 
-  .os-section { margin-top: 40px; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); padding: 30px; }
-  .os-head { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
-  .os-num { width: 28px; height: 28px; border-radius: 50%; background: var(--grad-brand); color: var(--on-accent); font-size: .8rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex: 0 0 28px; }
-  .os-head h2 { font-size: 1.3rem; font-weight: 700; margin: 0; }
-  .os-desc { font-size: .9rem; color: var(--text-2); margin: 0 0 24px; max-width: 900px; line-height: 1.7; }
+  .os-section { margin-top: var(--space-7); border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); padding: var(--space-7); }
+  .os-head { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-2); }
+  .os-num { width: 28px; height: 28px; border-radius: 50%; background: var(--grad-brand); color: var(--on-accent); font-size: var(--fs-13); font-weight: 800; display: flex; align-items: center; justify-content: center; flex: 0 0 28px; }
+  .os-head h2 { font-size: var(--fs-21); font-weight: 700; margin: 0; }
+  .os-desc { font-size: var(--fs-15); color: var(--text-2); margin: 0 0 var(--space-6); max-width: 900px; line-height: var(--lh-relaxed); }
 
   /* swatches keyed to the six layers — same palette as the index k- classes */
   .sw-anchor { background: var(--blue); }
@@ -36,31 +36,31 @@
   .sw-gov    { background: var(--text-3); }
 
   /* ---- §1 lifecycle timeline ---- */
-  .os-tl { border-top: 1px solid var(--border); padding-top: 20px; }
-  .os-tl-axis { display: grid; grid-template-columns: 210px 1fr; align-items: center; margin-bottom: 12px; }
-  .os-tl-axis .axis-label { font-family: var(--font-mono); font-size: .6rem; color: var(--text-3); letter-spacing: .2em; text-align: center; }
-  .os-tl-axis .ends { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: .6rem; color: var(--text-3); padding: 0 2px; }
-  .os-tl-row { display: grid; grid-template-columns: 210px 1fr; align-items: center; padding: 9px 0; }
-  .os-tl-name { font-size: .82rem; font-weight: 600; color: var(--text); }
-  .os-tl-name span { display: block; font-family: var(--font-mono); font-size: .64rem; color: var(--text-3); font-weight: 400; margin-top: 2px; }
+  .os-tl { border-top: 1px solid var(--border); padding-top: var(--space-5); }
+  .os-tl-axis { display: grid; grid-template-columns: 210px 1fr; align-items: center; margin-bottom: var(--space-3); }
+  .os-tl-axis .axis-label { font-family: var(--font-mono); font-size: var(--fs-10); color: var(--text-3); letter-spacing: .2em; text-align: center; }
+  .os-tl-axis .ends { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: var(--fs-10); color: var(--text-3); padding: 0 2px; }
+  .os-tl-row { display: grid; grid-template-columns: 210px 1fr; align-items: center; padding: var(--space-2) 0; }
+  .os-tl-name { font-size: var(--fs-13); font-weight: 600; color: var(--text); }
+  .os-tl-name span { display: block; font-family: var(--font-mono); font-size: var(--fs-10); color: var(--text-3); font-weight: 400; margin-top: 2px; }
   .os-track { position: relative; height: 12px; border-radius: var(--radius-sm); background: rgba(255,255,255,0.04); }
   .os-track .bar { position: absolute; top: 0; height: 12px; border-radius: var(--radius-sm); }
   .os-track .dot { position: absolute; top: 1px; width: 10px; height: 10px; border-radius: 50%; transform: translateX(-50%); }
   .os-track .dashed { position: absolute; top: 5px; left: 0; right: 0; border-top: 1px dashed rgba(255,255,255,0.12); }
 
-  .os-legend { display: flex; flex-wrap: wrap; gap: 12px 22px; margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--border); }
-  .os-legend .item { display: flex; align-items: center; gap: 7px; font-size: .74rem; color: var(--text-2); }
+  .os-legend { display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-6); margin-top: var(--space-6); padding-top: var(--space-5); border-top: 1px solid var(--border); }
+  .os-legend .item { display: flex; align-items: center; gap: var(--space-2); font-size: var(--fs-12); color: var(--text-2); }
   .os-legend .sw { width: 11px; height: 11px; border-radius: var(--radius-xs); flex: 0 0 11px; }
 
   /* ---- card columns (system map / connections) ---- */
-  .os-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 16px; }
-  .os-rcard { border: 1px solid var(--border); border-radius: var(--radius-mid); padding: 18px 20px; background: color-mix(in srgb, var(--bg) 50%, transparent); }
-  .os-rcard h3 { font-family: var(--font-mono); font-size: .66rem; letter-spacing: .14em; text-transform: uppercase; margin: 0 0 4px; }
-  .os-rcard .blurb { font-size: .8rem; color: var(--text-2); font-style: italic; margin-bottom: 14px; }
-  .os-rcard .row { font-size: .82rem; margin: 8px 0; display: flex; flex-wrap: wrap; gap: 6px; align-items: baseline; color: var(--text); }
-  .os-rcard .row code { color: var(--text); background: rgba(255,255,255,0.05); padding: 1px 6px; border-radius: var(--radius-xs); font-size: .78rem; font-family: var(--font-mono); }
-  .os-rcard .row .note { font-size: .72rem; color: var(--text-3); }
-  .os-rcard .cnt { float: right; font-family: var(--font-mono); font-size: .66rem; color: var(--text-3); }
+  .os-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: var(--space-4); }
+  .os-rcard { border: 1px solid var(--border); border-radius: var(--radius-mid); padding: var(--space-5) var(--space-5); background: color-mix(in srgb, var(--bg) 50%, transparent); }
+  .os-rcard h3 { font-family: var(--font-mono); font-size: var(--fs-11); letter-spacing: .14em; text-transform: uppercase; margin: 0 0 var(--space-1); }
+  .os-rcard .blurb { font-size: var(--fs-13); color: var(--text-2); font-style: italic; margin-bottom: var(--space-4); }
+  .os-rcard .row { font-size: var(--fs-13); margin: var(--space-2) 0; display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: baseline; color: var(--text); }
+  .os-rcard .row code { color: var(--text); background: rgba(255,255,255,0.05); padding: 1px var(--space-2); border-radius: var(--radius-xs); font-size: var(--fs-13); font-family: var(--font-mono); }
+  .os-rcard .row .note { font-size: var(--fs-12); color: var(--text-3); }
+  .os-rcard .cnt { float: right; font-family: var(--font-mono); font-size: var(--fs-11); color: var(--text-3); }
 
   .t-anchor { border-color: color-mix(in srgb, var(--blue) 40%, transparent); } .t-anchor h3 { color: var(--blue); }
   .t-hook   { border-color: color-mix(in srgb, var(--teal) 40%, transparent); } .t-hook h3   { color: var(--teal); }
@@ -70,42 +70,42 @@
   .t-gov    { border-color: color-mix(in srgb, var(--text-2) 40%, transparent);} .t-gov h3    { color: var(--text-2); }
 
   /* ---- §3 comparison table ---- */
-  table.os-cmp { width: 100%; border-collapse: collapse; font-size: .82rem; margin-top: 6px; }
-  table.os-cmp th, table.os-cmp td { text-align: left; padding: 12px 14px; vertical-align: top; border-bottom: 1px solid var(--border); }
-  table.os-cmp thead th { font-family: var(--font-mono); font-size: .64rem; letter-spacing: .14em; text-transform: uppercase; color: var(--text-2); }
-  table.os-cmp tbody th { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .08em; text-transform: uppercase; color: var(--text-3); width: 130px; }
+  table.os-cmp { width: 100%; border-collapse: collapse; font-size: var(--fs-13); margin-top: var(--space-2); }
+  table.os-cmp th, table.os-cmp td { text-align: left; padding: var(--space-3) var(--space-4); vertical-align: top; border-bottom: 1px solid var(--border); }
+  table.os-cmp thead th { font-family: var(--font-mono); font-size: var(--fs-10); letter-spacing: .14em; text-transform: uppercase; color: var(--text-2); }
+  table.os-cmp tbody th { font-family: var(--font-mono); font-size: var(--fs-10); letter-spacing: .08em; text-transform: uppercase; color: var(--text-3); width: 130px; }
   table.os-cmp .col-hook   { background: color-mix(in srgb, var(--teal) 6%, transparent); color: var(--text); }
   table.os-cmp .col-policy { background: color-mix(in srgb, var(--green) 6%, transparent); color: var(--text); }
   table.os-cmp .col-skill  { background: color-mix(in srgb, var(--amber) 6%, transparent); color: var(--text); }
   table.os-cmp .head-hook   { color: var(--teal); }
   table.os-cmp .head-policy { color: var(--green); }
   table.os-cmp .head-skill  { color: var(--amber); }
-  table.os-cmp .tagline { font-weight: 700; font-size: .9rem; }
-  .os-banner { margin-top: 20px; text-align: center; padding: 14px; border-radius: var(--radius-md); background: var(--code-bg); border: 1px solid var(--border); font-size: .95rem; font-weight: 600; letter-spacing: .03em; color: var(--text); }
-  .os-banner .dot { color: var(--text-3); margin: 0 12px; }
+  table.os-cmp .tagline { font-weight: 700; font-size: var(--fs-15); }
+  .os-banner { margin-top: var(--space-5); text-align: center; padding: var(--space-4); border-radius: var(--radius-md); background: var(--code-bg); border: 1px solid var(--border); font-size: var(--fs-15); font-weight: 600; letter-spacing: .03em; color: var(--text); }
+  .os-banner .dot { color: var(--text-3); margin: 0 var(--space-3); }
 
   /* ---- §4 anti-drift loop ---- */
-  .os-loop { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; counter-reset: step; }
-  .os-step { position: relative; border: 1px solid var(--border); border-radius: var(--radius-mid); padding: 18px 18px 18px 18px; background: color-mix(in srgb, var(--bg) 50%, transparent); }
-  .os-step .n { font-family: var(--font-mono); font-size: .66rem; font-weight: 700; letter-spacing: .14em; color: var(--green); }
-  .os-step h4 { font-size: .95rem; margin: 6px 0 6px; color: var(--text); }
-  .os-step p { font-size: .8rem; color: var(--text-2); margin: 0; line-height: 1.6; }
+  .os-loop { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: var(--space-4); counter-reset: step; }
+  .os-step { position: relative; border: 1px solid var(--border); border-radius: var(--radius-mid); padding: var(--space-5) var(--space-5) var(--space-5) var(--space-5); background: color-mix(in srgb, var(--bg) 50%, transparent); }
+  .os-step .n { font-family: var(--font-mono); font-size: var(--fs-11); font-weight: 700; letter-spacing: .14em; color: var(--green); }
+  .os-step h4 { font-size: var(--fs-15); margin: var(--space-2) 0 var(--space-2); color: var(--text); }
+  .os-step p { font-size: var(--fs-13); color: var(--text-2); margin: 0; line-height: var(--lh-normal); }
   .os-step.gate { border-color: color-mix(in srgb, var(--green) 45%, transparent); background: color-mix(in srgb, var(--green) 5%, transparent); }
-  .os-loop-note { margin-top: 18px; font-size: .86rem; color: var(--text-2); border-left: 3px solid var(--green); padding-left: 14px; line-height: 1.7; }
+  .os-loop-note { margin-top: var(--space-5); font-size: var(--fs-13); color: var(--text-2); border-left: 3px solid var(--green); padding-left: var(--space-4); line-height: var(--lh-relaxed); }
   .os-loop-note b { color: var(--text); }
 
   /* ---- §5 maintenance cards ---- */
-  .os-mgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
-  .os-mcard { border: 1px solid var(--border); border-radius: var(--radius-mid); padding: 18px 20px; background: color-mix(in srgb, var(--bg) 50%, transparent); }
-  .os-mcard .when { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; color: var(--text-3); }
-  .os-mcard h4 { font-size: .92rem; margin: 5px 0 8px; color: var(--text); }
-  .os-mcard p { font-size: .8rem; color: var(--text-2); margin: 0; line-height: 1.6; }
-  .os-mcard code { color: var(--text); background: rgba(255,255,255,0.05); padding: 1px 5px; border-radius: var(--radius-xs); font-size: .76rem; font-family: var(--font-mono); }
+  .os-mgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-4); }
+  .os-mcard { border: 1px solid var(--border); border-radius: var(--radius-mid); padding: var(--space-5) var(--space-5); background: color-mix(in srgb, var(--bg) 50%, transparent); }
+  .os-mcard .when { font-family: var(--font-mono); font-size: var(--fs-10); letter-spacing: .14em; text-transform: uppercase; color: var(--text-3); }
+  .os-mcard h4 { font-size: var(--fs-15); margin: var(--space-1) 0 var(--space-2); color: var(--text); }
+  .os-mcard p { font-size: var(--fs-13); color: var(--text-2); margin: 0; line-height: var(--lh-normal); }
+  .os-mcard code { color: var(--text); background: rgba(255,255,255,0.05); padding: 1px var(--space-1); border-radius: var(--radius-xs); font-size: var(--fs-12); font-family: var(--font-mono); }
 
   @media (max-width: 720px) {
     .os-tl-axis, .os-tl-row { grid-template-columns: 120px 1fr; }
-    .os-tl-name { font-size: .74rem; }
-    .os-section { padding: 22px 16px; }
+    .os-tl-name { font-size: var(--fs-12); }
+    .os-section { padding: var(--space-6) var(--space-4); }
   }
 </style>
 </head>
@@ -124,12 +124,12 @@
 </nav>
 
 <!-- ============ HERO ============ -->
-<header class="hero" id="top" style="padding:72px 0 28px; text-align:center;">
+<header class="hero" id="top" style="padding: var(--space-9) 0 var(--space-7); text-align:center;">
   <div class="wrap" style="max-width:880px;">
     <span class="nda">Anonymized &middot; fabricated stand-in domain</span>
     <p class="eyebrow">The system, mapped</p>
     <h1>The Operating System</h1>
-    <p class="lead" style="max-width:760px; margin:0 auto;">Session lifecycle &middot; the six-layer map &middot; observe / judge / execute &middot; the anti-drift loop. The same architecture the <a href="docs/architecture.html">deep-dive</a> explains in prose &mdash; here as one picture.</p>
+    <p class="lead" style="max-width:760px; margin: 0 auto;">Session lifecycle &middot; the six-layer map &middot; observe / judge / execute &middot; the anti-drift loop. The same architecture the <a href="docs/architecture.html">deep-dive</a> explains in prose &mdash; here as one picture.</p>
 
     <div class="os-living">
       <span class="leaf">&#9678; The diagram is part of the system</span>
@@ -142,7 +142,7 @@
   </div>
 </header>
 
-<section style="padding-top:8px;">
+<section style="padding-top: var(--space-2);">
   <div class="wrap" style="max-width:1080px;">
 
   <!-- ============ §1 SESSION LIFECYCLE ============ -->
@@ -354,7 +354,7 @@
       <div class="os-step">
         <div class="n">STEP 02</div>
         <h4>A policy fires</h4>
-        <p>The <code style="font-family:var(--font-mono);font-size:.78rem;">register-everywhere</code> policy triggers: &ldquo;this exists now &mdash; register it in every place that lists it.&rdquo;</p>
+        <p>The <code style="font-family:var(--font-mono);font-size:var(--fs-13);">register-everywhere</code> policy triggers: &ldquo;this exists now &mdash; register it in every place that lists it.&rdquo;</p>
       </div>
       <div class="os-step">
         <div class="n">STEP 03</div>
@@ -419,8 +419,8 @@
   </div>
 
   <!-- ============ GATEWAY ============ -->
-  <div style="margin-top:40px;">
-    <h3 style="font-family:var(--font-mono); font-size:1.4rem; margin-bottom:6px;">Keep going</h3>
+  <div style="margin-top: var(--space-7);">
+    <h3 style="font-family:var(--font-mono); font-size:var(--fs-21); margin-bottom: var(--space-2);">Keep going</h3>
     <p class="muted" style="max-width:680px;">This is the system at a glance. For the <em>why</em> behind each layer, or the real code behind a primitive:</p>
     <div class="gateway" style="grid-template-columns:repeat(2,1fr);">
       <a href="docs/architecture.html"><span class="g-name">Architecture deep-dive &rarr;</span><span class="g-blurb">Why each layer exists and how they interact &mdash; the observe / judge / execute design and the anti-drift loop, in prose, plus why an AI agent changes the calculus.</span></a>
