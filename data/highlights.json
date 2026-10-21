@@ -4,20 +4,20 @@
     "title": "How I operate.",
     "sub": "A snapshot from across my repos (public + private), generated from real git history \u2014 the operating habits behind the work above. Commit-history metrics cover 2026 to date."
   },
-  "updated": "2026-10-20",
+  "updated": "2026-10-21",
   "first": "2026-03-21",
-  "window": "Counts 2026 to date \u00b7 git activity 2026-03-21 \u2192 2026-10-20",
+  "window": "Counts 2026 to date \u00b7 git activity 2026-03-21 \u2192 2026-10-21",
   "insights": [
     {
       "key": "github_contributions",
-      "value": "1,503",
+      "value": "1,505",
       "label": "GitHub contributions",
       "caption": "commits, PRs & reviews \u00b7 public + private \u00b7 2026 to date",
       "accent": "g"
     },
     {
       "key": "commits",
-      "value": "1,039",
+      "value": "1,042",
       "label": "commits shipped",
       "caption": "across 5 repos \u00b7 2026 to date",
       "accent": "g"
@@ -38,7 +38,7 @@
     },
     {
       "key": "pr_driven",
-      "value": "388",
+      "value": "389",
       "label": "changes shipped via PR",
       "caption": "reviewed \u2014 never straight to main",
       "accent": "b"
@@ -66,7 +66,7 @@
     },
     {
       "key": "evals",
-      "value": "173",
+      "value": "174",
       "label": "eval fixtures",
       "caption": "AI quality measured, not guessed",
       "accent": "p"
@@ -94,14 +94,14 @@
     },
     {
       "key": "docs",
-      "value": "250",
+      "value": "302",
       "label": "docs & diagrams",
       "caption": "documentation as a living spec",
       "accent": "a"
     },
     {
       "key": "tracked_files",
-      "value": "1,009",
+      "value": "1,073",
       "label": "files under version control",
       "caption": "full-stack breadth",
       "accent": "t"
@@ -118,19 +118,19 @@
       "languages": [
         [
           "TypeScript",
-          421
-        ],
-        [
-          "JSON",
-          196
+          422
         ],
         [
           "Markdown",
-          188
+          199
+        ],
+        [
+          "JSON",
+          199
         ],
         [
           "HTML",
-          62
+          103
         ],
         [
           "Shell",
@@ -138,7 +138,7 @@
         ],
         [
           "YAML",
-          14
+          15
         ]
       ]
     }
