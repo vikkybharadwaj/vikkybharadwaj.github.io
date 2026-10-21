@@ -138,3 +138,9 @@ python3 scripts/build-design-tokens.py   # regenerates design-system/tokens.css
 `design-system/README.md` is the brand book (voice, visual rules, usage) and `design-system/components/` holds the React components and previews.
 SVG attributes and JavaScript cannot resolve `var()`, so inside those use the token's literal hex from `tokens.css`.
 
+
+Check that every page conforms (also run this before merging design changes):
+
+```bash
+python3 scripts/check-design-conformance.py -v   # exits 1 on token redeclaration, palette hex or rgba in CSS, literal font-family, off-scale radius, or a tinted chip below 4.5:1
+```

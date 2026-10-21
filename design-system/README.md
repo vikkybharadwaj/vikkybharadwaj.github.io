@@ -34,13 +34,22 @@ There is no icon set. The source uses single emoji as card icons, the arrow glyp
 - Load JetBrains Mono from Google Fonts (400 to 800) and keep `ui-monospace, SFMono-Regular, Menlo, monospace` as the fallback; `var(--font-mono)` carries both.
 - Components need React 18 and the `VikDS` bundle; styles are in `components/bundle.css`.
 
-## Status colours
+## Colour roles
 
-- Success is `green`, warning is `amber`, danger is `red` (about 5.1:1 on `bg`), information is `blue`. Always add a word or icon; never separate success from danger by hue alone.
-- Light tints of a status colour used as text on a tinted chip take the base token, or `rose` for red.
+- **Brand:** `green` and `blue` (with `grad-brand`). Links are `link`, focus rings are `focus`.
+- **Status:** `success`, `warning`, `danger`, `info`. Always add a word or icon; never separate success from danger by hue alone.
+- **Categorical (topic and diagram colours):** `purple`, `violet`, `teal`, `cyan`, `orange`, `pink`, `indigo`. Each category in one legend gets its own colour; never reuse one for two categories on a page. `orange` is not `amber` and `violet` is not `purple`: they exist so diagram categories stay distinct.
+- **Text on a tinted chip:** use the `-text` tier (`purple-text`, `pink-text`, `blue-text`) or `rose` for red. The base accent drops below 4.5:1 on its own tint. Do not put `text-3` on a tint.
+
+## Scales
+
+- Type: `fs-10` to `fs-68` (10, 11, 12, 13, 15, 17, 21, 30, 34, 68). Sizes under 11px are for diagram labels only.
+- Spacing: a 4px grid, `space-1` to `space-9`. Radius: `radius-xs` to `radius-xl`, `radius-pill`.
+- Motion: `dur-fast` (0.15s) and `dur-base` (0.2s) with `ease`. Hover lifts are 4px on cards and stat tiles, 2px on buttons.
+- Layers: `z-sticky`, `z-overlay`, `z-modal`, `z-tooltip`. Breakpoints: 640, 900 and 1100px.
 
 ## Known gaps
 
-- `text-3` (4.0:1) fails the 4.5:1 text floor and `purple` is marginal on `surface` (4.65:1); both are kept exact. Keep `text-3` to metadata.
-- No focus styles, no light theme and no mobile menu exist in the portfolio.
-- Font sizes and spacing in the pages are still written as literals; only colour, radius and font family are tokenised in page CSS.
+- The portfolio pages still write font sizes, spacing and breakpoints as literals (29 distinct font sizes). The scales are defined; migrating pages to them is not done.
+- Cards and some pages use a 3px coloured top or left border as a tone accent. It is in the source and kept, but new work should prefer a tinted border plus a coloured label.
+- No light theme and no mobile menu exist in the portfolio.

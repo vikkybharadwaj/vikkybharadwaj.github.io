@@ -20,7 +20,7 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-behavior: smooth; scroll-padding-top: 76px; }
   body {
-    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: var(--font-mono);
     background: var(--bg); color: var(--text);
     line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden;
   }
@@ -119,12 +119,12 @@
   .card-arch { border-color: color-mix(in srgb, var(--blue) 30%, transparent); }
   .card-arch:hover { box-shadow: 0 8px 32px color-mix(in srgb, var(--blue) 20%, transparent); border-color: var(--blue); }
   .card-arch .icon { color: var(--blue); }
-  .card-arch .tag { background: color-mix(in srgb, var(--blue) 15%, transparent); color: var(--blue); }
+  .card-arch .tag { background: color-mix(in srgb, var(--blue) 15%, transparent); color: var(--blue-text); }
 
   .card-flow { border-color: color-mix(in srgb, var(--purple) 30%, transparent); }
   .card-flow:hover { box-shadow: 0 8px 32px color-mix(in srgb, var(--purple) 20%, transparent); border-color: var(--purple); }
   .card-flow .icon { color: var(--purple); }
-  .card-flow .tag { background: color-mix(in srgb, var(--purple) 15%, transparent); color: var(--purple); }
+  .card-flow .tag { background: color-mix(in srgb, var(--purple) 15%, transparent); color: var(--purple-text); }
 
   .card-ai { border-color: color-mix(in srgb, var(--cyan) 30%, transparent); }
   .card-ai:hover { box-shadow: 0 8px 32px color-mix(in srgb, var(--cyan) 20%, transparent); border-color: var(--cyan); }
@@ -139,12 +139,12 @@
   .card-dash { border-color: color-mix(in srgb, var(--blue) 30%, transparent); }
   .card-dash:hover { box-shadow: 0 8px 32px color-mix(in srgb, var(--blue) 20%, transparent); border-color: var(--blue); }
   .card-dash .icon { color: var(--blue); }
-  .card-dash .tag { background: color-mix(in srgb, var(--blue) 15%, transparent); color: var(--blue); }
+  .card-dash .tag { background: color-mix(in srgb, var(--blue) 15%, transparent); color: var(--blue-text); }
 
   .card-ver { border-color: color-mix(in srgb, var(--pink) 30%, transparent); }
   .card-ver:hover { box-shadow: 0 8px 32px color-mix(in srgb, var(--pink) 20%, transparent); border-color: var(--pink); }
   .card-ver .icon { color: var(--pink); }
-  .card-ver .tag { background: color-mix(in srgb, var(--pink) 15%, transparent); color: var(--pink); }
+  .card-ver .tag { background: color-mix(in srgb, var(--pink) 15%, transparent); color: var(--pink-text); }
 
   .card-math { border-color: color-mix(in srgb, var(--amber) 30%, transparent); }
   .card-math:hover { box-shadow: 0 8px 32px color-mix(in srgb, var(--amber) 20%, transparent); border-color: var(--amber); }

@@ -9,8 +9,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/styles.css?v=20260610subfull" />
 <link rel="stylesheet" href="../../design-system/tokens.css">
+<link rel="stylesheet" href="assets/styles.css?v=20260610subfull" />
 <style>
   /* ---- OS-diagram-only styles (os- prefixed to avoid collision with styles.css) ---- */
   .os-living {
@@ -21,9 +21,9 @@
   .os-living b { color: var(--green); }
   .os-living .leaf { color: var(--green); font-weight: 700; letter-spacing: .12em; font-size: .66rem; text-transform: uppercase; display:block; margin-bottom:6px; }
 
-  .os-section { margin-top: 40px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); padding: 30px; }
+  .os-section { margin-top: 40px; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); padding: 30px; }
   .os-head { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
-  .os-num { width: 28px; height: 28px; border-radius: 50%; background: var(--grad); color: var(--on-accent); font-size: .8rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex: 0 0 28px; }
+  .os-num { width: 28px; height: 28px; border-radius: 50%; background: var(--grad-brand); color: var(--on-accent); font-size: .8rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex: 0 0 28px; }
   .os-head h2 { font-size: 1.3rem; font-weight: 700; margin: 0; }
   .os-desc { font-size: .9rem; color: var(--text-2); margin: 0 0 24px; max-width: 900px; line-height: 1.7; }
 
@@ -38,11 +38,11 @@
   /* ---- §1 lifecycle timeline ---- */
   .os-tl { border-top: 1px solid var(--border); padding-top: 20px; }
   .os-tl-axis { display: grid; grid-template-columns: 210px 1fr; align-items: center; margin-bottom: 12px; }
-  .os-tl-axis .axis-label { font-family: var(--mono); font-size: .6rem; color: var(--text-3); letter-spacing: .2em; text-align: center; }
-  .os-tl-axis .ends { display: flex; justify-content: space-between; font-family: var(--mono); font-size: .6rem; color: var(--text-3); padding: 0 2px; }
+  .os-tl-axis .axis-label { font-family: var(--font-mono); font-size: .6rem; color: var(--text-3); letter-spacing: .2em; text-align: center; }
+  .os-tl-axis .ends { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: .6rem; color: var(--text-3); padding: 0 2px; }
   .os-tl-row { display: grid; grid-template-columns: 210px 1fr; align-items: center; padding: 9px 0; }
   .os-tl-name { font-size: .82rem; font-weight: 600; color: var(--text); }
-  .os-tl-name span { display: block; font-family: var(--mono); font-size: .64rem; color: var(--text-3); font-weight: 400; margin-top: 2px; }
+  .os-tl-name span { display: block; font-family: var(--font-mono); font-size: .64rem; color: var(--text-3); font-weight: 400; margin-top: 2px; }
   .os-track { position: relative; height: 12px; border-radius: var(--radius-sm); background: rgba(255,255,255,0.04); }
   .os-track .bar { position: absolute; top: 0; height: 12px; border-radius: var(--radius-sm); }
   .os-track .dot { position: absolute; top: 1px; width: 10px; height: 10px; border-radius: 50%; transform: translateX(-50%); }
@@ -55,12 +55,12 @@
   /* ---- card columns (system map / connections) ---- */
   .os-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 16px; }
   .os-rcard { border: 1px solid var(--border); border-radius: var(--radius-mid); padding: 18px 20px; background: color-mix(in srgb, var(--bg) 50%, transparent); }
-  .os-rcard h3 { font-family: var(--mono); font-size: .66rem; letter-spacing: .14em; text-transform: uppercase; margin: 0 0 4px; }
+  .os-rcard h3 { font-family: var(--font-mono); font-size: .66rem; letter-spacing: .14em; text-transform: uppercase; margin: 0 0 4px; }
   .os-rcard .blurb { font-size: .8rem; color: var(--text-2); font-style: italic; margin-bottom: 14px; }
   .os-rcard .row { font-size: .82rem; margin: 8px 0; display: flex; flex-wrap: wrap; gap: 6px; align-items: baseline; color: var(--text); }
-  .os-rcard .row code { color: var(--text); background: rgba(255,255,255,0.05); padding: 1px 6px; border-radius: var(--radius-xs); font-size: .78rem; font-family: var(--mono); }
+  .os-rcard .row code { color: var(--text); background: rgba(255,255,255,0.05); padding: 1px 6px; border-radius: var(--radius-xs); font-size: .78rem; font-family: var(--font-mono); }
   .os-rcard .row .note { font-size: .72rem; color: var(--text-3); }
-  .os-rcard .cnt { float: right; font-family: var(--mono); font-size: .66rem; color: var(--text-3); }
+  .os-rcard .cnt { float: right; font-family: var(--font-mono); font-size: .66rem; color: var(--text-3); }
 
   .t-anchor { border-color: color-mix(in srgb, var(--blue) 40%, transparent); } .t-anchor h3 { color: var(--blue); }
   .t-hook   { border-color: color-mix(in srgb, var(--teal) 40%, transparent); } .t-hook h3   { color: var(--teal); }
@@ -72,8 +72,8 @@
   /* ---- §3 comparison table ---- */
   table.os-cmp { width: 100%; border-collapse: collapse; font-size: .82rem; margin-top: 6px; }
   table.os-cmp th, table.os-cmp td { text-align: left; padding: 12px 14px; vertical-align: top; border-bottom: 1px solid var(--border); }
-  table.os-cmp thead th { font-family: var(--mono); font-size: .64rem; letter-spacing: .14em; text-transform: uppercase; color: var(--text-2); }
-  table.os-cmp tbody th { font-family: var(--mono); font-size: .62rem; letter-spacing: .08em; text-transform: uppercase; color: var(--text-3); width: 130px; }
+  table.os-cmp thead th { font-family: var(--font-mono); font-size: .64rem; letter-spacing: .14em; text-transform: uppercase; color: var(--text-2); }
+  table.os-cmp tbody th { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .08em; text-transform: uppercase; color: var(--text-3); width: 130px; }
   table.os-cmp .col-hook   { background: color-mix(in srgb, var(--teal) 6%, transparent); color: var(--text); }
   table.os-cmp .col-policy { background: color-mix(in srgb, var(--green) 6%, transparent); color: var(--text); }
   table.os-cmp .col-skill  { background: color-mix(in srgb, var(--amber) 6%, transparent); color: var(--text); }
@@ -87,7 +87,7 @@
   /* ---- §4 anti-drift loop ---- */
   .os-loop { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; counter-reset: step; }
   .os-step { position: relative; border: 1px solid var(--border); border-radius: var(--radius-mid); padding: 18px 18px 18px 18px; background: color-mix(in srgb, var(--bg) 50%, transparent); }
-  .os-step .n { font-family: var(--mono); font-size: .66rem; font-weight: 700; letter-spacing: .14em; color: var(--green); }
+  .os-step .n { font-family: var(--font-mono); font-size: .66rem; font-weight: 700; letter-spacing: .14em; color: var(--green); }
   .os-step h4 { font-size: .95rem; margin: 6px 0 6px; color: var(--text); }
   .os-step p { font-size: .8rem; color: var(--text-2); margin: 0; line-height: 1.6; }
   .os-step.gate { border-color: color-mix(in srgb, var(--green) 45%, transparent); background: color-mix(in srgb, var(--green) 5%, transparent); }
@@ -97,10 +97,10 @@
   /* ---- §5 maintenance cards ---- */
   .os-mgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
   .os-mcard { border: 1px solid var(--border); border-radius: var(--radius-mid); padding: 18px 20px; background: color-mix(in srgb, var(--bg) 50%, transparent); }
-  .os-mcard .when { font-family: var(--mono); font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; color: var(--text-3); }
+  .os-mcard .when { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; color: var(--text-3); }
   .os-mcard h4 { font-size: .92rem; margin: 5px 0 8px; color: var(--text); }
   .os-mcard p { font-size: .8rem; color: var(--text-2); margin: 0; line-height: 1.6; }
-  .os-mcard code { color: var(--text); background: rgba(255,255,255,0.05); padding: 1px 5px; border-radius: var(--radius-xs); font-size: .76rem; font-family: var(--mono); }
+  .os-mcard code { color: var(--text); background: rgba(255,255,255,0.05); padding: 1px 5px; border-radius: var(--radius-xs); font-size: .76rem; font-family: var(--font-mono); }
 
   @media (max-width: 720px) {
     .os-tl-axis, .os-tl-row { grid-template-columns: 120px 1fr; }
@@ -354,7 +354,7 @@
       <div class="os-step">
         <div class="n">STEP 02</div>
         <h4>A policy fires</h4>
-        <p>The <code style="font-family:var(--mono);font-size:.78rem;">register-everywhere</code> policy triggers: &ldquo;this exists now &mdash; register it in every place that lists it.&rdquo;</p>
+        <p>The <code style="font-family:var(--font-mono);font-size:.78rem;">register-everywhere</code> policy triggers: &ldquo;this exists now &mdash; register it in every place that lists it.&rdquo;</p>
       </div>
       <div class="os-step">
         <div class="n">STEP 03</div>
@@ -420,7 +420,7 @@
 
   <!-- ============ GATEWAY ============ -->
   <div style="margin-top:40px;">
-    <h3 style="font-family:var(--serif); font-size:1.4rem; margin-bottom:6px;">Keep going</h3>
+    <h3 style="font-family:var(--font-mono); font-size:1.4rem; margin-bottom:6px;">Keep going</h3>
     <p class="muted" style="max-width:680px;">This is the system at a glance. For the <em>why</em> behind each layer, or the real code behind a primitive:</p>
     <div class="gateway" style="grid-template-columns:repeat(2,1fr);">
       <a href="docs/architecture.html"><span class="g-name">Architecture deep-dive &rarr;</span><span class="g-blurb">Why each layer exists and how they interact &mdash; the observe / judge / execute design and the anti-drift loop, in prose, plus why an AI agent changes the calculus.</span></a>

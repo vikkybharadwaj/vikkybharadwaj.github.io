@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="../../design-system/tokens.css">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'JetBrains Mono', monospace; background: var(--bg); color: var(--text); }
+html, body { width: 100%; height: 100%; overflow: hidden; font-family: var(--font-mono); background: var(--bg); color: var(--text); }
 #canvas { width: 100%; height: 100%; position: relative; }
 svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
 svg path, svg line { pointer-events: none; }
@@ -33,8 +33,8 @@ svg path, svg line { pointer-events: none; }
 .node.dimmed { opacity: 0.25; filter: grayscale(60%); }
 
 /* Node type colors */
-.node-mobile   { background: color-mix(in srgb, var(--amber) 15%, transparent); border-color: var(--amber); }
-.node-mobile:hover { box-shadow: 0 0 20px color-mix(in srgb, var(--amber) 40%, transparent); }
+.node-mobile   { background: color-mix(in srgb, var(--orange) 15%, transparent); border-color: var(--orange); }
+.node-mobile:hover { box-shadow: 0 0 20px color-mix(in srgb, var(--orange) 40%, transparent); }
 .node-backend  { background: color-mix(in srgb, var(--blue) 15%, transparent); border-color: var(--blue); }
 .node-backend:hover { box-shadow: 0 0 20px color-mix(in srgb, var(--blue) 40%, transparent); }
 .node-worker   { background: color-mix(in srgb, var(--purple) 15%, transparent); border-color: var(--purple); }
@@ -448,7 +448,7 @@ legend.innerHTML = legendTypes.map(t =>
 // Detail panel
 function openPanel(n) {
   const d = n.detail;
-  const colorMap = { mobile:"#f59e0b", backend:"#4F8CFF", worker:"#a855f7", ai:"#00d4ff", "ai-disabled":"#64748b", data:"#00D26A", external:"#f59e0b", security:"#ef4444", infra:"#94a3b8" };
+  const colorMap = { mobile:"#f97316", backend:"#4F8CFF", worker:"#a855f7", ai:"#00d4ff", "ai-disabled":"#64748b", data:"#00D26A", external:"#f59e0b", security:"#ef4444", infra:"#94a3b8" };
   const c = colorMap[n.type] || "#64748b";
   const mvpLabelClass = n.mvp === 'mvp-plus' ? 'mvpplus' : 'mvp';
   const mvpLabelText = n.mvp === 'mvp-plus' ? 'MVP+' : 'MVP';

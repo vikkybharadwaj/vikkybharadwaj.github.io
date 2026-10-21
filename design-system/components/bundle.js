@@ -29,7 +29,7 @@
       p.subtitle && h('div', { className: 'vk-card-sub' }, p.subtitle),
       p.children && h('div', { className: 'vk-card-body' }, p.children),
       p.tags && h('div', { className: 'vk-card-tags' }, p.tags.map(function (t) { return h(Pill, { key: t }, t); })),
-      p.href && h('div', { className: 'vk-card-open' }, p.cta || 'Open', ' →'));
+      p.href && h('div', { className: 'vk-card-open' }, p.cta || 'Open', ' ', h('span', null, '→')));
   }
 
   function Stat(p) {

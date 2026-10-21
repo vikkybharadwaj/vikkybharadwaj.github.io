@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="../../design-system/tokens.css">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', monospace; background: var(--bg); color: var(--text); }
+html, body { width: 100%; min-height: 100vh; font-family: var(--font-mono); background: var(--bg); color: var(--text); }
 
 #title {
   padding: 16px 16px 0;
@@ -126,17 +126,17 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
 /* Flow colors */
 .flow-auth .step-dot { border-color: var(--red); }
 .flow-auth .step-connector { background: var(--red); }
-.flow-auth .step-num { background: color-mix(in srgb, var(--red) 15%, transparent); color: var(--red); }
+.flow-auth .step-num { background: color-mix(in srgb, var(--red) 15%, transparent); color: var(--rose); }
 .flow-auth .flow-title { color: var(--red); }
 
 .flow-dashboard .step-dot { border-color: var(--blue); }
 .flow-dashboard .step-connector { background: var(--blue); }
-.flow-dashboard .step-num { background: color-mix(in srgb, var(--blue) 15%, transparent); color: var(--blue); }
+.flow-dashboard .step-num { background: color-mix(in srgb, var(--blue) 15%, transparent); color: var(--blue-text); }
 .flow-dashboard .flow-title { color: var(--blue); }
 
 .flow-sync .step-dot { border-color: var(--purple); }
 .flow-sync .step-connector { background: var(--purple); }
-.flow-sync .step-num { background: color-mix(in srgb, var(--purple) 15%, transparent); color: var(--purple); }
+.flow-sync .step-num { background: color-mix(in srgb, var(--purple) 15%, transparent); color: var(--purple-text); }
 .flow-sync .flow-title { color: var(--purple); }
 
 .flow-chat .step-dot { border-color: var(--cyan); }
@@ -157,7 +157,7 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
 
 .flow-reflection .step-dot { border-color: var(--pink); }
 .flow-reflection .step-connector { background: var(--pink); }
-.flow-reflection .step-num { background: color-mix(in srgb, var(--pink) 15%, transparent); color: var(--pink); }
+.flow-reflection .step-num { background: color-mix(in srgb, var(--pink) 15%, transparent); color: var(--pink-text); }
 .flow-reflection .flow-title { color: var(--pink); }
 
 .flow-bankconnections .step-dot { border-color: var(--amber); }
@@ -167,18 +167,18 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
 
 .flow-notifications .step-dot { border-color: var(--text-3); }
 .flow-notifications .step-connector { background: var(--text-3); }
-.flow-notifications .step-num { background: color-mix(in srgb, var(--text-3) 15%, transparent); color: var(--text-3); }
+.flow-notifications .step-num { background: color-mix(in srgb, var(--text-3) 15%, transparent); color: var(--text-2); }
 .flow-notifications .flow-title { color: var(--text-3); }
 
-.flow-insights .step-dot { border-color: var(--purple); }
-.flow-insights .step-connector { background: var(--purple); }
-.flow-insights .step-num { background: color-mix(in srgb, var(--purple) 15%, transparent); color: var(--purple); }
-.flow-insights .flow-title { color: var(--purple); }
+.flow-insights .step-dot { border-color: var(--violet); }
+.flow-insights .step-connector { background: var(--violet); }
+.flow-insights .step-num { background: color-mix(in srgb, var(--violet) 15%, transparent); color: var(--violet); }
+.flow-insights .flow-title { color: var(--violet); }
 
-.flow-csvimport .step-dot { border-color: var(--amber); }
-.flow-csvimport .step-connector { background: var(--amber); }
-.flow-csvimport .step-num { background: color-mix(in srgb, var(--amber) 15%, transparent); color: var(--amber); }
-.flow-csvimport .flow-title { color: var(--amber); }
+.flow-csvimport .step-dot { border-color: var(--orange); }
+.flow-csvimport .step-connector { background: var(--orange); }
+.flow-csvimport .step-num { background: color-mix(in srgb, var(--orange) 15%, transparent); color: var(--orange); }
+.flow-csvimport .flow-title { color: var(--orange); }
 </style>
 </head>
 <body>
@@ -338,7 +338,7 @@ html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', mono
 
     <div style="font-size:11px;color:var(--text-2);line-height:1.6;padding-top:12px;border-top:1px solid color-mix(in srgb, var(--purple) 15%, transparent);">
       <strong style="color:var(--code-text);">Related:</strong>
-      See <a href="#flow-insights" onclick="showFlow('insights', event);return false;" style="color:var(--purple);">Spending Insights Flow</a> for how categorized transactions are aggregated into the donut + category list.
+      See <a href="#flow-insights" onclick="showFlow('insights', event);return false;" style="color:var(--violet);">Spending Insights Flow</a> for how categorized transactions are aggregated into the donut + category list.
       The same priority chain is visualized on the <a href="ai-pipeline-map.html" style="color:var(--purple);">AI Pipeline</a> page for the AI-first view of the system.
     </div>
   </div>

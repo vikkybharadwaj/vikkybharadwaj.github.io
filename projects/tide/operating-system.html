@@ -9,10 +9,10 @@
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { color-scheme: dark; } /* dark native scrollbars */
-html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', monospace; background: var(--bg); color: var(--text); line-height: 1.6; }
+html, body { width: 100%; min-height: 100vh; font-family: var(--font-mono); background: var(--bg); color: var(--text); line-height: 1.6; }
 a { color: var(--blue); text-decoration: none; }
 a:hover { text-decoration: underline; }
-code { font-family: 'JetBrains Mono', monospace; }
+code { font-family: var(--font-mono); }
 
 .container { max-width: 1180px; margin: 0 auto; padding: 48px 24px 96px; }
 
@@ -97,7 +97,7 @@ section { margin-top: 48px; border: 1.5px solid rgba(255,255,255,0.07); border-r
   background: var(--code-bg); color: var(--text);
   border: 1px solid color-mix(in srgb, var(--cyan) 45%, transparent); border-radius: var(--radius-md);
   padding: 10px 13px;
-  font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 400;
+  font-family: var(--font-mono); font-size: 11px; font-weight: 400;
   line-height: 1.55; letter-spacing: 0; text-transform: none; text-align: left; white-space: normal;
   box-shadow: 0 10px 34px rgba(0,0,0,0.65);
   opacity: 0; transform: translateY(-5px); pointer-events: none;
@@ -136,7 +136,7 @@ table.cmp .col-routine{ background: color-mix(in srgb, var(--indigo) 6%, transpa
 table.cmp .head-hook   { color: var(--cyan); }
 table.cmp .head-policy { color: var(--amber); }
 table.cmp .head-skill  { color: var(--green); }
-table.cmp .head-agent  { color: var(--purple); }
+table.cmp .head-agent  { color: var(--violet); }
 table.cmp .head-routine{ color: var(--indigo); }
 table.cmp .tagline { font-weight: 700; font-size: 13px; }
 table.cmp td { counter-reset: repoitem; }
@@ -161,7 +161,7 @@ footer a { color: var(--text-3); }
 /* ---- changelog button + in-page sub-panel ---- */
 .changelog-btn {
   position: fixed; top: 18px; right: 18px; z-index: 200;
-  font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600;
+  font-family: var(--font-mono); font-size: 12px; font-weight: 600;
   color: var(--text); background: color-mix(in srgb, var(--surface-solid) 92%, transparent);
   border: 1px solid color-mix(in srgb, var(--cyan) 45%, transparent); border-radius: var(--radius-md);
   padding: 9px 14px; cursor: pointer; letter-spacing: 0.3px;
@@ -177,7 +177,7 @@ footer a { color: var(--text-3); }
 
 .cl-overlay {
   display: none; position: fixed; inset: 0; z-index: 300;
-  background: rgba(2,5,12,0.72); backdrop-filter: blur(4px);
+  background: color-mix(in srgb, var(--code-bg) 72%, transparent); backdrop-filter: blur(4px);
   padding: 48px 20px; overflow-y: auto;
 }
 .cl-overlay.open { display: block; }
@@ -216,7 +216,7 @@ table.cl-table .cl-who .who-pill {
   display: inline-block; font-size: 10.5px; padding: 2px 9px; border-radius: var(--radius-pill);
   background: color-mix(in srgb, var(--green) 12%, transparent); color: var(--green); border: 1px solid color-mix(in srgb, var(--green) 25%, transparent);
 }
-table.cl-table .cl-who .who-pill.bot { background: color-mix(in srgb, var(--purple) 12%, transparent); color: var(--purple); border-color: color-mix(in srgb, var(--purple) 25%, transparent); }
+table.cl-table .cl-who .who-pill.bot { background: color-mix(in srgb, var(--purple) 12%, transparent); color: var(--purple-text); border-color: color-mix(in srgb, var(--purple) 25%, transparent); }
 table.cl-table .cl-hl { color: var(--text); line-height: 1.55; }
 table.cl-table .cl-hl .pr { color: var(--text-3); font-size: 11px; }
 .cl-foot { padding: 14px 28px 22px; border-top: 1px solid rgba(255,255,255,0.08); font-size: 11px; color: var(--text-3); }

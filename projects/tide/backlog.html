@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="../../design-system/tokens.css">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', monospace; background: var(--bg); color: var(--text); line-height: 1.6; }
+html, body { width: 100%; min-height: 100vh; font-family: var(--font-mono); background: var(--bg); color: var(--text); line-height: 1.6; }
 .container { max-width: 1100px; margin: 0 auto; padding: 48px 24px; }
 
 header { margin-bottom: 32px; }
@@ -40,13 +40,13 @@ header .meta code { background: rgba(0,0,0,0.3); padding: 1px 6px; border-radius
 .legend-block .swatch { display: inline-flex; align-items: center; justify-content: center; width: 28px; padding: 2px 0; border-radius: var(--radius-xs); font-size: 10px; font-weight: 700; }
 
 .effort-S { background: color-mix(in srgb, var(--green) 18%, transparent); color: var(--green); border: 1px solid color-mix(in srgb, var(--green) 35%, transparent); }
-.effort-M { background: color-mix(in srgb, var(--blue) 18%, transparent); color: var(--blue); border: 1px solid color-mix(in srgb, var(--blue) 35%, transparent); }
+.effort-M { background: color-mix(in srgb, var(--blue) 18%, transparent); color: var(--blue-text); border: 1px solid color-mix(in srgb, var(--blue) 35%, transparent); }
 .effort-L { background: color-mix(in srgb, var(--amber) 18%, transparent); color: var(--amber); border: 1px solid color-mix(in srgb, var(--amber) 35%, transparent); }
 .effort-XL { background: color-mix(in srgb, var(--red) 18%, transparent); color: var(--rose); border: 1px solid color-mix(in srgb, var(--red) 35%, transparent); }
 .value-low { background: color-mix(in srgb, var(--text-3) 18%, transparent); color: var(--text-2); border: 1px solid color-mix(in srgb, var(--text-3) 35%, transparent); }
-.value-med { background: color-mix(in srgb, var(--purple) 18%, transparent); color: var(--purple); border: 1px solid color-mix(in srgb, var(--purple) 35%, transparent); }
+.value-med { background: color-mix(in srgb, var(--purple) 18%, transparent); color: var(--purple-text); border: 1px solid color-mix(in srgb, var(--purple) 35%, transparent); }
 .value-high { background: color-mix(in srgb, var(--teal) 18%, transparent); color: var(--teal); border: 1px solid color-mix(in srgb, var(--teal) 35%, transparent); }
-.value-critical { background: color-mix(in srgb, var(--pink) 18%, transparent); color: var(--pink); border: 1px solid color-mix(in srgb, var(--pink) 35%, transparent); }
+.value-critical { background: color-mix(in srgb, var(--pink) 18%, transparent); color: var(--pink-text); border: 1px solid color-mix(in srgb, var(--pink) 35%, transparent); }
 
 /* EPIC ACCORDION */
 details.epic { border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-mid); background: color-mix(in srgb, var(--surface-solid) 50%, transparent); margin-bottom: 16px; overflow: hidden; }
@@ -81,7 +81,7 @@ details.epic .stats { display: flex; gap: 14px; font-size: 10px; color: var(--te
 .cat-CX     { background: color-mix(in srgb, var(--green) 18%, transparent); color: var(--green); border: 1px solid color-mix(in srgb, var(--green) 40%, transparent); }
 .cat-TECH   { background: color-mix(in srgb, var(--red) 18%, transparent); color: var(--rose); border: 1px solid color-mix(in srgb, var(--red) 40%, transparent); }
 .cat-UI     { background: color-mix(in srgb, var(--teal) 18%, transparent); color: var(--teal); border: 1px solid color-mix(in srgb, var(--teal) 40%, transparent); }
-.cat-AIDATA { background: color-mix(in srgb, var(--purple) 18%, transparent); color: var(--purple); border: 1px solid color-mix(in srgb, var(--purple) 40%, transparent); }
+.cat-AIDATA { background: color-mix(in srgb, var(--purple) 18%, transparent); color: var(--purple-text); border: 1px solid color-mix(in srgb, var(--purple) 40%, transparent); }
 .cat-LAUNCH { background: color-mix(in srgb, var(--amber) 18%, transparent); color: var(--amber); border: 1px solid color-mix(in srgb, var(--amber) 40%, transparent); }
 
 footer { text-align: center; margin-top: 56px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.06); }
@@ -93,7 +93,7 @@ footer p { font-size: 10px; color: var(--text-3); }
 .scope-pill.stretch { background: color-mix(in srgb, var(--amber) 15%, transparent); color: var(--amber); border: 1px solid color-mix(in srgb, var(--amber) 45%, transparent); }
 .scope-pill.p1 { background: color-mix(in srgb, var(--indigo) 15%, transparent); color: var(--indigo); border: 1px solid color-mix(in srgb, var(--indigo) 45%, transparent); }
 .scope-pill.p2 { background: color-mix(in srgb, var(--text-3) 18%, transparent); color: var(--text-2); border: 1px solid color-mix(in srgb, var(--text-3) 45%, transparent); }
-.scope-pill.p3 { background: color-mix(in srgb, var(--text-3) 12%, transparent); color: var(--text-3); border: 1px solid color-mix(in srgb, var(--text-3) 35%, transparent); }
+.scope-pill.p3 { background: color-mix(in srgb, var(--text-3) 4%, transparent); color: var(--text-3); border: 1px solid color-mix(in srgb, var(--text-3) 35%, transparent); }
 .scope-pill.p4 { background: color-mix(in srgb, var(--red) 10%, transparent); color: var(--rose); border: 1px solid color-mix(in srgb, var(--red) 35%, transparent); }
 .badge.scope-mvp { background: color-mix(in srgb, var(--green) 15%, transparent); color: var(--green); border: 1px solid color-mix(in srgb, var(--green) 45%, transparent); }
 .badge.scope-stretch { background: color-mix(in srgb, var(--amber) 15%, transparent); color: var(--amber); border: 1px solid color-mix(in srgb, var(--amber) 45%, transparent); }

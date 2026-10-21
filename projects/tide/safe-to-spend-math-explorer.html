@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="../../design-system/tokens.css">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { width: 100%; min-height: 100vh; font-family: 'JetBrains Mono', monospace; background: var(--bg); color: var(--text); line-height: 1.6; }
+html, body { width: 100%; min-height: 100vh; font-family: var(--font-mono); background: var(--bg); color: var(--text); line-height: 1.6; }
 .container { max-width: 1100px; margin: 0 auto; padding: 48px 24px; }
 
 header { margin-bottom: 32px; }
@@ -130,9 +130,9 @@ details.component .body pre {
 
 .color-add { background: color-mix(in srgb, var(--green) 15%, transparent); color: var(--green); border: 1px solid color-mix(in srgb, var(--green) 40%, transparent); }
 .color-sub { background: color-mix(in srgb, var(--amber) 15%, transparent); color: var(--amber); border: 1px solid color-mix(in srgb, var(--amber) 40%, transparent); }
-.color-div { background: color-mix(in srgb, var(--purple) 15%, transparent); color: var(--purple); border: 1px solid color-mix(in srgb, var(--purple) 40%, transparent); }
-.color-mul { background: color-mix(in srgb, var(--blue) 15%, transparent); color: var(--blue); border: 1px solid color-mix(in srgb, var(--blue) 40%, transparent); }
-.color-context { background: color-mix(in srgb, var(--pink) 15%, transparent); color: var(--pink); border: 1px solid color-mix(in srgb, var(--pink) 40%, transparent); }
+.color-div { background: color-mix(in srgb, var(--purple) 15%, transparent); color: var(--purple-text); border: 1px solid color-mix(in srgb, var(--purple) 40%, transparent); }
+.color-mul { background: color-mix(in srgb, var(--blue) 15%, transparent); color: var(--blue-text); border: 1px solid color-mix(in srgb, var(--blue) 40%, transparent); }
+.color-context { background: color-mix(in srgb, var(--pink) 15%, transparent); color: var(--pink-text); border: 1px solid color-mix(in srgb, var(--pink) 40%, transparent); }
 
 /* === TAB MATRIX === */
 .tab-matrix-section { margin-bottom: 32px; }
@@ -177,7 +177,7 @@ footer p { font-size: 10px; color: var(--text-3); }
 </style>
 </head>
 <body>
-<a id="wt-backnav" href="index.html" style="position:fixed;top:14px;left:14px;z-index:99999;font-family:monospace;font-size:12px;font-weight:700;color:var(--blue);text-decoration:none;background:color-mix(in srgb, var(--bg) 85%, transparent);padding:7px 12px;border-radius: var(--radius-base);border:1px solid color-mix(in srgb, var(--blue) 35%, transparent);">&larr; Hub</a>
+<a id="wt-backnav" href="index.html" style="position:fixed;top:14px;left:14px;z-index:99999;font-family: var(--font-mono);font-size:12px;font-weight:700;color:var(--blue);text-decoration:none;background:color-mix(in srgb, var(--bg) 85%, transparent);padding:7px 12px;border-radius: var(--radius-base);border:1px solid color-mix(in srgb, var(--blue) 35%, transparent);">&larr; Hub</a>
 <div class="container">
   <header>
     <a href="feature-versions-safe-to-spend.html" class="back">&larr; Back to Safe to Spend Versions</a>

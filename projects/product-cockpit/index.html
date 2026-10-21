@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../design-system/tokens.css">
 <link rel="stylesheet" href="assets/styles.css?v=20260610subfull" />
 </head>
 <body>
@@ -71,7 +72,7 @@
     <h2>Customer first. Engineering-enabled. On purpose.</h2>
     <p class="lead maxw-readable">This isn&rsquo;t an engineering project with a customer bolted on &mdash; it&rsquo;s the reverse. The system exists to keep the customer at the center; the engineering &mdash; an AI-native operating system where hooks observe, policies judge and skills execute &mdash; is simply what keeps that durable.</p>
 
-    <h3 id="tour" style="margin-top:40px; font-family:var(--serif); font-size:1.5rem;">Take the tour &mdash; jump anywhere</h3>
+    <h3 id="tour" style="margin-top:40px; font-family:var(--font-mono); font-size:1.5rem;">Take the tour &mdash; jump anywhere</h3>
     <p class="muted" style="max-width:680px;">Read straight down, or jump to whatever you care about &mdash; the nav up top brings you back any time.</p>
     <ol class="tour">
       <li><a href="#problem"><span class="tour-n">01</span><span><span class="tour-t">The problem</span> <span class="tour-d">&mdash; why decisions quietly stall</span></span></a></li>
@@ -199,9 +200,9 @@
       </div>
     </div>
 
-    <div class="card" style="margin-top:30px; border-left:4px solid var(--rust);">
+    <div class="card" style="margin-top:30px; border-left:4px solid var(--green);">
       <p class="eyebrow" style="margin-bottom:.5rem;">The wedge in one line</p>
-      <h3 style="font-family:var(--serif); font-size:1.5rem;">Not a place to store knowledge, or a tool for one stage &mdash; the system that keeps every decision grounded in current, cited evidence.</h3>
+      <h3 style="font-family:var(--font-mono); font-size:1.5rem;">Not a place to store knowledge, or a tool for one stage &mdash; the system that keeps every decision grounded in current, cited evidence.</h3>
       <p class="muted" style="font-size:1rem; max-width:760px;">It sits <em>alongside</em> the wiki, the tracker and the warehouse &mdash; reading from them, keeping them honest, and closing the loop from customer insight to execution that no single one owns.</p>
     </div>
   </div>
@@ -215,7 +216,7 @@
     <p class="lead maxw-readable">The idea worth stealing: a clean separation between what <em>observes</em>, what <em>judges</em>, and what <em>executes</em> &mdash; plus a governance layer whose only job is to stop the system drifting from its own description.</p>
 
     <!-- the three-verb model -->
-    <h3 style="margin-top:38px; font-family:var(--serif); font-size:1.5rem;">The core division of labour</h3>
+    <h3 style="margin-top:38px; font-family:var(--font-mono); font-size:1.5rem;">The core division of labour</h3>
     <div class="layers" style="margin-top:16px;">
       <div class="layer obs">
         <span class="verb">Hooks &mdash; they observe</span>
@@ -238,9 +239,9 @@
     <p class="muted" style="max-width:760px; margin-top:34px;">Those three primitives sit inside a fuller stack &mdash; bookended by the <em>anchors</em> that frame every session and the <em>memory</em> and <em>governance</em> that make it compound and stay honest. The <a href="operating-system.html">operating-system map</a> lays out all six layers in one diagram.</p>
 
     <!-- governance highlight -->
-    <div class="card" style="margin-top:34px; border-left:4px solid var(--rust);">
+    <div class="card" style="margin-top:34px; border-left:4px solid var(--green);">
       <p class="eyebrow" style="margin-bottom:.5rem;">The idea I&rsquo;d put on a whiteboard in an interview</p>
-      <h3 style="font-family:var(--serif); font-size:1.6rem;">A system that can&rsquo;t silently drift from its own description.</h3>
+      <h3 style="font-family:var(--font-mono); font-size:1.6rem;">A system that can&rsquo;t silently drift from its own description.</h3>
       <p class="muted" style="font-size:1rem; max-width:760px;">Every new primitive &mdash; hook, policy, skill, folder &mdash; must update every registry that names it, including the system&rsquo;s own visual self-portrait. Skip a registration and the change fails its own audit: a drift check flags it at session start, a review gate blocks the merge. The map can&rsquo;t quietly fall out of sync with the territory &mdash; the difference between a project that decays when its author leaves and one that explains itself to the next person.</p>
     </div>
 
@@ -331,13 +332,13 @@
       <div class="card"><h3>Product methodology + craft</h3><p>Evidence &rarr; strategy &rarr; roadmap &rarr; execution, end to end &mdash; and the design sense to make the whole thing legible at a glance.</p></div>
     </div>
 
-    <div class="card" style="margin-top:30px; border-left:4px solid var(--gold);">
+    <div class="card" style="margin-top:30px; border-left:4px solid var(--amber);">
       <p class="eyebrow" style="margin-bottom:.5rem;">Honest trade-offs</p>
-      <h3 style="font-family:var(--serif); font-size:1.4rem;">What I&rsquo;d do differently</h3>
+      <h3 style="font-family:var(--font-mono); font-size:1.4rem;">What I&rsquo;d do differently</h3>
       <p class="muted" style="font-size:1rem; max-width:760px;">23 policies is arguably over-governance for a project this young &mdash; a smaller team would start with five and let the rest earn their place. Some primitives were built ahead of need. The lesson isn&rsquo;t &ldquo;build all of this&rdquo; &mdash; it&rsquo;s &ldquo;build the observe / judge / execute spine, then let the system tell you what it&rsquo;s missing.&rdquo;</p>
     </div>
 
-    <h3 style="margin-top:44px; font-family:var(--serif); font-size:1.6rem;">Go deeper</h3>
+    <h3 style="margin-top:44px; font-family:var(--font-mono); font-size:1.6rem;">Go deeper</h3>
     <p class="muted" style="max-width:680px;">You&rsquo;ve got the whole picture. Three doors from here &mdash; the nav up top brings you back.</p>
     <div class="gateway" style="grid-template-columns:repeat(3,1fr);">
       <a href="docs/architecture.html"><span class="g-name">Architecture &rarr;</span><span class="g-blurb">Why each layer exists and how they interact &mdash; the observe / judge / execute design and the anti-drift loop, in depth.</span></a>
