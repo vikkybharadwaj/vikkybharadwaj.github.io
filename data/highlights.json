@@ -4,27 +4,84 @@
     "title": "How I operate.",
     "sub": "A snapshot from across my repos (public + private), generated from real git history \u2014 the operating habits behind the work above. Commit-history metrics cover 2026 to date."
   },
-  "updated": "2026-10-22",
+  "updated": "2026-10-23",
   "first": "2026-03-21",
-  "window": "Counts 2026 to date \u00b7 git activity 2026-03-21 \u2192 2026-10-22",
+  "window": "from git history across 5 repos, public and private, 2026-03-21 \u2192 2026-10-23",
   "insights": [
     {
       "key": "github_contributions",
-      "value": "1,505",
+      "value": "1,507",
       "label": "GitHub contributions",
       "caption": "commits, PRs & reviews \u00b7 public + private \u00b7 2026 to date",
       "accent": "g"
     },
     {
+      "key": "ai_assisted",
+      "value": "62%",
+      "label": "AI-built commits",
+      "caption": "I build with AI, and keep the receipts",
+      "accent": "p"
+    },
+    {
+      "key": "evals",
+      "value": "176",
+      "label": "eval fixtures",
+      "caption": "AI quality measured, not guessed",
+      "accent": "p"
+    },
+    {
+      "key": "pr_driven",
+      "value": "390",
+      "label": "changes shipped via PR",
+      "caption": "reviewed \u2014 never straight to main",
+      "accent": "b"
+    },
+    {
+      "key": "guardrails",
+      "value": "11",
+      "label": "automated guardrails",
+      "caption": "hooks that enforce my own discipline",
+      "accent": "a"
+    },
+    {
+      "key": "stack",
+      "languages": [
+        [
+          "TypeScript",
+          422
+        ],
+        [
+          "Markdown",
+          202
+        ],
+        [
+          "JSON",
+          201
+        ],
+        [
+          "HTML",
+          108
+        ],
+        [
+          "Shell",
+          20
+        ],
+        [
+          "YAML",
+          15
+        ]
+      ]
+    },
+    {
       "key": "commits",
-      "value": "1,044",
+      "value": "1,047",
       "label": "commits shipped",
       "caption": "across 5 repos \u00b7 2026 to date",
       "accent": "g"
     },
     {
       "key": "cadence",
-      "value": "4.9",
+      "value": "4.8",
       "label": "commits a day",
       "caption": "steady, iterative cadence",
       "accent": "g"
@@ -37,38 +94,10 @@
       "accent": "b"
     },
     {
-      "key": "pr_driven",
-      "value": "389",
-      "label": "changes shipped via PR",
-      "caption": "reviewed \u2014 never straight to main",
-      "accent": "b"
-    },
-    {
-      "key": "ai_assisted",
-      "value": "62%",
-      "label": "AI-built commits",
-      "caption": "I build with AI, and keep the receipts",
-      "accent": "p"
-    },
-    {
       "key": "tools_built",
       "value": "11",
       "label": "custom AI tools",
       "caption": "skills & commands I built to extend my own workflow",
-      "accent": "p"
-    },
-    {
-      "key": "guardrails",
-      "value": "11",
-      "label": "automated guardrails",
-      "caption": "hooks that enforce my own discipline",
-      "accent": "a"
-    },
-    {
-      "key": "evals",
-      "value": "175",
-      "label": "eval fixtures",
-      "caption": "AI quality measured, not guessed",
       "accent": "p"
     },
     {
@@ -94,14 +123,14 @@
     },
     {
       "key": "docs",
-      "value": "302",
+      "value": "310",
       "label": "docs & diagrams",
       "caption": "documentation as a living spec",
       "accent": "a"
     },
     {
       "key": "tracked_files",
-      "value": "1,074",
+      "value": "1,089",
       "label": "files under version control",
       "caption": "full-stack breadth",
       "accent": "t"
@@ -112,35 +141,6 @@
       "label": "active projects",
       "caption": "public + private",
       "accent": "t"
-    },
-    {
-      "key": "stack",
-      "languages": [
-        [
-          "TypeScript",
-          422
-        ],
-        [
-          "JSON",
-          200
-        ],
-        [
-          "Markdown",
-          199
-        ],
-        [
-          "HTML",
-          103
-        ],
-        [
-          "Shell",
-          20
-        ],
-        [
-          "YAML",
-          15
-        ]
-      ]
     }
   ]
 }
