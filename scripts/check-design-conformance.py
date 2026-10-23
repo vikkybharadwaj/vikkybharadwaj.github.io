@@ -59,7 +59,7 @@ for rel in pages:
 
 COLS = ["no-tokens-link", "redeclared-token", "css-hex", "color-function", "named-color", "hex-in-page", "svg-paint-attr",
         "js-color", "off-palette-rgba", "font-literal", "radius-off-scale", "font-size-off-scale", "line-height-off-scale",
-        "spacing-off-scale", "stripe-border", "undefined-var", "chip-contrast<4.5"]
+        "spacing-off-scale", "stripe-border", "undefined-var", "chip-contrast<4.5", "motion-no-reduced", "img-no-alt"]
 tot = collections.Counter(); rows = []
 for rel in pages:
     s = (SITE / rel).read_text(errors="ignore"); whole = rel.endswith(".css")
@@ -151,6 +151,13 @@ for rel in pages:
             ground = blend(HEX[bg.group(1)], HEX["surface-solid"], float(bg.group(2)) / 100)
             c = cr(HEX[fg.group(1)], ground)
             if c < 4.5: f["chip-contrast<4.5"] += 1; notes.append(f"{fg.group(1)} on {bg.group(1)} {bg.group(2)}%: {c:.2f}")
+    # motion must respect prefers-reduced-motion; images need alt text
+    whole_text = s
+    if re.search(r"@keyframes|(?<![\w-])animation\s*:|animation-name\s*:|IntersectionObserver", whole_text) and "prefers-reduced-motion" not in whole_text and not (SITE == ROOT and "tokens.css" in whole_text):
+        f["motion-no-reduced"] += 1
+    if not whole:
+        for m in re.finditer(r"<img\b[^>]*>", s, re.I):
+            if not re.search(r"\salt=", m.group(0), re.I): f["img-no-alt"] += 1
     # required meta
     if not whole:
         for k, pat in (("charset", r"<meta charset"), ("viewport", r'name="viewport"'), ("title", r"<title>"), ("lang", r"<html[^>]*lang=")):

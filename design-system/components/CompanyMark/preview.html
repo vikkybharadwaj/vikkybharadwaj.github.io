@@ -1,0 +1,9 @@
+<!-- @dsCard group="Identity" height=200 subtitle="Company logo tile with one customer-value line" -->
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0}body{background:var(--bg);padding:20px}#root{display:grid;gap:var(--space-4);max-width:420px}</style></head>
+<body><div id="root"></div><script>
+var D=window.VikDS,h=React.createElement;
+var mark="data:image/svg+xml;utf8,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 12 12 3l9 9-3 0v9H6v-9z"/></svg>');
+ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment,null,
+ h(D.CompanyMark,{name:'Example Homes',description:'Helps people find, tour and buy homes.',logo:mark}),
+ h(D.CompanyMark,{name:'Name only',description:'Shown while no logo file exists yet.'})));
+</script></body></html>
