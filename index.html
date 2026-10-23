@@ -80,27 +80,24 @@
   .btn-ghost:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.25); }
 
   section { padding: var(--space-8) 0; }
-  .sec-label {
-    font-size: var(--fs-11); font-weight: 700; letter-spacing: 2px; color: var(--text-3);
-    text-transform: uppercase; margin-bottom: var(--space-4);
-  }
   .sec-title { font-size: clamp(var(--fs-21), 3.4vw, var(--fs-30)); font-weight: 800; letter-spacing: -1px; margin-bottom: var(--space-3); }
-  .sec-sub { color: var(--text-2); font-size: var(--fs-15); max-width: 720px; line-height: var(--lh-relaxed); }
 
   /* ---------- Explore my work — the 3-pronged band ---------- */
-  .explore-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-5); margin-top: var(--space-7); }
-  @media (max-width: 880px) { .explore-grid { grid-template-columns: 1fr; } }
+  .explore-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-6); margin-top: var(--space-7); }
+  @media (max-width: 900px) { .explore-grid { grid-template-columns: 1fr; } }
   .xcard {
     display: flex; flex-direction: column; position: relative; overflow: hidden;
-    border-radius: var(--radius-xl); padding: var(--space-7) var(--space-6);
+    border-radius: var(--radius-xl); padding: 0;
     border: 1.5px solid var(--border); background: var(--surface); backdrop-filter: blur(8px);
     transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
   }
   .xcard .xnum::before { content: ''; display: inline-block; inline-size: 8px; block-size: 8px; border-radius: 50%; background: var(--accent, var(--green)); margin-inline-end: var(--space-2); vertical-align: .05em; }
   .xcard:hover { transform: translateY(-6px); }
   .xcard .xnum { font-size: var(--fs-11); font-weight: 700; letter-spacing: 1.5px; color: var(--text-3); }
-  .xcard .xic { font-size: var(--fs-30); margin: var(--space-4) 0 var(--space-4); display: block; }
-  .xcard h3 { font-size: var(--fs-21); font-weight: 800; letter-spacing: -0.5px; line-height: var(--lh-tight); }
+  .xcard .xmedia { aspect-ratio: var(--ratio-media); overflow: hidden; background: var(--surface-solid); border-bottom: 1px solid color-mix(in srgb, var(--accent, var(--green)) 30%, transparent); }
+  .xcard .xmedia img { display: block; inline-size: 100%; block-size: 100%; object-fit: cover; object-position: top; }
+  .xcard .xbody { display: flex; flex-direction: column; flex: 1; padding: var(--space-6); }
+  .xcard h3 { margin-top: var(--space-3); font-size: var(--fs-21); font-weight: 800; letter-spacing: -0.5px; line-height: var(--lh-tight); }
   .xcard .xsub { font-size: var(--fs-11); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--accent, var(--green)); margin-top: var(--space-2); }
   .xcard .xdesc { font-size: var(--fs-13); color: var(--text-2); line-height: var(--lh-relaxed); margin-top: var(--space-4); }
   .xcard .xtags { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: var(--space-5) 0 0; }
@@ -109,6 +106,13 @@
   .xcard .xopen .arr { transition: transform .2s ease; }
   .xcard:hover .xopen .arr { transform: translateX(5px); }
   .xcard.ext .xopen .arr::after { content: ' ↗'; }
+  .xstrip { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; margin-top: var(--space-6); padding: var(--space-4) var(--space-6); border: 1px solid color-mix(in srgb, var(--cyan) 30%, transparent); border-radius: var(--radius-lg); background: var(--surface); transition: transform var(--dur-base) ease, border-color var(--dur-base) ease; }
+  .xstrip:hover { transform: translateY(-2px); border-color: var(--cyan); }
+  .xstrip-main { display: flex; flex-direction: column; gap: var(--space-1); min-inline-size: 0; flex: 1 1 320px; }
+  .xstrip-title { font-size: var(--fs-17); font-weight: 800; letter-spacing: -.5px; }
+  .xstrip-sub { font-size: var(--fs-13); color: var(--text-2); line-height: var(--lh-snug); }
+  .xstrip .xopen { margin: 0; padding: 0; color: var(--cyan); }
+  .xstrip:hover .xopen .arr { transform: translate(3px, -3px); }
   .xcard.g { --accent: var(--green); border-color: color-mix(in srgb, var(--green) 30%, transparent); }
   .xcard.g:hover { border-color: var(--green); box-shadow: 0 18px 50px color-mix(in srgb, var(--green) 16%, transparent); }
   .xcard.t { --accent: var(--teal); border-color: color-mix(in srgb, var(--teal) 30%, transparent); }
@@ -127,12 +131,26 @@
     transition: transform .15s ease, border-color .2s ease;
   }
   .xp-item:hover { transform: translateX(3px); }
-  .xp-item.g { --accent: var(--green); } .xp-item.b { --accent: var(--blue); }
-  .xp-item.p { --accent: var(--purple); } .xp-item.a { --accent: var(--amber); }
-  .xp-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: var(--space-2) var(--space-4); }
+  .xp-item.g { --accent: var(--green); } .xp-item.b { --accent: var(--blue); --accent-text: var(--blue-text); }
+  .xp-item.p { --accent: var(--purple); --accent-text: var(--purple-text); } .xp-item.a { --accent: var(--amber); }
+  .xp-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: var(--space-3) var(--space-5); }
+  .xp-meta { display: flex; flex-direction: column; align-items: flex-end; gap: var(--space-1); text-align: right; }
   .xp-role { font-size: var(--fs-15); font-weight: 700; }
-  .xp-role::before { content: ''; display: inline-block; inline-size: 8px; block-size: 8px; border-radius: 50%; background: var(--accent, var(--blue)); margin-inline-end: var(--space-2); vertical-align: .05em; }
-  .xp-co { font-size: var(--fs-13); color: var(--accent, var(--blue)); font-weight: 600; }
+  .mark { display: flex; align-items: center; gap: var(--space-3); min-inline-size: 0; }
+  .mark-plate { display: inline-flex; align-items: center; justify-content: center; block-size: var(--size-mark-tile); flex: none; padding-inline: var(--space-3); border-radius: var(--radius-md); background: var(--text); }
+  .mark-plate img { display: block; block-size: var(--size-mark); inline-size: auto; max-inline-size: 9rem; }
+  .mark-name { font-size: var(--fs-17); font-weight: 800; letter-spacing: -.3px; color: var(--accent-text, var(--accent, var(--blue))); }
+  .mark-desc { font-size: var(--fs-12); color: var(--text-2); line-height: var(--lh-snug); margin-top: var(--space-1); }
+  .proof { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-5); margin-top: var(--space-5); padding-block: var(--space-4); border-block: 1px solid var(--border); }
+  @media (max-width: 760px) { .proof { grid-template-columns: 1fr; gap: var(--space-4); } .xp-meta { align-items: flex-start; text-align: left; } }
+  .proof-item { min-inline-size: 0; }
+  .proof-n { font-size: var(--fs-30); font-weight: 800; letter-spacing: -1px; line-height: var(--lh-display); color: var(--accent-text, var(--accent, var(--blue))); font-variant-numeric: tabular-nums; }
+  .proof-pre { font-size: var(--fs-17); font-weight: 700; color: var(--text-2); letter-spacing: 0; }
+  .proof-l { font-size: var(--fs-12); color: var(--text); margin-top: var(--space-1); line-height: var(--lh-snug); }
+  .proof-bars { display: grid; gap: var(--space-1); margin-top: var(--space-2); }
+  .proof-bar { display: block; block-size: var(--size-bar); border-radius: var(--radius-pill); transition: width var(--dur-slow) ease; }
+  .proof-from { background: var(--border-2); }
+  .proof-to { background: var(--accent, var(--blue)); }
   .xp-date { font-size: var(--fs-11); color: var(--text-3); font-weight: 600; letter-spacing: .5px; white-space: nowrap; }
   .xp-item ul { list-style: none; margin: var(--space-3) 0 0; padding: 0; }
   .xp-item li { position: relative; padding-left: var(--space-4); font-size: var(--fs-13); color: var(--text-2); line-height: var(--lh-relaxed); margin-bottom: var(--space-2); }
@@ -178,6 +196,11 @@
     margin: var(--space-7) 0 var(--space-2); border: 1px solid var(--border); border-radius: var(--radius-xl);
     padding: var(--space-6) var(--space-5) var(--space-4); background: var(--surface); backdrop-filter: blur(8px);
   }
+  .loop-list { display: none; margin: var(--space-4) 0 0; padding: 0; list-style: none; gap: var(--space-3); }
+  .loop-list li { display: grid; grid-template-columns: 5.5rem 1fr; gap: var(--space-3); font-size: var(--fs-13); line-height: var(--lh-snug); }
+  .loop-list b { color: var(--text); }
+  .loop-list span { color: var(--text-2); }
+  @media (max-width: 640px) { .loop-figure .ann { display: none; } .loop-list { display: grid; } }
   .loop-figure svg { width: 100%; height: auto; max-width: 720px; display: block; margin: 0 auto; }
   .loop-cap { text-align: center; font-size: var(--fs-12); color: var(--text-3); margin: var(--space-3) auto 2px; max-width: 680px; line-height: var(--lh-relaxed); }
   .loop-cap b { color: var(--text-2); font-weight: 600; }
@@ -217,6 +240,16 @@
   .stat:hover { transform: translateY(-4px); }
   .stat-num { font-size: clamp(var(--fs-30), 4.4vw, var(--fs-34)); font-weight: 800; letter-spacing: -1px; line-height: 1; }
   .stat-label { font-size: var(--fs-13); font-weight: 700; margin-top: var(--space-2); }
+  .stat-grid-primary { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+  .stat-trend { margin: var(--space-6) 0 0; padding: var(--space-5); border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); }
+  .stat-trend svg { display: block; inline-size: 100%; block-size: auto; }
+  .stat-trend figcaption { font-size: var(--fs-12); color: var(--text-2); margin-top: var(--space-2); }
+  .stat-more { margin-top: var(--space-5); }
+  .stat-more summary { cursor: pointer; font-size: var(--fs-13); font-weight: 700; color: var(--text-2); padding: var(--space-2) 0; }
+  .stat-more summary:hover { color: var(--text); }
+  .stat-more[open] summary { margin-bottom: var(--space-2); }
+  .stat-lead { font-size: var(--fs-17); color: var(--text-2); margin-top: var(--space-6); line-height: var(--lh-snug); }
+  .stat-lead b { color: var(--text); }
   .stat-cap { font-size: var(--fs-11); color: var(--text-3); margin-top: var(--space-2); line-height: var(--lh-normal); }
   .stat-cap.stat-quote { font-size: var(--fs-13); color: var(--text-2); }
   .stat.g .stat-num { color: var(--green); }  .stat.g { border-color: color-mix(in srgb, var(--green) 26%, transparent); }  .stat.g:hover { border-color: var(--green);  box-shadow: 0 10px 30px color-mix(in srgb, var(--green) 14%, transparent); }
@@ -247,11 +280,11 @@
   <div class="wrap">
     <a class="logo" href="#top">Vik<span>.</span>Bharadwaj</a>
     <div class="links">
-      <a href="#explore">AI Projects</a>
+      <a href="#explore">Work</a>
       <a href="#experience">Experience</a>
-      <a href="#highlights">Career Highlights</a>
-      <a href="#ai-work">AI Mental Model</a>
-      <a href="#operating">By the Numbers</a>
+      <a href="#highlights">Highlights</a>
+      <a href="#ai-work">How I run product</a>
+      <a href="#operating">Git numbers</a>
       <a href="#contact">Contact</a>
     </div>
   </div>
@@ -265,8 +298,7 @@
     <p class="lede">
       For ~12 years I've shipped consumer products at scale — at <b>Zillow</b>, <b>Wayfair</b>, <b>Ahold
       Delhaize</b>, and <b>Whirlpool</b>. Today I build <b>AI-native products end-to-end</b>: the app, the AI
-      pipeline, the data model, and the evals. Staying close to how things actually get built keeps my product
-      decisions grounded. Three bodies of that work, below.
+      pipeline, the data model, and the evals.
     </p>
     <div class="cta-row">
       <a class="btn btn-primary" href="#explore">Explore my work <span>→</span></a>
@@ -277,135 +309,191 @@
 
 <section id="explore">
   <div class="wrap">
-    <div class="sec-label">Explore my work</div>
-    <h2 class="sec-title">Three ways in.</h2>
-    <p class="sec-sub">A shipped product, an operating system for how a team decides, and how I keep getting sharper at AI. Pick a door.</p>
+    <h2 class="sec-title">Selected work</h2>
 
     <div class="explore-grid">
 
       <a class="xcard g" href="projects/tide/index.html">
-        <span class="xnum">01 · THE PRODUCT</span>
-        <span class="xic">🌊</span>
-        <h3>Tide</h3>
-        <span class="xsub">Personal cash flow, AI-native</span>
-        <p class="xdesc">
-          A mobile-first personal finance app built around one question — <b>what's actually safe to spend?</b>
-          Behind it: an AI pipeline on Claude + AWS Bedrock, payday-aware Safe-to-Spend, a categorization engine
-          that learns, and a living visual-docs site where every data flow doubles as the spec.
-        </p>
-        <div class="xtags">
-          <span class="xtag">React Native · Expo</span>
-          <span class="xtag">Claude · Bedrock</span>
-          <span class="xtag">AI Evals</span>
+        <div class="xmedia"><img src="assets/images/tide-architecture.webp" width="1200" height="750" loading="lazy" alt="Tide's architecture map: the mobile app, backend API, AI coach, database and AWS services drawn as connected nodes"></div>
+        <div class="xbody">
+          <span class="xnum">THE PRODUCT</span>
+          <h3>Tide</h3>
+          <span class="xsub">Personal cash flow</span>
+          <p class="xdesc">A mobile-first money app built around one question: <b>what's actually safe to spend?</b> An AI coach on Claude and AWS Bedrock, payday-aware math, and docs where every data flow doubles as the spec.</p>
+          <div class="xtags">
+            <span class="xtag">React Native · Expo</span>
+            <span class="xtag">Claude · Bedrock</span>
+            <span class="xtag">AI Evals</span>
+          </div>
+          <span class="xopen">Explore the system docs <span class="arr">→</span></span>
         </div>
-        <span class="xopen">Explore the interactive system docs <span class="arr">→</span></span>
       </a>
 
       <a class="xcard t" href="projects/product-cockpit/index.html">
-        <span class="xnum">02 · THE OPERATING SYSTEM</span>
-        <span class="xic">🛰️</span>
-        <h3>Product Cockpit</h3>
-        <span class="xsub">An AI-native operating system</span>
-        <p class="xdesc">
-          An operating system for product decisions — <b>hooks observe, policies judge, skills execute</b> — so a
-          team (and an AI agent) decide with cited evidence instead of folklore, and the knowledge compounds
-          instead of walking out the door. An anonymized case study of a real internal build.
-        </p>
-        <div class="xtags">
-          <span class="xtag">Observe · Judge · Execute</span>
-          <span class="xtag">Anti-drift governance</span>
-          <span class="xtag">Figma · Linear MCP</span>
+        <div class="xmedia"><img src="assets/images/cockpit-system-map.webp" width="1200" height="750" loading="lazy" alt="Product Cockpit's system map: six layers of anchors, hooks, policies, skills, memory and governance, each listing its primitives"></div>
+        <div class="xbody">
+          <span class="xnum">THE CASE STUDY</span>
+          <h3>Product Cockpit</h3>
+          <span class="xsub">Internal build, anonymized</span>
+          <p class="xdesc"><b>Hooks observe, policies judge, skills execute</b>: an operating system for product decisions, so a team and its AI agents decide from cited evidence.</p>
+          <div class="xtags">
+            <span class="xtag">Cited evidence</span>
+            <span class="xtag">Anti-drift governance</span>
+            <span class="xtag">Figma · Linear MCP</span>
+          </div>
+          <span class="xopen">Explore the case study <span class="arr">→</span></span>
         </div>
-        <span class="xopen">Explore the case study <span class="arr">→</span></span>
-      </a>
-
-      <a class="xcard c ext" href="https://vikkybharadwaj.github.io/ai_knowledgecenter/index.html" target="_blank" rel="noopener">
-        <span class="xnum">03 · HOW I THINK</span>
-        <span class="xic">🧠</span>
-        <h3>How I Learn AI</h3>
-        <span class="xsub">My open knowledge center</span>
-        <p class="xdesc">
-          The deliberate side of getting better — a learning hub of <b>interactive maps and mental models</b> for
-          how I capture signal, distill it into core ideas, organize it, and actually retain it. The theory engine
-          behind the practice.
-        </p>
-        <div class="xtags">
-          <span class="xtag">Capture · Distill</span>
-          <span class="xtag">Organize · Retrieve</span>
-          <span class="xtag">Visual thinking</span>
-        </div>
-        <span class="xopen">Explore the knowledge center <span class="arr">→</span></span>
       </a>
 
     </div>
+
+    <a class="xstrip" href="https://vikkybharadwaj.github.io/ai_knowledgecenter/index.html" target="_blank" rel="noopener">
+      <span class="xstrip-main">
+        <span class="xstrip-title">How I Learn AI</span>
+        <span class="xstrip-sub">My open knowledge center: interactive maps and mental models for capturing, organizing and retaining what I learn.</span>
+      </span>
+      <span class="xopen">Open it <span class="arr">↗</span></span>
+    </a>
   </div>
 </section>
 
 <section id="experience">
   <div class="wrap">
-    <div class="sec-label">Experience</div>
-    <h2 class="sec-title">~12 years, customer-in to outcomes-out.</h2>
-    <p class="sec-sub" style="margin-bottom: var(--space-2);">Selected roles, three proof points each — the real numbers behind the work: engagement, conversion, revenue, and cost.</p>
+    <h2 class="sec-title">Experience</h2>
 
     <div class="xp">
 
       <div class="xp-item g">
-        <div class="xp-top">
-          <span class="xp-role">Staff PM, AI Product Builder · <span class="xp-co">Trustly</span></span>
-          <span class="xp-date">2026 — PRESENT · NEW YORK</span>
+                <div class="xp-head">
+          <div class="mark"><span class="mark-plate"><img src="assets/logos/trustly.png" width="453" height="96" alt="Trustly"></span><div class="mark-text"><div class="mark-desc">Lets people pay straight from their bank account, no card needed.</div></div></div>
+          <div class="xp-meta"><span class="xp-role">Staff PM, AI Product Builder</span><span class="xp-date">2026 — PRESENT · NEW YORK</span></div>
+        </div>
+        <div class="proof">
+          <div class="proof-item">
+            <div class="proof-n"><span data-count="3.0" data-prefix="+$" data-suffix="B" data-decimals="1">+$3.0B</span></div>
+            <div class="proof-l">Annual TPV sized for Trustly Black, a 0→1 loyalty program</div>
+          </div>
+          <div class="proof-item">
+            <div class="proof-n"><span data-count="5.5" data-prefix="+" data-suffix="%" data-decimals="1">+5.5%</span></div>
+            <div class="proof-l">Initiate-to-capture rate across the Pay by Bank funnel (2026)</div>
+          </div>
+          <div class="proof-item">
+            <div class="proof-n"><span data-count="200" data-decimals="0">200</span></div>
+            <div class="proof-l">Closed-beta users for the GoConsumer AI coaching app</div>
+          </div>
         </div>
         <ul>
-          <li>Built <b>GoConsumer</b> 0→1, an iOS <b>AI financial-coaching app</b> on Claude LLMs with eval-gated releases, and launched a <b>200-user closed beta</b>; shipped frontend code to production with Claude Code.</li>
-          <li>Built the business case and secured leadership approval for <b>Trustly Black</b>, a 0→1 loyalty program for high-value gaming users — sized at <b>+$3.0B</b> incremental annual TPV and <b>+$32M</b> net revenue.</li>
-          <li>Ran A/B and A/B/C experiments across the Pay by Bank funnel, lifting initiate-to-capture rate (L1) <b>+5.5%</b> in 2026; as Trustly Product's <b>AI champion</b>, designed and built <b>Product Cockpit</b>, an internal product OS integrated with GitHub, Jira, Confluence, Figma, and Linear via MCP.</li>
+          <li>Built <b>GoConsumer</b> 0→1, an iOS <b>AI financial-coaching app</b> on Claude LLMs with eval-gated releases, and launched a closed beta; shipped frontend code to production with Claude Code.</li>
+          <li>Built the business case and secured leadership approval for <b>Trustly Black</b>, a 0→1 loyalty program for high-value gaming users, also sized at <b>+$32M</b> net revenue.</li>
+          <li>Ran A/B and A/B/C experiments across the Pay by Bank funnel; as Trustly Product's <b>AI champion</b>, designed and built <b>Product Cockpit</b>, an internal product OS integrated with GitHub, Jira, Confluence, Figma, and Linear via MCP.</li>
         </ul>
       </div>
 
       <div class="xp-item b">
-        <div class="xp-top">
-          <span class="xp-role">Product Lead, Core Shopping · <span class="xp-co">Zillow</span></span>
-          <span class="xp-date">2024 — 2026 · NEW YORK</span>
+                <div class="xp-head">
+          <div class="mark"><span class="mark-plate"><img src="assets/logos/zillow.svg" width="28" height="28" alt=""></span><div class="mark-text"><div class="mark-name">Zillow</div><div class="mark-desc">Helps people find, tour and buy homes.</div></div></div>
+          <div class="xp-meta"><span class="xp-role">Product Lead, Core Shopping</span><span class="xp-date">2024 — 2026 · NEW YORK</span></div>
+        </div>
+        <div class="proof">
+          <div class="proof-item">
+            <div class="proof-n"><span data-count="23" data-prefix="+" data-suffix="%" data-decimals="0">+23%</span></div>
+            <div class="proof-l">Compare engagement on the search listing page</div>
+          </div>
+          <div class="proof-item">
+            <div class="proof-n"><span data-count="12" data-prefix="+" data-suffix="%" data-decimals="0">+12%</span></div>
+            <div class="proof-l">Tour-success rate with touring agreements on mobile</div>
+          </div>
+          <div class="proof-item">
+            <div class="proof-n"><span data-count="2.2" data-prefix="+" data-suffix="%" data-decimals="1">+2.2%</span></div>
+            <div class="proof-l">Twice-weekly retention from Collections</div>
+          </div>
         </div>
         <ul>
           <li><b>DRI for multiplayer / collaborative experiences</b> across Zillow Shopping — defined the vision, strategy, and roadmap for Zillow's first collaborative features (0→1), grounded in research on Real Estate IDX presented to senior leadership.</li>
-          <li>Launched <b>Collections</b> across iOS, Android, and Web — invite, share, compare, and collaborate on saved homes — lifting the twice-weekly retention metric <b>+2.2%</b>; shipped <b>Compare</b> on the search listing page (A/B) driving <b>+23%</b> compare engagement, <b>+2.8%</b> tour submits, and <b>~$3.5M/yr</b> incremental revenue.</li>
-          <li>Launched <b>touring agreements</b> on mobile (A/B), lifting tour-success rate (L1) <b>+12%</b>; delivered dynamic scrolling on Saved Homes for <b>+2.42%</b> submits and <b>+$3M/yr</b> revenue.</li>
+          <li>Launched <b>Collections</b> across iOS, Android, and Web — invite, share, compare, and collaborate on saved homes; shipped <b>Compare</b> on the search listing page (A/B), which also lifted tour submits <b>+2.8%</b> and added <b>~$3.5M/yr</b> incremental revenue.</li>
+          <li>Launched <b>touring agreements</b> on mobile (A/B); delivered dynamic scrolling on Saved Homes for <b>+2.42%</b> submits and <b>+$3M/yr</b> revenue.</li>
         </ul>
       </div>
 
       <div class="xp-item p">
-        <div class="xp-top">
-          <span class="xp-role">Product Lead, Middle &amp; Lower Funnel · <span class="xp-co">Wayfair</span></span>
-          <span class="xp-date">2022 — 2024 · CHICAGO</span>
+                <div class="xp-head">
+          <div class="mark"><span class="mark-plate"><img src="assets/logos/wayfair.png" width="439" height="96" alt="Wayfair"></span><div class="mark-text"><div class="mark-desc">Online store for furniture, decor and home goods.</div></div></div>
+          <div class="xp-meta"><span class="xp-role">Product Lead, Middle &amp; Lower Funnel</span><span class="xp-date">2022 — 2024 · CHICAGO</span></div>
+        </div>
+        <div class="proof">
+          <div class="proof-item">
+            <div class="proof-n"><span data-count="63.9" data-prefix="+$" data-suffix="M" data-decimals="1">+$63.9M</span></div>
+            <div class="proof-l">GMV a year from funnel experiments</div>
+          </div>
+          <div class="proof-item">
+            <div class="proof-n"><span data-count="2.8" data-prefix="−$" data-suffix="M" data-decimals="1">−$2.8M</span></div>
+            <div class="proof-l">Customer-contact cost a year</div>
+          </div>
+          <div class="proof-item">
+            <div class="proof-n"><span data-count="24.9" data-prefix="+$" data-suffix="M" data-decimals="1">+$24.9M</span></div>
+            <div class="proof-l">GMV a year from reviews and return policy on the PDP</div>
+          </div>
         </div>
         <ul>
-          <li>Global product lead managing <b>2 PMs</b> across <b>Browse, PDP, Cart, Checkout, and Receipt</b> — owned the vision and roadmap, with experiments delivering <b>+$63.9M GMV/yr</b> and <b>−$2.8M/yr</b> in customer-contact costs.</li>
-          <li>Launched customer <b>reviews</b> and <b>return policy</b> on the PDP (A/B) — <b>+2.62%</b> / <b>+0.59% CVR</b> and <b>+$24.9M/yr GMV</b> combined.</li>
-          <li>Shipped an <b>order-status / explore-more</b> home surface with upsell + cross-sell (<b>+$30M GMV/yr, −$2.7M/yr</b> contact costs) and address auto-complete &amp; validation cutting contact costs a further <b>−$2.7M/yr</b>.</li>
+          <li>Global product lead managing <b>2 PMs</b> across <b>Browse, PDP, Cart, Checkout, and Receipt</b> — owned the vision and roadmap.</li>
+          <li>Launched customer <b>reviews</b> and <b>return policy</b> on the PDP (A/B) — <b>+2.62%</b> / <b>+0.59% CVR</b>.</li>
+          <li>Shipped an <b>order-status / explore-more</b> home surface with upsell + cross-sell (<b>+$30M GMV/yr</b>) and address auto-complete &amp; validation, each cutting contact costs by <b>$2.7M/yr</b>.</li>
         </ul>
       </div>
 
       <div class="xp-item a">
-        <div class="xp-top">
-          <span class="xp-role">Sr. Product Manager, Mobile Apps · <span class="xp-co">Ahold Delhaize</span></span>
-          <span class="xp-date">2020 — 2022 · CHICAGO</span>
+                <div class="xp-head">
+          <div class="mark"><span class="mark-plate"><img src="assets/logos/ahold-delhaize.png" width="298" height="96" alt="Ahold Delhaize"></span><div class="mark-text"><div class="mark-desc">Grocery group behind Giant, Martin's and Stop &amp; Shop.</div></div></div>
+          <div class="xp-meta"><span class="xp-role">Sr. Product Manager, Mobile Apps</span><span class="xp-date">2020 — 2022 · CHICAGO</span></div>
+        </div>
+        <div class="proof">
+          <div class="proof-item">
+            <div class="proof-n"><span class="proof-pre">20 → </span><span data-count="700" data-suffix="+" data-decimals="0">700+</span></div>
+            <div class="proof-l">Stores running Click &amp; Collect, pilot to scale</div>
+            <div class="proof-bars" aria-hidden="true"><span class="proof-bar proof-from" style="width:2.9%"></span><span class="proof-bar proof-to" style="width:100.0%"></span></div>
+          </div>
+          <div class="proof-item">
+            <div class="proof-n"><span data-count="10" data-prefix="+" data-suffix="%" data-decimals="0">+10%</span></div>
+            <div class="proof-l">Click &amp; Collect 2.0 opt-in</div>
+          </div>
+          <div class="proof-item">
+            <div class="proof-n"><span class="proof-pre">3.2 → </span><span data-count="2.5" data-suffix=" min" data-decimals="1">2.5 min</span></div>
+            <div class="proof-l">Curbside wait time, down from 3.2</div>
+            <div class="proof-bars" aria-hidden="true"><span class="proof-bar proof-from" style="width:100.0%"></span><span class="proof-bar proof-to" style="width:78.1%"></span></div>
+          </div>
         </div>
         <ul>
-          <li>Led end-to-end discovery and delivery of <b>Click &amp; Collect</b> curbside pickup across Giant, Martin's, and Stop &amp; Shop — <b>piloted in 20 stores, scaled to 700+</b>.</li>
-          <li>Spearheaded <b>Click &amp; Collect 2.0</b> across research, design, engineering, ops, and marketing — <b>+10%</b> opt-in, <b>+13%</b> check-in, and cut curbside wait time from <b>3.2 → 2.5 min</b>.</li>
+          <li>Led end-to-end discovery and delivery of <b>Click &amp; Collect</b> curbside pickup across Giant, Martin's, and Stop &amp; Shop, from a store pilot to a wide rollout.</li>
+          <li>Spearheaded <b>Click &amp; Collect 2.0</b> across research, design, engineering, ops, and marketing — lifting check-in <b>+13%</b> and cutting curbside wait times.</li>
           <li>Led the <b>native mobile-app transformation</b> across ADUSA brands; owned executive updates for four mobile squads.</li>
         </ul>
       </div>
 
       <div class="xp-item g">
-        <div class="xp-top">
-          <span class="xp-role">Product Manager (Global Leadership Program) · <span class="xp-co">Whirlpool</span></span>
-          <span class="xp-date">2015 — 2020 · MICHIGAN</span>
+                <div class="xp-head">
+          <div class="mark"><span class="mark-plate"><img src="assets/logos/whirlpool.png" width="176" height="96" alt="Whirlpool"></span><div class="mark-text"><div class="mark-desc">Maker of home appliances: Whirlpool, KitchenAid, JennAir and Maytag.</div></div></div>
+          <div class="xp-meta"><span class="xp-role">Product Manager (Global Leadership Program)</span><span class="xp-date">2015 — 2020 · MICHIGAN</span></div>
+        </div>
+        <div class="proof">
+          <div class="proof-item">
+            <div class="proof-n"><span class="proof-pre">2.0 → </span><span data-count="4.2" data-decimals="1">4.2</span></div>
+            <div class="proof-l">JennAir app-store rating, up from 2.0</div>
+            <div class="proof-bars" aria-hidden="true"><span class="proof-bar proof-from" style="width:47.6%"></span><span class="proof-bar proof-to" style="width:100.0%"></span></div>
+          </div>
+          <div class="proof-item">
+            <div class="proof-n"><span class="proof-pre">2.9 → </span><span data-count="4.3" data-decimals="1">4.3</span></div>
+            <div class="proof-l">B2B portal CSAT, up from 2.9</div>
+            <div class="proof-bars" aria-hidden="true"><span class="proof-bar proof-from" style="width:67.4%"></span><span class="proof-bar proof-to" style="width:100.0%"></span></div>
+          </div>
+          <div class="proof-item">
+            <div class="proof-n"><span data-count="16" data-prefix="−" data-suffix="%" data-decimals="0">−16%</span></div>
+            <div class="proof-l">Call-center touchpoints</div>
+          </div>
         </div>
         <ul>
-          <li>Led the end-to-end transformation of the <b>JennAir connected app</b>, lifting app-store ratings from <b>2.0 → 4.2</b>; managed an Associate PM on the KitchenAid app transformation.</li>
+          <li>Led the end-to-end transformation of the <b>JennAir connected app</b>, improving its app-store ratings; managed an Associate PM on the KitchenAid app transformation.</li>
           <li>Owned <b>cart &amp; checkout</b> for whirlpool.com and maytag.com (US &amp; Canada).</li>
-          <li>Led a <b>B2B portal transformation</b> — CSAT <b>2.9 → 4.3</b>, <b>−16%</b> call-center touchpoints.</li>
+          <li>Led a <b>B2B portal transformation</b> that lifted customer satisfaction and cut call-center load.</li>
         </ul>
       </div>
 
@@ -431,9 +519,7 @@
 
 <section id="highlights">
   <div class="wrap">
-    <div class="sec-label">Highlights &amp; achievements</div>
-    <h2 class="sec-title">The fuller picture.</h2>
-    <p class="sec-sub">Awards, talks, the AI craft I keep sharpening, and the stuff outside work. Linked where it's public.</p>
+    <h2 class="sec-title">Highlights &amp; achievements</h2>
 
     <div class="hl-grid">
       <div class="hl a">
@@ -497,12 +583,10 @@
 
 <section id="ai-work">
   <div class="wrap">
-    <div class="sec-label">My AI Mental Model</div>
-    <h2 class="sec-title">Customer in, outcomes out.</h2>
-    <p class="sec-sub">I run product as a loop, not a checklist: start from the customer, ship the smallest bet that moves a real outcome, measure it, and feed what I learn straight back into the roadmap. The AI craft below — pipelines, evals, the data flywheel — exists to serve that loop, not the other way around.</p>
+    <h2 class="sec-title">How I run product</h2>
 
     <div class="loop-figure">
-      <svg viewBox="0 0 760 600" role="img" aria-label="The AI product manager operating loop: Listen, Frame, Design, Ship, Measure, Learn — a continuous flywheel fed by explicit feedback (what users say) and implicit feedback (what users do).">
+      <svg viewBox="0 0 760 580" role="img" aria-label="The AI product manager operating loop: Listen, Frame, Design, Ship, Measure, Learn — a continuous flywheel fed by explicit feedback (what users say) and implicit feedback (what users do).">
         <defs>
           <marker id="ah" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" style="fill:var(--text-2)"/></marker>
           <marker id="ahg" markerWidth="11" markerHeight="11" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" style="fill:var(--green)"/></marker>
@@ -518,39 +602,43 @@
         <path d="M195.6 346.0 A190 190 0 0 1 195.6 254.0" fill="none" stroke-width="2" marker-end="url(#ah)" style="stroke:color-mix(in srgb, var(--text-2) 55%, transparent)"/>
         <!-- the data-flywheel return arc (Learn -> Listen) -->
         <path d="M248.0 163.3 A190 190 0 0 1 327.6 117.4" fill="none" stroke-width="3" marker-end="url(#ahg)" style="stroke:var(--green)"/>
-        <text x="300" y="150" text-anchor="middle" font-size="11" font-weight="700" style="fill:var(--green)">&#8635; data flywheel</text>
+        <text x="240" y="130" text-anchor="end" font-size="11" font-weight="700" style="fill:var(--green)">&#8635; data flywheel</text>
 
         <!-- center hub -->
         <circle cx="380" cy="300" r="66" stroke-width="1.5" style="fill:var(--surface-solid);stroke:color-mix(in srgb, var(--amber) 45%, transparent)"/>
         <text x="380" y="288" text-anchor="middle" font-size="17" font-weight="800" letter-spacing="0.5" style="fill:var(--amber)">AI PM</text>
         <text x="380" y="302" text-anchor="middle" font-size="10" font-weight="700" letter-spacing="1.5" style="fill:var(--text-3)">OPERATING LOOP</text>
-        <line x1="344" y1="310" x2="416" y2="310" stroke-width="1" style="stroke:color-mix(in srgb, var(--text) 10%, transparent)"/>
-        <text x="380" y="326" text-anchor="middle" font-size="11" style="fill:var(--text-2)">customer in &#8594;</text>
-        <text x="380" y="340" text-anchor="middle" font-size="11" style="fill:var(--text-2)">outcomes out</text>
 
         <!-- stage nodes -->
-        <g><circle cx="380" cy="110" r="46" stroke-width="1.5" style="fill:var(--surface-solid);stroke:var(--green)"/><text x="380" y="89" text-anchor="middle" font-size="10" font-weight="700" style="fill:var(--text-3)">1</text><text x="380" y="111" text-anchor="middle" font-size="21">&#128066;</text><text x="380" y="134" text-anchor="middle" font-size="13" font-weight="700" style="fill:var(--text)">Listen</text></g>
-        <g><circle cx="544.5" cy="205" r="46" stroke-width="1.5" style="fill:var(--surface-solid);stroke:var(--blue)"/><text x="544.5" y="184" text-anchor="middle" font-size="10" font-weight="700" style="fill:var(--text-3)">2</text><text x="544.5" y="206" text-anchor="middle" font-size="21">&#128506;</text><text x="544.5" y="229" text-anchor="middle" font-size="13" font-weight="700" style="fill:var(--text)">Frame</text></g>
-        <g><circle cx="544.5" cy="395" r="46" stroke-width="1.5" style="fill:var(--surface-solid);stroke:var(--purple)"/><text x="544.5" y="374" text-anchor="middle" font-size="10" font-weight="700" style="fill:var(--text-3)">3</text><text x="544.5" y="396" text-anchor="middle" font-size="21">&#9999;</text><text x="544.5" y="419" text-anchor="middle" font-size="13" font-weight="700" style="fill:var(--text)">Design</text></g>
-        <g><circle cx="380" cy="490" r="46" stroke-width="1.5" style="fill:var(--surface-solid);stroke:var(--green)"/><text x="380" y="469" text-anchor="middle" font-size="10" font-weight="700" style="fill:var(--text-3)">4</text><text x="380" y="491" text-anchor="middle" font-size="21">&#128640;</text><text x="380" y="514" text-anchor="middle" font-size="13" font-weight="700" style="fill:var(--text)">Ship</text></g>
-        <g><circle cx="215.5" cy="395" r="46" stroke-width="1.5" style="fill:var(--surface-solid);stroke:var(--blue)"/><text x="215.5" y="374" text-anchor="middle" font-size="10" font-weight="700" style="fill:var(--text-3)">5</text><text x="215.5" y="396" text-anchor="middle" font-size="21">&#128202;</text><text x="215.5" y="419" text-anchor="middle" font-size="13" font-weight="700" style="fill:var(--text)">Measure</text></g>
-        <g><circle cx="215.5" cy="205" r="46" stroke-width="1.5" style="fill:var(--surface-solid);stroke:var(--purple)"/><text x="215.5" y="184" text-anchor="middle" font-size="10" font-weight="700" style="fill:var(--text-3)">6</text><text x="215.5" y="206" text-anchor="middle" font-size="21">&#129504;</text><text x="215.5" y="229" text-anchor="middle" font-size="13" font-weight="700" style="fill:var(--text)">Learn</text></g>
+        <g><circle cx="380" cy="110" r="46" stroke-width="1.5" style="fill:var(--surface-solid);stroke:var(--green)"/><text x="380" y="104" text-anchor="middle" font-size="10" font-weight="700" style="fill:var(--text-3)">1</text><text x="380" y="124" text-anchor="middle" font-size="13" font-weight="700" style="fill:var(--text)">Listen</text></g>
+        <g><circle cx="544.5" cy="205" r="46" stroke-width="1.5" style="fill:var(--surface-solid);stroke:var(--blue)"/><text x="544.5" y="199" text-anchor="middle" font-size="10" font-weight="700" style="fill:var(--text-3)">2</text><text x="544.5" y="219" text-anchor="middle" font-size="13" font-weight="700" style="fill:var(--text)">Frame</text><text class="ann" x="600" y="201" text-anchor="start" font-size="11" font-weight="700" style="fill:var(--text)">Tide&#8217;s one question:</text><text class="ann" x="600" y="216" text-anchor="start" font-size="10" style="fill:var(--text-2)">what&#8217;s safe to spend?</text></g>
+        <g><circle cx="544.5" cy="395" r="46" stroke-width="1.5" style="fill:var(--surface-solid);stroke:var(--purple)"/><text x="544.5" y="389" text-anchor="middle" font-size="10" font-weight="700" style="fill:var(--text-3)">3</text><text x="544.5" y="409" text-anchor="middle" font-size="13" font-weight="700" style="fill:var(--text)">Design</text><text class="ann" x="600" y="391" text-anchor="start" font-size="11" font-weight="700" style="fill:var(--text)">Trustly Black:</text><text class="ann" x="600" y="406" text-anchor="start" font-size="10" style="fill:var(--text-2)">0&#8594;1 loyalty program</text></g>
+        <g><circle cx="380" cy="490" r="46" stroke-width="1.5" style="fill:var(--surface-solid);stroke:var(--green)"/><text x="380" y="484" text-anchor="middle" font-size="10" font-weight="700" style="fill:var(--text-3)">4</text><text x="380" y="504" text-anchor="middle" font-size="13" font-weight="700" style="fill:var(--text)">Ship</text><text class="ann" x="380" y="556" text-anchor="middle" font-size="11" font-weight="700" style="fill:var(--text)">Eval-gated releases</text><text class="ann" x="380" y="571" text-anchor="middle" font-size="10" style="fill:var(--text-2)">Claude Code to production</text></g>
+        <g><circle cx="215.5" cy="395" r="46" stroke-width="1.5" style="fill:var(--surface-solid);stroke:var(--blue)"/><text x="215.5" y="389" text-anchor="middle" font-size="10" font-weight="700" style="fill:var(--text-3)">5</text><text x="215.5" y="409" text-anchor="middle" font-size="13" font-weight="700" style="fill:var(--text)">Measure</text><text class="ann" x="160" y="391" text-anchor="end" font-size="11" font-weight="700" style="fill:var(--text)">A/B on every launch:</text><text class="ann" x="160" y="406" text-anchor="end" font-size="10" style="fill:var(--text-2)">+23% Compare, Zillow</text></g>
+        <g><circle cx="215.5" cy="205" r="46" stroke-width="1.5" style="fill:var(--surface-solid);stroke:var(--purple)"/><text x="215.5" y="199" text-anchor="middle" font-size="10" font-weight="700" style="fill:var(--text-3)">6</text><text x="215.5" y="219" text-anchor="middle" font-size="13" font-weight="700" style="fill:var(--text)">Learn</text><text class="ann" x="160" y="201" text-anchor="end" font-size="11" font-weight="700" style="fill:var(--text)">Surprises become tests</text><text class="ann" x="160" y="216" text-anchor="end" font-size="10" style="fill:var(--text-2)">in nightly evals</text></g>
 
         <!-- feedback inputs feeding Listen -->
         <g>
           <rect x="40" y="12" width="220" height="52" rx="9" style="fill:color-mix(in srgb, var(--green) 6%, transparent);stroke:color-mix(in srgb, var(--green) 32%, transparent)"/>
           <text x="150" y="34" text-anchor="middle" font-size="11" font-weight="700" style="fill:var(--green)">EXPLICIT &#183; what users say</text>
-          <text x="150" y="51" text-anchor="middle" font-size="10" style="fill:var(--text-2)">interviews &#183; support &#183; NPS &#183; requests</text>
+          <text class="ann" x="150" y="51" text-anchor="middle" font-size="10" style="fill:var(--text-2)">IDX research &#183; 200-user beta</text>
         </g>
         <g>
           <rect x="500" y="12" width="220" height="52" rx="9" style="fill:color-mix(in srgb, var(--blue) 6%, transparent);stroke:color-mix(in srgb, var(--blue) 32%, transparent)"/>
           <text x="610" y="34" text-anchor="middle" font-size="11" font-weight="700" style="fill:var(--blue)">IMPLICIT &#183; what users do</text>
-          <text x="610" y="51" text-anchor="middle" font-size="10" style="fill:var(--text-2)">usage &#183; evals &#183; A/B &#183; churn</text>
+          <text class="ann" x="610" y="51" text-anchor="middle" font-size="10" style="fill:var(--text-2)">A/B tests &#183; Coach traces &#183; evals</text>
         </g>
         <path d="M150 64 C 196 112, 276 100, 342 92" fill="none" stroke-width="1.5" marker-end="url(#ahf)" style="stroke:color-mix(in srgb, var(--code-text) 55%, transparent)"/>
         <path d="M610 64 C 564 112, 484 100, 418 92" fill="none" stroke-width="1.5" marker-end="url(#ahf)" style="stroke:color-mix(in srgb, var(--code-text) 55%, transparent)"/>
       </svg>
-      <p class="loop-cap"><b>The AI PM operating loop.</b> Explicit signal (what users <i>say</i>) and implicit signal (what users <i>do</i>) feed every turn — and each turn compounds: more usage &#8594; more signal &#8594; a better model &#8594; more usage. That return arc is the <b>data flywheel</b>.</p>
+      <ol class="loop-list">
+        <li><b>Listen</b> <span>IDX research, the 200-user beta, A/B tests, Coach traces and evals</span></li>
+        <li><b>Frame</b> <span>Tide&#8217;s one question: what&#8217;s safe to spend?</span></li>
+        <li><b>Design</b> <span>Trustly Black, a 0&#8594;1 loyalty program</span></li>
+        <li><b>Ship</b> <span>Eval-gated releases, Claude Code to production</span></li>
+        <li><b>Measure</b> <span>A/B on every launch: +23% Compare at Zillow</span></li>
+        <li><b>Learn</b> <span>Surprises become tests in nightly evals</span></li>
+      </ol>
     </div>
 
     <div class="grp-label">Customer &amp; business outcomes</div>
@@ -590,16 +678,44 @@
 
 <section id="operating">
   <div class="wrap">
-    <div class="sec-label">Proof of work</div>
-    <h2 class="sec-title">Git by the numbers.</h2>
-    <p class="sec-sub">A snapshot from across my repos (public + private), generated from real git history — the operating habits behind the work above. Commit-history metrics cover 2026 to date.</p>
+    <h2 class="sec-title">Git by the numbers</h2>
     <!-- HIGHLIGHTS:START -->
-    <div class="stat-grid">
+    <p class="stat-lead">A pace of about 5.1 contributions a day since January 1, with about 6 in 10 commits co-authored with AI.</p>
+    <div class="stat-grid stat-grid-primary">
       <div class="stat g">
         <div class="stat-num">1,505</div>
         <div class="stat-label">GitHub contributions</div>
         <div class="stat-cap">commits, PRs &amp; reviews · public + private · 2026 to date</div>
       </div>
+      <div class="stat p">
+        <div class="stat-num">62%</div>
+        <div class="stat-label">AI-built commits</div>
+        <div class="stat-cap">I build with AI, and keep the receipts</div>
+      </div>
+      <div class="stat p">
+        <div class="stat-num">175</div>
+        <div class="stat-label">eval fixtures</div>
+        <div class="stat-cap">AI quality measured, not guessed</div>
+      </div>
+      <div class="stat b">
+        <div class="stat-num">389</div>
+        <div class="stat-label">changes shipped via PR</div>
+        <div class="stat-cap">reviewed — never straight to main</div>
+      </div>
+      <div class="stat a">
+        <div class="stat-num">11</div>
+        <div class="stat-label">automated guardrails</div>
+        <div class="stat-cap">hooks that enforce my own discipline</div>
+      </div>
+      <div class="stat t stat-wide">
+        <div class="stat-label">the stack</div>
+        <div class="stat-cap">what I actually build with, across every repo</div>
+        <div class="stackbar"><span style="width:44.0%;background:var(--green)" title="TypeScript 44.0%"></span><span style="width:20.9%;background:var(--blue)" title="JSON 20.9%"></span><span style="width:20.8%;background:var(--purple)" title="Markdown 20.8%"></span><span style="width:10.7%;background:var(--amber)" title="HTML 10.7%"></span><span style="width:2.1%;background:var(--cyan)" title="Shell 2.1%"></span><span style="width:1.6%;background:var(--text-3)" title="YAML 1.6%"></span></div>
+        <div class="stack-legend"><i><b style="background:var(--green)"></b>TypeScript 44.0%</i><i><b style="background:var(--blue)"></b>JSON 20.9%</i><i><b style="background:var(--purple)"></b>Markdown 20.8%</i><i><b style="background:var(--amber)"></b>HTML 10.7%</i><i><b style="background:var(--cyan)"></b>Shell 2.1%</i><i><b style="background:var(--text-3)"></b>YAML 1.6%</i></div>
+      </div>
+    </div>
+    <details class="stat-more"><summary>All the numbers (10 more)</summary>
+    <div class="stat-grid">
       <div class="stat g">
         <div class="stat-num">1,044</div>
         <div class="stat-label">commits shipped</div>
@@ -615,30 +731,10 @@
         <div class="stat-label">Conventional Commits</div>
         <div class="stat-cap">structured, readable history</div>
       </div>
-      <div class="stat b">
-        <div class="stat-num">389</div>
-        <div class="stat-label">changes shipped via PR</div>
-        <div class="stat-cap">reviewed — never straight to main</div>
-      </div>
-      <div class="stat p">
-        <div class="stat-num">62%</div>
-        <div class="stat-label">AI-built commits</div>
-        <div class="stat-cap">I build with AI, and keep the receipts</div>
-      </div>
       <div class="stat p">
         <div class="stat-num">11</div>
         <div class="stat-label">custom AI tools</div>
         <div class="stat-cap">skills &amp; commands I built to extend my own workflow</div>
-      </div>
-      <div class="stat a">
-        <div class="stat-num">11</div>
-        <div class="stat-label">automated guardrails</div>
-        <div class="stat-cap">hooks that enforce my own discipline</div>
-      </div>
-      <div class="stat p">
-        <div class="stat-num">175</div>
-        <div class="stat-label">eval fixtures</div>
-        <div class="stat-cap">AI quality measured, not guessed</div>
       </div>
       <div class="stat b">
         <div class="stat-num">108</div>
@@ -670,22 +766,16 @@
         <div class="stat-label">active projects</div>
         <div class="stat-cap">public + private</div>
       </div>
-      <div class="stat t stat-wide">
-        <div class="stat-label">the stack</div>
-        <div class="stat-cap">what I actually build with, across every repo</div>
-        <div class="stackbar"><span style="width:44.0%;background:var(--green)" title="TypeScript 44.0%"></span><span style="width:20.9%;background:var(--blue)" title="JSON 20.9%"></span><span style="width:20.8%;background:var(--purple)" title="Markdown 20.8%"></span><span style="width:10.7%;background:var(--amber)" title="HTML 10.7%"></span><span style="width:2.1%;background:var(--cyan)" title="Shell 2.1%"></span><span style="width:1.6%;background:var(--text-3)" title="YAML 1.6%"></span></div>
-        <div class="stack-legend"><i><b style="background:var(--green)"></b>TypeScript 44.0%</i><i><b style="background:var(--blue)"></b>JSON 20.9%</i><i><b style="background:var(--purple)"></b>Markdown 20.8%</i><i><b style="background:var(--amber)"></b>HTML 10.7%</i><i><b style="background:var(--cyan)"></b>Shell 2.1%</i><i><b style="background:var(--text-3)"></b>YAML 1.6%</i></div>
-      </div>
     </div>
-    <p class="stat-meta">Counts 2026 to date · git activity 2026-03-21 → 2026-10-22 · commit history only; file/tooling counts are a current snapshot · no private code or content. <a href="https://github.com/vikkybharadwaj" target="_blank" rel="noopener">See the work →</a></p>
+    </details>
+    <p class="stat-meta">Counted from git history across 5 repos, public and private, 2026-03-21 → 2026-10-22. File and tooling counts are a current snapshot. No private code or content. <a href="https://github.com/vikkybharadwaj" target="_blank" rel="noopener">See the work →</a></p>
     <!-- HIGHLIGHTS:END -->
   </div>
 </section>
 
 <section id="contact">
   <div class="wrap">
-    <div class="sec-label">Contact</div>
-    <h2 class="sec-title">Get in touch.</h2>
+    <h2 class="sec-title">Get in touch</h2>
     <div class="contact-card">
       <p>
         I'm open to <b>AI product</b> roles where product and engineering sit close together.
@@ -702,7 +792,7 @@
 
 <footer>
   <div class="wrap">
-    <p>© 2026 Vik Bharadwaj · Staff PM &amp; AI Product Builder</p>
+    <p>© 2026 Vik Bharadwaj</p>
     <p class="built">Built &amp; hosted on <b>GitHub Pages</b>.</p>
   </div>
 </footer>
@@ -744,5 +834,37 @@
   })();
 </script>
 
+<script>
+  // Proof numbers count up and bars grow once as they scroll into view. The final values are already
+  // in the HTML, so nothing depends on this script, and it does nothing under prefers-reduced-motion.
+  (function () {
+    if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var ms = (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dur-count')) || 1.2) * 1000;
+    function fmt(el, v) { return (el.dataset.prefix || '') + v.toFixed(+el.dataset.decimals || 0) + (el.dataset.suffix || ''); }
+    var items = [].slice.call(document.querySelectorAll('.proof-item'));
+    items = items.filter(function (item) { return item.getBoundingClientRect().top > window.innerHeight; });
+    items.forEach(function (item) {
+      item.querySelectorAll('[data-count]').forEach(function (el) { el.textContent = fmt(el, 0); });
+      item.querySelectorAll('.proof-bar').forEach(function (b) { b.dataset.w = b.style.width; b.style.width = '0%'; });
+    });
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        io.unobserve(e.target);
+        e.target.querySelectorAll('.proof-bar').forEach(function (b) { b.style.width = b.dataset.w; });
+        e.target.querySelectorAll('[data-count]').forEach(function (el) {
+          var to = parseFloat(el.dataset.count), t0 = null;
+          (function step(t) {
+            if (t0 === null) t0 = t;
+            var k = Math.min((t - t0) / ms, 1), eased = 1 - Math.pow(1 - k, 3);
+            el.textContent = fmt(el, to * eased);
+            if (k < 1) requestAnimationFrame(step);
+          })(performance.now());
+        });
+      });
+    }, { threshold: 0.4 });
+    items.forEach(function (i) { io.observe(i); });
+  })();
+</script>
 </body>
 </html>

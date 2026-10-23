@@ -47,11 +47,40 @@ a.vk-pill-outline:hover { transform: translateY(-1px); border-color: var(--tone,
 
 .ds-dot::before { content: ''; display: inline-block; inline-size: 8px; block-size: 8px; border-radius: 50%; background: var(--tone, var(--green)); margin-inline-end: var(--space-2); vertical-align: .05em; }
 
+/* Card media and tiers */
+.vk-card { padding: 0; }
+.vk-card-body-wrap { display: flex; flex-direction: column; flex: 1; padding: var(--space-7) var(--space-6) var(--space-6); }
+.vk-card-media { aspect-ratio: var(--ratio-media); overflow: hidden; border-bottom: 1px solid color-mix(in srgb, var(--tone, var(--green)) 30%, transparent); background: var(--surface-solid); }
+.vk-card-media img { display: block; inline-size: 100%; block-size: 100%; object-fit: cover; object-position: top; }
+.vk-card-secondary { flex-direction: row; align-items: center; justify-content: space-between; gap: var(--space-4); padding: var(--space-4) var(--space-6); border-width: 1px; }
+.vk-card-secondary:hover { transform: translateY(-2px); }
+.vk-card-secondary h3 { margin: 0; font-size: var(--fs-17); }
+.vk-card-secondary .vk-card-sub { margin-top: var(--space-1); }
+.vk-card-secondary .vk-card-open { margin: 0; padding: 0; white-space: nowrap; }
+
+/* Company mark: the logo in its own colours on a light plate (brand marks are drawn for light grounds) */
+.vk-mark { display: flex; align-items: center; gap: var(--space-3); }
+.vk-mark-plate { display: inline-flex; align-items: center; justify-content: center; block-size: var(--size-mark-tile); flex: none; padding-inline: var(--space-3); border-radius: var(--radius-md); background: var(--text); }
+.vk-mark-plate img { display: block; block-size: var(--size-mark); inline-size: auto; max-inline-size: 9rem; }
+.vk-mark-name { font-size: var(--fs-15); font-weight: 700; color: var(--text); }
+.vk-mark-desc { font-size: var(--fs-12); color: var(--text-2); line-height: var(--lh-snug); margin-top: var(--space-1); }
+
+/* Proof stat: the headline number of a role or project */
+.vk-proof { min-inline-size: 0; }
+.vk-proof-num { font-size: var(--fs-30); font-weight: 800; letter-spacing: -1px; line-height: var(--lh-display); color: var(--tone-text, var(--tone, var(--green))); font-variant-numeric: tabular-nums; }
+.vk-proof-label { font-size: var(--fs-12); color: var(--text); margin-top: var(--space-1); line-height: var(--lh-snug); }
+.vk-proof-bars { display: grid; gap: var(--space-1); margin-top: var(--space-2); }
+.vk-proof-bar { display: block; block-size: var(--size-bar); border-radius: var(--radius-pill); }
+.vk-proof-from { background: var(--border-2); }
+.vk-proof-to { background: var(--tone, var(--green)); }
+.vk-proof-ctx { font-size: var(--fs-11); color: var(--text-2); margin-top: var(--space-1); }
+
 /* Stat */
 .vk-stat { border: 1px solid color-mix(in srgb, var(--tone, var(--text)) 26%, transparent); border-radius: var(--radius-lg); padding: var(--space-5); background: var(--surface); backdrop-filter: blur(8px); transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; }
 .vk-stat:hover { transform: translateY(-4px); border-color: var(--tone, var(--border-2)); box-shadow: 0 10px 30px color-mix(in srgb, var(--tone, var(--text)) 14%, transparent); }
 .vk-stat-num { font-size: var(--fs-34); font-weight: 800; letter-spacing: -1px; line-height: 1; color: var(--tone, var(--text)); font-variant-numeric: tabular-nums; }
 .vk-stat-label { font-size: var(--fs-13); font-weight: 700; margin-top: var(--space-2); }
+.vk-stat-ctx { font-size: var(--fs-12); color: var(--text); margin-top: var(--space-2); line-height: var(--lh-snug); }
 .vk-stat-cap { font-size: var(--fs-11); color: var(--text-3); margin-top: var(--space-2); line-height: var(--lh-normal); }
 
 /* Callout */

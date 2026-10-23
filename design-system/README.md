@@ -10,6 +10,16 @@ Dark, monospace, and technical with a green-to-blue gradient as its single signa
 - **Punctuation.** The source uses em-dashes in titles; new copy should prefer a colon or two short sentences.
 - **Emoji.** The source uses single emoji as card icons and callout markers. Treat that as legacy: prefer none in new work.
 
+### Say it once
+These come from a senior designer's review of the portfolio. Treat them as rules.
+- **One heading per section.** A section has a title and, at most, one short line that adds something the title does not. Never stack an eyebrow, a title and a subtitle that say the same thing ("Explore my work" over "Three ways in").
+- **No preview paragraph.** Do not write a sentence that summarises the cards, rows or stats directly below it. If the content below is clear, delete the sentence.
+- **No repeated taglines.** A phrase used as a headline appears once on a page. Do not reuse it as a subtitle, a chart label or a footer.
+- **Every line earns its place.** Over-explaining reads as unedited generated text. Prefer a specific fact (a number, a name, a result) to a general claim.
+- **Every number has a reference.** Show what it is compared against, a rate, or a before and after. If there is no honest comparison, state what is counted and over which window. Lead with the comparison when it is the point. The reference can be your own history (a rate, a trend over weeks, the last 30 days against the 30 before). Never invent an external benchmark: cite a published source next to the figure or leave it out. Lead a data section with the few numbers that say how you work, and fold volume counts (files, notes, lines) into a collapsed "all the numbers" block with one line saying how they were counted.
+- **Personal beats generic.** A diagram, chart or framework uses your own examples at each step, not neutral stage names. If a figure would fit any product manager's site, rewrite it with your work in it.
+- **Say what the company does.** In an experience entry, give the employer one short line about the value it gives its customers.
+
 ## Visual foundations
 
 - **Ground.** `bg` is the page. Two blurred blobs (a 520px `green` one top-left, a 560px `blue` one right, 120px blur, 16% to 18% opacity) sit fixed behind everything. There is no light theme.
@@ -23,9 +33,20 @@ Dark, monospace, and technical with a green-to-blue gradient as its single signa
 - **States.** Hover raises and strengthens the border to the full tone. Focus: the source defines none; use a 2px `cyan` outline with 2px to 3px offset (about 10.8:1 on `bg`).
 - **Layout.** Left-aligned. Grids use `repeat(auto-fill, minmax(280px, 1fr))` for cards and `minmax(190px, 1fr)` for stats; three-up bands collapse to one column at 880px. Sticky blurred nav at the top.
 
+## Hierarchy and media
+
+- **Visual weight follows importance.** Products and proof of work use `Card tier="primary"`: larger, with an image. Supporting material (learning hubs, links out) uses `tier="secondary"`, a slim strip. Two things of different importance never share the same card.
+- **Show the product, don't describe it.** A primary card carries a real image (16:10, top-aligned crop of an actual screen) instead of an emoji. Images need meaningful `alt` text.
+- **Logos over names.** In experience entries and logo rows use `CompanyMark`: the company's own logo file, unmodified and in its own colours, on a light plate (`text` colour), because brand marks are drawn for light grounds. When the logo already spells the name, do not repeat the name as text. Never redraw, trace, recolour or approximate a brand mark; trim only transparent margins. If no file exists, render the name alone and add the file later. Store logos in `assets/logos/` with the source noted.
+- **Proof is visual.** The two or three figures a visitor should remember from a role or project use `ProofStat` (large number, one-line label, optional before and after bars) above the supporting bullets, not buried inside them.
+
+## Motion for proof
+
+- Numbers and bars may animate once when they scroll into view: count up from zero over `dur-count`, bars grow over `dur-slow`. The final value is always in the HTML, the animation is an enhancement, and under `prefers-reduced-motion: reduce` nothing animates. Any page that uses `@keyframes`, `animation` or a scroll reveal must contain a `prefers-reduced-motion` rule; the conformance script enforces it.
+
 ## Iconography
 
-There is no icon set. The source uses single emoji as card icons, the arrow glyphs `→` and `↗` for links, and `›` as a list bullet in `green`/accent. Diagrams are inline SVG drawn in the same palette. No logo file exists: the mark is the wordmark "Vik" + green period + "Bharadwaj" set in `heading` weight 800.
+There is no icon set. Emoji as card icons are legacy: replace them with product images, logos or nothing. The older source used single emoji as card icons, the arrow glyphs `→` and `↗` for links, and `›` as a list bullet in `green`/accent. Diagrams are inline SVG drawn in the same palette. No logo file exists: the mark is the wordmark "Vik" + green period + "Bharadwaj" set in `heading` weight 800.
 
 ## Using the tokens
 

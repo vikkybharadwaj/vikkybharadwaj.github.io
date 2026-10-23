@@ -1,9 +1,9 @@
 {
-  "_comment": "Toggle surface for the 'How I operate' highlights strip. Flip enabled:true/false and re-run `python3 scripts/build-highlights.py`. Disabled insights are NOT computed or emitted \u2014 they never reach the public page. Array order = display order. label/caption/accent are optional per-insight overrides.",
+  "_comment": "Toggle surface for the 'How I operate' highlights strip. Flip enabled:true/false and re-run `python3 scripts/build-highlights.py`. Disabled insights are NOT computed or emitted — they never reach the public page. Array order = display order. label/caption/accent are optional per-insight overrides. `primary: true` insights are shown up front; the rest sit under 'All the numbers'.",
   "section": {
     "label": "By the numbers",
     "title": "How I operate.",
-    "sub": "A snapshot from across my repos (public + private), generated from real git history \u2014 the operating habits behind the work above. Commit-history metrics cover 2026 to date."
+    "sub": "A snapshot from across my repos (public + private), generated from real git history — the operating habits behind the work above. Commit-history metrics cover 2026 to date."
   },
   "since": "2026-01-01",
   "_since_note": "Bounds commit-history metrics (commits, cadence, Conventional %, PR count, AI-assisted %) to this date. Point-in-time counts (files, docs, notes, evals, tools) are current snapshots, not windowed. All configured repos started in 2026, so today this is a no-op safeguard; it keeps the window honest if an older repo is ever added.",
@@ -27,71 +27,88 @@
     {
       "key": "github_contributions",
       "enabled": true,
-      "_note": "GitHub contribution-calendar total (commits+PRs+issues+reviews, public+private) via `gh api graphql`, bounded by `since`. The one metric that can't come from local git — GitHub aggregates it server-side. Needs the gh CLI authenticated locally; if gh is missing/errors the tile is silently skipped."
-    },
-    {
-      "key": "commits",
-      "enabled": true
-    },
-    {
-      "key": "cadence",
-      "enabled": true
-    },
-    {
-      "key": "conventional",
-      "enabled": true
-    },
-    {
-      "key": "pr_driven",
-      "enabled": true
+      "_note": "GitHub contribution-calendar total (commits+PRs+issues+reviews, public+private) via `gh api graphql`, bounded by `since`. The one metric that can't come from local git — GitHub aggregates it server-side. Needs the gh CLI authenticated locally; if gh is missing/errors the tile is silently skipped.",
+      "primary": true
     },
     {
       "key": "ai_assisted",
-      "enabled": true
-    },
-    {
-      "key": "tools_built",
-      "enabled": true
-    },
-    {
-      "key": "guardrails",
-      "enabled": true
+      "enabled": true,
+      "primary": true
     },
     {
       "key": "evals",
-      "enabled": true
+      "enabled": true,
+      "primary": true
     },
     {
-      "key": "knowledge_atoms",
-      "enabled": true
+      "key": "pr_driven",
+      "enabled": true,
+      "primary": true
     },
     {
-      "key": "learnings",
-      "enabled": true
-    },
-    {
-      "key": "changelog",
-      "enabled": true
-    },
-    {
-      "key": "docs",
-      "enabled": true
-    },
-    {
-      "key": "tracked_files",
-      "enabled": true
-    },
-    {
-      "key": "projects",
-      "enabled": true
+      "key": "guardrails",
+      "enabled": true,
+      "primary": true
     },
     {
       "key": "stack",
-      "enabled": true
+      "enabled": true,
+      "primary": true
+    },
+    {
+      "key": "commits",
+      "enabled": true,
+      "primary": false
+    },
+    {
+      "key": "cadence",
+      "enabled": true,
+      "primary": false
+    },
+    {
+      "key": "conventional",
+      "enabled": true,
+      "primary": false
+    },
+    {
+      "key": "tools_built",
+      "enabled": true,
+      "primary": false
+    },
+    {
+      "key": "knowledge_atoms",
+      "enabled": true,
+      "primary": false
+    },
+    {
+      "key": "learnings",
+      "enabled": true,
+      "primary": false
+    },
+    {
+      "key": "changelog",
+      "enabled": true,
+      "primary": false
+    },
+    {
+      "key": "docs",
+      "enabled": true,
+      "primary": false
+    },
+    {
+      "key": "tracked_files",
+      "enabled": true,
+      "primary": false
+    },
+    {
+      "key": "projects",
+      "enabled": true,
+      "primary": false
     },
     {
       "key": "latest_ship",
-      "enabled": false
+      "enabled": false,
+      "primary": false
     }
   ]
 }
