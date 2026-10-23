@@ -253,27 +253,99 @@ def make_lead(m):
     return f"A pace of about {m['commits'] / span * 7:.0f} commits a week since {first}, with {ai}."
 
 
+def weekly_counts(dates):
+    """Commits per ISO week (Monday start), first to last commit, zero-filled. Derived from the commit dates already scanned."""
+    from datetime import date, timedelta
+    if not dates:
+        return []
+    days = [date.fromisoformat(d) for d in dates]
+    start = min(days) - timedelta(days=min(days).weekday())
+    end = max(days)
+    counts = {}
+    for d in days:
+        w = d - timedelta(days=d.weekday())
+        counts[w] = counts.get(w, 0) + 1
+    out, w = [], start
+    while w <= end:
+        out.append((w.isoformat(), counts.get(w, 0)))
+        w += timedelta(days=7)
+    return out
+
+
+def recent_vs_before(dates, window=30):
+    """Commits in the last `window` days of the history vs the `window` days before them."""
+    from datetime import date, timedelta
+    if not dates:
+        return None
+    days = [date.fromisoformat(d) for d in dates]
+    last = max(days)
+    a = last - timedelta(days=window)
+    b = a - timedelta(days=window)
+    recent = sum(1 for d in days if d > a)
+    before = sum(1 for d in days if b < d <= a)
+    return recent, before
+
+
+def render_trend(m):
+    """Weekly commits as an inline SVG bar chart in design tokens, plus a last-30-days comparison with the 30 days before."""
+    weeks = weekly_counts(m["dates"])
+    if len(weeks) < 3:
+        return ""
+    top = max(c for _, c in weeks) or 1
+    W, H, pad_b = 640, 96, 18
+    n = len(weeks); step = W / n; bw = max(step * 0.7, 2)
+    bars = []
+    for i, (wk, c) in enumerate(weeks):
+        h = round((H - pad_b) * c / top, 1)
+        x = round(i * step + (step - bw) / 2, 1)
+        tone = "var(--blue)" if i == n - 1 else "var(--green)"
+        bars.append(f'<rect x="{x}" y="{round(H - pad_b - h, 1)}" width="{round(bw, 1)}" height="{h}" rx="1.5" style="fill:{tone}"><title>Week of {wk}: {c} commits</title></rect>')
+    total = sum(c for _, c in weeks)
+    svg = (
+        f'<svg viewBox="0 0 {W} {H}" role="img" aria-label="Commits per week from {esc(weeks[0][0])} to {esc(weeks[-1][0])}: {total} commits across {n} weeks, busiest week {top}">'
+        + "".join(bars)
+        + f'<text x="0" y="{H - 3}" font-size="10" style="fill:var(--text-3)">{esc(weeks[0][0])}</text>'
+        + f'<text x="{W}" y="{H - 3}" text-anchor="end" font-size="10" style="fill:var(--text-3)">{esc(weeks[-1][0])} (this week)</text>'
+        + f'<text x="{W}" y="10" text-anchor="end" font-size="10" style="fill:var(--text-3)">busiest week: {top}</text>'
+        + '</svg>'
+    )
+    rv = recent_vs_before(m["dates"])
+    cmp_line = ""
+    if rv and rv[1]:
+        recent, before = rv
+        cmp_line = f'Last 30 days: {recent:,} commits, against {before:,} in the 30 days before.'
+    elif rv:
+        cmp_line = f'Last 30 days: {rv[0]:,} commits.'
+    return (
+        '    <figure class="stat-trend">\n'
+        f'      {svg}\n'
+        f'      <figcaption>Commits per week. {esc(cmp_line)}</figcaption>\n'
+        '    </figure>\n'
+    )
+
+
 def esc(s):
     return (s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"))
 
 
 def render(cfg, m):
     insights = make_insights(m)
-    tiles, emitted = [], []
+    tiles, more, emitted = [], [], []
     overrides = {i["key"]: i for i in cfg["insights"]}
     for item in cfg["insights"]:
         key = item["key"]
         if not item.get("enabled"):
             continue
+        bucket = tiles if item.get("primary") else more
         if key == "stack":
-            tiles.append(render_stack(m))
+            bucket.append(render_stack(m))
             emitted.append({"key": "stack", "languages": m["languages"][:6]})
             continue
         if key == "latest_ship":
             opt = cfg.get("options", {}).get("latest_ship", {})
             ls = latest_ship(cfg["repos"], opt.get("sources")) if opt.get("enabled") else None
             if ls:
-                tiles.append(render_latest(ls))
+                bucket.append(render_latest(ls))
                 emitted.append({"key": "latest_ship", **ls})
             continue
         if key not in insights:
@@ -281,7 +353,7 @@ def render(cfg, m):
         accent, value, label, caption = insights[key]
         o = overrides.get(key, {})
         accent = o.get("accent", accent); label = o.get("label", label); caption = o.get("caption", caption)
-        tiles.append(
+        bucket.append(
             f'      <div class="stat {accent}">\n'
             f'        <div class="stat-num">{esc(value)}</div>\n'
             f'        <div class="stat-label">{esc(label)}</div>\n'
@@ -292,14 +364,18 @@ def render(cfg, m):
 
     first = m["dates"][0] if m["dates"] else ""
     updated = m["dates"][-1] if m["dates"] else ""
-    window = (f'Counts 2026 to date · git activity {first} → {updated}'
-              if first else 'Counts 2026 to date')
+    n_repos = m.get("projects", 0)
+    window = (f'from git history across {n_repos} repos, public and private, {first} → {updated}'
+              if first else 'from git history, public and private repos')
     lead = f'    <p class="stat-lead">{esc(make_lead(m))}</p>\n' if m.get("commits") else ""
-    grid = lead + ('    <div class="stat-grid">\n' + "\n".join(tiles) + "\n    </div>\n") if tiles else ""
-    meta = (f'    <p class="stat-meta">{esc(window)} · commit history only; file/tooling counts are a '
-            f'current snapshot · no private code or content. '
+    trend = render_trend(m)
+    grid = ('    <div class="stat-grid stat-grid-primary">\n' + "\n".join(tiles) + "\n    </div>\n") if tiles else ""
+    rest = (f'    <details class="stat-more"><summary>All the numbers ({len(more)} more)</summary>\n'
+            '    <div class="stat-grid">\n' + "\n".join(more) + "\n    </div>\n    </details>\n") if more else ""
+    meta = (f'    <p class="stat-meta">Counted {esc(window)}. File and tooling counts are a current snapshot. '
+            f'No private code or content. '
             f'<a href="https://github.com/vikkybharadwaj" target="_blank" rel="noopener">See the work →</a></p>')
-    block = grid + meta
+    block = lead + trend + grid + rest + meta
     return block, {"updated": updated, "first": first, "window": window, "insights": emitted}
 
 

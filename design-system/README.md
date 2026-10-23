@@ -16,7 +16,7 @@ These come from a senior designer's review of the portfolio. Treat them as rules
 - **No preview paragraph.** Do not write a sentence that summarises the cards, rows or stats directly below it. If the content below is clear, delete the sentence.
 - **No repeated taglines.** A phrase used as a headline appears once on a page. Do not reuse it as a subtitle, a chart label or a footer.
 - **Every line earns its place.** Over-explaining reads as unedited generated text. Prefer a specific fact (a number, a name, a result) to a general claim.
-- **Every number has a reference.** Show what it is compared against, a rate, or a before and after. If there is no honest comparison, state what is counted and over which window. Lead with the comparison when it is the point.
+- **Every number has a reference.** Show what it is compared against, a rate, or a before and after. If there is no honest comparison, state what is counted and over which window. Lead with the comparison when it is the point. The reference can be your own history (a rate, a trend over weeks, the last 30 days against the 30 before). Never invent an external benchmark: cite a published source next to the figure or leave it out. Lead a data section with the few numbers that say how you work, and fold volume counts (files, notes, lines) into a collapsed "all the numbers" block with one line saying how they were counted.
 - **Personal beats generic.** A diagram, chart or framework uses your own examples at each step, not neutral stage names. If a figure would fit any product manager's site, rewrite it with your work in it.
 - **Say what the company does.** In an experience entry, give the employer one short line about the value it gives its customers.
 

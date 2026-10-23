@@ -240,6 +240,14 @@
   .stat:hover { transform: translateY(-4px); }
   .stat-num { font-size: clamp(var(--fs-30), 4.4vw, var(--fs-34)); font-weight: 800; letter-spacing: -1px; line-height: 1; }
   .stat-label { font-size: var(--fs-13); font-weight: 700; margin-top: var(--space-2); }
+  .stat-grid-primary { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+  .stat-trend { margin: var(--space-6) 0 0; padding: var(--space-5); border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); }
+  .stat-trend svg { display: block; inline-size: 100%; block-size: auto; }
+  .stat-trend figcaption { font-size: var(--fs-12); color: var(--text-2); margin-top: var(--space-2); }
+  .stat-more { margin-top: var(--space-5); }
+  .stat-more summary { cursor: pointer; font-size: var(--fs-13); font-weight: 700; color: var(--text-2); padding: var(--space-2) 0; }
+  .stat-more summary:hover { color: var(--text); }
+  .stat-more[open] summary { margin-bottom: var(--space-2); }
   .stat-lead { font-size: var(--fs-17); color: var(--text-2); margin-top: var(--space-6); line-height: var(--lh-snug); }
   .stat-lead b { color: var(--text); }
   .stat-cap { font-size: var(--fs-11); color: var(--text-3); margin-top: var(--space-2); line-height: var(--lh-normal); }
@@ -673,12 +681,41 @@
     <h2 class="sec-title">Git by the numbers</h2>
     <!-- HIGHLIGHTS:START -->
     <p class="stat-lead">A pace of about 5.1 contributions a day since January 1, with about 6 in 10 commits co-authored with AI.</p>
-    <div class="stat-grid">
+    <div class="stat-grid stat-grid-primary">
       <div class="stat g">
         <div class="stat-num">1,505</div>
         <div class="stat-label">GitHub contributions</div>
         <div class="stat-cap">commits, PRs &amp; reviews · public + private · 2026 to date</div>
       </div>
+      <div class="stat p">
+        <div class="stat-num">62%</div>
+        <div class="stat-label">AI-built commits</div>
+        <div class="stat-cap">I build with AI, and keep the receipts</div>
+      </div>
+      <div class="stat p">
+        <div class="stat-num">175</div>
+        <div class="stat-label">eval fixtures</div>
+        <div class="stat-cap">AI quality measured, not guessed</div>
+      </div>
+      <div class="stat b">
+        <div class="stat-num">389</div>
+        <div class="stat-label">changes shipped via PR</div>
+        <div class="stat-cap">reviewed — never straight to main</div>
+      </div>
+      <div class="stat a">
+        <div class="stat-num">11</div>
+        <div class="stat-label">automated guardrails</div>
+        <div class="stat-cap">hooks that enforce my own discipline</div>
+      </div>
+      <div class="stat t stat-wide">
+        <div class="stat-label">the stack</div>
+        <div class="stat-cap">what I actually build with, across every repo</div>
+        <div class="stackbar"><span style="width:44.0%;background:var(--green)" title="TypeScript 44.0%"></span><span style="width:20.9%;background:var(--blue)" title="JSON 20.9%"></span><span style="width:20.8%;background:var(--purple)" title="Markdown 20.8%"></span><span style="width:10.7%;background:var(--amber)" title="HTML 10.7%"></span><span style="width:2.1%;background:var(--cyan)" title="Shell 2.1%"></span><span style="width:1.6%;background:var(--text-3)" title="YAML 1.6%"></span></div>
+        <div class="stack-legend"><i><b style="background:var(--green)"></b>TypeScript 44.0%</i><i><b style="background:var(--blue)"></b>JSON 20.9%</i><i><b style="background:var(--purple)"></b>Markdown 20.8%</i><i><b style="background:var(--amber)"></b>HTML 10.7%</i><i><b style="background:var(--cyan)"></b>Shell 2.1%</i><i><b style="background:var(--text-3)"></b>YAML 1.6%</i></div>
+      </div>
+    </div>
+    <details class="stat-more"><summary>All the numbers (10 more)</summary>
+    <div class="stat-grid">
       <div class="stat g">
         <div class="stat-num">1,044</div>
         <div class="stat-label">commits shipped</div>
@@ -694,30 +731,10 @@
         <div class="stat-label">Conventional Commits</div>
         <div class="stat-cap">structured, readable history</div>
       </div>
-      <div class="stat b">
-        <div class="stat-num">389</div>
-        <div class="stat-label">changes shipped via PR</div>
-        <div class="stat-cap">reviewed — never straight to main</div>
-      </div>
-      <div class="stat p">
-        <div class="stat-num">62%</div>
-        <div class="stat-label">AI-built commits</div>
-        <div class="stat-cap">I build with AI, and keep the receipts</div>
-      </div>
       <div class="stat p">
         <div class="stat-num">11</div>
         <div class="stat-label">custom AI tools</div>
         <div class="stat-cap">skills &amp; commands I built to extend my own workflow</div>
-      </div>
-      <div class="stat a">
-        <div class="stat-num">11</div>
-        <div class="stat-label">automated guardrails</div>
-        <div class="stat-cap">hooks that enforce my own discipline</div>
-      </div>
-      <div class="stat p">
-        <div class="stat-num">175</div>
-        <div class="stat-label">eval fixtures</div>
-        <div class="stat-cap">AI quality measured, not guessed</div>
       </div>
       <div class="stat b">
         <div class="stat-num">108</div>
@@ -749,14 +766,9 @@
         <div class="stat-label">active projects</div>
         <div class="stat-cap">public + private</div>
       </div>
-      <div class="stat t stat-wide">
-        <div class="stat-label">the stack</div>
-        <div class="stat-cap">what I actually build with, across every repo</div>
-        <div class="stackbar"><span style="width:44.0%;background:var(--green)" title="TypeScript 44.0%"></span><span style="width:20.9%;background:var(--blue)" title="JSON 20.9%"></span><span style="width:20.8%;background:var(--purple)" title="Markdown 20.8%"></span><span style="width:10.7%;background:var(--amber)" title="HTML 10.7%"></span><span style="width:2.1%;background:var(--cyan)" title="Shell 2.1%"></span><span style="width:1.6%;background:var(--text-3)" title="YAML 1.6%"></span></div>
-        <div class="stack-legend"><i><b style="background:var(--green)"></b>TypeScript 44.0%</i><i><b style="background:var(--blue)"></b>JSON 20.9%</i><i><b style="background:var(--purple)"></b>Markdown 20.8%</i><i><b style="background:var(--amber)"></b>HTML 10.7%</i><i><b style="background:var(--cyan)"></b>Shell 2.1%</i><i><b style="background:var(--text-3)"></b>YAML 1.6%</i></div>
-      </div>
     </div>
-    <p class="stat-meta">Counts 2026 to date · git activity 2026-03-21 → 2026-10-22 · commit history only; file/tooling counts are a current snapshot · no private code or content. <a href="https://github.com/vikkybharadwaj" target="_blank" rel="noopener">See the work →</a></p>
+    </details>
+    <p class="stat-meta">Counted from git history across 5 repos, public and private, 2026-03-21 → 2026-10-22. File and tooling counts are a current snapshot. No private code or content. <a href="https://github.com/vikkybharadwaj" target="_blank" rel="noopener">See the work →</a></p>
     <!-- HIGHLIGHTS:END -->
   </div>
 </section>
