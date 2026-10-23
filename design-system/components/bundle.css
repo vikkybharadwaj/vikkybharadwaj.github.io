@@ -58,10 +58,10 @@ a.vk-pill-outline:hover { transform: translateY(-1px); border-color: var(--tone,
 .vk-card-secondary .vk-card-sub { margin-top: var(--space-1); }
 .vk-card-secondary .vk-card-open { margin: 0; padding: 0; white-space: nowrap; }
 
-/* Company mark */
+/* Company mark: the logo in its own colours on a light plate (brand marks are drawn for light grounds) */
 .vk-mark { display: flex; align-items: center; gap: var(--space-3); }
-.vk-mark-tile { display: inline-flex; align-items: center; justify-content: center; inline-size: var(--size-mark-tile); block-size: var(--size-mark-tile); flex: none; border-radius: var(--radius-md); border: 1px solid var(--border-2); background: var(--surface); }
-.vk-mark-logo { display: block; inline-size: var(--size-mark); block-size: var(--size-mark); background: var(--text); -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center; -webkit-mask-size: contain; mask-size: contain; }
+.vk-mark-plate { display: inline-flex; align-items: center; justify-content: center; block-size: var(--size-mark-tile); flex: none; padding-inline: var(--space-3); border-radius: var(--radius-md); background: var(--text); }
+.vk-mark-plate img { display: block; block-size: var(--size-mark); inline-size: auto; max-inline-size: 9rem; }
 .vk-mark-name { font-size: var(--fs-15); font-weight: 700; color: var(--text); }
 .vk-mark-desc { font-size: var(--fs-12); color: var(--text-2); line-height: var(--lh-snug); margin-top: var(--space-1); }
 

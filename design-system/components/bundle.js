@@ -43,11 +43,12 @@
   }
 
   function CompanyMark(p) {
+    // logoHasName: the logo already contains the company name, so the name is not repeated as text
+    var showName = !(p.logo && p.logoHasName);
     return h('div', { className: cx('vk-root', 'vk-mark', p.className) },
-      p.logo && h('span', { className: 'vk-mark-tile', 'aria-hidden': 'true' },
-        h('span', { className: 'vk-mark-logo', style: { WebkitMaskImage: 'url(' + p.logo + ')', maskImage: 'url(' + p.logo + ')' } })),
+      p.logo && h('span', { className: 'vk-mark-plate' }, h('img', { src: p.logo, alt: p.logoHasName ? p.name : '', height: 32 })),
       h('div', { className: 'vk-mark-text' },
-        h('div', { className: 'vk-mark-name' }, p.name),
+        showName && h('div', { className: 'vk-mark-name' }, p.name),
         p.description && h('div', { className: 'vk-mark-desc' }, p.description)));
   }
 

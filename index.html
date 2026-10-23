@@ -137,9 +137,8 @@
   .xp-meta { display: flex; flex-direction: column; align-items: flex-end; gap: var(--space-1); text-align: right; }
   .xp-role { font-size: var(--fs-15); font-weight: 700; }
   .mark { display: flex; align-items: center; gap: var(--space-3); min-inline-size: 0; }
-  .mark-tile { display: inline-flex; align-items: center; justify-content: center; inline-size: var(--size-mark-tile); block-size: var(--size-mark-tile); flex: none; border-radius: var(--radius-md); border: 1px solid var(--border-2); background: var(--surface); }
-  .mark-logo { display: block; inline-size: var(--size-mark); block-size: var(--size-mark); background: var(--text); -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center; -webkit-mask-size: contain; mask-size: contain; }
-  .mark:not(:has(.mark-tile)) .mark-text { padding-inline-start: calc(var(--size-mark-tile) + var(--space-3)); }
+  .mark-plate { display: inline-flex; align-items: center; justify-content: center; block-size: var(--size-mark-tile); flex: none; padding-inline: var(--space-3); border-radius: var(--radius-md); background: var(--text); }
+  .mark-plate img { display: block; block-size: var(--size-mark); inline-size: auto; max-inline-size: 9rem; }
   .mark-name { font-size: var(--fs-17); font-weight: 800; letter-spacing: -.3px; color: var(--accent-text, var(--accent, var(--blue))); }
   .mark-desc { font-size: var(--fs-12); color: var(--text-2); line-height: var(--lh-snug); margin-top: var(--space-1); }
   .proof { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-5); margin-top: var(--space-5); padding-block: var(--space-4); border-block: 1px solid var(--border); }
@@ -358,7 +357,7 @@
 
       <div class="xp-item g">
                 <div class="xp-head">
-          <div class="mark"><div class="mark-text"><div class="mark-name">Trustly</div><div class="mark-desc">Lets people pay straight from their bank account, no card needed.</div></div></div>
+          <div class="mark"><span class="mark-plate"><img src="assets/logos/trustly.png" width="453" height="96" alt="Trustly"></span><div class="mark-text"><div class="mark-desc">Lets people pay straight from their bank account, no card needed.</div></div></div>
           <div class="xp-meta"><span class="xp-role">Staff PM, AI Product Builder</span><span class="xp-date">2026 — PRESENT · NEW YORK</span></div>
         </div>
         <div class="proof">
@@ -384,7 +383,7 @@
 
       <div class="xp-item b">
                 <div class="xp-head">
-          <div class="mark"><span class="mark-tile" aria-hidden="true"><span class="mark-logo" style="-webkit-mask-image:url(assets/logos/zillow.svg);mask-image:url(assets/logos/zillow.svg)"></span></span><div class="mark-text"><div class="mark-name">Zillow</div><div class="mark-desc">Helps people find, tour and buy homes.</div></div></div>
+          <div class="mark"><span class="mark-plate"><img src="assets/logos/zillow.svg" width="28" height="28" alt=""></span><div class="mark-text"><div class="mark-name">Zillow</div><div class="mark-desc">Helps people find, tour and buy homes.</div></div></div>
           <div class="xp-meta"><span class="xp-role">Product Lead, Core Shopping</span><span class="xp-date">2024 — 2026 · NEW YORK</span></div>
         </div>
         <div class="proof">
@@ -410,7 +409,7 @@
 
       <div class="xp-item p">
                 <div class="xp-head">
-          <div class="mark"><div class="mark-text"><div class="mark-name">Wayfair</div><div class="mark-desc">Online store for furniture, decor and home goods.</div></div></div>
+          <div class="mark"><span class="mark-plate"><img src="assets/logos/wayfair.png" width="439" height="96" alt="Wayfair"></span><div class="mark-text"><div class="mark-desc">Online store for furniture, decor and home goods.</div></div></div>
           <div class="xp-meta"><span class="xp-role">Product Lead, Middle &amp; Lower Funnel</span><span class="xp-date">2022 — 2024 · CHICAGO</span></div>
         </div>
         <div class="proof">
@@ -436,7 +435,7 @@
 
       <div class="xp-item a">
                 <div class="xp-head">
-          <div class="mark"><div class="mark-text"><div class="mark-name">Ahold Delhaize</div><div class="mark-desc">Grocery group behind Giant, Martin's and Stop &amp; Shop.</div></div></div>
+          <div class="mark"><span class="mark-plate"><img src="assets/logos/ahold-delhaize.png" width="298" height="96" alt="Ahold Delhaize"></span><div class="mark-text"><div class="mark-desc">Grocery group behind Giant, Martin's and Stop &amp; Shop.</div></div></div>
           <div class="xp-meta"><span class="xp-role">Sr. Product Manager, Mobile Apps</span><span class="xp-date">2020 — 2022 · CHICAGO</span></div>
         </div>
         <div class="proof">
@@ -464,7 +463,7 @@
 
       <div class="xp-item g">
                 <div class="xp-head">
-          <div class="mark"><div class="mark-text"><div class="mark-name">Whirlpool</div><div class="mark-desc">Maker of home appliances: Whirlpool, KitchenAid, JennAir and Maytag.</div></div></div>
+          <div class="mark"><span class="mark-plate"><img src="assets/logos/whirlpool.png" width="176" height="96" alt="Whirlpool"></span><div class="mark-text"><div class="mark-desc">Maker of home appliances: Whirlpool, KitchenAid, JennAir and Maytag.</div></div></div>
           <div class="xp-meta"><span class="xp-role">Product Manager (Global Leadership Program)</span><span class="xp-date">2015 — 2020 · MICHIGAN</span></div>
         </div>
         <div class="proof">

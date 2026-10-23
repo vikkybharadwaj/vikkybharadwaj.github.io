@@ -37,7 +37,7 @@ These come from a senior designer's review of the portfolio. Treat them as rules
 
 - **Visual weight follows importance.** Products and proof of work use `Card tier="primary"`: larger, with an image. Supporting material (learning hubs, links out) uses `tier="secondary"`, a slim strip. Two things of different importance never share the same card.
 - **Show the product, don't describe it.** A primary card carries a real image (16:10, top-aligned crop of an actual screen) instead of an emoji. Images need meaningful `alt` text.
-- **Logos over names.** In experience entries and logo rows use `CompanyMark`: a square tile with the company's own logo file (single-ink SVG, shown through a mask in `text`). Never redraw, trace, recolour or approximate a brand mark; if no file exists, render the name alone and add the file later. Store logos in `assets/logos/` with the source noted.
+- **Logos over names.** In experience entries and logo rows use `CompanyMark`: the company's own logo file, unmodified and in its own colours, on a light plate (`text` colour), because brand marks are drawn for light grounds. When the logo already spells the name, do not repeat the name as text. Never redraw, trace, recolour or approximate a brand mark; trim only transparent margins. If no file exists, render the name alone and add the file later. Store logos in `assets/logos/` with the source noted.
 - **Proof is visual.** The two or three figures a visitor should remember from a role or project use `ProofStat` (large number, one-line label, optional before and after bars) above the supporting bullets, not buried inside them.
 
 ## Motion for proof

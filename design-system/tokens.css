@@ -79,8 +79,8 @@
   --dur-base: 0.2s;
   --dur-slow: 0.6s;
   --dur-count: 1.2s;
-  --size-mark: 28px;
-  --size-mark-tile: 44px;
+  --size-mark: 32px;
+  --size-mark-tile: 48px;
   --ratio-media: 16 / 10;
   --size-bar: 6px;
   --z-sticky: 50;
