@@ -20,7 +20,7 @@ M = {"commits": 1044, "pr": 389, "ai": 647, "conv": 940, "dates": ["2026-03-21",
      "languages": [("TypeScript", 44), ("JSON", 21)], "gh_contributions": 1505}
 CFG = {"repos": [], "options": {}, "insights": [{"key": k, "enabled": True} for k in ("github_contributions", "commits", "pr_driven", "ai_assisted", "evals")]}
 block, _ = bh.render(CFG, M)
-assert "stat-lead" in block and block.count("stat-ctx") >= 3, "generator must emit a lead sentence and reference lines"
+assert "stat-lead" in block and "stat-ctx" not in block, "generator must emit one reference lead and no restating tile lines"
 html = block + bh.render_stack({"languages": [("Python", 50), ("TypeScript", 30), ("HTML", 10), ("Shell", 5), ("CSS", 3), ("Other", 2)]}) + bh.render_latest({"date": "2026-10-01", "headline": "Shipped the thing"})
 with tempfile.TemporaryDirectory() as d:
     (pathlib.Path(d) / "page.html").write_text('<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>t</title></head><body>' + html + "</body></html>")

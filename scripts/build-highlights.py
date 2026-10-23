@@ -218,16 +218,6 @@ def make_insights(m):
         a = date.fromisoformat(m["dates"][0]); b = date.fromisoformat(m["dates"][-1])
         span_days = max((b - a).days, 1)
     cadence = m["commits"] / span_days if span_days else 0
-    # Reference frames: every headline number gets a rate or a denominator, so it reads against something.
-    from datetime import date as _d
-    last = _d.fromisoformat(m["dates"][-1]) if m["dates"] else None
-    ytd_days = last.timetuple().tm_yday if last else 0
-    ctx = {
-        "commits": f"about {cadence * 7:.0f} a week since {m['dates'][0]}" if span_days else "",
-        "pr_driven": f"{pct(m['pr'], m['commits'])} of commits arrive through a reviewed PR" if m["commits"] else "",
-        "ai_assisted": f"about {round(10 * m['ai'] / m['commits'])} in 10 commits are co-authored with AI" if m["commits"] else "",
-        "github_contributions": (f"about {m['gh_contributions'] / ytd_days:.1f} every day since January 1" if m.get("gh_contributions") and ytd_days else ""),
-    }
     reg = {
         "commits":         ("g", f'{m["commits"]:,}', "commits shipped", f'across {m["projects"]} repos · 2026 to date'),
         "cadence":         ("g", f"{cadence:.1f}", "commits a day", "steady, iterative cadence"),
@@ -249,7 +239,18 @@ def make_insights(m):
         reg["github_contributions"] = (
             "g", f'{m["gh_contributions"]:,}', "GitHub contributions",
             "commits, PRs & reviews · public + private · 2026 to date")
-    return reg, ctx
+    return reg
+
+
+def make_lead(m):
+    """One reference sentence: a rate and a share of this person's own history. No external benchmark is claimed."""
+    from datetime import date
+    ai = f"about {round(10 * m['ai'] / m['commits'])} in 10 commits co-authored with AI"
+    if m.get("gh_contributions") is not None and m["dates"]:
+        ytd = date.fromisoformat(m["dates"][-1]).timetuple().tm_yday
+        return f"A pace of about {m['gh_contributions'] / ytd:.1f} contributions a day since January 1, with {ai}."
+    first = m["dates"][0]; last = date.fromisoformat(m["dates"][-1]); span = max((last - date.fromisoformat(first)).days, 1)
+    return f"A pace of about {m['commits'] / span * 7:.0f} commits a week since {first}, with {ai}."
 
 
 def esc(s):
@@ -257,7 +258,7 @@ def esc(s):
 
 
 def render(cfg, m):
-    insights, ctx = make_insights(m)
+    insights = make_insights(m)
     tiles, emitted = [], []
     overrides = {i["key"]: i for i in cfg["insights"]}
     for item in cfg["insights"]:
@@ -284,7 +285,6 @@ def render(cfg, m):
             f'      <div class="stat {accent}">\n'
             f'        <div class="stat-num">{esc(value)}</div>\n'
             f'        <div class="stat-label">{esc(label)}</div>\n'
-            + (f'        <div class="stat-ctx">{esc(ctx[key])}</div>\n' if ctx.get(key) and key != "github_contributions" else "")   # the lead sentence carries this one
             + f'        <div class="stat-cap">{esc(caption)}</div>\n'
             f'      </div>'
         )
@@ -294,10 +294,7 @@ def render(cfg, m):
     updated = m["dates"][-1] if m["dates"] else ""
     window = (f'Counts 2026 to date · git activity {first} → {updated}'
               if first else 'Counts 2026 to date')
-    lead = ""
-    if m.get("gh_contributions") is not None and ctx.get("github_contributions"):
-        lead = (f'    <p class="stat-lead"><b>{m["gh_contributions"]:,} GitHub contributions</b> so far in 2026, '
-                f'{esc(ctx["github_contributions"])}.</p>\n')
+    lead = f'    <p class="stat-lead">{esc(make_lead(m))}</p>\n' if m.get("commits") else ""
     grid = lead + ('    <div class="stat-grid">\n' + "\n".join(tiles) + "\n    </div>\n") if tiles else ""
     meta = (f'    <p class="stat-meta">{esc(window)} · commit history only; file/tooling counts are a '
             f'current snapshot · no private code or content. '

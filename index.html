@@ -131,20 +131,21 @@
     transition: transform .15s ease, border-color .2s ease;
   }
   .xp-item:hover { transform: translateX(3px); }
-  .xp-item.g { --accent: var(--green); } .xp-item.b { --accent: var(--blue); }
-  .xp-item.p { --accent: var(--purple); } .xp-item.a { --accent: var(--amber); }
+  .xp-item.g { --accent: var(--green); } .xp-item.b { --accent: var(--blue); --accent-text: var(--blue-text); }
+  .xp-item.p { --accent: var(--purple); --accent-text: var(--purple-text); } .xp-item.a { --accent: var(--amber); }
   .xp-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: var(--space-3) var(--space-5); }
   .xp-meta { display: flex; flex-direction: column; align-items: flex-end; gap: var(--space-1); text-align: right; }
   .xp-role { font-size: var(--fs-15); font-weight: 700; }
   .mark { display: flex; align-items: center; gap: var(--space-3); min-inline-size: 0; }
   .mark-tile { display: inline-flex; align-items: center; justify-content: center; inline-size: var(--size-mark-tile); block-size: var(--size-mark-tile); flex: none; border-radius: var(--radius-md); border: 1px solid var(--border-2); background: var(--surface); }
   .mark-logo { display: block; inline-size: var(--size-mark); block-size: var(--size-mark); background: var(--text); -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center; -webkit-mask-size: contain; mask-size: contain; }
-  .mark-name { font-size: var(--fs-17); font-weight: 800; letter-spacing: -.3px; color: var(--accent, var(--blue)); }
+  .mark:not(:has(.mark-tile)) .mark-text { padding-inline-start: calc(var(--size-mark-tile) + var(--space-3)); }
+  .mark-name { font-size: var(--fs-17); font-weight: 800; letter-spacing: -.3px; color: var(--accent-text, var(--accent, var(--blue))); }
   .mark-desc { font-size: var(--fs-12); color: var(--text-2); line-height: var(--lh-snug); margin-top: var(--space-1); }
   .proof { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-5); margin-top: var(--space-5); padding-block: var(--space-4); border-block: 1px solid var(--border); }
   @media (max-width: 760px) { .proof { grid-template-columns: 1fr; gap: var(--space-4); } .xp-meta { align-items: flex-start; text-align: left; } }
   .proof-item { min-inline-size: 0; }
-  .proof-n { font-size: var(--fs-30); font-weight: 800; letter-spacing: -1px; line-height: var(--lh-display); color: var(--accent, var(--blue)); font-variant-numeric: tabular-nums; }
+  .proof-n { font-size: var(--fs-30); font-weight: 800; letter-spacing: -1px; line-height: var(--lh-display); color: var(--accent-text, var(--accent, var(--blue))); font-variant-numeric: tabular-nums; }
   .proof-pre { font-size: var(--fs-17); font-weight: 700; color: var(--text-2); letter-spacing: 0; }
   .proof-l { font-size: var(--fs-12); color: var(--text); margin-top: var(--space-1); line-height: var(--lh-snug); }
   .proof-bars { display: grid; gap: var(--space-1); margin-top: var(--space-2); }
@@ -196,6 +197,11 @@
     margin: var(--space-7) 0 var(--space-2); border: 1px solid var(--border); border-radius: var(--radius-xl);
     padding: var(--space-6) var(--space-5) var(--space-4); background: var(--surface); backdrop-filter: blur(8px);
   }
+  .loop-list { display: none; margin: var(--space-4) 0 0; padding: 0; list-style: none; gap: var(--space-3); }
+  .loop-list li { display: grid; grid-template-columns: 5.5rem 1fr; gap: var(--space-3); font-size: var(--fs-13); line-height: var(--lh-snug); }
+  .loop-list b { color: var(--text); }
+  .loop-list span { color: var(--text-2); }
+  @media (max-width: 640px) { .loop-figure .ann { display: none; } .loop-list { display: grid; } }
   .loop-figure svg { width: 100%; height: auto; max-width: 720px; display: block; margin: 0 auto; }
   .loop-cap { text-align: center; font-size: var(--fs-12); color: var(--text-3); margin: var(--space-3) auto 2px; max-width: 680px; line-height: var(--lh-relaxed); }
   .loop-cap b { color: var(--text-2); font-weight: 600; }
@@ -237,7 +243,6 @@
   .stat-label { font-size: var(--fs-13); font-weight: 700; margin-top: var(--space-2); }
   .stat-lead { font-size: var(--fs-17); color: var(--text-2); margin-top: var(--space-6); line-height: var(--lh-snug); }
   .stat-lead b { color: var(--text); }
-  .stat-ctx { font-size: var(--fs-12); color: var(--text); margin-top: var(--space-2); line-height: var(--lh-snug); }
   .stat-cap { font-size: var(--fs-11); color: var(--text-3); margin-top: var(--space-2); line-height: var(--lh-normal); }
   .stat-cap.stat-quote { font-size: var(--fs-13); color: var(--text-2); }
   .stat.g .stat-num { color: var(--green); }  .stat.g { border-color: color-mix(in srgb, var(--green) 26%, transparent); }  .stat.g:hover { border-color: var(--green);  box-shadow: 0 10px 30px color-mix(in srgb, var(--green) 14%, transparent); }
@@ -268,11 +273,11 @@
   <div class="wrap">
     <a class="logo" href="#top">Vik<span>.</span>Bharadwaj</a>
     <div class="links">
-      <a href="#explore">AI Projects</a>
+      <a href="#explore">Work</a>
       <a href="#experience">Experience</a>
-      <a href="#highlights">Career Highlights</a>
-      <a href="#ai-work">AI Mental Model</a>
-      <a href="#operating">By the Numbers</a>
+      <a href="#highlights">Highlights</a>
+      <a href="#ai-work">How I run product</a>
+      <a href="#operating">Git numbers</a>
       <a href="#contact">Contact</a>
     </div>
   </div>
@@ -286,7 +291,7 @@
     <p class="lede">
       For ~12 years I've shipped consumer products at scale — at <b>Zillow</b>, <b>Wayfair</b>, <b>Ahold
       Delhaize</b>, and <b>Whirlpool</b>. Today I build <b>AI-native products end-to-end</b>: the app, the AI
-      pipeline, the data model, and the evals. Staying close to how things actually get built keeps my product decisions grounded.
+      pipeline, the data model, and the evals.
     </p>
     <div class="cta-row">
       <a class="btn btn-primary" href="#explore">Explore my work <span>→</span></a>
@@ -297,7 +302,7 @@
 
 <section id="explore">
   <div class="wrap">
-    <h2 class="sec-title">Explore my work</h2>
+    <h2 class="sec-title">Selected work</h2>
 
     <div class="explore-grid">
 
@@ -306,7 +311,7 @@
         <div class="xbody">
           <span class="xnum">THE PRODUCT</span>
           <h3>Tide</h3>
-          <span class="xsub">Personal cash flow, AI-native</span>
+          <span class="xsub">Personal cash flow</span>
           <p class="xdesc">A mobile-first money app built around one question: <b>what's actually safe to spend?</b> An AI coach on Claude and AWS Bedrock, payday-aware math, and docs where every data flow doubles as the spec.</p>
           <div class="xtags">
             <span class="xtag">React Native · Expo</span>
@@ -320,12 +325,12 @@
       <a class="xcard t" href="projects/product-cockpit/index.html">
         <div class="xmedia"><img src="assets/images/cockpit-system-map.webp" width="1200" height="750" loading="lazy" alt="Product Cockpit's system map: six layers of anchors, hooks, policies, skills, memory and governance, each listing its primitives"></div>
         <div class="xbody">
-          <span class="xnum">THE OPERATING SYSTEM</span>
+          <span class="xnum">THE CASE STUDY</span>
           <h3>Product Cockpit</h3>
-          <span class="xsub">An AI-native operating system</span>
-          <p class="xdesc">An operating system for product decisions: <b>hooks observe, policies judge, skills execute</b>, so a team and its AI agents decide from cited evidence. An anonymized case study of a real internal build.</p>
+          <span class="xsub">Internal build, anonymized</span>
+          <p class="xdesc"><b>Hooks observe, policies judge, skills execute</b>: an operating system for product decisions, so a team and its AI agents decide from cited evidence.</p>
           <div class="xtags">
-            <span class="xtag">Observe · Judge · Execute</span>
+            <span class="xtag">Cited evidence</span>
             <span class="xtag">Anti-drift governance</span>
             <span class="xtag">Figma · Linear MCP</span>
           </div>
@@ -371,15 +376,15 @@
           </div>
         </div>
         <ul>
-          <li>Built <b>GoConsumer</b> 0→1, an iOS <b>AI financial-coaching app</b> on Claude LLMs with eval-gated releases, and launched a <b>200-user closed beta</b>; shipped frontend code to production with Claude Code.</li>
-          <li>Built the business case and secured leadership approval for <b>Trustly Black</b>, a 0→1 loyalty program for high-value gaming users — sized at <b>+$3.0B</b> incremental annual TPV and <b>+$32M</b> net revenue.</li>
-          <li>Ran A/B and A/B/C experiments across the Pay by Bank funnel, lifting initiate-to-capture rate (L1) <b>+5.5%</b> in 2026; as Trustly Product's <b>AI champion</b>, designed and built <b>Product Cockpit</b>, an internal product OS integrated with GitHub, Jira, Confluence, Figma, and Linear via MCP.</li>
+          <li>Built <b>GoConsumer</b> 0→1, an iOS <b>AI financial-coaching app</b> on Claude LLMs with eval-gated releases, and launched a closed beta; shipped frontend code to production with Claude Code.</li>
+          <li>Built the business case and secured leadership approval for <b>Trustly Black</b>, a 0→1 loyalty program for high-value gaming users, also sized at <b>+$32M</b> net revenue.</li>
+          <li>Ran A/B and A/B/C experiments across the Pay by Bank funnel; as Trustly Product's <b>AI champion</b>, designed and built <b>Product Cockpit</b>, an internal product OS integrated with GitHub, Jira, Confluence, Figma, and Linear via MCP.</li>
         </ul>
       </div>
 
       <div class="xp-item b">
                 <div class="xp-head">
-          <div class="mark"><span class="mark-tile" role="img" aria-label="Zillow logo"><span class="mark-logo" style="-webkit-mask-image:url(assets/logos/zillow.svg);mask-image:url(assets/logos/zillow.svg)"></span></span><div class="mark-text"><div class="mark-name">Zillow</div><div class="mark-desc">Helps people find, tour and buy homes.</div></div></div>
+          <div class="mark"><span class="mark-tile" aria-hidden="true"><span class="mark-logo" style="-webkit-mask-image:url(assets/logos/zillow.svg);mask-image:url(assets/logos/zillow.svg)"></span></span><div class="mark-text"><div class="mark-name">Zillow</div><div class="mark-desc">Helps people find, tour and buy homes.</div></div></div>
           <div class="xp-meta"><span class="xp-role">Product Lead, Core Shopping</span><span class="xp-date">2024 — 2026 · NEW YORK</span></div>
         </div>
         <div class="proof">
@@ -398,8 +403,8 @@
         </div>
         <ul>
           <li><b>DRI for multiplayer / collaborative experiences</b> across Zillow Shopping — defined the vision, strategy, and roadmap for Zillow's first collaborative features (0→1), grounded in research on Real Estate IDX presented to senior leadership.</li>
-          <li>Launched <b>Collections</b> across iOS, Android, and Web — invite, share, compare, and collaborate on saved homes — lifting the twice-weekly retention metric <b>+2.2%</b>; shipped <b>Compare</b> on the search listing page (A/B) driving <b>+23%</b> compare engagement, <b>+2.8%</b> tour submits, and <b>~$3.5M/yr</b> incremental revenue.</li>
-          <li>Launched <b>touring agreements</b> on mobile (A/B), lifting tour-success rate (L1) <b>+12%</b>; delivered dynamic scrolling on Saved Homes for <b>+2.42%</b> submits and <b>+$3M/yr</b> revenue.</li>
+          <li>Launched <b>Collections</b> across iOS, Android, and Web — invite, share, compare, and collaborate on saved homes; shipped <b>Compare</b> on the search listing page (A/B), which also lifted tour submits <b>+2.8%</b> and added <b>~$3.5M/yr</b> incremental revenue.</li>
+          <li>Launched <b>touring agreements</b> on mobile (A/B); delivered dynamic scrolling on Saved Homes for <b>+2.42%</b> submits and <b>+$3M/yr</b> revenue.</li>
         </ul>
       </div>
 
@@ -423,9 +428,9 @@
           </div>
         </div>
         <ul>
-          <li>Global product lead managing <b>2 PMs</b> across <b>Browse, PDP, Cart, Checkout, and Receipt</b> — owned the vision and roadmap, with experiments delivering <b>+$63.9M GMV/yr</b> and <b>−$2.8M/yr</b> in customer-contact costs.</li>
-          <li>Launched customer <b>reviews</b> and <b>return policy</b> on the PDP (A/B) — <b>+2.62%</b> / <b>+0.59% CVR</b> and <b>+$24.9M/yr GMV</b> combined.</li>
-          <li>Shipped an <b>order-status / explore-more</b> home surface with upsell + cross-sell (<b>+$30M GMV/yr, −$2.7M/yr</b> contact costs) and address auto-complete &amp; validation cutting contact costs a further <b>−$2.7M/yr</b>.</li>
+          <li>Global product lead managing <b>2 PMs</b> across <b>Browse, PDP, Cart, Checkout, and Receipt</b> — owned the vision and roadmap.</li>
+          <li>Launched customer <b>reviews</b> and <b>return policy</b> on the PDP (A/B) — <b>+2.62%</b> / <b>+0.59% CVR</b>.</li>
+          <li>Shipped an <b>order-status / explore-more</b> home surface with upsell + cross-sell (<b>+$30M GMV/yr</b>) and address auto-complete &amp; validation, each cutting contact costs by <b>$2.7M/yr</b>.</li>
         </ul>
       </div>
 
@@ -451,8 +456,8 @@
           </div>
         </div>
         <ul>
-          <li>Led end-to-end discovery and delivery of <b>Click &amp; Collect</b> curbside pickup across Giant, Martin's, and Stop &amp; Shop — <b>piloted in 20 stores, scaled to 700+</b>.</li>
-          <li>Spearheaded <b>Click &amp; Collect 2.0</b> across research, design, engineering, ops, and marketing — <b>+10%</b> opt-in, <b>+13%</b> check-in, and cut curbside wait time from <b>3.2 → 2.5 min</b>.</li>
+          <li>Led end-to-end discovery and delivery of <b>Click &amp; Collect</b> curbside pickup across Giant, Martin's, and Stop &amp; Shop, from a store pilot to a wide rollout.</li>
+          <li>Spearheaded <b>Click &amp; Collect 2.0</b> across research, design, engineering, ops, and marketing — lifting check-in <b>+13%</b> and cutting curbside wait times.</li>
           <li>Led the <b>native mobile-app transformation</b> across ADUSA brands; owned executive updates for four mobile squads.</li>
         </ul>
       </div>
@@ -479,9 +484,9 @@
           </div>
         </div>
         <ul>
-          <li>Led the end-to-end transformation of the <b>JennAir connected app</b>, lifting app-store ratings from <b>2.0 → 4.2</b>; managed an Associate PM on the KitchenAid app transformation.</li>
+          <li>Led the end-to-end transformation of the <b>JennAir connected app</b>, improving its app-store ratings; managed an Associate PM on the KitchenAid app transformation.</li>
           <li>Owned <b>cart &amp; checkout</b> for whirlpool.com and maytag.com (US &amp; Canada).</li>
-          <li>Led a <b>B2B portal transformation</b> — CSAT <b>2.9 → 4.3</b>, <b>−16%</b> call-center touchpoints.</li>
+          <li>Led a <b>B2B portal transformation</b> that lifted customer satisfaction and cut call-center load.</li>
         </ul>
       </div>
 
@@ -590,7 +595,7 @@
         <path d="M195.6 346.0 A190 190 0 0 1 195.6 254.0" fill="none" stroke-width="2" marker-end="url(#ah)" style="stroke:color-mix(in srgb, var(--text-2) 55%, transparent)"/>
         <!-- the data-flywheel return arc (Learn -> Listen) -->
         <path d="M248.0 163.3 A190 190 0 0 1 327.6 117.4" fill="none" stroke-width="3" marker-end="url(#ahg)" style="stroke:var(--green)"/>
-        <text x="300" y="150" text-anchor="middle" font-size="11" font-weight="700" style="fill:var(--green)">&#8635; data flywheel</text>
+        <text x="240" y="130" text-anchor="end" font-size="11" font-weight="700" style="fill:var(--green)">&#8635; data flywheel</text>
 
         <!-- center hub -->
         <circle cx="380" cy="300" r="66" stroke-width="1.5" style="fill:var(--surface-solid);stroke:color-mix(in srgb, var(--amber) 45%, transparent)"/>
@@ -599,27 +604,34 @@
 
         <!-- stage nodes -->
         <g><circle cx="380" cy="110" r="46" stroke-width="1.5" style="fill:var(--surface-solid);stroke:var(--green)"/><text x="380" y="104" text-anchor="middle" font-size="10" font-weight="700" style="fill:var(--text-3)">1</text><text x="380" y="124" text-anchor="middle" font-size="13" font-weight="700" style="fill:var(--text)">Listen</text></g>
-        <g><circle cx="544.5" cy="205" r="46" stroke-width="1.5" style="fill:var(--surface-solid);stroke:var(--blue)"/><text x="544.5" y="199" text-anchor="middle" font-size="10" font-weight="700" style="fill:var(--text-3)">2</text><text x="544.5" y="219" text-anchor="middle" font-size="13" font-weight="700" style="fill:var(--text)">Frame</text><text x="600" y="201" text-anchor="start" font-size="11" font-weight="700" style="fill:var(--text)">Tide&#8217;s one question:</text><text x="600" y="216" text-anchor="start" font-size="10" style="fill:var(--text-2)">what&#8217;s safe to spend?</text></g>
-        <g><circle cx="544.5" cy="395" r="46" stroke-width="1.5" style="fill:var(--surface-solid);stroke:var(--purple)"/><text x="544.5" y="389" text-anchor="middle" font-size="10" font-weight="700" style="fill:var(--text-3)">3</text><text x="544.5" y="409" text-anchor="middle" font-size="13" font-weight="700" style="fill:var(--text)">Design</text><text x="600" y="391" text-anchor="start" font-size="11" font-weight="700" style="fill:var(--text)">Trustly Black:</text><text x="600" y="406" text-anchor="start" font-size="10" style="fill:var(--text-2)">0&#8594;1 loyalty program</text></g>
-        <g><circle cx="380" cy="490" r="46" stroke-width="1.5" style="fill:var(--surface-solid);stroke:var(--green)"/><text x="380" y="484" text-anchor="middle" font-size="10" font-weight="700" style="fill:var(--text-3)">4</text><text x="380" y="504" text-anchor="middle" font-size="13" font-weight="700" style="fill:var(--text)">Ship</text><text x="380" y="556" text-anchor="middle" font-size="11" font-weight="700" style="fill:var(--text)">Eval-gated releases</text><text x="380" y="571" text-anchor="middle" font-size="10" style="fill:var(--text-2)">Claude Code to production</text></g>
-        <g><circle cx="215.5" cy="395" r="46" stroke-width="1.5" style="fill:var(--surface-solid);stroke:var(--blue)"/><text x="215.5" y="389" text-anchor="middle" font-size="10" font-weight="700" style="fill:var(--text-3)">5</text><text x="215.5" y="409" text-anchor="middle" font-size="13" font-weight="700" style="fill:var(--text)">Measure</text><text x="160" y="391" text-anchor="end" font-size="11" font-weight="700" style="fill:var(--text)">A/B on every launch:</text><text x="160" y="406" text-anchor="end" font-size="10" style="fill:var(--text-2)">+23% Compare, Zillow</text></g>
-        <g><circle cx="215.5" cy="205" r="46" stroke-width="1.5" style="fill:var(--surface-solid);stroke:var(--purple)"/><text x="215.5" y="199" text-anchor="middle" font-size="10" font-weight="700" style="fill:var(--text-3)">6</text><text x="215.5" y="219" text-anchor="middle" font-size="13" font-weight="700" style="fill:var(--text)">Learn</text><text x="160" y="201" text-anchor="end" font-size="11" font-weight="700" style="fill:var(--text)">Surprises become tests</text><text x="160" y="216" text-anchor="end" font-size="10" style="fill:var(--text-2)">in nightly evals</text></g>
+        <g><circle cx="544.5" cy="205" r="46" stroke-width="1.5" style="fill:var(--surface-solid);stroke:var(--blue)"/><text x="544.5" y="199" text-anchor="middle" font-size="10" font-weight="700" style="fill:var(--text-3)">2</text><text x="544.5" y="219" text-anchor="middle" font-size="13" font-weight="700" style="fill:var(--text)">Frame</text><text class="ann" x="600" y="201" text-anchor="start" font-size="11" font-weight="700" style="fill:var(--text)">Tide&#8217;s one question:</text><text class="ann" x="600" y="216" text-anchor="start" font-size="10" style="fill:var(--text-2)">what&#8217;s safe to spend?</text></g>
+        <g><circle cx="544.5" cy="395" r="46" stroke-width="1.5" style="fill:var(--surface-solid);stroke:var(--purple)"/><text x="544.5" y="389" text-anchor="middle" font-size="10" font-weight="700" style="fill:var(--text-3)">3</text><text x="544.5" y="409" text-anchor="middle" font-size="13" font-weight="700" style="fill:var(--text)">Design</text><text class="ann" x="600" y="391" text-anchor="start" font-size="11" font-weight="700" style="fill:var(--text)">Trustly Black:</text><text class="ann" x="600" y="406" text-anchor="start" font-size="10" style="fill:var(--text-2)">0&#8594;1 loyalty program</text></g>
+        <g><circle cx="380" cy="490" r="46" stroke-width="1.5" style="fill:var(--surface-solid);stroke:var(--green)"/><text x="380" y="484" text-anchor="middle" font-size="10" font-weight="700" style="fill:var(--text-3)">4</text><text x="380" y="504" text-anchor="middle" font-size="13" font-weight="700" style="fill:var(--text)">Ship</text><text class="ann" x="380" y="556" text-anchor="middle" font-size="11" font-weight="700" style="fill:var(--text)">Eval-gated releases</text><text class="ann" x="380" y="571" text-anchor="middle" font-size="10" style="fill:var(--text-2)">Claude Code to production</text></g>
+        <g><circle cx="215.5" cy="395" r="46" stroke-width="1.5" style="fill:var(--surface-solid);stroke:var(--blue)"/><text x="215.5" y="389" text-anchor="middle" font-size="10" font-weight="700" style="fill:var(--text-3)">5</text><text x="215.5" y="409" text-anchor="middle" font-size="13" font-weight="700" style="fill:var(--text)">Measure</text><text class="ann" x="160" y="391" text-anchor="end" font-size="11" font-weight="700" style="fill:var(--text)">A/B on every launch:</text><text class="ann" x="160" y="406" text-anchor="end" font-size="10" style="fill:var(--text-2)">+23% Compare, Zillow</text></g>
+        <g><circle cx="215.5" cy="205" r="46" stroke-width="1.5" style="fill:var(--surface-solid);stroke:var(--purple)"/><text x="215.5" y="199" text-anchor="middle" font-size="10" font-weight="700" style="fill:var(--text-3)">6</text><text x="215.5" y="219" text-anchor="middle" font-size="13" font-weight="700" style="fill:var(--text)">Learn</text><text class="ann" x="160" y="201" text-anchor="end" font-size="11" font-weight="700" style="fill:var(--text)">Surprises become tests</text><text class="ann" x="160" y="216" text-anchor="end" font-size="10" style="fill:var(--text-2)">in nightly evals</text></g>
 
         <!-- feedback inputs feeding Listen -->
         <g>
           <rect x="40" y="12" width="220" height="52" rx="9" style="fill:color-mix(in srgb, var(--green) 6%, transparent);stroke:color-mix(in srgb, var(--green) 32%, transparent)"/>
           <text x="150" y="34" text-anchor="middle" font-size="11" font-weight="700" style="fill:var(--green)">EXPLICIT &#183; what users say</text>
-          <text x="150" y="51" text-anchor="middle" font-size="10" style="fill:var(--text-2)">IDX research &#183; 200-user beta</text>
+          <text class="ann" x="150" y="51" text-anchor="middle" font-size="10" style="fill:var(--text-2)">IDX research &#183; 200-user beta</text>
         </g>
         <g>
           <rect x="500" y="12" width="220" height="52" rx="9" style="fill:color-mix(in srgb, var(--blue) 6%, transparent);stroke:color-mix(in srgb, var(--blue) 32%, transparent)"/>
           <text x="610" y="34" text-anchor="middle" font-size="11" font-weight="700" style="fill:var(--blue)">IMPLICIT &#183; what users do</text>
-          <text x="610" y="51" text-anchor="middle" font-size="10" style="fill:var(--text-2)">A/B tests &#183; Coach traces &#183; evals</text>
+          <text class="ann" x="610" y="51" text-anchor="middle" font-size="10" style="fill:var(--text-2)">A/B tests &#183; Coach traces &#183; evals</text>
         </g>
         <path d="M150 64 C 196 112, 276 100, 342 92" fill="none" stroke-width="1.5" marker-end="url(#ahf)" style="stroke:color-mix(in srgb, var(--code-text) 55%, transparent)"/>
         <path d="M610 64 C 564 112, 484 100, 418 92" fill="none" stroke-width="1.5" marker-end="url(#ahf)" style="stroke:color-mix(in srgb, var(--code-text) 55%, transparent)"/>
       </svg>
-      <p class="loop-cap"><b>The AI PM operating loop.</b> Explicit signal (what users <i>say</i>) and implicit signal (what users <i>do</i>) feed every turn — and each turn compounds: more usage &#8594; more signal &#8594; a better model &#8594; more usage. That return arc is the <b>data flywheel</b>.</p>
+      <ol class="loop-list">
+        <li><b>Listen</b> <span>IDX research, the 200-user beta, A/B tests, Coach traces and evals</span></li>
+        <li><b>Frame</b> <span>Tide&#8217;s one question: what&#8217;s safe to spend?</span></li>
+        <li><b>Design</b> <span>Trustly Black, a 0&#8594;1 loyalty program</span></li>
+        <li><b>Ship</b> <span>Eval-gated releases, Claude Code to production</span></li>
+        <li><b>Measure</b> <span>A/B on every launch: +23% Compare at Zillow</span></li>
+        <li><b>Learn</b> <span>Surprises become tests in nightly evals</span></li>
+      </ol>
     </div>
 
     <div class="grp-label">Customer &amp; business outcomes</div>
@@ -661,7 +673,7 @@
   <div class="wrap">
     <h2 class="sec-title">Git by the numbers</h2>
     <!-- HIGHLIGHTS:START -->
-    <p class="stat-lead"><b>1,505 GitHub contributions</b> so far in 2026, about 5.1 every day since January 1.</p>
+    <p class="stat-lead">A pace of about 5.1 contributions a day since January 1, with about 6 in 10 commits co-authored with AI.</p>
     <div class="stat-grid">
       <div class="stat g">
         <div class="stat-num">1,505</div>
@@ -671,7 +683,6 @@
       <div class="stat g">
         <div class="stat-num">1,044</div>
         <div class="stat-label">commits shipped</div>
-        <div class="stat-ctx">about 34 a week since 2026-03-21</div>
         <div class="stat-cap">across 5 repos · 2026 to date</div>
       </div>
       <div class="stat g">
@@ -687,13 +698,11 @@
       <div class="stat b">
         <div class="stat-num">389</div>
         <div class="stat-label">changes shipped via PR</div>
-        <div class="stat-ctx">37% of commits arrive through a reviewed PR</div>
         <div class="stat-cap">reviewed — never straight to main</div>
       </div>
       <div class="stat p">
         <div class="stat-num">62%</div>
         <div class="stat-label">AI-built commits</div>
-        <div class="stat-ctx">about 6 in 10 commits are co-authored with AI</div>
         <div class="stat-cap">I build with AI, and keep the receipts</div>
       </div>
       <div class="stat p">
@@ -772,7 +781,7 @@
 
 <footer>
   <div class="wrap">
-    <p>© 2026 Vik Bharadwaj · Staff PM &amp; AI Product Builder</p>
+    <p>© 2026 Vik Bharadwaj</p>
     <p class="built">Built &amp; hosted on <b>GitHub Pages</b>.</p>
   </div>
 </footer>
@@ -822,6 +831,7 @@
     var ms = (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dur-count')) || 1.2) * 1000;
     function fmt(el, v) { return (el.dataset.prefix || '') + v.toFixed(+el.dataset.decimals || 0) + (el.dataset.suffix || ''); }
     var items = [].slice.call(document.querySelectorAll('.proof-item'));
+    items = items.filter(function (item) { return item.getBoundingClientRect().top > window.innerHeight; });
     items.forEach(function (item) {
       item.querySelectorAll('[data-count]').forEach(function (el) { el.textContent = fmt(el, 0); });
       item.querySelectorAll('.proof-bar').forEach(function (b) { b.dataset.w = b.style.width; b.style.width = '0%'; });

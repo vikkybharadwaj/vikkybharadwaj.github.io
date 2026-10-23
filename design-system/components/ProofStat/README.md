@@ -7,4 +7,5 @@ The number uses `fs-30` at weight 800 in the tone colour (`*-text` tier for purp
 - Do lead with three at most per role. Choose the figures a stranger would remember.
 - Do count up from zero on scroll only as an enhancement: the final value is in the HTML at rest, the animation runs once, takes `dur-count`, and is skipped when `prefers-reduced-motion` is set.
 - Do give every number a unit or a direction (+, −, $, %, ×).
+- Bars are optional. Draw them only when there is an honest before and after on the same scale (a rating, a wait time, a count); a role without one shows the number alone.
 - Don't repeat the figure in a bullet right beside it unless the bullet adds the story behind it.

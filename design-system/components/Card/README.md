@@ -6,7 +6,7 @@ Fill is `surface` over the ambient glow with `radius-xl` (18px) and `space-7` `s
 
 **You provide:** `title`, `image` and `imageAlt` (primary only; a real screenshot, never an emoji or illustration standing in for the product), and optionally `number` ("01"), `subtitle` (uppercase tone line), `tags` (strings), and body text as children. Use one tone per card and a different tone for each sibling: green, teal, cyan for three siblings.
 
-- Do lay cards in a grid with `space-4` or `space-5`, three across, one column under 880px.
+- Do lay primary cards two across with a `space-6` gap, one column under 900px, and put the secondary strip under them. Supporting cards in a dense grid use `space-4` or `space-5`.
 - Do keep body text under about four lines.
 - Don't nest cards.
 - Don't add emoji; the source's emoji icons are an exception, not the rule.

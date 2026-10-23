@@ -4,4 +4,4 @@ Company logos for the experience section. Each file is a single-colour SVG, copi
 | --- | --- | --- |
 | `zillow.svg` | Simple Icons 13.21.0 (`icons/zillow.svg`) | CC0 1.0 (icon artwork); the Zillow name and logo remain Zillow's trademarks, shown to name a former employer |
 
-To add the others, drop a single-colour SVG named `trustly.svg`, `wayfair.svg`, `ahold-delhaize.svg` or `whirlpool.svg` here and the tile appears in `index.html` (set `--logo` on the matching `.mark-logo`). Use the company's own press or brand-kit file. Never redraw or approximate a mark.
+To add the others, drop a single-colour SVG named `trustly.svg`, `wayfair.svg`, `ahold-delhaize.svg` or `whirlpool.svg` here and add the tile markup to that role in `index.html` the same way Zillow's is written (an inline `mask-image` on a `.mark-logo` inside a `.mark-tile`). Use the company's own press or brand-kit file. Never redraw or approximate a mark.
